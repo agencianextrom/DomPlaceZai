@@ -1,12 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye } from 'lucide-react'
+import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
+import { StarRating } from '@/components/ui/StarRating'
+import { DeliveryTracker } from './DeliveryTracker'
+import { motion, AnimatePresence } from 'framer-motion'
+import { toast } from 'sonner'
 import type { OrderData } from '@/store/useAppStore'
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
@@ -14,7 +18,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
   CONFIRMED: { label: 'Confirmado', color: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400', icon: ClipboardList },
   PREPARING: { label: 'Preparando', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400', icon: Package },
   READY: { label: 'Pronto', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle2 },
-  DELIVERING: { label: 'Em entrega', color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', icon: Package },
+  DELIVERING: { label: 'Em entrega', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: Package },
   DELIVERED: { label: 'Entregue', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle2 },
   CANCELLED: { label: 'Cancelado', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400', icon: XCircle },
 }
@@ -34,7 +38,7 @@ function timeAgo(dateStr: string): string {
 }
 
 export function OrdersView() {
-  const { navigate, selectOrder, selectedOrderTab } = useAppStore()
+  const { navigate, selectOrder, selectedOrderTab, addToCart } = useAppStore()
   const [orders] = useState<OrderData[]>([
     {
       id: '1', orderNumber: 'DP000001', storeId: '5', storeName: 'Padaria Pão Quente',
@@ -90,6 +94,40 @@ export function OrdersView() {
     if (selectedOrderTab === 'cancelled') return order.status === 'CANCELLED'
     return true
   })
+
+  const handleReorder = (order: OrderData) => {
+    // Simulate adding items back to cart
+    if (order.items) {
+      order.items.forEach(item => {
+        addToCart({
+          id: `reorder-${item.productName}`,
+          storeId: order.storeId,
+          storeName: order.storeName,
+          name: item.productName,
+          slug: item.productName.toLowerCase().replace(/\s+/g, '-'),
+          description: null,
+          price: item.price,
+          comparePrice: null,
+          images: '[]',
+          stock: 10,
+          rating: 4.5,
+          totalReviews: 10,
+          isFeatured: false,
+          isNew: false,
+          isOffer: false,
+          tags: '[]',
+          variations: null,
+          category: 'FOOD',
+        }, order.storeName || 'Loja', item.quantity)
+      })
+      toast.success('Itens adicionados ao carrinho!')
+      navigate('cart')
+    }
+  }
+
+  const handleRateOrder = (order: OrderData) => {
+    toast.success(`Obrigado! Avaliação do pedido #${order.orderNumber} registrada.`)
+  }
   
   return (
     <div className="min-h-screen pb-20">
@@ -119,8 +157,10 @@ export function OrdersView() {
                     const config = statusConfig[order.status] || statusConfig.PENDING
                     const StatusIcon = config.icon
                     return (
-                      <div
+                      <motion.div
                         key={order.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
                         className="w-full bg-card rounded-xl border border-border p-4 hover:shadow-sm transition-shadow"
                       >
                         <div className="flex items-center justify-between mb-2">
@@ -141,6 +181,27 @@ export function OrdersView() {
                           <span>•</span>
                           <span>{order.items?.length || 0} {order.items?.length === 1 ? 'item' : 'itens'}</span>
                         </div>
+
+                        {/* Mini timeline for active orders */}
+                        {!['DELIVERED', 'CANCELLED'].includes(order.status) && (
+                          <div className="flex items-center gap-1 mb-3">
+                            {statusTimeline.slice(0, 4).map((s, idx) => {
+                              const stepIdx = statusTimeline.indexOf(order.status)
+                              const isActive = idx <= stepIdx
+                              const isCurrent = s === order.status
+                              return (
+                                <div key={s} className="flex items-center flex-1">
+                                  <div className={`h-2 w-2 rounded-full shrink-0 ${
+                                    isActive ? 'bg-primary' : 'bg-muted'
+                                  } ${isCurrent ? 'ring-2 ring-primary/20' : ''}`} />
+                                  {idx < 3 && (
+                                    <div className={`flex-1 h-0.5 ${idx < stepIdx ? 'bg-primary' : 'bg-muted'}`} />
+                                  )}
+                                </div>
+                              )
+                            })}
+                          </div>
+                        )}
                         
                         {order.items && (
                           <div className="text-sm text-muted-foreground">
@@ -155,20 +216,43 @@ export function OrdersView() {
                         
                         <div className="flex items-center justify-between mt-3">
                           <span className="font-bold text-primary">{formatBRL(order.total)}</span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-8 text-xs"
-                            onClick={() => {
-                              selectOrder(order)
-                              navigate('order-detail')
-                            }}
-                          >
-                            <Eye className="h-3 w-3 mr-1" />
-                            Ver detalhes
-                          </Button>
+                          <div className="flex gap-2">
+                            {order.status === 'DELIVERED' && (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-8 text-xs gap-1"
+                                  onClick={() => handleReorder(order)}
+                                >
+                                  <RotateCcw className="h-3 w-3" />
+                                  Repetir
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  className="h-8 text-xs gap-1 bg-amber-500 hover:bg-amber-600 text-white"
+                                  onClick={() => handleRateOrder(order)}
+                                >
+                                  <Star className="h-3 w-3" />
+                                  Avaliar
+                                </Button>
+                              </>
+                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-xs"
+                              onClick={() => {
+                                selectOrder(order)
+                                navigate('order-detail')
+                              }}
+                            >
+                              <Eye className="h-3 w-3 mr-1" />
+                              Detalhes
+                            </Button>
+                          </div>
                         </div>
-                      </div>
+                      </motion.div>
                     )
                   })}
                 </div>
@@ -182,7 +266,7 @@ export function OrdersView() {
 }
 
 export function OrderDetail() {
-  const { selectedOrder, goBack } = useAppStore()
+  const { selectedOrder, goBack, addToCart, navigate } = useAppStore()
   
   if (!selectedOrder) return null
   
@@ -190,6 +274,35 @@ export function OrderDetail() {
   const config = statusConfig[order.status] || statusConfig.PENDING
   
   const currentStepIdx = statusTimeline.indexOf(order.status)
+
+  const handleReorder = () => {
+    if (order.items) {
+      order.items.forEach(item => {
+        addToCart({
+          id: `reorder-${item.productName}`,
+          storeId: order.storeId,
+          storeName: order.storeName,
+          name: item.productName,
+          slug: item.productName.toLowerCase().replace(/\s+/g, '-'),
+          description: null,
+          price: item.price,
+          comparePrice: null,
+          images: '[]',
+          stock: 10,
+          rating: 4.5,
+          totalReviews: 10,
+          isFeatured: false,
+          isNew: false,
+          isOffer: false,
+          tags: '[]',
+          variations: null,
+          category: 'FOOD',
+        }, order.storeName || 'Loja', item.quantity)
+      })
+      toast.success('Itens adicionados ao carrinho!')
+      navigate('cart')
+    }
+  }
   
   return (
     <div className="min-h-screen pb-24">
@@ -216,29 +329,51 @@ export function OrderDetail() {
             {order.status === 'DELIVERED' && <p className="text-xs opacity-80">Pedido entregue com sucesso</p>}
             {order.status === 'PREPARING' && <p className="text-xs opacity-80">A loja está preparando seu pedido</p>}
             {order.status === 'CONFIRMED' && <p className="text-xs opacity-80">Pedido confirmado pela loja</p>}
+            {order.status === 'CANCELLED' && <p className="text-xs opacity-80">Este pedido foi cancelado</p>}
           </div>
         </div>
+
+        {/* Delivery Tracker for active orders */}
+        {(order.status === 'DELIVERING' || order.status === 'PREPARING' || order.status === 'CONFIRMED') && (
+          <DeliveryTracker
+            orderNumber={order.orderNumber}
+            storeName={order.storeName || 'Loja'}
+            status={order.status}
+            estimatedTime="30-45 min"
+          />
+        )}
         
-        {/* Timeline */}
-        {order.status !== 'CANCELLED' && (
+        {/* Timeline for non-cancelled orders that don't have tracker */}
+        {order.status !== 'CANCELLED' && !['DELIVERING', 'PREPARING', 'CONFIRMED'].includes(order.status) && (
           <div className="bg-card rounded-xl border border-border p-4">
             <h3 className="font-semibold text-sm mb-4">Acompanhamento</h3>
             <div className="space-y-4">
               {statusTimeline.map((status, idx) => {
                 const isActive = idx <= currentStepIdx
                 const isCurrent = status === order.status
+                const stepConfig = statusConfig[status]
+                const StepIcon = stepConfig.icon
                 return (
                   <div key={status} className="flex gap-3">
                     <div className="flex flex-col items-center">
-                      <div className={`h-4 w-4 rounded-full ${isActive ? 'bg-primary' : 'bg-muted'} ${isCurrent ? 'ring-4 ring-primary/20' : ''}`} />
+                      <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                        isActive 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-muted text-muted-foreground'
+                      } ${isCurrent ? 'ring-4 ring-primary/20' : ''}`}>
+                        <StepIcon className="h-4 w-4" />
+                      </div>
                       {idx < statusTimeline.length - 1 && (
                         <div className={`h-8 w-0.5 ${isActive ? 'bg-primary' : 'bg-muted'}`} />
                       )}
                     </div>
                     <div className="pb-4">
                       <p className={`text-sm font-medium ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
-                        {statusConfig[status].label}
+                        {stepConfig.label}
                       </p>
+                      {isCurrent && (
+                        <p className="text-xs text-muted-foreground mt-0.5">Etapa atual</p>
+                      )}
                     </div>
                   </div>
                 )
@@ -289,14 +424,26 @@ export function OrderDetail() {
         {/* Actions */}
         {order.status === 'DELIVERED' && (
           <div className="space-y-2">
-            <Button className="w-full bg-primary text-primary-foreground" onClick={goBack}>
-              <Star className="h-4 w-4 mr-2" />
+            <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white gap-2" onClick={() => {
+              toast.success(`Obrigado! Avaliação do pedido #${order.orderNumber} registrada.`)
+            }}>
+              <Star className="h-4 w-4" />
               Avaliar Pedido
             </Button>
-            <Button variant="outline" className="w-full">
-              Pedir Novamente
+            <Button variant="outline" className="w-full gap-2" onClick={handleReorder}>
+              <RotateCcw className="h-4 w-4" />
+              Repetir Pedido
             </Button>
           </div>
+        )}
+
+        {order.status === 'DELIVERING' && (
+          <Button variant="outline" className="w-full gap-2" onClick={() => {
+            const phone = '919998887766'
+            window.open(`https://wa.me/55${phone}`, '_blank')
+          }}>
+            Falar com entregador
+          </Button>
         )}
       </div>
     </div>

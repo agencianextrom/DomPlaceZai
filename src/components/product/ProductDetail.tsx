@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { ArrowLeft, Star, Heart, ShoppingCart, Share2, Store, Clock, Phone, MapPin, Minus, Plus, MessageCircle, Package, Scale, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { ArrowLeft, Heart, ShoppingCart, Store, Clock, Package, Scale, CheckCircle, ChevronDown, ChevronUp, Truck, Tag, Minus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
 import { formatBRL, CategoryIcon } from './ProductCard'
+import { StarRating } from '@/components/ui/StarRating'
+import { ShareButton } from './ShareButton'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -50,11 +52,21 @@ const demoReviews = [
   },
 ]
 
+// Mock similar products
+const mockSimilarProducts: ProductData[] = [
+  { id: 'sp1', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Açúcar Cristal 1kg', slug: 'acucar-cristal', description: 'Açúcar cristal de alta qualidade.', price: 5.49, comparePrice: null, images: '[]', stock: 120, rating: 4.2, totalReviews: 18, isFeatured: false, isNew: false, isOffer: false, tags: '["básico"]', variations: null, category: 'FOOD' },
+  { id: 'sp2', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Café Torrado 500g', slug: 'cafe-torrado', description: 'Café premium torrado e moído.', price: 18.90, comparePrice: 22.00, images: '[]', stock: 60, rating: 4.6, totalReviews: 32, isFeatured: true, isNew: false, isOffer: true, tags: '["popular"]', variations: '["250g","500g"]', category: 'FOOD' },
+  { id: 'sp3', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Macarrão Espaguete 500g', slug: 'macarrao-espaguete', description: 'Macarrão espaguete tipo italiano.', price: 4.90, comparePrice: null, images: '[]', stock: 90, rating: 4.4, totalReviews: 22, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+  { id: 'sp4', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Açaí com Granola 300ml', slug: 'acai-granola', description: 'Açaí cremoso com granola crocante.', price: 12.00, comparePrice: null, images: '[]', stock: 80, rating: 4.7, totalReviews: 56, isFeatured: false, isNew: true, isOffer: false, tags: '["infantil"]', variations: null, category: 'FOOD' },
+  { id: 'sp5', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Leite Integral 1L', slug: 'leite-integral', description: 'Leite integral pasteurizado.', price: 6.90, comparePrice: 7.50, images: '[]', stock: 150, rating: 4.3, totalReviews: 41, isFeatured: false, isNew: false, isOffer: true, tags: '["básico","popular"]', variations: null, category: 'FOOD' },
+  { id: 'sp6', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Smoothie de Açaí', slug: 'smoothie-acai', description: 'Smoothie refrescante de açaí com frutas.', price: 18.00, comparePrice: null, images: '[]', stock: 40, rating: 4.8, totalReviews: 28, isFeatured: true, isNew: true, isOffer: false, tags: '["novidade"]', variations: null, category: 'FOOD' },
+]
+
 export function ProductDetail({ product }: ProductDetailProps) {
-  const { goBack, navigate, selectStore, addToCart, isFavoriteProduct, toggleFavoriteProduct, selectedProduct } = useAppStore()
+  const { goBack, navigate, selectStore, addToCart, isFavoriteProduct, toggleFavoriteProduct } = useAppStore()
   const [quantity, setQuantity] = useState(1)
   const [showFullDescription, setShowFullDescription] = useState(false)
-  const [shareTooltip, setShareTooltip] = useState(false)
+  const [similarProducts, setSimilarProducts] = useState<ProductData[]>(mockSimilarProducts)
   
   const isFav = isFavoriteProduct(product.id)
   const discount = product.comparePrice
@@ -64,9 +76,28 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const gradient = gradients[Math.abs(product.name.charCodeAt(0)) % gradients.length]
   
   const variations = product.variations ? JSON.parse(product.variations) : []
+  const tags = product.tags ? JSON.parse(product.tags) : []
 
-  // Similar products (mock - pick from same category, different product)
-  const similarProducts: ProductData[] = []
+  // Try to fetch similar products from API
+  useEffect(() => {
+    let cancelled = false
+    const fetchSimilar = async () => {
+      try {
+        const res = await fetch(`/api/products?limit=8&category=${product.category}`)
+        const data = await res.json()
+        if (!cancelled && data.products) {
+          const filtered = (data.products as ProductData[])
+            .filter(p => p.id !== product.id)
+            .slice(0, 6)
+          if (filtered.length > 0) setSimilarProducts(filtered)
+        }
+      } catch {
+        // use mock data
+      }
+    }
+    fetchSimilar()
+    return () => { cancelled = true }
+  }, [product.id, product.category])
 
   const handleBuyNow = () => {
     addToCart(product, product.storeName || 'Loja', quantity)
@@ -75,18 +106,6 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
   const handleAddToCart = () => {
     addToCart(product, product.storeName || 'Loja', quantity)
-  }
-
-  const handleShare = () => {
-    setShareTooltip(true)
-    if (navigator.share) {
-      navigator.share({
-        title: product.name,
-        text: `Confira ${product.name} por ${formatBRL(product.price)} no DomPlace!`,
-        url: window.location.href,
-      }).catch(() => {})
-    }
-    setTimeout(() => setShareTooltip(false), 2000)
   }
   
   return (
@@ -99,14 +118,6 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </Button>
           <h2 className="text-sm font-semibold truncate mx-4 flex-1 text-center">{product.name}</h2>
           <div className="flex items-center gap-1">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-10 w-10"
-              onClick={handleShare}
-            >
-              <Share2 className="h-5 w-5" />
-            </Button>
             <Button 
               variant="ghost" 
               size="icon" 
@@ -201,20 +212,10 @@ export function ProductDetail({ product }: ProductDetailProps) {
         
         <h1 className="text-xl sm:text-2xl font-bold mt-2">{product.name}</h1>
         
-        {/* Rating */}
+        {/* Rating using StarRating */}
         {product.rating > 0 && (
           <div className="flex items-center gap-2 mt-2">
-            <div className="flex items-center gap-0.5">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Star
-                  key={s}
-                  className={`h-4 w-4 ${s <= Math.round(product.rating) ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground/30'}`}
-                />
-              ))}
-            </div>
-            <span className="text-sm text-muted-foreground">
-              {product.rating.toFixed(1)} ({product.totalReviews} avaliações)
-            </span>
+            <StarRating rating={product.rating} size="sm" showCount count={product.totalReviews} />
           </div>
         )}
         
@@ -245,12 +246,28 @@ export function ProductDetail({ product }: ProductDetailProps) {
               <p className="font-semibold text-xs">Satisfação</p>
             </div>
             <div className="bg-secondary/50 rounded-lg p-3 text-center">
-              <Store className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
+              <Truck className="h-4 w-4 mx-auto mb-1 text-primary" />
               <p className="text-[10px] text-muted-foreground">Entrega</p>
-              <p className="font-semibold text-xs">A combinar</p>
+              <p className="font-semibold text-xs">30-45 min</p>
             </div>
           </div>
         </div>
+
+        {/* Delivery info */}
+        <motion.div 
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-3 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl p-3 border border-emerald-200/50 dark:border-emerald-800/30"
+        >
+          <div className="flex items-center gap-3 text-sm">
+            <Truck className="h-5 w-5 text-primary shrink-0" />
+            <div className="flex-1">
+              <p className="font-semibold text-xs">Entrega estimada: <span className="text-primary">30-45 min</span></p>
+              <p className="text-[10px] text-muted-foreground">Taxa: R$5,00 · Grátis acima de R$50</p>
+            </div>
+          </div>
+        </motion.div>
         
         <Separator className="my-4" />
         
@@ -275,6 +292,23 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </div>
         )}
         
+        {/* Tags */}
+        {tags.length > 0 && (
+          <div className="mt-4">
+            <h3 className="font-semibold mb-2 flex items-center gap-1.5">
+              <Tag className="h-4 w-4 text-muted-foreground" />
+              Tags
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag: string) => (
+                <Badge key={tag} variant="secondary" className="text-xs px-2.5 py-1 bg-secondary/80 hover:bg-secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Variations */}
         {variations.length > 0 && (
           <div className="mt-4">
@@ -311,7 +345,6 @@ export function ProductDetail({ product }: ProductDetailProps) {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold flex items-center gap-2">
-              <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
               Avaliações
             </h3>
             <span className="text-sm text-muted-foreground">{product.totalReviews} avaliações</span>
@@ -330,13 +363,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
                         <p className="font-semibold text-sm">{review.name}</p>
                         <span className="text-xs text-muted-foreground">{review.date}</span>
                       </div>
-                      <div className="flex items-center gap-0.5 mt-0.5">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <Star
-                            key={s}
-                            className={`h-3 w-3 ${s <= review.rating ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground/30'}`}
-                          />
-                        ))}
+                      <div className="mt-0.5">
+                        <StarRating rating={review.rating} size="sm" />
                       </div>
                     </div>
                   </div>
@@ -352,8 +380,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
         {/* Similar products */}
         <div>
           <h3 className="font-semibold mb-4">Produtos similares</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {similarProducts.length > 0 ? similarProducts.slice(0, 4).map(p => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {similarProducts.length > 0 ? similarProducts.slice(0, 6).map(p => (
               <motion.div
                 key={p.id}
                 whileHover={{ y: -2 }}
@@ -373,38 +401,91 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 </div>
               </motion.div>
             )) : (
-              <p className="text-sm text-muted-foreground col-span-2 sm:col-span-4 text-center py-4">
+              <p className="text-sm text-muted-foreground col-span-2 sm:col-span-3 text-center py-4">
                 Nenhum produto similar disponível
               </p>
             )}
           </div>
         </div>
+
+        <Separator className="my-4" />
+
+        {/* About the Store mini-card */}
+        {product.storeName && (
+          <Card className="border-primary/20 cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+            if (product.storeId) {
+              selectStore({
+                id: product.storeId,
+                name: product.storeName,
+                slug: product.slug,
+                description: null,
+                category: product.category,
+                logo: product.storeLogo || null,
+                coverImage: null,
+                phone: null,
+                whatsapp: null,
+                address: null,
+                neighborhood: null,
+                city: 'Dom Eliseu',
+                state: 'PA',
+                deliveryFee: 5,
+                freeDeliveryAbove: null,
+                rating: product.rating,
+                totalReviews: product.totalReviews,
+                opensAt: null,
+                closesAt: null,
+                openDays: '1,2,3,4,5,6,7',
+              })
+              navigate('store')
+            }
+          }}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-lg font-bold text-white shrink-0">
+                {product.storeName.split(' ').map(w => w[0]).join('').slice(0, 2)}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm">{product.storeName}</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <StarRating rating={product.rating} size="sm" />
+                  <span className="text-[10px] text-muted-foreground">· 30-45 min</span>
+                </div>
+              </div>
+              <Badge variant="outline" className="text-[10px] shrink-0">
+                Ver loja
+              </Badge>
+            </CardContent>
+          </Card>
+        )}
       </div>
       
-      {/* Sticky bottom bar - like modern e-commerce */}
+      {/* Sticky bottom bar */}
       <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3">
-        <div className="max-w-3xl mx-auto flex items-center gap-3">
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-muted-foreground">Total</p>
-            <p className="text-lg font-bold text-primary">{formatBRL(product.price * quantity)}</p>
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-muted-foreground">Total</p>
+              <p className="text-lg font-bold text-primary">{formatBRL(product.price * quantity)}</p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="h-12 px-4 border-primary text-primary hidden sm:flex"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Adicionar
+              </Button>
+              <Button
+                className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+                onClick={handleBuyNow}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
+                Comprar agora
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="h-12 px-4 border-primary text-primary hidden sm:flex"
-              onClick={handleAddToCart}
-            >
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Adicionar
-            </Button>
-            <Button
-              className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
-              onClick={handleBuyNow}
-            >
-              <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
-              Comprar agora
-            </Button>
-          </div>
+          {/* Share button below buy */}
+          <ShareButton productName={product.name} productPrice={product.price} storeName={product.storeName || 'Loja'} />
         </div>
         {/* iOS safe area */}
         <div className="h-[env(safe-area-inset-bottom)] md:hidden" />

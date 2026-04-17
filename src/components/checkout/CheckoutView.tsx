@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, MapPin, CreditCard, Banknote, QrCode, FileText, Check, Store, Truck, Shield, ChevronRight } from 'lucide-react'
+import { ArrowLeft, MapPin, CreditCard, Banknote, QrCode, FileText, Check, Store, Truck, Shield, ChevronRight, Clock, Calendar, Tag, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
@@ -13,12 +12,20 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
 import { motion, AnimatePresence } from 'framer-motion'
+import { toast } from 'sonner'
 
 const paymentMethods = [
   { id: 'pix', label: 'Pix', icon: QrCode, desc: 'Pagamento instantâneo', color: 'bg-teal-50 dark:bg-teal-900/10 border-teal-200 dark:border-teal-800/30' },
   { id: 'credit', label: 'Cartão de Crédito', icon: CreditCard, desc: 'Em até 3x sem juros', color: 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800/30' },
   { id: 'boleto', label: 'Boleto', icon: FileText, desc: 'Prazo de 1-2 dias', color: 'bg-rose-50 dark:bg-rose-900/10 border-rose-200 dark:border-rose-800/30' },
   { id: 'cash', label: 'Dinheiro', icon: Banknote, desc: 'Pagamento na entrega', color: 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800/30' },
+]
+
+const deliveryTimeOptions = [
+  { id: 'today-30', label: 'Hoje', desc: '30-45 min', icon: Clock },
+  { id: 'today-60', label: 'Hoje', desc: '60-90 min', icon: Clock },
+  { id: 'tomorrow', label: 'Amanhã', desc: '09:00 - 18:00', icon: Calendar },
+  { id: 'schedule', label: 'Agendar', desc: 'Escolher data e hora', icon: Calendar },
 ]
 
 type CheckoutStep = 'address' | 'payment' | 'confirmation'
@@ -34,8 +41,12 @@ export function CheckoutView() {
   const [step, setStep] = useState<CheckoutStep>('address')
   const [payment, setPayment] = useState('pix')
   const [deliveryType, setDeliveryType] = useState<'delivery' | 'pickup'>('delivery')
+  const [deliveryTime, setDeliveryTime] = useState('today-30')
   const [isProcessing, setIsProcessing] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
+  const [couponCode, setCouponCode] = useState('')
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
+  const [couponError, setCouponError] = useState('')
 
   // Address form state
   const [address, setAddress] = useState({
@@ -52,10 +63,35 @@ export function CheckoutView() {
   const groups = getCartGroupedByStore()
   const subtotal = getCartTotal()
   const deliveryFees = deliveryType === 'pickup' ? 0 : groups.length * 5.00
-  const total = subtotal + deliveryFees
+
+  // Calculate discount
+  const discount = appliedCoupon === 'ACAI10' ? Math.round(subtotal * 0.10 * 100) / 100 : 0
+  const total = subtotal + deliveryFees - discount
 
   const currentStepIndex = stepLabels.findIndex(s => s.id === step)
   
+  const handleApplyCoupon = () => {
+    setCouponError('')
+    if (!couponCode.trim()) return
+    
+    if (couponCode.toUpperCase() === 'ACAI10') {
+      setAppliedCoupon(couponCode.toUpperCase())
+      toast.success('Cupom ACAI10 aplicado! 10% de desconto')
+    } else if (couponCode.toUpperCase() === 'FRETE5') {
+      setAppliedCoupon(couponCode.toUpperCase())
+      toast.success('Cupom FRETE5 aplicado! R$5 de desconto no frete')
+    } else {
+      setCouponError('Cupom inválido')
+      toast.error('Cupom inválido. Tente ACAI10 ou FRETE5')
+    }
+  }
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null)
+    setCouponCode('')
+    toast.success('Cupom removido')
+  }
+
   const handlePlaceOrder = async () => {
     if (!termsAccepted) return
     setIsProcessing(true)
@@ -191,6 +227,19 @@ export function CheckoutView() {
               {deliveryType === 'delivery' && (
                 <div className="space-y-4">
                   <h3 className="font-semibold">Endereço de entrega</h3>
+
+                  {/* Map placeholder */}
+                  <div className="h-32 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-[0.1]" style={{
+                      backgroundImage: 'linear-gradient(rgba(0,0,0,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.2) 1px, transparent 1px)',
+                      backgroundSize: '30px 30px',
+                    }} />
+                    <div className="text-center relative z-10">
+                      <MapPin className="h-8 w-8 text-primary mx-auto mb-1" />
+                      <p className="text-xs text-muted-foreground">Localização no mapa</p>
+                    </div>
+                  </div>
+
                   <Card>
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-center gap-2 mb-2">
@@ -287,13 +336,55 @@ export function CheckoutView() {
           
           {step === 'payment' && (
             <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h3 className="font-semibold mb-4">Forma de pagamento</h3>
+              {/* Delivery time selector */}
+              {deliveryType === 'delivery' && (
+                <div className="mb-6">
+                  <h3 className="font-semibold mb-3 flex items-center gap-1.5">
+                    <Clock className="h-4 w-4 text-primary" />
+                    Horário da entrega
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {deliveryTimeOptions.map((option) => {
+                      const OptionIcon = option.icon
+                      return (
+                        <button
+                          key={option.id}
+                          onClick={() => setDeliveryTime(option.id)}
+                          className={`p-3 rounded-xl border-2 text-left transition-all ${
+                            deliveryTime === option.id 
+                              ? 'border-primary bg-primary/5 shadow-sm' 
+                              : 'border-border hover:border-primary/30'
+                          }`}
+                        >
+                          <OptionIcon className={`h-5 w-5 mb-1.5 ${deliveryTime === option.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                          <p className="font-semibold text-xs">{option.label}</p>
+                          <p className="text-[10px] text-muted-foreground">{option.desc}</p>
+                          {deliveryTime === option.id && (
+                            <motion.div 
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="absolute top-2 right-2"
+                            >
+                              <Check className="h-3 w-3 text-primary" />
+                            </motion.div>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              <h3 className="font-semibold mb-4 flex items-center gap-1.5">
+                <CreditCard className="h-4 w-4 text-primary" />
+                Forma de pagamento
+              </h3>
               <div className="grid grid-cols-2 gap-3">
                 {paymentMethods.map((method) => (
                   <button
                     key={method.id}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all relative ${
                       payment === method.id 
                         ? 'border-primary bg-primary/5 shadow-sm' 
                         : 'border-border hover:border-primary/30'
@@ -316,6 +407,50 @@ export function CheckoutView() {
                   </button>
                 ))}
               </div>
+
+              {/* Coupon input */}
+              <div className="mt-6">
+                <h3 className="font-semibold mb-3 flex items-center gap-1.5">
+                  <Tag className="h-4 w-4 text-primary" />
+                  Cupom de desconto
+                </h3>
+                {appliedCoupon ? (
+                  <Card className="border-primary/20 bg-primary/5">
+                    <CardContent className="p-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <Tag className="h-4 w-4 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-bold text-sm">{appliedCoupon}</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {appliedCoupon === 'ACAI10' ? '10% de desconto aplicado' : 'R$5 de desconto no frete'}
+                          </p>
+                        </div>
+                      </div>
+                      <Button variant="ghost" size="sm" className="h-8 text-xs text-destructive" onClick={handleRemoveCoupon}>
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <Input 
+                        placeholder="Digite o código do cupom" 
+                        value={couponCode}
+                        onChange={(e) => { setCouponCode(e.target.value); setCouponError('') }}
+                        className={couponError ? 'border-destructive' : ''}
+                      />
+                      {couponError && <p className="text-[10px] text-destructive mt-1">{couponError}</p>}
+                    </div>
+                    <Button variant="outline" className="h-10" onClick={handleApplyCoupon} disabled={!couponCode.trim()}>
+                      Aplicar
+                    </Button>
+                  </div>
+                )}
+                <p className="text-[10px] text-muted-foreground mt-2">Experimente: ACAI10 ou FRETE5</p>
+              </div>
               
               {/* Order summary card */}
               <Card className="mt-6 border-primary/20">
@@ -330,12 +465,40 @@ export function CheckoutView() {
                       <span className="text-muted-foreground">Entrega</span>
                       <span>{deliveryFees === 0 ? 'Grátis' : formatBRL(deliveryFees)}</span>
                     </div>
+                    {appliedCoupon === 'ACAI10' && (
+                      <div className="flex justify-between text-emerald-600">
+                        <span className="flex items-center gap-1">
+                          <Tag className="h-3 w-3" />
+                          Desconto (10%)
+                        </span>
+                        <span>-{formatBRL(discount)}</span>
+                      </div>
+                    )}
+                    {appliedCoupon === 'FRETE5' && (
+                      <div className="flex justify-between text-emerald-600">
+                        <span className="flex items-center gap-1">
+                          <Tag className="h-3 w-3" />
+                          Desconto no frete
+                        </span>
+                        <span>-R$5,00</span>
+                      </div>
+                    )}
                     <Separator />
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
                       <span className="text-primary">{formatBRL(total)}</span>
                     </div>
                   </div>
+
+                  {/* Store breakdown */}
+                  {groups.map(group => (
+                    <div key={group.storeId} className="mt-3 pt-3 border-t border-border/50">
+                      <p className="text-xs text-muted-foreground font-medium">{group.storeName}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        {group.items.map(i => i.product.name).join(', ')}
+                      </p>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
 
@@ -364,10 +527,13 @@ export function CheckoutView() {
                   disabled={isProcessing || !termsAccepted}
                 >
                   {isProcessing ? (
-                    <div className="h-5 w-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                    <div className="flex items-center gap-2">
+                      <div className="h-5 w-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                      Processando...
+                    </div>
                   ) : (
                     <>
-                      Confirmar {formatBRL(total)}
+                      Confirmar Pedido
                       <Check className="h-4 w-4 ml-2" />
                     </>
                   )}

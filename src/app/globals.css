@@ -119,9 +119,14 @@
   body {
     @apply bg-background text-foreground;
   }
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
-/* Custom scrollbar */
+/* ==============================
+   CUSTOM SCROLLBAR (thin, emerald accent)
+   ============================== */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -161,6 +166,70 @@
   border-radius: 9999px;
 }
 
+/* ==============================
+   GLASSMORPHISM CARD
+   ============================== */
+.glass-card {
+  background: oklch(1 0 0 / 0.6);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid oklch(1 0 0 / 0.3);
+}
+.dark .glass-card {
+  background: oklch(0.2 0.02 150 / 0.6);
+  border: 1px solid oklch(1 0 0 / 0.08);
+}
+
+/* ==============================
+   SHIMMER LOADING ANIMATION
+   ============================== */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.96 0.01 120) 25%,
+    oklch(0.93 0.02 120) 50%,
+    oklch(0.96 0.01 120) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+.dark .shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.25 0.02 150) 25%,
+    oklch(0.30 0.02 150) 50%,
+    oklch(0.25 0.02 150) 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* ==============================
+   GRADIENT TEXT
+   ============================== */
+.gradient-text {
+  background: linear-gradient(135deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ==============================
+   KEYFRAME ANIMATIONS
+   ============================== */
+
+/* Float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
 /* Pulse animation for CTA buttons */
 @keyframes gentle-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
@@ -170,11 +239,120 @@
   animation: gentle-pulse 2s ease-in-out infinite;
 }
 
-/* Floating animation */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+/* Soft pulse */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+.animate-pulse-soft {
+  animation: pulse-soft 2.5s ease-in-out infinite;
+}
+
+/* Slide up fade */
+@keyframes slide-up-fade {
+  0% { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up-fade {
+  animation: slide-up-fade 0.5s ease-out forwards;
+}
+
+/* ==============================
+   HOVER LIFT TRANSITION
+   ============================== */
+.hover-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px oklch(0.18 0.02 150 / 0.12);
+}
+.dark .hover-lift:hover {
+  box-shadow: 0 8px 25px oklch(0 0 0 / 0.3);
+}
+
+/* ==============================
+   GRADIENT BORDER (pseudo-element technique)
+   ============================== */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.gradient-border:hover::before {
+  opacity: 1;
+}
+
+/* ==============================
+   PULSE RING for CTA buttons
+   ============================== */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 oklch(0.45 0.1 155 / 0.4); }
+  70% { box-shadow: 0 0 0 10px oklch(0.45 0.1 155 / 0); }
+  100% { box-shadow: 0 0 0 0 oklch(0.45 0.1 155 / 0); }
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+/* ==============================
+   CAROUSEL GRADIENT FADE
+   ============================== */
+.carousel-fade-left {
+  position: relative;
+}
+.carousel-fade-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 48px;
+  background: linear-gradient(to right, transparent, oklch(0.99 0.002 120));
+  pointer-events: none;
+  z-index: 1;
+}
+.dark .carousel-fade-left::after {
+  background: linear-gradient(to right, transparent, oklch(0.15 0.015 150));
+}
+
+/* ==============================
+   RIBBON BADGE
+   ============================== */
+.ribbon-badge {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  padding: 3px 10px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+  background: oklch(0.577 0.245 27.325);
+  clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+  z-index: 10;
+  letter-spacing: 0.02em;
+}
+
+/* ==============================
+   DOT PATTERN OVERLAY
+   ============================== */
+.dot-pattern {
+  background-image: radial-gradient(circle, oklch(0 0 0 / 0.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.dark .dot-pattern {
+  background-image: radial-gradient(circle, oklch(1 0 0 / 0.04) 1px, transparent 1px);
 }

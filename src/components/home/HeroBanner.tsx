@@ -1,68 +1,177 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useAppStore } from '@/store/useAppStore'
 
 interface HeroBannerProps {
   banners: { id: string; title: string; subtitle: string | null; image: string; gradient: string }[]
 }
 
+const bannerGradients = [
+  'bg-gradient-to-br from-emerald-600 via-green-500 to-teal-400',
+  'bg-gradient-to-br from-amber-500 via-orange-500 to-red-400',
+  'bg-gradient-to-br from-rose-500 via-pink-500 to-fuchsia-400',
+  'bg-gradient-to-br from-lime-500 via-green-500 to-emerald-600',
+  'bg-gradient-to-br from-teal-500 via-emerald-500 to-cyan-400',
+]
+
+const floatingDots = [
+  { size: 6, top: '15%', right: '12%', delay: 0, duration: 4 },
+  { size: 4, top: '60%', right: '30%', delay: 0.8, duration: 3.5 },
+  { size: 5, top: '35%', right: '55%', delay: 1.5, duration: 4.5 },
+  { size: 3, top: '75%', right: '18%', delay: 2, duration: 3 },
+  { size: 7, top: '25%', right: '70%', delay: 0.5, duration: 5 },
+  { size: 4, top: '80%', right: '60%', delay: 1.2, duration: 3.8 },
+  { size: 3, top: '10%', right: '45%', delay: 2.5, duration: 4.2 },
+]
+
+const SLIDE_DURATION = 5000
+
 export function HeroBanner({ banners }: HeroBannerProps) {
   const [current, setCurrent] = useState(0)
-  
+  const [progress, setProgress] = useState(0)
+  const { navigate, setActiveCategory } = useAppStore()
+
+  const enhancedBanners = useMemo(() => {
+    return banners.map((b, i) => ({
+      ...b,
+      gradient: bannerGradients[i % bannerGradients.length],
+    }))
+  }, [banners])
+
   const next = useCallback(() => {
-    setCurrent((prev) => (prev + 1) % banners.length)
-  }, [banners.length])
-  
+    setCurrent((prev) => (prev + 1) % enhancedBanners.length)
+    setProgress(0)
+  }, [enhancedBanners.length])
+
   const prev = useCallback(() => {
-    setCurrent((prev) => (prev - 1 + banners.length) % banners.length)
-  }, [banners.length])
-  
+    setCurrent((prev) => (prev - 1 + enhancedBanners.length) % enhancedBanners.length)
+    setProgress(0)
+  }, [enhancedBanners.length])
+
+  // Auto-slide with progress tracking
   useEffect(() => {
-    const timer = setInterval(next, 4000)
-    return () => clearInterval(timer)
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          next()
+          return 0
+        }
+        return prev + 100 / (SLIDE_DURATION / 50)
+      })
+    }, 50)
+    return () => clearInterval(interval)
   }, [next])
-  
-  if (!banners.length) return null
-  
-  const banner = banners[current]
-  
+
+  const handleVerOfertas = useCallback(() => {
+    setActiveCategory(null)
+    navigate('search')
+  }, [navigate, setActiveCategory])
+
+  if (!enhancedBanners.length) return null
+
+  const banner = enhancedBanners[current]
+
   return (
     <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl">
       <AnimatePresence mode="wait">
         <motion.div
           key={banner.id}
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -50 }}
-          transition={{ duration: 0.4 }}
-          className={`relative w-full h-44 sm:h-56 md:h-64 lg:h-72 ${banner.gradient} flex items-center overflow-hidden`}
+          initial={{ opacity: 0, scale: 1.02 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
+          transition={{ duration: 0.5 }}
+          className={`relative w-full h-48 sm:h-60 md:h-72 lg:h-80 ${banner.gradient} flex items-center overflow-hidden`}
         >
-          {/* Decorative shapes - background */}
+          {/* Dot pattern texture overlay */}
+          <div className="absolute inset-0 dot-pattern opacity-60" />
+
+          {/* Large decorative shapes - background */}
           <div className="absolute right-0 top-0 w-2/3 h-full opacity-20">
             <div className="absolute right-10 top-10 w-32 h-32 rounded-full bg-white/30" />
             <div className="absolute right-0 bottom-0 w-48 h-48 rounded-full bg-white/20" />
             <div className="absolute right-20 top-1/2 w-16 h-16 rounded-full bg-white/15" />
             <div className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-white/10" />
+            <div className="absolute right-40 bottom-10 w-12 h-12 rounded-full bg-white/12" />
           </div>
           <div className="absolute left-1/3 bottom-0 opacity-10">
             <div className="w-20 h-20 rounded-full bg-white/30" />
           </div>
 
+          {/* Floating animated dots */}
+          {floatingDots.map((dot, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full bg-white/20"
+              style={{
+                width: dot.size,
+                height: dot.size,
+                top: dot.top,
+                right: dot.right,
+              }}
+              animate={{
+                y: [-4, 4, -4],
+                opacity: [0.3, 0.7, 0.3],
+              }}
+              transition={{
+                duration: dot.duration,
+                delay: dot.delay,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
+
+          {/* Content */}
           <div className="relative z-10 p-5 sm:p-8 max-w-lg">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-md">
+            {/* Location indicator */}
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center gap-1.5 mb-3 text-white/80 text-xs sm:text-sm"
+            >
+              <MapPin className="h-3.5 w-3.5" />
+              <span>Entregando em Dom Eliseu, PA</span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight"
+              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.2)' }}
+            >
               {banner.title}
-            </h2>
+            </motion.h2>
+
             {banner.subtitle && (
-              <p className="text-sm sm:text-base text-white/90 mt-2 drop-shadow-sm">
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                className="text-sm sm:text-base text-white/90 mt-2 drop-shadow-sm max-w-md"
+              >
                 {banner.subtitle}
-              </p>
+              </motion.p>
             )}
-            <Button className="mt-4 bg-white text-primary hover:bg-white/90 font-semibold shadow-lg animate-gentle-pulse h-10 sm:h-11 px-6">
-              Ver Ofertas
-            </Button>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="mt-4 flex items-center gap-3"
+            >
+              <Button
+                onClick={handleVerOfertas}
+                className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-6 animate-pulse-ring"
+              >
+                Ver Ofertas
+              </Button>
+            </motion.div>
           </div>
 
           {/* SVG Wave bottom edge */}
@@ -72,13 +181,13 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           </svg>
         </motion.div>
       </AnimatePresence>
-      
+
       {/* Navigation arrows */}
       <Button
         variant="ghost"
         size="icon"
         onClick={prev}
-        className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/20 hover:bg-black/40 text-white border-0 rounded-full"
+        className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/20 hover:bg-black/40 text-white border-0 rounded-full z-20"
       >
         <ChevronLeft className="h-5 w-5" />
       </Button>
@@ -86,22 +195,34 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         variant="ghost"
         size="icon"
         onClick={next}
-        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/20 hover:bg-black/40 text-white border-0 rounded-full"
+        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/20 hover:bg-black/40 text-white border-0 rounded-full z-20"
       >
         <ChevronRight className="h-5 w-5" />
       </Button>
-      
-      {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
-        {banners.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === current ? 'w-6 bg-white' : 'w-1.5 bg-white/50'
-            }`}
+
+      {/* Dots + Progress bar */}
+      <div className="absolute bottom-4 left-0 right-0 z-20 flex flex-col items-center gap-2">
+        <div className="flex gap-1.5">
+          {enhancedBanners.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                setCurrent(i)
+                setProgress(0)
+              }}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === current ? 'w-6 bg-white' : 'w-1.5 bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
+        {/* Progress bar */}
+        <div className="w-24 h-0.5 bg-white/20 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-white rounded-full"
+            style={{ width: `${progress}%` }}
           />
-        ))}
+        </div>
       </div>
     </div>
   )

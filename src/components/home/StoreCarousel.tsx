@@ -1,9 +1,10 @@
 'use client'
 
 import { useRef } from 'react'
-import { ChevronLeft, ChevronRight, Clock, Star, MapPin } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Clock, Star, MapPin, Trophy, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { motion } from 'framer-motion'
 import { useAppStore, type StoreData } from '@/store/useAppStore'
 
 const gradients = [
@@ -11,10 +12,10 @@ const gradients = [
   'from-amber-500 to-orange-600',
   'from-teal-500 to-cyan-600',
   'from-rose-500 to-pink-600',
-  'from-violet-500 to-purple-600',
   'from-lime-500 to-green-600',
   'from-orange-500 to-red-500',
-  'from-cyan-500 to-blue-500',
+  'from-emerald-600 to-teal-600',
+  'from-amber-600 to-yellow-500',
 ]
 
 const logoColors: Record<string, string> = {
@@ -47,6 +48,21 @@ const categoryLabels: Record<string, string> = {
   OTHER: 'Outros',
 }
 
+const deliveryTimes: Record<string, string> = {
+  FOOD: '20-40 min',
+  AGRICULTURE: '1-3 dias',
+  SERVICES: 'Agendar',
+  FASHION: '2-5 dias',
+  ELECTRONICS: '3-7 dias',
+  HEALTH: '30-60 min',
+  HOME_GARDEN: '2-5 dias',
+  ANIMALS: '1-3 dias',
+  EDUCATION: 'Online',
+  BEAUTY: 'Agendar',
+  SPORTS: '2-5 dias',
+  OTHER: '2-7 dias',
+}
+
 interface StoreCarouselProps {
   title: string
   stores: StoreData[]
@@ -66,6 +82,9 @@ export function StoreCarousel({ title, stores }: StoreCarouselProps) {
   
   if (!stores.length) return null
   
+  // Sort stores by rating to determine ranking
+  const rankedStores = [...stores].sort((a, b) => b.rating - a.rating)
+  
   const isOpen = (store: StoreData) => {
     if (!store.opensAt || !store.closesAt) return true
     const now = new Date()
@@ -82,6 +101,11 @@ export function StoreCarousel({ title, stores }: StoreCarouselProps) {
     }
     // Handles overnight hours (e.g., bar open till 2am)
     return currentMins >= openMins || currentMins <= closeMins
+  }
+
+  const getRank = (storeId: string) => {
+    const idx = rankedStores.findIndex(s => s.id === storeId)
+    return idx >= 0 ? idx + 1 : null
   }
   
   return (
@@ -109,25 +133,48 @@ export function StoreCarousel({ title, stores }: StoreCarouselProps) {
           const gradient = gradients[index % gradients.length]
           const logoColor = logoColors[store.category] || logoColors.OTHER
           const initials = store.name.substring(0, 2).toUpperCase()
+          const rank = getRank(store.id)
+          const deliveryTime = deliveryTimes[store.category] || '2-7 dias'
+          
           return (
-            <button
+            <motion.button
               key={store.id}
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '0px 100px 0px 0px' }}
+              transition={{ delay: index * 0.05, duration: 0.4 }}
               onClick={() => {
                 selectStore(store)
                 navigate('store')
               }}
-              className="shrink-0 w-[260px] sm:w-[280px] bg-card rounded-xl border border-border overflow-hidden text-left hover:shadow-md transition-shadow group"
+              className="shrink-0 w-[260px] sm:w-[280px] bg-card rounded-xl border border-border overflow-hidden text-left hover:shadow-lg transition-all duration-300 group hover:-translate-y-0.5"
             >
-              <div className={`h-24 bg-gradient-to-br ${gradient} relative`}>
+              {/* Gradient header with pattern overlay */}
+              <div className={`h-24 bg-gradient-to-br ${gradient} relative overflow-hidden`}>
+                {/* Pattern overlay */}
+                <div className="absolute inset-0 dot-pattern opacity-40" />
+                
+                {/* Top ranking badge */}
+                {rank && rank <= 3 && (
+                  <div className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-white/90 dark:bg-black/50 rounded-md px-2 py-0.5">
+                    <Trophy className={`h-3 w-3 ${rank === 1 ? 'text-amber-500' : rank === 2 ? 'text-slate-400' : 'text-amber-700'}`} />
+                    <span className="text-[10px] font-bold text-foreground">
+                      Top #{rank}
+                    </span>
+                  </div>
+                )}
+
                 {store.deliveryFee > 0 && (
                   <Badge className="absolute top-2 right-2 bg-white/90 text-foreground border-0 text-[10px]">
                     Entrega R${store.deliveryFee.toFixed(2)}
                   </Badge>
                 )}
+
                 {/* Decorative circles */}
                 <div className="absolute -right-4 -bottom-4 w-20 h-20 rounded-full bg-white/10" />
                 <div className="absolute right-8 top-2 w-10 h-10 rounded-full bg-white/10" />
               </div>
+
               <div className="p-3 flex gap-3">
                 <div className={`w-10 h-10 rounded-full ${logoColor} flex items-center justify-center text-sm font-bold shrink-0 shadow-sm ring-2 ring-white dark:ring-card`}>
                   {initials}
@@ -146,6 +193,10 @@ export function StoreCarousel({ title, stores }: StoreCarouselProps) {
                       <Clock className="h-3 w-3" />
                       {open ? 'Aberto' : 'Fechado'}
                     </span>
+                    <span className="flex items-center gap-0.5">
+                      <Clock className="h-3 w-3" />
+                      {deliveryTime}
+                    </span>
                   </div>
                   {store.address && (
                     <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-0.5 truncate">
@@ -155,7 +206,15 @@ export function StoreCarousel({ title, stores }: StoreCarouselProps) {
                   )}
                 </div>
               </div>
-            </button>
+
+              {/* Ver Loja button */}
+              <div className="px-3 pb-3">
+                <div className="flex items-center justify-center gap-1.5 py-2 rounded-lg bg-primary/5 text-primary text-xs font-semibold group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-200">
+                  <ShoppingBag className="h-3 w-3" />
+                  Ver Loja
+                </div>
+              </div>
+            </motion.button>
           )
         })}
       </div>

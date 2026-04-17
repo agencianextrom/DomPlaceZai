@@ -3,15 +3,19 @@
 import { useState } from 'react'
 import { 
   User, MapPin, CreditCard, Heart, ClipboardList, Gift, Users, Settings, LogOut, 
-  Star, ChevronRight, Shield, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock
+  Star, ChevronRight, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock,
+  Bell, Moon, MapPinned, Share2, Ticket, Copy, Check
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
 import { useAppStore } from '@/store/useAppStore'
 import { motion } from 'framer-motion'
 import { formatBRL } from '@/components/product/ProductCard'
+import { RewardsSection } from './RewardsSection'
+import { toast } from 'sonner'
 
 // Demo recent orders
 const recentOrders = [
@@ -43,6 +47,19 @@ const favoriteStores = [
   { id: 's2', name: 'Padaria Pão Quente', category: 'Alimentação', rating: 4.8, initials: 'PP' },
 ]
 
+// Saved addresses
+const savedAddresses = [
+  { id: 'a1', label: 'Casa', address: 'Rua Principal, 123', neighborhood: 'Centro', city: 'Dom Eliseu - PA', zip: '68555-000', isPrimary: true },
+  { id: 'a2', label: 'Trabalho', address: 'Av. Brasil, 456', neighborhood: 'Centro', city: 'Dom Eliseu - PA', zip: '68555-000', isPrimary: false },
+]
+
+// Coupons
+const coupons = [
+  { code: 'ACAI10', desc: '10% de desconto em pedidos acima de R$30', discount: '10%', validUntil: '30/06/2025', used: false },
+  { code: 'FRETE5', desc: 'R$5 de desconto no frete', discount: 'R$5', validUntil: '15/05/2025', used: false },
+  { code: 'BEMVINDO', desc: '20% de desconto na primeira compra', discount: '20%', validUntil: '31/12/2025', used: true },
+]
+
 const menuItems = [
   { id: 'profile', icon: User, label: 'Meus Dados', desc: 'Nome, e-mail, telefone' },
   { id: 'addresses', icon: MapPin, label: 'Endereços', desc: 'Gerenciar endereços de entrega' },
@@ -57,6 +74,10 @@ const menuItems = [
 export function ProfileView() {
   const { navigate } = useAppStore()
   const [activeSection, setActiveSection] = useState<string | null>(null)
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+  const [darkModeEnabled, setDarkModeEnabled] = useState(false)
+  const [locationEnabled, setLocationEnabled] = useState(true)
+  const [copiedReferral, setCopiedReferral] = useState(false)
   
   if (activeSection === 'loyalty') {
     return (
@@ -67,66 +88,11 @@ export function ProfileView() {
           </Button>
           <h1 className="text-lg font-bold">Programa de Fidelidade</h1>
         </div>
-        
-        <Card className="bg-gradient-to-br from-primary to-emerald-600 border-0 overflow-hidden">
-          <CardContent className="p-6 text-white text-center relative">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
-            <div className="relative">
-              <Award className="h-12 w-12 mx-auto mb-3 opacity-80" />
-              <p className="text-4xl font-bold">1.250</p>
-              <p className="text-sm text-white/80 mt-1">pontos acumulados</p>
-              <div className="mt-4 bg-white/20 rounded-xl p-3 backdrop-blur-sm">
-                <p className="text-xs text-white/70">Próxima recompensa</p>
-                <p className="font-semibold text-sm mt-0.5">Faltam 750 pontos para R$ 10 de desconto</p>
-              </div>
-              <div className="mt-3">
-                <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-white/60 rounded-full" style={{ width: '62.5%' }} />
-                </div>
-                <p className="text-xs text-white/60 mt-1">62% para próxima recompensa</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <div className="mt-4">
-          <Card className="border-primary/20">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="font-semibold text-sm">Nível Bronze</p>
-                <p className="text-xs text-muted-foreground">Gaste mais R$ 250 para subir de nível</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-amber-500" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <h3 className="font-semibold text-sm mt-4 mb-3">Histórico de Pontos</h3>
-          <Card>
-            <CardContent className="p-0 divide-y divide-border/30">
-              {[
-                { desc: 'Compra #DP000003', pts: '+350', date: 'Ontem' },
-                { desc: 'Bônus de cadastro', pts: '+500', date: '15/04/2025' },
-                { desc: 'Indicação aprovada', pts: '+200', date: '10/04/2025' },
-                { desc: 'Compra #DP000001', pts: '+200', date: '08/04/2025' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between px-4 py-3">
-                  <div>
-                    <p className="text-sm font-medium">{item.desc}</p>
-                    <p className="text-xs text-muted-foreground">{item.date}</p>
-                  </div>
-                  <span className="font-semibold text-sm text-primary">{item.pts}</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
+        <RewardsSection />
       </div>
     )
   }
-  
+
   if (activeSection === 'addresses') {
     return (
       <div className="min-h-screen p-4 pb-24">
@@ -143,34 +109,197 @@ export function ProfileView() {
           </Button>
         </div>
         
-        <Card className="border-2 border-primary">
-          <CardContent className="p-4 relative">
-            <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground text-[10px]">Principal</Badge>
-            <p className="font-semibold text-sm">Casa</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Rua Principal, 123<br />
-              Centro<br />
-              Dom Eliseu - PA, 68555-000
+        <div className="space-y-3">
+          {savedAddresses.map((addr) => (
+            <Card key={addr.id} className={addr.isPrimary ? 'border-2 border-primary' : ''}>
+              <CardContent className="p-4 relative">
+                {addr.isPrimary && (
+                  <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground text-[10px]">Principal</Badge>
+                )}
+                <p className="font-semibold text-sm">{addr.label}</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {addr.address}<br />
+                  {addr.neighborhood}<br />
+                  {addr.city}, {addr.zip}
+                </p>
+                <div className="flex gap-2 mt-3">
+                  <Button variant="ghost" size="sm" className="text-xs h-8">
+                    <Edit3 className="h-3 w-3 mr-1" />
+                    Editar
+                  </Button>
+                  {!addr.isPrimary && (
+                    <Button variant="ghost" size="sm" className="text-xs h-8 text-destructive">
+                      <Trash2 className="h-3 w-3 mr-1" />
+                      Remover
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (activeSection === 'coupons') {
+    return (
+      <div className="min-h-screen p-4 pb-24">
+        <div className="flex items-center gap-3 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+            <ChevronRight className="h-5 w-5 rotate-180" />
+          </Button>
+          <h1 className="text-lg font-bold flex items-center gap-2">
+            <Ticket className="h-5 w-5 text-primary" />
+            Meus Cupons
+          </h1>
+        </div>
+        
+        <div className="space-y-3">
+          {coupons.map((coupon) => (
+            <Card key={coupon.code} className={coupon.used ? 'opacity-60' : 'border-primary/20'}>
+              <CardContent className="p-0">
+                <div className="flex">
+                  {/* Coupon left side */}
+                  <div className={`w-28 flex flex-col items-center justify-center p-3 border-r border-dashed border-border ${coupon.used ? 'bg-muted' : 'bg-gradient-to-b from-primary to-emerald-600 text-white'}`}>
+                    <span className={`text-xl font-bold ${coupon.used ? 'text-muted-foreground' : ''}`}>
+                      {coupon.discount}
+                    </span>
+                    <span className={`text-[10px] mt-0.5 ${coupon.used ? 'text-muted-foreground/60' : 'text-white/80'}`}>
+                      {coupon.used ? 'Usado' : 'Desconto'}
+                    </span>
+                  </div>
+                  {/* Coupon right side */}
+                  <div className="flex-1 p-4">
+                    <div className="flex items-center justify-between">
+                      <p className="font-bold text-sm">{coupon.code}</p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs"
+                        onClick={() => {
+                          navigator.clipboard.writeText(coupon.code)
+                          toast.success(`Cupom ${coupon.code} copiado!`)
+                        }}
+                        disabled={coupon.used}
+                      >
+                        <Copy className="h-3 w-3 mr-1" />
+                        Copiar
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">{coupon.desc}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-1">
+                      <Clock className="h-2.5 w-2.5" />
+                      Válido até {coupon.validUntil}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (activeSection === 'referral') {
+    const referralLink = 'https://domplace.com/invite/maria-silva'
+    return (
+      <div className="min-h-screen p-4 pb-24">
+        <div className="flex items-center gap-3 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+            <ChevronRight className="h-5 w-5 rotate-180" />
+          </Button>
+          <h1 className="text-lg font-bold">Indique Amigos</h1>
+        </div>
+
+        <Card className="bg-gradient-to-br from-primary to-emerald-600 border-0 mb-4">
+          <CardContent className="p-6 text-center text-white">
+            <Users className="h-12 w-12 mx-auto mb-3 opacity-80" />
+            <h2 className="text-xl font-bold">Ganhe R$10 por indicação!</h2>
+            <p className="text-sm text-white/80 mt-2">
+              Compartilhe seu link e ganhe R$10 de desconto para cada amigo que se cadastrar e fizer uma compra.
             </p>
-            <div className="flex gap-2 mt-3">
-              <Button variant="ghost" size="sm" className="text-xs h-8">
-                <Edit3 className="h-3 w-3 mr-1" />
-                Editar
-              </Button>
-              <Button variant="ghost" size="sm" className="text-xs h-8 text-destructive">
-                <Trash2 className="h-3 w-3 mr-1" />
-                Remover
-              </Button>
+            <div className="bg-white/15 rounded-xl p-3 mt-4 backdrop-blur-sm">
+              <p className="text-xs text-white/70 mb-1">Seu link de indicação</p>
+              <div className="flex items-center gap-2">
+                <code className="text-xs flex-1 truncate text-left">{referralLink}</code>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 text-white hover:bg-white/20 shrink-0"
+                  onClick={() => {
+                    navigator.clipboard.writeText(referralLink)
+                    setCopiedReferral(true)
+                    toast.success('Link copiado!')
+                    setTimeout(() => setCopiedReferral(false), 2000)
+                  }}
+                >
+                  {copiedReferral ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <div className="bg-white/15 rounded-xl p-3">
+                <p className="text-2xl font-bold">5</p>
+                <p className="text-[10px] text-white/70">Amigos indicados</p>
+              </div>
+              <div className="bg-white/15 rounded-xl p-3">
+                <p className="text-2xl font-bold">R$50</p>
+                <p className="text-[10px] text-white/70">Ganhos totais</p>
+              </div>
             </div>
           </CardContent>
         </Card>
+
+        <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white gap-2">
+          <Share2 className="h-4 w-4" />
+          Compartilhar no WhatsApp
+        </Button>
+      </div>
+    )
+  }
+
+  if (activeSection === 'settings') {
+    return (
+      <div className="min-h-screen p-4 pb-24">
+        <div className="flex items-center gap-3 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+            <ChevronRight className="h-5 w-5 rotate-180" />
+          </Button>
+          <h1 className="text-lg font-bold">Configurações</h1>
+        </div>
+
+        <div className="space-y-2">
+          {[
+            { label: 'Notificações push', desc: 'Receba atualizações de pedidos e promoções', icon: Bell, value: notificationsEnabled, onToggle: () => setNotificationsEnabled(v => !v) },
+            { label: 'Modo escuro', desc: 'Ativar tema escuro no aplicativo', icon: Moon, value: darkModeEnabled, onToggle: () => setDarkModeEnabled(v => !v) },
+            { label: 'Localização', desc: 'Permitir acesso à localização para entregas', icon: MapPinned, value: locationEnabled, onToggle: () => setLocationEnabled(v => !v) },
+          ].map((setting) => (
+            <Card key={setting.label} className="border-border/50">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+                  <setting.icon className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm">{setting.label}</p>
+                  <p className="text-xs text-muted-foreground">{setting.desc}</p>
+                </div>
+                <Switch
+                  checked={setting.value}
+                  onCheckedChange={setting.onToggle}
+                />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     )
   }
   
   return (
     <div className="min-h-screen p-4 pb-24">
-      {/* Profile header with avatar */}
+      {/* Profile header with larger avatar and stats */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -184,12 +313,12 @@ export function ProfileView() {
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         
         <div className="relative flex items-center gap-4">
-          {/* Avatar with initial letter */}
-          <div className="w-18 h-18 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl font-bold border-2 border-white/30" style={{ width: '72px', height: '72px' }}>
+          {/* Larger avatar */}
+          <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
             M
           </div>
           <div className="flex-1">
-            <h1 className="text-xl font-bold">Maria Silva</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">Maria Silva</h1>
             <p className="text-sm text-white/80 mt-0.5">maria@email.com</p>
             <Button 
               size="sm" 
@@ -210,14 +339,14 @@ export function ProfileView() {
             <p className="text-[10px] text-white/70">Pedidos</p>
           </div>
           <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
+            <Heart className="h-4 w-4 mx-auto mb-1 opacity-80" />
+            <p className="text-xl font-bold">12</p>
+            <p className="text-[10px] text-white/70">Favoritos</p>
+          </div>
+          <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
             <Award className="h-4 w-4 mx-auto mb-1 opacity-80" />
             <p className="text-xl font-bold">1.250</p>
             <p className="text-[10px] text-white/70">Pontos</p>
-          </div>
-          <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-            <Gift className="h-4 w-4 mx-auto mb-1 opacity-80" />
-            <p className="text-xl font-bold">R$10</p>
-            <p className="text-[10px] text-white/70">Cashback</p>
           </div>
         </div>
       </motion.div>
@@ -290,6 +419,44 @@ export function ProfileView() {
         </div>
       </motion.div>
 
+      {/* Coupons */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.18 }}
+        className="mb-6"
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold text-sm flex items-center gap-1.5">
+            <Ticket className="h-4 w-4 text-primary" />
+            Meus Cupons
+          </h2>
+          <button 
+            onClick={() => setActiveSection('coupons')}
+            className="text-xs text-primary hover:underline"
+          >
+            Ver todos
+          </button>
+        </div>
+        <div className="flex gap-3 overflow-x-auto hide-scrollbar">
+          {coupons.filter(c => !c.used).map((coupon) => (
+            <Card key={coupon.code} className="min-w-[200px] shrink-0 border-primary/20 cursor-pointer hover:shadow-sm transition-shadow" onClick={() => setActiveSection('coupons')}>
+              <CardContent className="p-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    {coupon.discount}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-bold text-xs">{coupon.code}</p>
+                    <p className="text-[10px] text-muted-foreground truncate">{coupon.desc}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </motion.div>
+
       {/* Favorite stores */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -345,7 +512,7 @@ export function ProfileView() {
                   navigate('orders')
                 } else if (item.id === 'favorites') {
                   navigate('favorites')
-                } else if (item.id === 'loyalty' || item.id === 'addresses') {
+                } else if (['loyalty', 'addresses', 'coupons', 'referral', 'settings'].includes(item.id)) {
                   setActiveSection(item.id)
                 }
               }}
