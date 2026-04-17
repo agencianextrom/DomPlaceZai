@@ -23,6 +23,7 @@ export interface StoreData {
   opensAt: string | null
   closesAt: string | null
   openDays: string
+  totalSales?: number
 }
 
 export interface ProductData {
@@ -84,6 +85,26 @@ export interface OrderData {
   items?: { productName: string; quantity: number; price: number; total: number }[]
 }
 
+// localStorage helpers
+function loadFromStorage<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback
+  try {
+    const stored = localStorage.getItem(key)
+    return stored ? JSON.parse(stored) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function saveToStorage<T>(key: string, value: T): void {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    // ignore write errors
+  }
+}
+
 interface AppState {
   // Navigation
   currentView: AppView
@@ -102,8 +123,19 @@ interface AppState {
   searchQuery: string
   isSearchOpen: boolean
   
+  // Category filtering
+  activeCategory: string | null
+  
+  // Favorites (persisted)
+  favoriteProductIds: Set<string>
+  favoriteStoreIds: Set<string>
+  
+  // Recent searches (persisted)
+  recentSearches: string[]
+  
   // UI
   isMobileMenuOpen: boolean
+  isAuthModalOpen: boolean
   
   // Actions
   navigate: (view: AppView) => void
@@ -127,8 +159,23 @@ interface AppState {
   openSearch: () => void
   closeSearch: () => void
   
+  // Category actions
+  setActiveCategory: (category: string | null) => void
+  
+  // Favorites actions
+  toggleFavoriteProduct: (productId: string) => void
+  toggleFavoriteStore: (storeId: string) => void
+  isFavoriteProduct: (productId: string) => boolean
+  isFavoriteStore: (storeId: string) => boolean
+  
+  // Recent searches actions
+  addRecentSearch: (query: string) => void
+  clearRecentSearches: () => void
+  
   // UI actions
   toggleMobileMenu: () => void
+  openAuthModal: () => void
+  closeAuthModal: () => void
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -149,8 +196,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   searchQuery: '',
   isSearchOpen: false,
   
+  // Category filtering
+  activeCategory: null,
+  
+  // Favorites (loaded from localStorage on client)
+  favoriteProductIds: new Set(loadFromStorage<string[]>('domplace-fav-products', [])),
+  favoriteStoreIds: new Set(loadFromStorage<string[]>('domplace-fav-stores', [])),
+  
+  // Recent searches (loaded from localStorage on client)
+  recentSearches: loadFromStorage<string[]>('domplace-recent-searches', ['Açaí congelado', 'Ração para cachorro', 'Pão de queijo']),
+  
   // UI
   isMobileMenuOpen: false,
+  isAuthModalOpen: false,
   
   // Actions
   navigate: (view) => set((state) => ({
@@ -238,6 +296,54 @@ export const useAppStore = create<AppState>((set, get) => ({
   openSearch: () => set({ isSearchOpen: true }),
   closeSearch: () => set({ isSearchOpen: false }),
   
+  // Category actions
+  setActiveCategory: (category) => set({ activeCategory: category }),
+  
+  // Favorites actions
+  toggleFavoriteProduct: (productId) => {
+    const state = get()
+    const newSet = new Set(state.favoriteProductIds)
+    if (newSet.has(productId)) {
+      newSet.delete(productId)
+    } else {
+      newSet.add(productId)
+    }
+    saveToStorage('domplace-fav-products', Array.from(newSet))
+    set({ favoriteProductIds: newSet })
+  },
+  
+  toggleFavoriteStore: (storeId) => {
+    const state = get()
+    const newSet = new Set(state.favoriteStoreIds)
+    if (newSet.has(storeId)) {
+      newSet.delete(storeId)
+    } else {
+      newSet.add(storeId)
+    }
+    saveToStorage('domplace-fav-stores', Array.from(newSet))
+    set({ favoriteStoreIds: newSet })
+  },
+  
+  isFavoriteProduct: (productId) => get().favoriteProductIds.has(productId),
+  isFavoriteStore: (storeId) => get().favoriteStoreIds.has(storeId),
+  
+  // Recent searches actions
+  addRecentSearch: (query) => {
+    const trimmed = query.trim()
+    if (!trimmed || trimmed.length < 2) return
+    const state = get()
+    const updated = [trimmed, ...state.recentSearches.filter(s => s.toLowerCase() !== trimmed.toLowerCase())].slice(0, 10)
+    saveToStorage('domplace-recent-searches', updated)
+    set({ recentSearches: updated })
+  },
+  
+  clearRecentSearches: () => {
+    saveToStorage('domplace-recent-searches', [])
+    set({ recentSearches: [] })
+  },
+  
   // UI actions
   toggleMobileMenu: () => set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen })),
+  openAuthModal: () => set({ isAuthModalOpen: true }),
+  closeAuthModal: () => set({ isAuthModalOpen: false }),
 }))

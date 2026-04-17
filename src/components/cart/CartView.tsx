@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Trash2, Plus, Minus, ArrowRight, Tag, ShoppingBag, Store } from 'lucide-react'
+import { Trash2, Plus, Minus, ArrowRight, Tag, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +9,8 @@ import { Separator } from '@/components/ui/separator'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ProductCard } from '@/components/product/ProductCard'
+import type { ProductData } from '@/store/useAppStore'
 
 const gradients = [
   'from-emerald-100 to-green-200 dark:from-emerald-900/30 dark:to-green-800/30',
@@ -16,6 +18,14 @@ const gradients = [
 ]
 
 const icons = ['🍎', '🛒', '📦', '🎁', '🌿', '🍞']
+
+const suggestedProducts: ProductData[] = [
+  { id: 'sp1', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Açaí 500ml', slug: 'acai-500ml', description: 'Açaí cremoso feito com frutas frescas do Pará.', price: 15.00, comparePrice: 18.00, images: '[]', stock: 100, rating: 4.9, totalReviews: 89, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["300ml","500ml","700ml"]', category: 'FOOD' },
+  { id: 'sp2', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: null, name: 'Pão Francês (6 un)', slug: 'pao-frances', description: 'Pão francês fresquinho saindo do forno.', price: 6.00, comparePrice: null, images: '[]', stock: 200, rating: 4.9, totalReviews: 120, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+  { id: 'sp3', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: null, name: 'Pasta de Dente Colgate', slug: 'pasta-dente', description: 'Pasta de dente Colgate Máxima Proteção 90g.', price: 6.90, comparePrice: null, images: '[]', stock: 200, rating: 4.3, totalReviews: 11, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'HEALTH' },
+  { id: 'sp4', storeId: 's3', storeName: 'Agropecuária São Paulo', storeLogo: null, name: 'Muda de Cupuaçu', slug: 'muda-cupuacu', description: 'Muda de cupuaçuzeiro com raiz forte, pronta para plantio.', price: 25.00, comparePrice: null, images: '[]', stock: 30, rating: 4.8, totalReviews: 5, isFeatured: true, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'AGRICULTURE' },
+  { id: 'sp5', storeId: 's8', storeName: 'Salão da Bella', storeLogo: null, name: 'Manicure Completa', slug: 'manicure-completa', description: 'Manicure e pedicure completa com esmaltação.', price: 50.00, comparePrice: null, images: '[]', stock: 999, rating: 4.7, totalReviews: 54, isFeatured: false, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'BEAUTY' },
+]
 
 export function CartView() {
   const { 
@@ -25,26 +35,59 @@ export function CartView() {
     getCartGroupedByStore,
     getCartTotal,
     navigate,
-    goBack,
   } = useAppStore()
   
   const [promoCode, setPromoCode] = useState('')
+  const [suggestionScrollPos, setSuggestionScrollPos] = useState(0)
   const groups = getCartGroupedByStore()
   const subtotal = getCartTotal()
   const deliveryFees = groups.length * 5.00
   const total = subtotal + deliveryFees
+
+  const scrollSuggestions = (direction: 'left' | 'right') => {
+    const container = document.getElementById('suggestions-scroll')
+    if (!container) return
+    const scrollAmount = 220
+    const newScroll = direction === 'left' 
+      ? Math.max(0, suggestionScrollPos - scrollAmount)
+      : suggestionScrollPos + scrollAmount
+    container.scrollTo({ left: newScroll, behavior: 'smooth' })
+    setSuggestionScrollPos(newScroll)
+  }
   
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24">
-        <div className="w-24 h-24 rounded-full bg-secondary flex items-center justify-center mb-4">
-          <ShoppingBag className="h-12 w-12 text-muted-foreground/40" />
-        </div>
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="relative mb-6"
+        >
+          <div className="w-28 h-28 rounded-full bg-secondary flex items-center justify-center">
+            <ShoppingBag className="h-14 w-14 text-muted-foreground/30" />
+          </div>
+          <motion.div
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center"
+          >
+            <Sparkles className="h-4 w-4 text-primary" />
+          </motion.div>
+        </motion.div>
         <h2 className="text-xl font-bold mb-1">Seu carrinho está vazio</h2>
-        <p className="text-muted-foreground text-center mb-6">Adicione produtos das lojas locais para começar</p>
-        <Button onClick={() => navigate('home')} className="bg-primary text-primary-foreground">
-          Explorar lojas
-        </Button>
+        <p className="text-muted-foreground text-center mb-6 text-sm max-w-xs">
+          Adicione produtos das lojas locais e aproveite as melhores ofertas de Dom Eliseu
+        </p>
+        <div className="flex gap-3">
+          <Button onClick={() => navigate('home')} variant="outline" className="h-11">
+            Explorar ofertas
+          </Button>
+          <Button onClick={() => navigate('home')} className="bg-primary text-primary-foreground h-11">
+            Ver lojas
+            <Store className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
       </div>
     )
   }
@@ -65,6 +108,31 @@ export function CartView() {
       </div>
       
       <div className="p-4 space-y-4">
+        {/* Suggested products - "Add more items" */}
+        <div className="bg-card rounded-xl border border-border p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold">Adicione mais itens</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => scrollSuggestions('left')}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => scrollSuggestions('right')}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <div id="suggestions-scroll" className="flex gap-3 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1">
+            {suggestedProducts.map((product) => (
+              <div key={product.id} className="shrink-0 w-[150px]">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Items grouped by store */}
         <AnimatePresence>
           {groups.map((group) => (

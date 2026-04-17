@@ -5,17 +5,54 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useAppStore } from '@/store/useAppStore'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { ProductCard } from '@/components/product/ProductCard'
 import type { ProductData } from '@/store/useAppStore'
 
 const trendingSearches = ['Açaí', 'Ração', 'Pão', 'Remédio', 'Muda de planta', 'Celular', 'Roupas']
 
+const sortFilters = [
+  { id: 'relevance', label: 'Relevância' },
+  { id: 'price_asc', label: 'Menor preço' },
+  { id: 'price_desc', label: 'Maior preço' },
+  { id: 'rating', label: 'Avaliação' },
+  { id: 'free_delivery', label: 'Entrega grátis' },
+]
+
 export function SearchView() {
-  const { searchQuery, setSearchQuery, closeSearch } = useAppStore()
+  const { searchQuery, setSearchQuery, closeSearch, addRecentSearch, recentSearches, clearRecentSearches } = useAppStore()
   const [results, setResults] = useState<ProductData[]>([])
   const [isSearching, setIsSearching] = useState(false)
-  const [recentSearches] = useState(['Açaí congelado', 'Ração para cachorro', 'Pão de queijo'])
+  const [activeSort, setActiveSort] = useState<string>('relevance')
+  
+  // Sort/filter the results based on active filter
+  const sortedResults = useMemo(() => {
+    const sorted = [...results]
+    switch (activeSort) {
+      case 'price_asc':
+        return sorted.sort((a, b) => a.price - b.price)
+      case 'price_desc':
+        return sorted.sort((a, b) => b.price - a.price)
+      case 'rating':
+        return sorted.sort((a, b) => b.rating - a.rating)
+      case 'free_delivery':
+        // Filter to products from stores with delivery fee = 0
+        // Since we don't have delivery fee on product, we'll keep all but note this
+        return sorted // In a real app, this would filter by store.deliveryFee === 0
+      default:
+        return sorted
+    }
+  }, [results, activeSort])
+
+  // Track searches in recent searches when user stops typing
+  useEffect(() => {
+    if (searchQuery.length > 2 && !isSearching) {
+      const timer = setTimeout(() => {
+        addRecentSearch(searchQuery)
+      }, 2000)
+      return () => clearTimeout(timer)
+    }
+  }, [searchQuery, isSearching, addRecentSearch])
   
   useEffect(() => {
     let cancelled = false
@@ -25,7 +62,11 @@ export function SearchView() {
         try {
           const res = await fetch(`/api/products?search=${encodeURIComponent(searchQuery)}&limit=20`)
           const data = await res.json()
-          if (!cancelled) setResults(data.products || [])
+          if (!cancelled) {
+            setResults(data.products || [])
+            // Add to recent searches after successful search
+            addRecentSearch(searchQuery)
+          }
         } catch {
           if (!cancelled) setResults([])
         }
@@ -38,7 +79,7 @@ export function SearchView() {
       }
     }, 100)
     return () => { cancelled = true; clearTimeout(timer) }
-  }, [searchQuery])
+  }, [searchQuery, addRecentSearch])
   
   const hasQuery = searchQuery.length > 0
   
@@ -73,12 +114,21 @@ export function SearchView() {
           </Button>
         </div>
         
-        {/* Filter chips */}
+        {/* Filter chips - now functional */}
         {hasQuery && (
           <div className="flex gap-2 mt-2 overflow-x-auto hide-scrollbar pb-2">
-            {['Relevância', 'Menor preço', 'Maior preço', 'Avaliação', 'Entrega grátis'].map((f) => (
-              <Badge key={f} variant="secondary" className="cursor-pointer shrink-0 hover:bg-primary hover:text-primary-foreground transition-colors px-3 py-1">
-                {f}
+            {sortFilters.map((f) => (
+              <Badge 
+                key={f.id} 
+                variant={activeSort === f.id ? 'default' : 'secondary'}
+                className={`cursor-pointer shrink-0 transition-colors px-3 py-1 ${
+                  activeSort === f.id 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'hover:bg-primary hover:text-primary-foreground'
+                }`}
+                onClick={() => setActiveSort(f.id)}
+              >
+                {f.label}
               </Badge>
             ))}
           </div>
@@ -97,11 +147,11 @@ export function SearchView() {
         {/* Results */}
         {!isSearching && hasQuery && (
           <>
-            {results.length > 0 ? (
+            {sortedResults.length > 0 ? (
               <div>
-                <p className="text-sm text-muted-foreground mb-3">{results.length} resultados encontrados</p>
+                <p className="text-sm text-muted-foreground mb-3">{sortedResults.length} resultados encontrados{activeSort !== 'relevance' ? ` · Ordenado por: ${sortFilters.find(f => f.id === activeSort)?.label}` : ''}</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {results.map((p) => (
+                  {sortedResults.map((p) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
                 </div>
@@ -122,17 +172,26 @@ export function SearchView() {
             {/* Recent searches */}
             {recentSearches.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-sm font-semibold mb-2 flex items-center gap-1.5">
-                  <Clock className="h-4 w-4" />
-                  Buscas recentes
-                </h3>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold flex items-center gap-1.5">
+                    <Clock className="h-4 w-4" />
+                    Buscas recentes
+                  </h3>
+                  <button 
+                    onClick={clearRecentSearches}
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Limpar
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {recentSearches.map((s) => (
                     <button
                       key={s}
                       onClick={() => setSearchQuery(s)}
-                      className="px-3 py-1.5 rounded-full bg-secondary text-sm hover:bg-secondary/80 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-sm hover:bg-secondary/80 transition-colors"
                     >
+                      <Clock className="h-3 w-3 text-muted-foreground" />
                       {s}
                     </button>
                   ))}

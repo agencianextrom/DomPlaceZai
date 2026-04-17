@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store } from 'lucide-react'
+import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -11,49 +11,78 @@ import type { OrderData } from '@/store/useAppStore'
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   PENDING: { label: 'Pendente', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock },
-  CONFIRMED: { label: 'Confirmado', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: ClipboardList },
+  CONFIRMED: { label: 'Confirmado', color: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400', icon: ClipboardList },
   PREPARING: { label: 'Preparando', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400', icon: Package },
   READY: { label: 'Pronto', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle2 },
-  DELIVERING: { label: 'Em entrega', color: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400', icon: Package },
+  DELIVERING: { label: 'Em entrega', color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', icon: Package },
   DELIVERED: { label: 'Entregue', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle2 },
   CANCELLED: { label: 'Cancelado', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400', icon: XCircle },
 }
 
 const statusTimeline = ['PENDING', 'CONFIRMED', 'PREPARING', 'READY', 'DELIVERING']
 
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return 'Agora'
+  if (mins < 60) return `Há ${mins} min`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `Há ${hours}h`
+  const days = Math.floor(hours / 24)
+  if (days === 1) return 'Ontem'
+  return `Há ${days} dias`
+}
+
 export function OrdersView() {
   const { navigate, selectOrder, selectedOrderTab } = useAppStore()
-  const [orders, setOrders] = useState<OrderData[]>([
+  const [orders] = useState<OrderData[]>([
     {
-      id: '1', orderNumber: 'DP000001', storeId: '1', storeName: 'Mercado do Zé',
-      status: 'DELIVERING', subtotal: 45.90, deliveryFee: 5.00, discount: 0, total: 50.90,
-      paymentMethod: 'PIX', deliveryType: 'DELIVERY', createdAt: new Date().toISOString(),
-      items: [{ productName: 'Açaí 500ml', quantity: 2, price: 15.00, total: 30.00 }, { productName: 'Granola', quantity: 1, price: 15.90, total: 15.90 }]
+      id: '1', orderNumber: 'DP000001', storeId: '5', storeName: 'Padaria Pão Quente',
+      status: 'DELIVERING', subtotal: 47.50, deliveryFee: 5.00, discount: 0, total: 52.50,
+      paymentMethod: 'PIX', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 30 * 60000).toISOString(),
+      items: [
+        { productName: 'Pão Francês (6 un)', quantity: 2, price: 6.00, total: 12.00 },
+        { productName: 'Bolo de Chocolate', quantity: 1, price: 16.50, total: 16.50 },
+        { productName: 'Coxinha de Frango (10 un)', quantity: 1, price: 19.00, total: 19.00 },
+      ],
     },
     {
-      id: '2', orderNumber: 'DP000002', storeId: '2', storeName: 'Padaria Pão Quente',
-      status: 'PREPARING', subtotal: 22.50, deliveryFee: 5.00, discount: 0, total: 27.50,
-      paymentMethod: 'CASH_ON_DELIVERY', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 3600000).toISOString(),
-      items: [{ productName: 'Pão Francês (6)', quantity: 1, price: 6.00, total: 6.00 }, { productName: 'Bolo de Chocolate', quantity: 1, price: 16.50, total: 16.50 }]
+      id: '2', orderNumber: 'DP000002', storeId: '1', storeName: 'Mercado do Zé',
+      status: 'DELIVERED', subtotal: 84.70, deliveryFee: 5.00, discount: 0, total: 89.70,
+      paymentMethod: 'CREDIT_CARD', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 86400000).toISOString(),
+      items: [
+        { productName: 'Arroz Tio João 5kg', quantity: 1, price: 24.90, total: 24.90 },
+        { productName: 'Feijão Carioca 1kg', quantity: 2, price: 8.90, total: 17.80 },
+        { productName: 'Óleo de Soja 900ml', quantity: 1, price: 7.49, total: 7.49 },
+        { productName: 'Açúcar Cristal 1kg', quantity: 2, price: 5.49, total: 10.98 },
+        { productName: 'Adubo NPK 20kg', quantity: 1, price: 23.53, total: 23.53 },
+      ],
     },
     {
-      id: '3', orderNumber: 'DP000003', storeId: '3', storeName: 'Farmácia Vida',
-      status: 'DELIVERED', subtotal: 35.00, deliveryFee: 0, discount: 5.00, total: 30.00,
-      paymentMethod: 'CREDIT_CARD', deliveryType: 'PICKUP', createdAt: new Date(Date.now() - 86400000).toISOString(),
-      items: [{ productName: 'Vitamina C', quantity: 2, price: 17.50, total: 35.00 }]
+      id: '3', orderNumber: 'DP000003', storeId: '2', storeName: 'Açaí da Boa',
+      status: 'PREPARING', subtotal: 34.00, deliveryFee: 3.00, discount: 0, total: 37.00,
+      paymentMethod: 'PIX', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 15 * 60000).toISOString(),
+      items: [
+        { productName: 'Açaí 500ml', quantity: 1, price: 15.00, total: 15.00 },
+        { productName: 'Açaí Premium 700ml', quantity: 1, price: 19.00, total: 19.00 },
+      ],
     },
     {
-      id: '4', orderNumber: 'DP000004', storeId: '4', storeName: 'Pet Shop Amigo Fiel',
+      id: '4', orderNumber: 'DP000004', storeId: '3', storeName: 'Farmácia Vida',
       status: 'CANCELLED', subtotal: 89.90, deliveryFee: 0, discount: 0, total: 0,
       paymentMethod: 'PIX', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 172800000).toISOString(),
-      items: [{ productName: 'Ração Premium 15kg', quantity: 1, price: 89.90, total: 89.90 }]
+      items: [{ productName: 'Ração Premium 15kg', quantity: 1, price: 89.90, total: 89.90 }],
+    },
+    {
+      id: '5', orderNumber: 'DP000005', storeId: '8', storeName: 'Salão da Bella',
+      status: 'CONFIRMED', subtotal: 95.00, deliveryFee: 0, discount: 0, total: 95.00,
+      paymentMethod: 'CREDIT_CARD', deliveryType: 'PICKUP', createdAt: new Date(Date.now() - 45 * 60000).toISOString(),
+      items: [
+        { productName: 'Corte Feminino', quantity: 1, price: 45.00, total: 45.00 },
+        { productName: 'Hidratação Capilar', quantity: 1, price: 50.00, total: 50.00 },
+      ],
     },
   ])
-  const [loading, setLoading] = useState(false)
-  
-  useEffect(() => {
-    // Data is initialized in useState above
-  }, [])
   
   const filteredOrders = orders.filter(order => {
     if (selectedOrderTab === 'ongoing') return !['DELIVERED', 'CANCELLED'].includes(order.status)
@@ -65,7 +94,10 @@ export function OrdersView() {
   return (
     <div className="min-h-screen pb-20">
       <div className="px-4 pt-4">
-        <h1 className="text-xl font-bold mb-4">Meus Pedidos</h1>
+        <h1 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <span className="w-1 h-6 rounded-full bg-primary" />
+          Meus Pedidos
+        </h1>
         
         <Tabs value={selectedOrderTab} onValueChange={(v) => useAppStore.getState().setSelectedOrderTab(v)}>
           <TabsList className="w-full bg-secondary/50 rounded-lg mb-4">
@@ -76,11 +108,7 @@ export function OrdersView() {
           
           {['ongoing', 'completed', 'cancelled'].map((tab) => (
             <TabsContent key={tab} value={tab}>
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                </div>
-              ) : filteredOrders.length === 0 ? (
+              {filteredOrders.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <Package className="h-12 w-12 mx-auto mb-3 text-muted-foreground/30" />
                   <p>Nenhum pedido encontrado</p>
@@ -91,20 +119,16 @@ export function OrdersView() {
                     const config = statusConfig[order.status] || statusConfig.PENDING
                     const StatusIcon = config.icon
                     return (
-                      <button
+                      <div
                         key={order.id}
-                        onClick={() => {
-                          selectOrder(order)
-                          navigate('order-detail')
-                        }}
-                        className="w-full bg-card rounded-xl border border-border p-4 text-left hover:shadow-sm transition-shadow"
+                        className="w-full bg-card rounded-xl border border-border p-4 hover:shadow-sm transition-shadow"
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <Store className="h-4 w-4 text-primary" />
-                            <span className="font-semibold text-sm">{order.storeName}</span>
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Store className="h-4 w-4 text-primary shrink-0" />
+                            <span className="font-semibold text-sm truncate">{order.storeName}</span>
                           </div>
-                          <Badge className={`${config.color} border-0 text-xs`}>
+                          <Badge className={`${config.color} border-0 text-xs shrink-0 ml-2`}>
                             <StatusIcon className="h-3 w-3 mr-1" />
                             {config.label}
                           </Badge>
@@ -113,7 +137,9 @@ export function OrdersView() {
                         <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
                           <span>Pedido #{order.orderNumber}</span>
                           <span>•</span>
-                          <span>{new Date(order.createdAt).toLocaleDateString('pt-BR')}</span>
+                          <span>{timeAgo(order.createdAt)}</span>
+                          <span>•</span>
+                          <span>{order.items?.length || 0} {order.items?.length === 1 ? 'item' : 'itens'}</span>
                         </div>
                         
                         {order.items && (
@@ -129,9 +155,20 @@ export function OrdersView() {
                         
                         <div className="flex items-center justify-between mt-3">
                           <span className="font-bold text-primary">{formatBRL(order.total)}</span>
-                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs"
+                            onClick={() => {
+                              selectOrder(order)
+                              navigate('order-detail')
+                            }}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            Ver detalhes
+                          </Button>
                         </div>
-                      </button>
+                      </div>
                     )
                   })}
                 </div>
@@ -177,6 +214,8 @@ export function OrderDetail() {
             <p className="font-semibold">{config.label}</p>
             {order.status === 'DELIVERING' && <p className="text-xs opacity-80">Seu pedido está a caminho!</p>}
             {order.status === 'DELIVERED' && <p className="text-xs opacity-80">Pedido entregue com sucesso</p>}
+            {order.status === 'PREPARING' && <p className="text-xs opacity-80">A loja está preparando seu pedido</p>}
+            {order.status === 'CONFIRMED' && <p className="text-xs opacity-80">Pedido confirmado pela loja</p>}
           </div>
         </div>
         
