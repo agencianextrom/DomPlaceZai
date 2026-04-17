@@ -1,0 +1,749 @@
+// DomPlace Marketplace - Dom Eliseu, Pará, Brasil
+// Schema completo do banco de dados
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// HIERARQUIA DE CONTAS
+// ============================================
+
+enum AccountRole {
+  USER
+  STORE_OWNER
+  AFFILIATE
+  DELIVERY_DRIVER
+  ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+model Account {
+  id                String        @id @default(cuid())
+  email             String        @unique
+  password          String
+  name              String
+  phone             String?
+  avatar            String?
+  role              AccountRole   @default(USER)
+  status            AccountStatus @default(ACTIVE)
+  emailVerified     DateTime?
+  twoFactorEnabled  Boolean       @default(false)
+  twoFactorSecret   String?
+  locationConsent   Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user              User?
+  storeOwner        Store?
+  affiliate         Affiliate?
+  deliveryDriver    DeliveryDriver?
+  admin             Admin?
+
+  addresses         Address[]
+  notifications     Notification[]
+  reviews           Review[]
+  orders            Order[]
+  cartItems         CartItem[]
+  favorites         Favorite[]
+  loyaltyPoints     LoyaltyPoint[]
+  activityLogs      ActivityLog[]
+  chatMessagesSent  ChatMessage[] @relation("ChatSender")
+  chatMessagesReceived ChatMessage[] @relation("ChatReceiver")
+}
+
+// ============================================
+// USUÁRIO COMUM
+// ============================================
+
+model User {
+  id              String   @id @default(cuid())
+  accountId       String   @unique
+  cpf             String?  @unique
+  bio             String?
+  dateOfBirth     DateTime?
+  loyaltyBalance  Int      @default(0)
+  totalSpent      Float    @default(0)
+  orderCount      Int      @default(0)
+
+  account         Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  paymentMethods  UserPaymentMethod[]
+
+  @@index([accountId])
+}
+
+// ============================================
+// LOJA / LOGISTA
+// ============================================
+
+enum StoreCategory {
+  AGRICULTURE
+  FOOD
+  SERVICES
+  FASHION
+  ELECTRONICS
+  HEALTH
+  HOME_GARDEN
+  ANIMALS
+  AUTOMOTIVE
+  EDUCATION
+  BEAUTY
+  SPORTS
+  CONSTRUCTION
+  OTHER
+}
+
+enum StoreStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_APPROVAL
+}
+
+model Store {
+  id                String        @id @default(cuid())
+  accountId         String        @unique
+  name              String
+  slug              String        @unique
+  description       String?
+  category          StoreCategory
+  status            StoreStatus   @default(PENDING_APPROVAL)
+  logo              String?
+  coverImage        String?
+  phone             String?
+  whatsapp          String?
+  address           String?
+  neighborhood      String?
+  city              String        @default("Dom Eliseu")
+  state             String        @default("PA")
+  latitude          Float?
+  longitude         Float?
+  deliveryRadius    Float?
+  deliveryFeeType   String        @default("fixed")
+  deliveryFee       Float         @default(0)
+  freeDeliveryAbove Float?
+  minOrderValue     Float?
+  rating            Float         @default(0)
+  totalReviews      Int           @default(0)
+  totalSales        Int           @default(0)
+  weeklyScore       Float         @default(0)
+  opensAt           String?
+  closesAt          String?
+  openDays          String        @default("1,2,3,4,5,6,7")
+  pixKey            String?
+  socialMedia       String?
+  commissionRate    Float         @default(0.10)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  account           Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  products          Product[]
+  orders            Order[]
+  promotions        Promotion[]
+  banners           Banner[]
+  reviews           Review[]
+  favorites         Favorite[]
+  paidAds           PaidAdvertisement[]
+
+  @@index([accountId])
+  @@index([category])
+  @@index([status])
+  @@index([weeklyScore])
+}
+
+// ============================================
+// PRODUTOS
+// ============================================
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  OUT_OF_STOCK
+  DRAFT
+}
+
+model Product {
+  id            String        @id @default(cuid())
+  storeId       String
+  name          String
+  slug          String
+  description   String?
+  price         Float
+  comparePrice  Float?
+  costPrice     Float?
+  sku           String?       @unique
+  barcode       String?
+  images        String        @default("[]")
+  status        ProductStatus @default(ACTIVE)
+  stock         Int           @default(0)
+  soldCount     Int           @default(0)
+  rating        Float         @default(0)
+  totalReviews  Int           @default(0)
+  weight        Float?
+  dimensions    String?
+  variations    String?
+  isFeatured    Boolean       @default(false)
+  isNew         Boolean       @default(true)
+  isOffer       Boolean       @default(false)
+  tags          String        @default("[]")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  store         Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  reviews       Review[]
+  categories    ProductCategory[]
+  favorites     Favorite[]
+  orderBumps    OrderBump[]
+
+  @@index([storeId])
+  @@index([status])
+  @@index([price])
+  @@index([isFeatured])
+  @@index([isNew])
+  @@index([isOffer])
+}
+
+model ProductCategory {
+  id        String  @id @default(cuid())
+  name      String
+  slug      String  @unique
+  icon      String?
+  order     Int     @default(0)
+  parentId  String?
+
+  products  Product[]
+  parent    ProductCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children  ProductCategory[] @relation("CategoryTree")
+
+  @@index([parentId])
+}
+
+// ============================================
+// CARRINHO
+// ============================================
+
+model CartItem {
+  id        String   @id @default(cuid())
+  accountId String
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+// ============================================
+// PEDIDOS
+// ============================================
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  DELIVERING
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  PIX
+  CREDIT_CARD
+  DEBIT_CARD
+  BOLETO
+  CASH_ON_DELIVERY
+}
+
+enum DeliveryType {
+  DELIVERY
+  PICKUP
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique
+  accountId       String
+  storeId         String
+  status          OrderStatus   @default(PENDING)
+  subtotal        Float
+  deliveryFee     Float         @default(0)
+  discount        Float         @default(0)
+  total           Float
+  paymentMethod   PaymentMethod?
+  paymentId       String?
+  deliveryType    DeliveryType  @default(DELIVERY)
+  deliveryAddress String?
+  trackingCode    String?
+  notes           String?
+  estimatedTime   String?
+  driverId        String?
+  driverRating    Float?
+  customerRating  Float?
+  commission      Float
+  commissionRate  Float
+  paidAt          DateTime?
+  deliveredAt     DateTime?
+  cancelledAt     DateTime?
+  cancelReason    String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  account         Account        @relation(fields: [accountId], references: [id])
+  store           Store          @relation(fields: [storeId], references: [id])
+  driver          DeliveryDriver? @relation(fields: [driverId], references: [id])
+  items           OrderItem[]
+  orderBumps      OrderBump[]
+  chatMessages    ChatMessage[]
+  statusHistory   OrderStatusHistory[]
+
+  @@index([accountId])
+  @@index([storeId])
+  @@index([status])
+  @@index([driverId])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  orderId      String
+  productId    String
+  productName  String
+  productImage String?
+  price        Float
+  quantity     Int
+  total        Float
+
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product      Product @relation(fields: [productId], references: [id])
+}
+
+model OrderBump {
+  id        String   @id @default(cuid())
+  orderId   String
+  productId String?
+  title     String
+  price     Float
+  accepted  Boolean  @default(false)
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product? @relation(fields: [productId], references: [id])
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(cuid())
+  orderId   String
+  status    OrderStatus
+  note      String?
+  createdAt DateTime    @default(now())
+
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+// ============================================
+// ENDEREÇOS
+// ============================================
+
+model Address {
+  id           String   @id @default(cuid())
+  accountId    String
+  street       String
+  number       String?
+  complement   String?
+  neighborhood String
+  city         String   @default("Dom Eliseu")
+  state        String   @default("PA")
+  zipCode      String?
+  latitude     Float?
+  longitude    Float?
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  account      Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+}
+
+// ============================================
+// AVALIAÇÕES
+// ============================================
+
+model Review {
+  id          String   @id @default(cuid())
+  accountId   String
+  storeId     String?
+  productId   String?
+  rating      Int
+  comment     String?
+  images      String   @default("[]")
+  reply       String?
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  account     Account  @relation(fields: [accountId], references: [id])
+  store       Store?   @relation(fields: [storeId], references: [id])
+  product     Product? @relation(fields: [productId], references: [id])
+
+  @@index([accountId])
+  @@index([storeId])
+  @@index([productId])
+}
+
+// ============================================
+// FAVORITOS
+// ============================================
+
+model Favorite {
+  id          String   @id @default(cuid())
+  accountId   String
+  storeId     String?
+  productId   String?
+  createdAt   DateTime @default(now())
+
+  account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  store       Store?   @relation(fields: [storeId], references: [id])
+  product     Product? @relation(fields: [productId], references: [id])
+
+  @@unique([accountId, storeId])
+  @@unique([accountId, productId])
+}
+
+// ============================================
+// PROMOÇÕES E CUPONS
+// ============================================
+
+enum PromotionType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_DELIVERY
+  BUY_X_GET_Y
+}
+
+enum BannerLevel {
+  DAILY_OFFERS
+  NEW_IN_CITY
+  SUGGESTIONS
+  LOCAL_PARTNERSHIPS
+  SEASONAL
+  FEATURED
+}
+
+model Promotion {
+  id              String        @id @default(cuid())
+  storeId         String
+  title           String
+  description     String?
+  type            PromotionType
+  value           Float
+  minOrderValue   Float?
+  maxDiscount     Float?
+  usageLimit      Int?
+  usageCount      Int           @default(0)
+  code            String?       @unique
+  startsAt        DateTime
+  endsAt          DateTime
+  isActive        Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  store           Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId])
+  @@index([code])
+  @@index([isActive])
+}
+
+model Banner {
+  id          String      @id @default(cuid())
+  storeId     String
+  title       String
+  subtitle    String?
+  image       String
+  link        String?
+  level       BannerLevel @default(FEATURED)
+  order       Int         @default(0)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  isActive    Boolean     @default(true)
+  impressions Int         @default(0)
+  clicks      Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  store       Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([level])
+  @@index([isActive])
+}
+
+// ============================================
+// AFILIADO
+// ============================================
+
+enum AffiliateStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model Affiliate {
+  id               String          @id @default(cuid())
+  accountId        String          @unique
+  referralCode     String          @unique
+  commissionRate   Float           @default(0.03)
+  totalEarnings    Float           @default(0)
+  pendingEarnings  Float           @default(0)
+  totalReferrals   Int             @default(0)
+  totalConversions Int             @default(0)
+  status           AffiliateStatus @default(ACTIVE)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  account          Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  referrals        Referral[]
+
+  @@index([accountId])
+  @@index([referralCode])
+}
+
+model Referral {
+  id           String   @id @default(cuid())
+  affiliateId  String
+  referredId   String
+  orderId      String?
+  amount       Float
+  commission   Float
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+
+  affiliate    Affiliate @relation(fields: [affiliateId], references: [id], onDelete: Cascade)
+
+  @@index([affiliateId])
+}
+
+// ============================================
+// ENTREGADOR
+// ============================================
+
+enum DriverStatus {
+  ONLINE
+  OFFLINE
+  BUSY
+  UNAVAILABLE
+}
+
+enum DriverVerification {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+model DeliveryDriver {
+  id                String             @id @default(cuid())
+  accountId         String             @unique
+  cnhNumber         String?
+  cnhImage          String?
+  vehicleType       String             @default("motorcycle")
+  vehiclePlate      String?
+  vehicleImage      String?
+  currentLatitude   Float?
+  currentLongitude  Float?
+  status            DriverStatus       @default(OFFLINE)
+  verification      DriverVerification @default(PENDING)
+  rating            Float              @default(0)
+  totalDeliveries   Int                @default(0)
+  totalEarnings     Float              @default(0)
+  commissionRate    Float              @default(0.85)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  account           Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  orders            Order[]
+  chatMessages      ChatMessage[]
+
+  @@index([accountId])
+  @@index([status])
+}
+
+// ============================================
+// ADMIN
+// ============================================
+
+model Admin {
+  id          String   @id @default(cuid())
+  accountId   String   @unique
+  level       Int      @default(1)
+  permissions String   @default("all")
+  lastLoginAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+}
+
+// ============================================
+// PAGAMENTOS DO USUÁRIO
+// ============================================
+
+model UserPaymentMethod {
+  id         String   @id @default(cuid())
+  userId     String
+  type       String
+  token      String?
+  lastFour   String?
+  brand      String?
+  holderName String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ============================================
+// NOTIFICAÇÕES
+// ============================================
+
+enum NotificationType {
+  ORDER_UPDATE
+  PROMOTION
+  SYSTEM
+  CHAT
+  DELIVERY
+  REVIEW
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  accountId String
+  title     String
+  message   String
+  type      NotificationType
+  data      String?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  account   Account          @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([isRead])
+}
+
+// ============================================
+// CHAT
+// ============================================
+
+model ChatMessage {
+  id          String   @id @default(cuid())
+  orderId     String?
+  senderId    String
+  receiverId  String?
+  driverId    String?
+  message     String
+  attachment  String?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  order       Order?           @relation(fields: [orderId], references: [id])
+  sender      Account          @relation("ChatSender", fields: [senderId], references: [id])
+  receiver    Account?         @relation("ChatReceiver", fields: [receiverId], references: [id])
+  driver      DeliveryDriver?  @relation(fields: [driverId], references: [id])
+
+  @@index([orderId])
+  @@index([senderId])
+  @@index([receiverId])
+}
+
+// ============================================
+// PONTOS DE FIDELIDADE
+// ============================================
+
+model LoyaltyPoint {
+  id          String   @id @default(cuid())
+  accountId   String
+  points      Int
+  source      String
+  referenceId String?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+}
+
+// ============================================
+// ANÚNCIOS PAGOS
+// ============================================
+
+enum AdStatus {
+  PENDING_APPROVAL
+  ACTIVE
+  PAUSED
+  COMPLETED
+  REJECTED
+}
+
+model PaidAdvertisement {
+  id          String      @id @default(cuid())
+  storeId     String
+  title       String
+  description String?
+  image       String
+  targetUrl   String?
+  level       BannerLevel
+  budget      Float
+  spent       Float       @default(0)
+  impressions Int         @default(0)
+  clicks      Int         @default(0)
+  status      AdStatus    @default(PENDING_APPROVAL)
+  startsAt    DateTime
+  endsAt      DateTime
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  store       Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId])
+  @@index([status])
+}
+
+// ============================================
+// LOG DE ATIVIDADES
+// ============================================
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  accountId String
+  action    String
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([createdAt])
+}
