@@ -208,12 +208,13 @@ export function StoreProfile({ store }: StoreProfileProps) {
               {categoryLabels[store.category] || store.category}
             </Badge>
             {isOpen ? (
-              <span className="flex items-center gap-1 text-xs bg-emerald-500/25 text-emerald-100 px-2.5 py-1 rounded-full backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="flex items-center gap-1.5 text-xs bg-emerald-500/25 text-emerald-100 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                <span className="status-dot-open" />
                 Aberto agora
               </span>
             ) : (
-              <span className="text-xs bg-red-500/25 text-red-100 px-2.5 py-1 rounded-full backdrop-blur-sm">
+              <span className="flex items-center gap-1.5 text-xs bg-red-500/25 text-red-100 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                <span className="status-dot-closed" />
                 Fechado
               </span>
             )}
@@ -319,7 +320,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
         >
           {(store.whatsapp || store.phone) && (
             <Button 
-              className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white btn-glow"
+              className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white btn-glow rounded-xl"
               onClick={handleWhatsApp}
             >
               <MessageCircle className="h-4 w-4 mr-2" />
@@ -421,11 +422,15 @@ export function StoreProfile({ store }: StoreProfileProps) {
               {loading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="bg-muted rounded-xl h-56 skeleton-shimmer" />
+                    <div key={i} className="space-y-2">
+                      <div className="aspect-square rounded-xl loading-skeleton" />
+                      <div className="h-3 w-3/4 rounded loading-skeleton" />
+                      <div className="h-3 w-1/2 rounded loading-skeleton" />
+                    </div>
                   ))}
                 </div>
               ) : products.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                   {products.map((p, i) => (
                     <motion.div
                       key={p.id}
@@ -706,7 +711,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
             onClick={handleWhatsApp}
-            className="fixed bottom-24 md:bottom-8 right-4 z-50 h-14 w-14 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-xl flex items-center justify-center fab-ping"
+            className="fixed bottom-24 md:bottom-8 right-4 z-50 h-14 w-14 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-xl shadow-emerald-900/20 flex items-center justify-center fab-ping hover:shadow-2xl hover:shadow-emerald-900/30 transition-shadow duration-300"
             aria-label="Abrir WhatsApp"
           >
             <MessageCircle className="h-6 w-6" />

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, MapPin, CreditCard, Banknote, QrCode, FileText, Check, Store, Truck, Shield, ChevronRight, Clock, Calendar, Tag, X } from 'lucide-react'
+import { ArrowLeft, MapPin, CreditCard, Banknote, QrCode, FileText, Check, Store, Truck, Shield, ChevronRight, Clock, Calendar, Tag, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,10 +15,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 
 const paymentMethods = [
-  { id: 'pix', label: 'Pix', icon: QrCode, desc: 'Pagamento instantâneo', color: 'bg-teal-50 dark:bg-teal-900/10 border-teal-200 dark:border-teal-800/30' },
-  { id: 'credit', label: 'Cartão de Crédito', icon: CreditCard, desc: 'Em até 3x sem juros', color: 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800/30' },
-  { id: 'boleto', label: 'Boleto', icon: FileText, desc: 'Prazo de 1-2 dias', color: 'bg-rose-50 dark:bg-rose-900/10 border-rose-200 dark:border-rose-800/30' },
-  { id: 'cash', label: 'Dinheiro', icon: Banknote, desc: 'Pagamento na entrega', color: 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800/30' },
+  { id: 'PIX', label: 'Pix', icon: QrCode, desc: 'Pagamento instantâneo', color: 'bg-teal-50 dark:bg-teal-900/10 border-teal-200 dark:border-teal-800/30' },
+  { id: 'CREDIT_CARD', label: 'Cartão de Crédito', icon: CreditCard, desc: 'Em até 3x sem juros', color: 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800/30' },
+  { id: 'BOLETO', label: 'Boleto', icon: FileText, desc: 'Prazo de 1-2 dias', color: 'bg-rose-50 dark:bg-rose-900/10 border-rose-200 dark:border-rose-800/30' },
+  { id: 'CASH_ON_DELIVERY', label: 'Dinheiro', icon: Banknote, desc: 'Pagamento na entrega', color: 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800/30' },
 ]
 
 const deliveryTimeOptions = [
@@ -52,28 +52,28 @@ function ConfettiBurst() {
         const shape = confettiShapes[i % confettiShapes.length]
         const size = 6 + Math.random() * 8
         const delay = i * 0.03
-        
+
         return (
           <motion.div
             key={i}
-            initial={{ 
-              x: 0, 
-              y: 0, 
-              scale: 1, 
-              opacity: 1, 
-              rotate: 0 
+            initial={{
+              x: 0,
+              y: 0,
+              scale: 1,
+              opacity: 1,
+              rotate: 0,
             }}
-            animate={{ 
-              x: tx, 
-              y: ty, 
-              scale: 0, 
+            animate={{
+              x: tx,
+              y: ty,
+              scale: 0,
               opacity: 0,
               rotate: (Math.random() - 0.5) * 720,
             }}
-            transition={{ 
-              duration: 1 + Math.random() * 0.5, 
+            transition={{
+              duration: 1 + Math.random() * 0.5,
               delay: 0.2 + delay,
-              ease: 'easeOut' 
+              ease: 'easeOut',
             }}
             className="absolute left-1/2 top-1/2"
             style={{
@@ -91,16 +91,17 @@ function ConfettiBurst() {
 }
 
 export function CheckoutView() {
-  const { goBack, navigate, getCartGroupedByStore, getCartTotal, getCartItemCount, clearCart } = useAppStore()
+  const { goBack, navigate, getCartGroupedByStore, getCartTotal, getCartItemCount, clearCart, currentUser, selectOrder } = useAppStore()
   const [step, setStep] = useState<CheckoutStep>('address')
-  const [payment, setPayment] = useState('pix')
-  const [deliveryType, setDeliveryType] = useState<'delivery' | 'pickup'>('delivery')
+  const [payment, setPayment] = useState('PIX')
+  const [deliveryType, setDeliveryType] = useState<'DELIVERY' | 'PICKUP'>('DELIVERY')
   const [deliveryTime, setDeliveryTime] = useState('today-30')
   const [isProcessing, setIsProcessing] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
   const [couponError, setCouponError] = useState('')
+  const [createdOrder, setCreatedOrder] = useState<any>(null)
 
   // Address form state
   const [address, setAddress] = useState({
@@ -113,21 +114,25 @@ export function CheckoutView() {
     zip: '',
     reference: '',
   })
-  
+
   const groups = getCartGroupedByStore()
   const subtotal = getCartTotal()
-  const deliveryFees = deliveryType === 'pickup' ? 0 : groups.length * 5.00
+
+  // Calculate real delivery fee: if there are store groups, use fixed R$5 per group (since we don't have per-store fee from Zustand)
+  // In a real scenario, store data would carry deliveryFee/freeDeliveryAbove
+  const deliveryFees = deliveryType === 'PICKUP' ? 0 : groups.length * 5.00
 
   // Calculate discount
   const discount = appliedCoupon === 'ACAI10' ? Math.round(subtotal * 0.10 * 100) / 100 : 0
-  const total = subtotal + deliveryFees - discount
+  const freteDiscount = appliedCoupon === 'FRETE5' ? 5.00 : 0
+  const total = Math.max(0, subtotal + deliveryFees - discount - freteDiscount)
 
   const currentStepIndex = stepLabels.findIndex(s => s.id === step)
-  
+
   const handleApplyCoupon = () => {
     setCouponError('')
     if (!couponCode.trim()) return
-    
+
     if (couponCode.toUpperCase() === 'ACAI10') {
       setAppliedCoupon(couponCode.toUpperCase())
       toast.success('Cupom ACAI10 aplicado! 10% de desconto')
@@ -148,15 +153,101 @@ export function CheckoutView() {
 
   const handlePlaceOrder = async () => {
     if (!termsAccepted) return
+    if (groups.length === 0) {
+      toast.error('Seu carrinho está vazio')
+      return
+    }
+
     setIsProcessing(true)
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setIsProcessing(false)
-    setStep('confirmation')
-    clearCart()
+
+    try {
+      // For each store group, create a separate order (multi-store checkout)
+      // For simplicity, if there's only one store, create one order
+      // If multiple stores, create an order for the first group
+      const primaryGroup = groups[0]
+      const orderItems = primaryGroup.items.map(item => ({
+        productId: item.productId,
+        productName: item.product.name,
+        productImage: item.product.images ? JSON.parse(item.product.images)[0] : null,
+        price: item.product.price,
+        quantity: item.quantity,
+      }))
+
+      const deliveryAddressStr = deliveryType === 'DELIVERY'
+        ? `${address.street}, ${address.number}${address.complement ? ` - ${address.complement}` : ''}, ${address.neighborhood}, ${address.city} - ${address.state}${address.zip ? ` (${address.zip})` : ''}${address.reference ? ` [${address.reference}]` : ''}`
+        : null
+
+      const requestBody: any = {
+        storeId: primaryGroup.storeId,
+        items: orderItems,
+        deliveryType,
+        deliveryAddress: deliveryAddressStr,
+        paymentMethod: payment,
+        notes: '',
+        discount: discount + freteDiscount,
+      }
+
+      // If user is authenticated, the API will use session; otherwise pass accountId
+      if (currentUser?.id) {
+        requestBody.accountId = currentUser.id
+      }
+
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        const errorMsg = data.error || 'Erro ao criar pedido. Tente novamente.'
+        toast.error(errorMsg)
+        setIsProcessing(false)
+        return
+      }
+
+      if (data.success && data.order) {
+        setCreatedOrder(data.order)
+        clearCart()
+        setStep('confirmation')
+        toast.success('Pedido criado com sucesso!')
+      } else {
+        toast.error('Erro inesperado ao criar pedido')
+        setIsProcessing(false)
+      }
+    } catch {
+      toast.error('Erro de conexão. Verifique sua internet e tente novamente.')
+      setIsProcessing(false)
+    }
+  }
+
+  const handleViewOrder = () => {
+    if (createdOrder) {
+      selectOrder({
+        id: createdOrder.id,
+        orderNumber: createdOrder.orderNumber,
+        storeId: createdOrder.storeId,
+        storeName: createdOrder.storeName,
+        status: createdOrder.status,
+        subtotal: createdOrder.subtotal,
+        deliveryFee: createdOrder.deliveryFee,
+        discount: createdOrder.discount,
+        total: createdOrder.total,
+        paymentMethod: createdOrder.paymentMethod,
+        deliveryType: createdOrder.deliveryType,
+        createdAt: createdOrder.createdAt,
+        items: createdOrder.items,
+      })
+      navigate('order-detail')
+    } else {
+      navigate('orders')
+    }
   }
 
   const canProceed = () => {
     if (step === 'address') {
+      if (deliveryType === 'PICKUP') return true
       return address.street && address.number && address.neighborhood
     }
     if (step === 'payment') {
@@ -164,7 +255,7 @@ export function CheckoutView() {
     }
     return true
   }
-  
+
   if (step === 'confirmation') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24">
@@ -186,14 +277,14 @@ export function CheckoutView() {
           {/* Confetti burst around the checkmark */}
           <ConfettiBurst />
         </div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
           className="text-center"
         >
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
@@ -207,24 +298,58 @@ export function CheckoutView() {
             transition={{ delay: 0.7 }}
             className="text-muted-foreground mb-1"
           >
-            Seu pedido #DP{Date.now().toString().slice(-6)} foi realizado com sucesso.
+            Seu pedido <span className="font-semibold text-primary">#{createdOrder?.orderNumber || 'DP---'}</span> foi realizado com sucesso.
           </motion.p>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
-            className="text-sm text-muted-foreground mb-8"
+            className="text-sm text-muted-foreground mb-4"
           >
             Você receberá atualizações sobre o status do seu pedido.
           </motion.p>
+
+          {/* Order summary card */}
+          {createdOrder && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              className="bg-card rounded-xl border border-border p-4 mb-6 text-left max-w-sm mx-auto"
+            >
+              <p className="text-xs text-muted-foreground mb-2">{createdOrder.storeName}</p>
+              <div className="space-y-1.5 text-sm">
+                {createdOrder.items?.map((item: any, idx: number) => (
+                  <div key={idx} className="flex justify-between">
+                    <span className="text-muted-foreground">{item.quantity}x {item.productName}</span>
+                    <span className="font-medium">{formatBRL(item.total)}</span>
+                  </div>
+                ))}
+                <Separator className="my-2" />
+                <div className="flex justify-between font-bold">
+                  <span>Total</span>
+                  <span className="text-primary">{formatBRL(createdOrder.total)}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
+                <Badge variant="secondary" className="text-[10px]">
+                  {createdOrder.deliveryType === 'PICKUP' ? 'Retirada' : 'Entrega'}
+                </Badge>
+                <Badge variant="secondary" className="text-[10px]">
+                  {paymentMethods.find(p => p.id === createdOrder.paymentMethod)?.label || createdOrder.paymentMethod}
+                </Badge>
+              </div>
+            </motion.div>
+          )}
+
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
+            transition={{ delay: 1.0 }}
             className="flex gap-3 justify-center"
           >
-            <Button variant="outline" onClick={() => navigate('orders')} className="h-11">
-              Ver Pedidos
+            <Button variant="outline" onClick={handleViewOrder} className="h-11">
+              Ver Pedido
             </Button>
             <Button onClick={() => navigate('home')} className="bg-primary text-primary-foreground h-11 btn-glow">
               Continuar Comprando
@@ -234,7 +359,7 @@ export function CheckoutView() {
       </div>
     )
   }
-  
+
   return (
     <div className="min-h-screen pb-28 md:pb-4">
       {/* Header */}
@@ -245,8 +370,8 @@ export function CheckoutView() {
           </Button>
           <div className="flex-1">
             <h1 className="text-lg font-bold text-shadow-sm">Finalizar Pedido</h1>
-            
-            {/* Step indicator using progress-steps CSS */}
+
+            {/* Step indicator */}
             <div className="progress-steps mt-2.5">
               {stepLabels.map((s, i) => {
                 const isCompleted = i < currentStepIndex
@@ -255,8 +380,8 @@ export function CheckoutView() {
                   <div key={s.id} className="flex items-center flex-1">
                     <div className="step">
                       <motion.div
-                        animate={isCurrent ? { scale: [1, 1.12, 1] } : {}}
-                        transition={{ duration: 0.4, type: 'spring', stiffness: 400, damping: 20 }}
+                        animate={isCurrent ? { scale: [1, 1.15, 1] } : {}}
+                        transition={{ duration: 0.5, type: 'spring', stiffness: 300, damping: 20 }}
                         className={`step-dot ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}
                       >
                         {isCompleted ? <Check className="h-3.5 w-3.5" /> : s.num}
@@ -277,7 +402,7 @@ export function CheckoutView() {
           </div>
         </div>
       </div>
-      
+
       <div className="p-4 max-w-3xl mx-auto">
         <AnimatePresence mode="wait">
           {step === 'address' && (
@@ -289,17 +414,17 @@ export function CheckoutView() {
                   <motion.button
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => setDeliveryType('delivery')}
+                    onClick={() => setDeliveryType('DELIVERY')}
                     className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
-                      deliveryType === 'delivery' 
-                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]' 
+                      deliveryType === 'DELIVERY'
+                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]'
                         : 'border-border hover:border-primary/30 hover:shadow-sm'
                     }`}
                   >
-                    <Truck className={`h-6 w-6 mb-2 transition-colors ${deliveryType === 'delivery' ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <Truck className={`h-6 w-6 mb-2 transition-colors ${deliveryType === 'DELIVERY' ? 'text-primary' : 'text-muted-foreground'}`} />
                     <p className="font-semibold text-sm">Entrega</p>
                     <p className="text-xs text-muted-foreground">Receba em casa</p>
-                    {deliveryType === 'delivery' && (
+                    {deliveryType === 'DELIVERY' && (
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -314,17 +439,17 @@ export function CheckoutView() {
                   <motion.button
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => setDeliveryType('pickup')}
+                    onClick={() => setDeliveryType('PICKUP')}
                     className={`p-4 rounded-xl border-2 text-left transition-all duration-200 relative ${
-                      deliveryType === 'pickup' 
-                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]' 
+                      deliveryType === 'PICKUP'
+                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]'
                         : 'border-border hover:border-primary/30 hover:shadow-sm'
                     }`}
                   >
-                    <Store className={`h-6 w-6 mb-2 transition-colors ${deliveryType === 'pickup' ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <Store className={`h-6 w-6 mb-2 transition-colors ${deliveryType === 'PICKUP' ? 'text-primary' : 'text-muted-foreground'}`} />
                     <p className="font-semibold text-sm">Retirada</p>
                     <p className="text-xs text-muted-foreground">Retire na loja</p>
-                    {deliveryType === 'pickup' && (
+                    {deliveryType === 'PICKUP' && (
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -338,8 +463,8 @@ export function CheckoutView() {
                   </motion.button>
                 </div>
               </div>
-              
-              {deliveryType === 'delivery' && (
+
+              {deliveryType === 'DELIVERY' && (
                 <div className="space-y-4">
                   <h3 className="font-semibold">Endereço de entrega</h3>
 
@@ -364,8 +489,8 @@ export function CheckoutView() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="sm:col-span-2">
                           <Label className="text-xs text-muted-foreground">Rua / Avenida *</Label>
-                          <Input 
-                            placeholder="Ex: Rua Principal" 
+                          <Input
+                            placeholder="Ex: Rua Principal"
                             value={address.street}
                             onChange={(e) => setAddress({...address, street: e.target.value})}
                             className="mt-1"
@@ -373,8 +498,8 @@ export function CheckoutView() {
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">Número *</Label>
-                          <Input 
-                            placeholder="Ex: 123" 
+                          <Input
+                            placeholder="Ex: 123"
                             value={address.number}
                             onChange={(e) => setAddress({...address, number: e.target.value})}
                             className="mt-1"
@@ -382,8 +507,8 @@ export function CheckoutView() {
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">Complemento</Label>
-                          <Input 
-                            placeholder="Ex: Apt 4B" 
+                          <Input
+                            placeholder="Ex: Apt 4B"
                             value={address.complement}
                             onChange={(e) => setAddress({...address, complement: e.target.value})}
                             className="mt-1"
@@ -391,8 +516,8 @@ export function CheckoutView() {
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">Bairro *</Label>
-                          <Input 
-                            placeholder="Ex: Centro" 
+                          <Input
+                            placeholder="Ex: Centro"
                             value={address.neighborhood}
                             onChange={(e) => setAddress({...address, neighborhood: e.target.value})}
                             className="mt-1"
@@ -400,8 +525,8 @@ export function CheckoutView() {
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">CEP</Label>
-                          <Input 
-                            placeholder="Ex: 68555-000" 
+                          <Input
+                            placeholder="Ex: 68555-000"
                             value={address.zip}
                             onChange={(e) => setAddress({...address, zip: e.target.value})}
                             className="mt-1"
@@ -409,7 +534,7 @@ export function CheckoutView() {
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">Cidade</Label>
-                          <Input 
+                          <Input
                             value={address.city}
                             onChange={(e) => setAddress({...address, city: e.target.value})}
                             className="mt-1"
@@ -417,7 +542,7 @@ export function CheckoutView() {
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">Estado</Label>
-                          <Input 
+                          <Input
                             value={address.state}
                             onChange={(e) => setAddress({...address, state: e.target.value})}
                             className="mt-1"
@@ -425,8 +550,8 @@ export function CheckoutView() {
                         </div>
                         <div className="sm:col-span-2">
                           <Label className="text-xs text-muted-foreground">Referência</Label>
-                          <Input 
-                            placeholder="Ex: Próximo ao mercado" 
+                          <Input
+                            placeholder="Ex: Próximo ao mercado"
                             value={address.reference}
                             onChange={(e) => setAddress({...address, reference: e.target.value})}
                             className="mt-1"
@@ -437,9 +562,9 @@ export function CheckoutView() {
                   </Card>
                 </div>
               )}
-              
-              <Button 
-                className="w-full h-12 mt-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-shine btn-glow ripple-effect reveal-up" 
+
+              <Button
+                className="w-full h-12 mt-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-shine btn-glow ripple-effect reveal-up rounded-xl"
                 style={{ animationDelay: '0.3s' }}
                 onClick={() => setStep('payment')}
                 disabled={!canProceed()}
@@ -450,12 +575,12 @@ export function CheckoutView() {
               </div>
             </motion.div>
           )}
-          
+
           {step === 'payment' && (
             <motion.div key="payment" initial={{ opacity: 0, x: 20, filter: 'blur(4px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, x: -20, filter: 'blur(4px)' }} transition={{ duration: 0.35 }}>
               <div className="reveal-up" style={{ animationDelay: '0.1s' }}>
               {/* Delivery time selector */}
-              {deliveryType === 'delivery' && (
+              {deliveryType === 'DELIVERY' && (
                 <div className="mb-6">
                   <h3 className="font-semibold mb-3 flex items-center gap-1.5">
                     <Clock className="h-4 w-4 text-primary" />
@@ -471,8 +596,8 @@ export function CheckoutView() {
                           whileTap={{ scale: 0.97 }}
                           onClick={() => setDeliveryTime(option.id)}
                           className={`p-3 rounded-xl border-2 text-left transition-all duration-200 relative ${
-                            deliveryTime === option.id 
-                              ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]' 
+                            deliveryTime === option.id
+                              ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]'
                               : 'border-border hover:border-primary/30 hover:shadow-sm'
                           }`}
                         >
@@ -480,7 +605,7 @@ export function CheckoutView() {
                           <p className="font-semibold text-xs">{option.label}</p>
                           <p className="text-[10px] text-muted-foreground">{option.desc}</p>
                           {deliveryTime === option.id && (
-                            <motion.div 
+                            <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
                               transition={{ type: 'spring', stiffness: 500, damping: 25 }}
@@ -510,8 +635,8 @@ export function CheckoutView() {
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
                     className={`p-4 rounded-xl border-2 text-left transition-all duration-200 relative glass-border ${
-                      payment === method.id 
-                        ? 'border-primary bg-primary/5 shadow-[0_2px_16px_oklch(0.45_0.1_155/0.1)]' 
+                      payment === method.id
+                        ? 'border-primary bg-primary/5 shadow-[0_2px_16px_oklch(0.45_0.1_155/0.1)]'
                         : 'border-border hover:border-primary/30'
                     }`}
                   >
@@ -521,7 +646,7 @@ export function CheckoutView() {
                     <p className="font-semibold text-sm">{method.label}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{method.desc}</p>
                     {payment === method.id && (
-                      <motion.div 
+                      <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: 'spring', stiffness: 500, damping: 25 }}
@@ -569,8 +694,8 @@ export function CheckoutView() {
                 ) : (
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <Input 
-                        placeholder="Digite o código do cupom" 
+                      <Input
+                        placeholder="Digite o código do cupom"
                         value={couponCode}
                         onChange={(e) => { setCouponCode(e.target.value); setCouponError('') }}
                         className={couponError ? 'border-destructive' : ''}
@@ -584,7 +709,7 @@ export function CheckoutView() {
                 )}
                 <p className="text-[10px] text-muted-foreground mt-2">Experimente: ACAI10 ou FRETE5</p>
               </div>
-              
+
               {/* Order summary card */}
               <Card className="mt-6 gradient-border-animated bg-card rounded-xl overflow-hidden">
                 <CardContent className="p-4">
@@ -637,31 +762,31 @@ export function CheckoutView() {
 
               {/* Terms */}
               <div className="mt-4 flex items-start gap-3">
-                <Checkbox 
-                  id="terms" 
+                <Checkbox
+                  id="terms"
                   checked={termsAccepted}
                   onCheckedChange={(checked) => setTermsAccepted(checked === true)}
                   className="mt-0.5"
                 />
                 <Label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
                   Concordo com os <button className="text-primary underline">Termos de Uso</button> e a{' '}
-                  <button className="text-primary underline">Política de Privacidade</button> do DomPlace. 
+                  <button className="text-primary underline">Política de Privacidade</button> do DomPlace.
                   Entendo que o pedido será processado após a confirmação do pagamento.
                 </Label>
               </div>
-              
+
               <div className="flex gap-3 mt-6">
                 <Button variant="outline" className="flex-1 h-12" onClick={() => setStep('address')}>
                   Voltar
                 </Button>
-                <Button 
-                  className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect"
+                <Button
+                  className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl"
                   onClick={handlePlaceOrder}
                   disabled={isProcessing || !termsAccepted}
                 >
                   {isProcessing ? (
                     <div className="flex items-center gap-2">
-                      <div className="h-5 w-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                      <Loader2 className="h-5 w-5 animate-spin" />
                       Processando...
                     </div>
                   ) : (

@@ -3279,3 +3279,381 @@
   background: oklch(0.20 0.02 150 / 0.4);
   border: 1px solid oklch(1 0 0 / 0.04);
 }
+
+/* ==============================
+   LOADING SKELETON (animated shimmer for loading states)
+   ============================== */
+.loading-skeleton {
+  background: linear-gradient(
+    90deg,
+    oklch(0.95 0.005 120) 0%,
+    oklch(0.95 0.005 120) 40%,
+    oklch(0.92 0.015 120) 50%,
+    oklch(0.95 0.005 120) 60%,
+    oklch(0.95 0.005 120) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.8s ease-in-out infinite;
+  border-radius: 8px;
+}
+.dark .loading-skeleton {
+  background: linear-gradient(
+    90deg,
+    oklch(0.22 0.015 150) 0%,
+    oklch(0.22 0.015 150) 40%,
+    oklch(0.28 0.02 150) 50%,
+    oklch(0.22 0.015 150) 60%,
+    oklch(0.22 0.015 150) 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* ==============================
+   CARD HOVER LIFT (subtle shadow + translateY)
+   ============================== */
+.card-hover-lift {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  will-change: transform, box-shadow;
+}
+.card-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 4px 8px oklch(0 0 0 / 0.04),
+    0 8px 16px oklch(0 0 0 / 0.06),
+    0 16px 32px oklch(0 0 0 / 0.04);
+  border-color: oklch(0.45 0.1 155 / 0.15);
+}
+.dark .card-hover-lift:hover {
+  box-shadow: 
+    0 4px 8px oklch(0 0 0 / 0.2),
+    0 8px 16px oklch(0 0 0 / 0.15),
+    0 16px 32px oklch(0 0 0 / 0.1);
+  border-color: oklch(0.55 0.12 155 / 0.2);
+}
+
+/* ==============================
+   TEXT BALANCE (better text wrapping)
+   ============================== */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* ==============================
+   SCROLLBAR HIDE (cleaner mobile scrolling)
+   ============================== */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ==============================
+   BADGE DOT (small colored dot indicator)
+   ============================== */
+.badge-dot {
+  position: relative;
+}
+.badge-dot::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: oklch(0.577 0.245 27.325);
+  border: 2px solid oklch(1 0 0);
+  pointer-events: none;
+}
+.dark .badge-dot::after {
+  border-color: oklch(0.20 0.02 150);
+}
+
+/* ==============================
+   INPUT FOCUS RING (consistent focus styling)
+   ============================== */
+.input-focus-ring {
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.input-focus-ring:focus {
+  box-shadow: 0 0 0 3px oklch(0.45 0.1 155 / 0.12), 0 0 0 1px oklch(0.45 0.1 155 / 0.3);
+  border-color: oklch(0.45 0.1 155 / 0.5);
+}
+.dark .input-focus-ring:focus {
+  box-shadow: 0 0 0 3px oklch(0.55 0.12 155 / 0.15), 0 0 0 1px oklch(0.55 0.12 155 / 0.4);
+  border-color: oklch(0.55 0.12 155 / 0.5);
+}
+
+/* ==============================
+   TOOLTIP BUBBLE (custom tooltip styling)
+   ============================== */
+.tooltip-bubble {
+  position: relative;
+  background: oklch(0.20 0.02 150 / 0.92);
+  color: oklch(0.95 0.01 120);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.tooltip-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid oklch(0.20 0.02 150 / 0.92);
+}
+.dark .tooltip-bubble {
+  background: oklch(0.30 0.02 150 / 0.92);
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.3);
+}
+.dark .tooltip-bubble::after {
+  border-top-color: oklch(0.30 0.02 150 / 0.92);
+}
+
+/* ==============================
+   HOVER GRADIENT OVERLAY (subtle overlay on hover)
+   ============================== */
+.hover-gradient-overlay {
+  position: relative;
+  overflow: hidden;
+}
+.hover-gradient-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    oklch(0.45 0.1 155 / 0.06) 0%,
+    oklch(0.78 0.16 70 / 0.04) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+}
+.dark .hover-gradient-overlay::after {
+  background: linear-gradient(
+    135deg,
+    oklch(0.55 0.12 155 / 0.08) 0%,
+    oklch(0.72 0.16 70 / 0.06) 100%
+  );
+}
+.hover-gradient-overlay:hover::after {
+  opacity: 1;
+}
+
+/* ==============================
+   PRICE ANIMATE (scale-bounce for price changes)
+   ============================== */
+@keyframes price-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.price-animate {
+  animation: price-pop 0.3s ease-out;
+}
+
+/* ==============================
+   STATUS DOT PULSE (open/closed indicator)
+   ============================== */
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.65 0.2 145 / 0.5); }
+  50% { box-shadow: 0 0 0 4px oklch(0.65 0.2 145 / 0); }
+}
+.status-dot-open {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: oklch(0.65 0.2 145);
+  animation: status-pulse 2s ease-in-out infinite;
+}
+.status-dot-closed {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: oklch(0.577 0.245 27.325);
+}
+
+/* ==============================
+   QUANTITY CONTROL (styled + / - buttons)
+   ============================== */
+.qty-control-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid oklch(0.90 0.015 120);
+  background: oklch(1 0 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: oklch(0.30 0.02 150);
+}
+.qty-control-btn:hover {
+  border-color: oklch(0.45 0.1 155 / 0.4);
+  background: oklch(0.45 0.1 155 / 0.05);
+  color: oklch(0.35 0.08 155);
+}
+.qty-control-btn:active {
+  transform: scale(0.92);
+}
+.dark .qty-control-btn {
+  border-color: oklch(0.35 0.02 150);
+  background: oklch(0.25 0.02 150);
+  color: oklch(0.85 0.01 120);
+}
+.dark .qty-control-btn:hover {
+  border-color: oklch(0.55 0.12 155 / 0.4);
+  background: oklch(0.55 0.12 155 / 0.1);
+  color: oklch(0.75 0.12 155);
+}
+
+/* ==============================
+   AVATAR GRADIENT RING (for profile pictures)
+   ============================== */
+.avatar-gradient-ring {
+  padding: 3px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70), oklch(0.55 0.08 140));
+  background-size: 200% 200%;
+  animation: avatar-ring-rotate 4s ease-in-out infinite;
+}
+@keyframes avatar-ring-rotate {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ==============================
+   SECTION DIVIDER (subtle gradient divider)
+   ============================== */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, oklch(0.45 0.1 155 / 0.12), oklch(0.78 0.16 70 / 0.08), transparent);
+}
+.dark .section-divider {
+  background: linear-gradient(90deg, transparent, oklch(0.55 0.12 155 / 0.15), oklch(0.72 0.16 70 / 0.1), transparent);
+}
+
+/* ==============================
+   MENU ITEM HOVER (elevated hover for list items)
+   ============================== */
+.menu-item-hover {
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+.menu-item-hover:hover {
+  background: oklch(0.45 0.1 155 / 0.03);
+  border-color: oklch(0.45 0.1 155 / 0.08);
+  box-shadow: 0 1px 4px oklch(0 0 0 / 0.03);
+}
+.dark .menu-item-hover:hover {
+  background: oklch(0.55 0.12 155 / 0.06);
+  border-color: oklch(0.55 0.12 155 / 0.12);
+  box-shadow: 0 1px 4px oklch(0 0 0 / 0.15);
+}
+
+/* ==============================
+   CARD SHIMMER (shimmer loading card with gradient overlay)
+   ============================== */
+.card-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.card-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    oklch(1 0 0 / 0.4) 45%,
+    oklch(1 0 0 / 0.6) 50%,
+    oklch(1 0 0 / 0.4) 55%,
+    transparent 60%
+  );
+  background-size: 250% 100%;
+  animation: card-shimmer-slide 2.5s ease-in-out infinite;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 5;
+}
+.dark .card-shimmer::before {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    oklch(1 0 0 / 0.06) 45%,
+    oklch(1 0 0 / 0.1) 50%,
+    oklch(1 0 0 / 0.06) 55%,
+    transparent 60%
+  );
+  background-size: 250% 100%;
+}
+@keyframes card-shimmer-slide {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ==============================
+   STATUS PULSE (pulsing animation for status indicators)
+   ============================== */
+.status-pulse {
+  animation: status-pulse-anim 2s ease-in-out infinite;
+}
+@keyframes status-pulse-anim {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* ==============================
+   HOVER SCALE SM (subtle scale on hover)
+   ============================== */
+.hover-scale-sm {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-scale-sm:hover {
+  transform: scale(1.02);
+}
+.dark .hover-scale-sm:hover {
+  transform: scale(1.02);
+}
+
+/* ==============================
+   SAFE AREA TOP (mobile notch support)
+   ============================== */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* ==============================
+   CART BADGE ENHANCED (spring + ping combo)
+   ============================== */
+.cart-badge-enhanced {
+  position: relative;
+}
+.cart-badge-enhanced::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: oklch(0.78 0.16 70 / 0.5);
+  animation: cart-badge-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  z-index: -1;
+}
+@keyframes cart-badge-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  70%, 100% { transform: scale(2.2); opacity: 0; }
+}

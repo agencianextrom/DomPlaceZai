@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
+// GET: Listar lojas com filtros
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -64,6 +65,95 @@ export async function GET(request: Request) {
       limit,
       offset,
     })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+// POST: Criar nova loja
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const {
+      accountId,
+      name,
+      description,
+      category,
+      phone,
+      whatsapp,
+      address,
+      neighborhood,
+      opensAt,
+      closesAt,
+      openDays,
+      deliveryFee,
+      freeDeliveryAbove,
+      minOrderValue,
+      pixKey,
+      socialMedia,
+      logo,
+      coverImage,
+    } = body
+
+    // Validação
+    if (!accountId || !name || !category) {
+      return NextResponse.json(
+        { error: 'ID da conta, nome e categoria são obrigatórios' },
+        { status: 400 }
+      )
+    }
+
+    // Verificar se a conta existe
+    const account = await db.account.findUnique({ where: { id: accountId } })
+    if (!account) {
+      return NextResponse.json({ error: 'Conta não encontrada' }, { status: 404 })
+    }
+
+    // Verificar se a conta já tem loja
+    const existingStore = await db.store.findUnique({ where: { accountId } })
+    if (existingStore) {
+      return NextResponse.json(
+        { error: 'Esta conta já possui uma loja cadastrada' },
+        { status: 400 }
+      )
+    }
+
+    // Gerar slug
+    const baseSlug = name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+
+    const slug = `${baseSlug}-${Date.now()}`
+
+    const store = await db.store.create({
+      data: {
+        accountId,
+        name,
+        slug,
+        description: description || null,
+        category,
+        phone: phone || null,
+        whatsapp: whatsapp || null,
+        address: address || null,
+        neighborhood: neighborhood || null,
+        opensAt: opensAt || null,
+        closesAt: closesAt || null,
+        openDays: openDays || '1,2,3,4,5,6,7',
+        deliveryFee: deliveryFee ? parseFloat(deliveryFee) : 0,
+        freeDeliveryAbove: freeDeliveryAbove ? parseFloat(freeDeliveryAbove) : null,
+        minOrderValue: minOrderValue ? parseFloat(minOrderValue) : null,
+        pixKey: pixKey || null,
+        socialMedia: socialMedia || null,
+        logo: logo || null,
+        coverImage: coverImage || null,
+        status: 'PENDING_APPROVAL',
+      },
+    })
+
+    return NextResponse.json({ success: true, store }, { status: 201 })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

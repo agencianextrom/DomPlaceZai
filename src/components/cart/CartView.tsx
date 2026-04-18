@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper, Heart, Edit3, Share2, Clock } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper, Heart, Edit3, Share2, Clock, AlertTriangle, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -41,6 +41,7 @@ const storeDeliveryTimes: Record<string, string> = {
 }
 
 const FREE_DELIVERY_THRESHOLD = 50
+const LOW_STOCK_THRESHOLD = 5
 
 export function CartView() {
   const {
@@ -53,23 +54,98 @@ export function CartView() {
     toggleFavoriteProduct,
     isFavoriteProduct,
     openQuickAdd,
+    currentUser,
   } = useAppStore()
 
   const [suggestionScrollPos, setSuggestionScrollPos] = useState(0)
+  const [stockMap, setStockMap] = useState<Record<string, number>>({})
+  const [isLoadingStock, setIsLoadingStock] = useState(false)
+
   const groups = getCartGroupedByStore()
   const subtotal = getCartTotal()
   const deliveryFees = groups.length * 5.00
   const total = subtotal + deliveryFees
-  
+
   const freeDeliveryProgress = Math.min((subtotal / FREE_DELIVERY_THRESHOLD) * 100, 100)
   const hasFreeDelivery = subtotal >= FREE_DELIVERY_THRESHOLD
   const remainingForFree = Math.max(FREE_DELIVERY_THRESHOLD - subtotal, 0)
+
+  // Fetch real stock from API
+  const fetchStock = useCallback(async () => {
+    if (cartItems.length === 0) return
+    setIsLoadingStock(true)
+    try {
+      const productIds = [...new Set(cartItems.map(item => item.productId))]
+      const idsParam = productIds.join(',')
+      const response = await fetch(`/api/products?ids=${idsParam}`)
+      if (response.ok) {
+        const data = await response.json()
+        if (data.products) {
+          const map: Record<string, number> = {}
+          data.products.forEach((p: any) => {
+            map[p.id] = p.stock
+          })
+          setStockMap(map)
+        }
+      }
+    } catch {
+      // Silently fail - use cart data
+    } finally {
+      setIsLoadingStock(false)
+    }
+  }, [cartItems])
+
+  useEffect(() => {
+    fetchStock()
+  }, [fetchStock])
+
+  // Sync cart to DB when user is authenticated
+  useEffect(() => {
+    if (!currentUser?.id || cartItems.length === 0) return
+
+    const syncCart = async () => {
+      try {
+        for (const item of cartItems) {
+          await fetch('/api/cart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              productId: item.productId,
+              quantity: item.quantity,
+            }),
+          })
+        }
+      } catch {
+        // Silent fail - cart stays in Zustand
+      }
+    }
+
+    syncCart()
+  }, [currentUser?.id, cartItems.length]) // Sync on auth change or item count change
+
+  const getRealStock = (productId: string): number => {
+    if (Object.keys(stockMap).length > 0) {
+      return stockMap[productId] ?? 0
+    }
+    // Fallback to product data in cart
+    const item = cartItems.find(i => i.productId === productId)
+    return item?.product?.stock ?? 0
+  }
+
+  const isLowStock = (productId: string): boolean => {
+    const stock = getRealStock(productId)
+    return stock > 0 && stock <= LOW_STOCK_THRESHOLD
+  }
+
+  const isOutOfStock = (productId: string): boolean => {
+    return getRealStock(productId) <= 0
+  }
 
   const scrollSuggestions = (direction: 'left' | 'right') => {
     const container = document.getElementById('suggestions-scroll')
     if (!container) return
     const scrollAmount = 220
-    const newScroll = direction === 'left' 
+    const newScroll = direction === 'left'
       ? Math.max(0, suggestionScrollPos - scrollAmount)
       : suggestionScrollPos + scrollAmount
     container.scrollTo({ left: newScroll, behavior: 'smooth' })
@@ -94,7 +170,28 @@ export function CartView() {
     window.open(`https://wa.me/?text=${encoded}`, '_blank')
     toast.success('Link do carrinho copiado!')
   }
-  
+
+  const handleCheckout = () => {
+    // Validate cart: check for out-of-stock items
+    const outOfStockItems = cartItems.filter(item => isOutOfStock(item.productId))
+    if (outOfStockItems.length > 0) {
+      toast.error(`Alguns itens estão fora de estoque: ${outOfStockItems.map(i => i.product.name).join(', ')}`)
+      return
+    }
+
+    // Check for quantity exceeding stock
+    const overStockItems = cartItems.filter(item => item.quantity > getRealStock(item.productId))
+    if (overStockItems.length > 0) {
+      const first = overStockItems[0]
+      const available = getRealStock(first.productId)
+      updateCartQuantity(first.productId, available)
+      toast.warning(`"${first.product.name}" ajustado para ${available} unidades (estoque disponível)`)
+      return
+    }
+
+    navigate('checkout')
+  }
+
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24 relative overflow-hidden">
@@ -102,7 +199,7 @@ export function CartView() {
         <div className="morph-blob absolute top-1/4 -left-20 w-48 h-48 bg-primary/5" style={{ animationDelay: '-2s' }} />
         <div className="morph-blob absolute bottom-1/4 -right-16 w-36 h-36 bg-accent/5" style={{ animationDelay: '-5s' }} />
 
-        <motion.div 
+        <motion.div
           initial={{ scale: 0.6, opacity: 0, rotate: -10 }}
           animate={{ scale: 1, opacity: 1, rotate: 0 }}
           transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
@@ -120,7 +217,7 @@ export function CartView() {
               <ShoppingBag className="h-16 w-16 text-primary/40" />
             </motion.div>
           </motion.div>
-          
+
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
@@ -131,7 +228,7 @@ export function CartView() {
               <Sparkles className="h-4 w-4 text-accent" />
             </div>
           </motion.div>
-          
+
           <motion.div
             animate={{ rotate: -360 }}
             transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
@@ -143,7 +240,7 @@ export function CartView() {
             </div>
           </motion.div>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -167,7 +264,11 @@ export function CartView() {
       </div>
     )
   }
-  
+
+  // Check if any items are out of stock
+  const hasOutOfStock = cartItems.some(item => isOutOfStock(item.productId))
+  const hasQuantityIssues = cartItems.some(item => item.quantity > getRealStock(item.productId))
+
   return (
     <div className="min-h-screen pb-48">
       {/* Header */}
@@ -178,6 +279,9 @@ export function CartView() {
             <Badge variant="secondary" className="text-xs">{cartItems.length} {cartItems.length === 1 ? 'item' : 'itens'}</Badge>
           </h1>
           <div className="flex items-center gap-1">
+            {isLoadingStock && (
+              <Loader2 className="h-4 w-4 text-muted-foreground animate-spin mr-1" />
+            )}
             {/* Share cart button */}
             <motion.div whileTap={{ scale: 0.9 }} className="mr-1">
               <Button
@@ -195,8 +299,22 @@ export function CartView() {
           </div>
         </div>
       </div>
-      
+
       <div className="p-4 space-y-4">
+        {/* Stock warning banner */}
+        {hasOutOfStock && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-200 dark:border-red-800/30 p-3 flex items-center gap-2"
+          >
+            <AlertTriangle className="h-4 w-4 text-red-500 shrink-0" />
+            <p className="text-xs text-red-700 dark:text-red-400">
+              Alguns itens estão fora de estoque. Remova-os antes de finalizar.
+            </p>
+          </motion.div>
+        )}
+
         {/* Free delivery progress banner */}
         {!hasFreeDelivery ? (
           <motion.div
@@ -260,8 +378,8 @@ export function CartView() {
           </div>
           <div id="suggestions-scroll" className="flex gap-3 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1">
             {suggestedProducts.map((product, index) => (
-              <motion.div 
-                key={product.id} 
+              <motion.div
+                key={product.id}
                 className="shrink-0 w-[150px]"
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -282,7 +400,7 @@ export function CartView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -100, transition: { duration: 0.3 } }}
-              className="bg-card rounded-xl border border-border overflow-hidden card-shine elevated-card"
+              className="bg-card rounded-xl border border-border/60 overflow-hidden card-shine elevated-card"
             >
               <div className="flex items-center gap-2 px-4 py-3 bg-secondary/30">
                 <Store className="h-4 w-4 text-primary" />
@@ -296,13 +414,16 @@ export function CartView() {
                   </Badge>
                 )}
               </div>
-              
+
               <div className="divide-y divide-border">
                 {group.items.map((item, index) => {
                   const gradient = gradients[Math.abs(item.product.name.charCodeAt(0)) % gradients.length]
                   const icon = icons[Math.abs(item.product.name.charCodeAt(0)) % icons.length]
                   const isFav = isFavoriteProduct(item.productId)
-                  
+                  const outOfStock = isOutOfStock(item.productId)
+                  const lowStock = isLowStock(item.productId)
+                  const realStock = getRealStock(item.productId)
+
                   return (
                     <motion.div
                       key={item.productId}
@@ -310,10 +431,15 @@ export function CartView() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -60, transition: { duration: 0.25 } }}
                       transition={{ delay: index * 0.06, duration: 0.35 }}
-                      className="flex gap-3 p-4 cart-item-hover hover-glow-soft"
+                      className={`flex gap-3 p-4 cart-item-hover hover-glow-soft ${outOfStock ? 'opacity-60' : ''}`}
                     >
-                      <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0`}>
+                      <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0 relative`}>
                         {icon}
+                        {outOfStock && (
+                          <div className="absolute inset-0 bg-background/60 rounded-lg flex items-center justify-center">
+                            <span className="text-[10px] font-bold text-destructive">Esgotado</span>
+                          </div>
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
@@ -339,16 +465,26 @@ export function CartView() {
                           </div>
                         </div>
                         <p className="text-sm font-bold text-primary mt-1">{formatBRL(item.product.price)}</p>
+
+                        {/* Stock warning */}
+                        {lowStock && !outOfStock && (
+                          <p className="text-[10px] text-amber-600 dark:text-amber-400 flex items-center gap-1 mt-0.5">
+                            <AlertTriangle className="h-2.5 w-2.5" />
+                            Apenas {realStock} restante{realStock !== 1 ? 's' : ''}
+                          </p>
+                        )}
+
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center gap-2">
                             <motion.button
                               whileTap={{ scale: 0.88 }}
                               onClick={() => updateCartQuantity(item.productId, item.quantity - 1)}
-                              className="h-8 w-8 rounded-lg border border-border flex items-center justify-center hover:bg-secondary transition-colors"
+                              disabled={outOfStock}
+                              className="qty-control-btn disabled:opacity-40"
                             >
                               <Minus className="h-3 w-3" />
                             </motion.button>
-                            <motion.span 
+                            <motion.span
                               key={item.quantity}
                               initial={{ scale: 1.3 }}
                               animate={{ scale: 1 }}
@@ -358,8 +494,15 @@ export function CartView() {
                             </motion.span>
                             <motion.button
                               whileTap={{ scale: 0.88 }}
-                              onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
-                              className="h-8 w-8 rounded-lg border border-border flex items-center justify-center hover:bg-secondary transition-colors"
+                              onClick={() => {
+                                if (item.quantity >= realStock) {
+                                  toast.warning(`Estoque máximo atingido: ${realStock} unidades`)
+                                  return
+                                }
+                                updateCartQuantity(item.productId, item.quantity + 1)
+                              }}
+                              disabled={outOfStock || item.quantity >= realStock}
+                              className="qty-control-btn disabled:opacity-40"
                             >
                               <Plus className="h-3 w-3" />
                             </motion.button>
@@ -380,7 +523,7 @@ export function CartView() {
                   )
                 })}
               </div>
-              
+
               <div className="px-4 py-3 bg-secondary/20 flex justify-between items-center">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <span>Subtotal da loja</span>
@@ -396,10 +539,10 @@ export function CartView() {
             </motion.div>
           ))}
         </AnimatePresence>
-        
+
         {/* Promo code widget */}
         <PromoCodeWidget />
-        
+
         {/* Order bump - only show if not yet at free delivery */}
         {!hasFreeDelivery && (
           <motion.div
@@ -413,7 +556,7 @@ export function CartView() {
           </motion.div>
         )}
       </div>
-      
+
       {/* Bottom summary */}
       <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-4 pb-20 md:pb-4">
         <div className="max-w-3xl mx-auto">
@@ -453,10 +596,11 @@ export function CartView() {
               </Button>
             </motion.div>
             <Button
-              className="flex-1 h-12 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl"
-              onClick={() => navigate('checkout')}
+              className="flex-1 h-12 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl shadow-lg shadow-primary/20"
+              onClick={handleCheckout}
+              disabled={hasOutOfStock}
             >
-              Finalizar Pedido
+              {hasOutOfStock ? 'Remover itens indisponíveis' : 'Finalizar Compra'}
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
           </div>

@@ -92,7 +92,7 @@ export function SearchView() {
               placeholder="Buscar produtos, lojas..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-9 h-11 search-pulse"
+              className="pl-9 pr-9 h-11 search-pulse input-focus-ring"
             />
             {hasQuery && (
               <motion.button 
@@ -136,8 +136,8 @@ export function SearchView() {
                       onClick={() => setActiveSort(f.id)}
                       className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
                         activeSort === f.id 
-                          ? 'bg-primary text-primary-foreground border-primary shadow-sm' 
-                          : 'bg-secondary text-muted-foreground border-transparent hover:bg-secondary/80 hover:text-foreground'
+                          ? 'bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/20' 
+                          : 'bg-secondary text-muted-foreground border-transparent hover:bg-secondary/80 hover:text-foreground hover:border-border/50'
                       }`}
                     >
                       <FilterIcon className="h-3 w-3" />
@@ -155,9 +155,14 @@ export function SearchView() {
       <div className="p-4">
         {/* Loading */}
         {isSearching && (
-          <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm text-muted-foreground animate-pulse-soft">Buscando...</p>
+          <div className="grid grid-cols-2 gap-3 py-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="aspect-square rounded-xl loading-skeleton" />
+                <div className="h-3 w-3/4 rounded loading-skeleton" />
+                <div className="h-3 w-1/2 rounded loading-skeleton" />
+              </div>
+            ))}
           </div>
         )}
         

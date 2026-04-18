@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type AppView = 'home' | 'search' | 'store' | 'product' | 'cart' | 'checkout' | 'orders' | 'profile' | 'order-detail' | 'favorites' | 'store-dashboard' | 'shopping-lists' | 'product-comparison' | 'notifications' | 'admin-dashboard' | 'support-center' | 'store-comparison'
+export type AppView = 'home' | 'search' | 'store' | 'product' | 'cart' | 'checkout' | 'orders' | 'profile' | 'order-detail' | 'favorites' | 'store-dashboard' | 'shopping-lists' | 'product-comparison' | 'notifications' | 'admin-dashboard' | 'support-center' | 'store-comparison' | 'driver-dashboard' | 'affiliate-dashboard'
 
 export interface StoreData {
   id: string
@@ -105,7 +105,44 @@ function saveToStorage<T>(key: string, value: T): void {
   }
 }
 
+export interface CurrentUser {
+  id?: string
+  email?: string | null
+  name?: string | null
+  role?: string
+  avatar?: string | null
+}
+
+// Chat message type (matches hook)
+export interface ChatMessageData {
+  id: string
+  orderId: string
+  senderId: string
+  receiverId: string | null
+  driverId: string | null
+  message: string
+  attachment: string | null
+  isRead: boolean
+  createdAt: string
+}
+
+// Tracking data type (matches hook)
+export interface TrackingData {
+  orderId: string
+  driverLocation: { lat: number; lng: number; heading: number; speed: number; accuracy: number } | null
+  eta: number
+  etaText: string
+  progress: number
+  status: string
+  statusLabel: string
+  driverName: string
+  driverVehicle: string
+}
+
 interface AppState {
+  // Auth
+  currentUser: CurrentUser | null
+  
   // Navigation
   currentView: AppView
   navigationHistory: AppView[]
@@ -135,6 +172,14 @@ interface AppState {
   
   // Product comparison
   compareProductIds: string[]
+  
+  // Chat
+  chatMessages: ChatMessageData[]
+  isChatConnected: boolean
+  
+  // Delivery tracking
+  trackingData: TrackingData | null
+  isTrackingConnected: boolean
   
   // UI
   isMobileMenuOpen: boolean
@@ -180,6 +225,10 @@ interface AppState {
   addRecentSearch: (query: string) => void
   clearRecentSearches: () => void
   
+  // Auth actions
+  setCurrentUser: (user: CurrentUser | null) => void
+  logoutUser: () => void
+  
   // UI actions
   toggleMobileMenu: () => void
   openAuthModal: () => void
@@ -195,9 +244,21 @@ interface AppState {
   toggleCompareProduct: (productId: string) => void
   clearComparison: () => void
   isComparing: (productId: string) => boolean
+  
+  // Chat actions
+  setChatMessages: (messages: ChatMessageData[]) => void
+  addChatMessage: (message: ChatMessageData) => void
+  setIsChatConnected: (connected: boolean) => void
+  
+  // Tracking actions
+  setTrackingData: (data: TrackingData | null) => void
+  setIsTrackingConnected: (connected: boolean) => void
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
+  // Auth
+  currentUser: null,
+  
   // Navigation
   currentView: 'home',
   navigationHistory: ['home'],
@@ -227,6 +288,14 @@ export const useAppStore = create<AppState>((set, get) => ({
   
   // Product comparison
   compareProductIds: [],
+  
+  // Chat
+  chatMessages: [],
+  isChatConnected: false,
+  
+  // Delivery tracking
+  trackingData: null,
+  isTrackingConnected: false,
   
   // UI
   isMobileMenuOpen: false,
@@ -369,6 +438,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ recentSearches: [] })
   },
   
+  // Auth actions
+  setCurrentUser: (user) => set({ currentUser: user }),
+  logoutUser: () => set({ currentUser: null }),
+  
   // UI actions
   toggleMobileMenu: () => set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen })),
   openAuthModal: () => set({ isAuthModalOpen: true }),
@@ -394,4 +467,17 @@ export const useAppStore = create<AppState>((set, get) => ({
   }),
   clearComparison: () => set({ compareProductIds: [] }),
   isComparing: (productId) => get().compareProductIds.includes(productId),
+  
+  // Chat actions
+  setChatMessages: (messages) => set({ chatMessages: messages }),
+  addChatMessage: (message) => set((state) => ({
+    chatMessages: state.chatMessages.some((m) => m.id === message.id)
+      ? state.chatMessages
+      : [...state.chatMessages, message],
+  })),
+  setIsChatConnected: (connected) => set({ isChatConnected: connected }),
+  
+  // Tracking actions
+  setTrackingData: (data) => set({ trackingData: data }),
+  setIsTrackingConnected: (connected) => set({ isTrackingConnected: connected }),
 }))

@@ -21,10 +21,10 @@ export function MobileNav() {
   
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-      {/* Glassmorphism top edge with gradient line */}
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none" />
-      <div className="absolute inset-x-0 -top-3 h-3 bg-gradient-to-b from-transparent to-background/60 pointer-events-none" />
-      <div className="bg-background/80 backdrop-blur-xl border-t border-border/40 relative">
+      {/* Top shadow edge + gradient accent */}
+      <div className="absolute inset-x-0 -top-2 h-2 bg-gradient-to-b from-transparent to-black/[0.04] pointer-events-none dark:from-transparent dark:to-black/10" />
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
+      <div className="bg-background/85 backdrop-blur-xl border-t border-border/30 relative shadow-[0_-1px_12px_oklch(0_0_0/0.04)] dark:shadow-[0_-1px_12px_oklch(0_0_0/0.15)]">
         {/* Active tab indicator (slides between tabs) */}
         <AnimatePresence>
           {activeTabX !== undefined && (
@@ -51,24 +51,23 @@ export function MobileNav() {
                     navigate(item.id as 'home')
                   }
                 }}
-                className="relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px]"
+                className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px] rounded-xl transition-colors duration-200 ${isActive ? 'bg-primary/[0.06]' : 'active:bg-secondary/60'}`}
               >
-                {/* Active glow background */}
                 {isActive && (
                   <motion.div
                     layoutId="mobile-nav-bg-left"
-                    className="absolute inset-x-1 -top-1 bottom-0 rounded-xl bg-primary/5"
+                    className="absolute inset-x-1 -top-1 bottom-0 rounded-xl bg-primary/[0.04]"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.2 }}
                   />
                 )}
                 <motion.div
-                  whileTap={{ scale: 0.78, rotate: -3 }}
+                  whileTap={{ scale: 0.85 }}
                   transition={{ type: 'spring', stiffness: 600, damping: 15 }}
-                  animate={isActive ? { scale: 1.12 } : { scale: 1 }}
+                  animate={isActive ? { scale: 1.1, y: -1 } : { scale: 1, y: 0 }}
                 >
-                  <item.icon className={`h-[22px] w-[22px] transition-all duration-200 ${isActive ? 'text-primary text-shadow-primary' : 'text-muted-foreground'}`} />
+                  <item.icon className={`h-[22px] w-[22px] transition-all duration-200 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
                 </motion.div>
                 <span className={`text-[10px] font-medium transition-all duration-200 leading-tight ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
                   {item.label}
@@ -117,24 +116,23 @@ export function MobileNav() {
                 key={item.id}
                 ref={(el) => { if (el && isActive) setActiveTabX(el.offsetLeft + el.offsetWidth / 2 - 24) }}
                 onClick={() => navigate(item.id as 'orders' | 'favorites' | 'profile')}
-                className="relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px]"
+                className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px] rounded-xl transition-colors duration-200 ${isActive ? 'bg-primary/[0.06]' : 'active:bg-secondary/60'}`}
               >
-                {/* Active glow background */}
                 {isActive && (
                   <motion.div
                     layoutId="mobile-nav-bg-right"
-                    className="absolute inset-x-1 -top-1 bottom-0 rounded-xl bg-primary/5"
+                    className="absolute inset-x-1 -top-1 bottom-0 rounded-xl bg-primary/[0.04]"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.2 }}
                   />
                 )}
                 <motion.div
-                  whileTap={{ scale: 0.78, rotate: 3 }}
+                  whileTap={{ scale: 0.85 }}
                   transition={{ type: 'spring', stiffness: 600, damping: 15 }}
-                  animate={isActive ? { scale: 1.12 } : { scale: 1 }}
+                  animate={isActive ? { scale: 1.1, y: -1 } : { scale: 1, y: 0 }}
                 >
-                  <item.icon className={`h-[22px] w-[22px] transition-all duration-200 ${isActive ? 'text-primary text-shadow-primary' : 'text-muted-foreground'}`} />
+                  <item.icon className={`h-[22px] w-[22px] transition-all duration-200 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
                 </motion.div>
                 <span className={`text-[10px] font-medium transition-all duration-200 leading-tight ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
                   {item.label}

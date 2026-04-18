@@ -111,7 +111,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <motion.div
       whileHover={{ y: -3, boxShadow: '0 12px 32px oklch(0.18 0.02 150 / 0.1)' }}
-      className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative"
+      className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm hover:shadow-md transition-shadow duration-300"
       onClick={handleCardClick}
       onMouseEnter={() => setShowCartBtn(true)}
       onMouseLeave={() => setShowCartBtn(false)}
@@ -155,7 +155,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Popular badge */}
         {isPopular && (
-          <div className="absolute bottom-2 left-2 z-10 bg-amber-500/90 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+          <div className="absolute bottom-2 left-2 z-10 bg-amber-500/90 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-md flex items-center gap-0.5 shadow-sm">
             <Star className="h-2.5 w-2.5 fill-white" />
             Popular
           </div>
@@ -168,10 +168,10 @@ export function ProductCard({ product }: ProductCardProps) {
           aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
         >
           <motion.div
-            animate={isFav ? { scale: [1, 1.3, 1] } : {}}
-            transition={{ duration: 0.3 }}
+            animate={isFav ? { scale: [1, 1.3, 0.9, 1.1, 1] } : { scale: 1 }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
           >
-            <Heart className={`h-3.5 w-3.5 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+            <Heart className={`h-3.5 w-3.5 transition-colors duration-200 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground group-hover:text-red-400'}`} />
           </motion.div>
         </button>
 
@@ -264,7 +264,11 @@ export function ProductCard({ product }: ProductCardProps) {
         
         <div className="mt-auto pt-1.5">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-sm font-bold text-primary">{formatBRL(product.price)}</span>
+            <motion.span 
+              className="text-sm font-bold text-primary price-animate" 
+              initial={{ opacity: 0.8 }}
+              animate={{ opacity: 1 }}
+            >{formatBRL(product.price)}</motion.span>
             {product.comparePrice && product.comparePrice > product.price && (
               <span className="text-[10px] text-muted-foreground line-through">
                 {formatBRL(product.comparePrice)}

@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
+// GET: Listar produtos com filtros e busca
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -91,6 +92,91 @@ export async function GET(request: Request) {
       limit,
       offset,
     })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+// POST: Criar novo produto (dono da loja)
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const {
+      name,
+      description,
+      price,
+      comparePrice,
+      stock,
+      storeId,
+      tags,
+      images,
+      variations,
+      sku,
+      weight,
+      isFeatured,
+      isNew,
+      isOffer,
+      status,
+    } = body
+
+    // Validação de campos obrigatórios
+    if (!name || !price || !storeId) {
+      return NextResponse.json(
+        { error: 'Nome, preço e ID da loja são obrigatórios' },
+        { status: 400 }
+      )
+    }
+
+    if (price <= 0) {
+      return NextResponse.json(
+        { error: 'O preço deve ser maior que zero' },
+        { status: 400 }
+      )
+    }
+
+    // Verificar se a loja existe
+    const store = await db.store.findUnique({ where: { id: storeId } })
+    if (!store) {
+      return NextResponse.json({ error: 'Loja não encontrada' }, { status: 404 })
+    }
+
+    // Gerar slug
+    const baseSlug = name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+
+    const slug = `${baseSlug}-${Date.now()}`
+
+    // Processar arrays JSON
+    const imagesStr = Array.isArray(images) ? JSON.stringify(images) : images || '[]'
+    const tagsStr = Array.isArray(tags) ? JSON.stringify(tags) : tags || '[]'
+    const variationsStr = variations ? (Array.isArray(variations) ? JSON.stringify(variations) : variations) : null
+
+    const product = await db.product.create({
+      data: {
+        storeId,
+        name,
+        slug,
+        description: description || null,
+        price: parseFloat(price),
+        comparePrice: comparePrice ? parseFloat(comparePrice) : null,
+        stock: parseInt(stock) || 0,
+        sku: sku || null,
+        weight: weight ? parseFloat(weight) : null,
+        images: imagesStr,
+        tags: tagsStr,
+        variations: variationsStr,
+        isFeatured: isFeatured === true,
+        isNew: isNew !== false,
+        isOffer: isOffer === true,
+        status: status || 'ACTIVE',
+      },
+    })
+
+    return NextResponse.json({ success: true, product }, { status: 201 })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

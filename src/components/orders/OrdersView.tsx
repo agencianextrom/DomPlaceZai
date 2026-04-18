@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
-import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff, Truck, MapPin, Filter, ArrowUpDown, X } from 'lucide-react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff, Truck, MapPin, Filter, ArrowUpDown, X, Loader2, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
-import { StarRating } from '@/components/ui/StarRating'
 import { DeliveryTracker } from './DeliveryTracker'
 import { OrderMap } from './OrderMap'
 import { RateOrderModal } from './RateOrderModal'
@@ -67,6 +67,15 @@ const sortOptions = [
   { value: 'lowest', label: 'Menor valor' },
 ]
 
+// Payment method labels
+const paymentLabels: Record<string, string> = {
+  PIX: 'Pix',
+  CREDIT_CARD: 'Cartão de Crédito',
+  DEBIT_CARD: 'Cartão de Débito',
+  BOLETO: 'Boleto',
+  CASH_ON_DELIVERY: 'Dinheiro na Entrega',
+}
+
 function getDateFilterFn(dateValue: string): ((date: string) => boolean) | null {
   const now = Date.now()
   const dayMs = 86400000
@@ -88,66 +97,35 @@ function getSortFn(sortValue: string): ((a: OrderData, b: OrderData) => number) 
   }
 }
 
+// Loading skeleton for orders
+function OrdersSkeleton() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="bg-card rounded-xl border border-border p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-5 w-20 rounded-full" />
+          </div>
+          <Skeleton className="h-3 w-48" />
+          <Skeleton className="h-3 w-24" />
+          <div className="flex items-center justify-between pt-2">
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-8 w-20" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function OrdersView() {
-  const { navigate, selectOrder, selectedOrderTab, addToCart, setSelectedOrderTab } = useAppStore()
+  const { navigate, selectOrder, selectedOrderTab, addToCart, setSelectedOrderTab, currentUser } = useAppStore()
   const [ratingOrder, setRatingOrder] = useState<OrderData | null>(null)
-  const [orders] = useState<OrderData[]>([
-    {
-      id: '1', orderNumber: 'DP000001', storeId: '5', storeName: 'Padaria Pão Quente',
-      status: 'DELIVERING', subtotal: 47.50, deliveryFee: 5.00, discount: 0, total: 52.50,
-      paymentMethod: 'PIX', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 30 * 60000).toISOString(),
-      items: [
-        { productName: 'Pão Francês (6 un)', quantity: 2, price: 6.00, total: 12.00 },
-        { productName: 'Bolo de Chocolate', quantity: 1, price: 16.50, total: 16.50 },
-        { productName: 'Coxinha de Frango (10 un)', quantity: 1, price: 19.00, total: 19.00 },
-      ],
-    },
-    {
-      id: '2', orderNumber: 'DP000002', storeId: '1', storeName: 'Mercado do Zé',
-      status: 'DELIVERED', subtotal: 84.70, deliveryFee: 5.00, discount: 0, total: 89.70,
-      paymentMethod: 'CREDIT_CARD', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 86400000).toISOString(),
-      items: [
-        { productName: 'Arroz Tio João 5kg', quantity: 1, price: 24.90, total: 24.90 },
-        { productName: 'Feijão Carioca 1kg', quantity: 2, price: 8.90, total: 17.80 },
-        { productName: 'Óleo de Soja 900ml', quantity: 1, price: 7.49, total: 7.49 },
-        { productName: 'Açúcar Cristal 1kg', quantity: 2, price: 5.49, total: 10.98 },
-        { productName: 'Adubo NPK 20kg', quantity: 1, price: 23.53, total: 23.53 },
-      ],
-    },
-    {
-      id: '3', orderNumber: 'DP000003', storeId: '2', storeName: 'Açaí da Boa',
-      status: 'PREPARING', subtotal: 34.00, deliveryFee: 3.00, discount: 0, total: 37.00,
-      paymentMethod: 'PIX', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 15 * 60000).toISOString(),
-      items: [
-        { productName: 'Açaí 500ml', quantity: 1, price: 15.00, total: 15.00 },
-        { productName: 'Açaí Premium 700ml', quantity: 1, price: 19.00, total: 19.00 },
-      ],
-    },
-    {
-      id: '4', orderNumber: 'DP000004', storeId: '3', storeName: 'Farmácia Vida',
-      status: 'CANCELLED', subtotal: 89.90, deliveryFee: 0, discount: 0, total: 0,
-      paymentMethod: 'PIX', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 172800000).toISOString(),
-      items: [{ productName: 'Ração Premium 15kg', quantity: 1, price: 89.90, total: 89.90 }],
-    },
-    {
-      id: '5', orderNumber: 'DP000005', storeId: '8', storeName: 'Salão da Bella',
-      status: 'CONFIRMED', subtotal: 95.00, deliveryFee: 0, discount: 0, total: 95.00,
-      paymentMethod: 'CREDIT_CARD', deliveryType: 'PICKUP', createdAt: new Date(Date.now() - 45 * 60000).toISOString(),
-      items: [
-        { productName: 'Corte Feminino', quantity: 1, price: 45.00, total: 45.00 },
-        { productName: 'Hidratação Capilar', quantity: 1, price: 50.00, total: 50.00 },
-      ],
-    },
-    {
-      id: '6', orderNumber: 'DP000006', storeId: '4', storeName: 'Farmácia Vida',
-      status: 'PENDING', subtotal: 55.00, deliveryFee: 0, discount: 5.00, total: 50.00,
-      paymentMethod: 'PIX', deliveryType: 'DELIVERY', createdAt: new Date(Date.now() - 5 * 60000).toISOString(),
-      items: [
-        { productName: 'Vitamina C 500mg', quantity: 1, price: 35.00, total: 35.00 },
-        { productName: 'Pomada Cicatrizante', quantity: 1, price: 20.00, total: 20.00 },
-      ],
-    },
-  ])
+  const [orders, setOrders] = useState<OrderData[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Filter states
   const [activeStatusFilter, setActiveStatusFilter] = useState('ALL')
@@ -156,6 +134,43 @@ export function OrdersView() {
   const [showFilters, setShowFilters] = useState(false)
 
   const hasActiveFilters = activeStatusFilter !== 'ALL' || activeDateFilter !== 'ALL' || activeSort !== 'recent'
+
+  // Fetch orders from API
+  const fetchOrders = useCallback(async (showRefresh = false) => {
+    if (showRefresh) {
+      setIsRefreshing(true)
+    } else {
+      setIsLoading(true)
+    }
+    setError(null)
+
+    try {
+      const params = new URLSearchParams()
+      params.set('limit', '50')
+      if (currentUser?.id) {
+        params.set('accountId', currentUser.id)
+      }
+
+      const response = await fetch(`/api/orders?${params.toString()}`)
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao carregar pedidos')
+      }
+
+      setOrders(data.orders || [])
+    } catch (err: any) {
+      setError(err.message || 'Erro ao carregar pedidos')
+      setOrders([])
+    } finally {
+      setIsLoading(false)
+      setIsRefreshing(false)
+    }
+  }, [currentUser?.id])
+
+  useEffect(() => {
+    fetchOrders()
+  }, [fetchOrders])
 
   // Apply filters
   const filteredOrders = useMemo(() => {
@@ -228,10 +243,22 @@ export function OrdersView() {
   return (
     <div className="min-h-screen pb-20">
       <div className="px-4 pt-4">
-        <h1 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <span className="w-1 h-6 rounded-full bg-primary" />
-          Meus Pedidos
-        </h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <span className="w-1 h-6 rounded-full bg-primary" />
+            Meus Pedidos
+          </h1>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 text-xs gap-1"
+            onClick={() => fetchOrders(true)}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={`h-3 w-3 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Atualizar
+          </Button>
+        </div>
 
         {/* Filter toggle + results count */}
         <div className="flex items-center justify-between mb-3">
@@ -250,9 +277,11 @@ export function OrdersView() {
                 </span>
               )}
             </Button>
-            <span className="text-xs text-muted-foreground">
-              {filteredOrders.length} pedido{filteredOrders.length !== 1 ? 's' : ''} encontrado{filteredOrders.length !== 1 ? 's' : ''}
-            </span>
+            {!isLoading && (
+              <span className="text-xs text-muted-foreground">
+                {filteredOrders.length} pedido{filteredOrders.length !== 1 ? 's' : ''} encontrado{filteredOrders.length !== 1 ? 's' : ''}
+              </span>
+            )}
           </div>
           {hasActiveFilters && (
             <button
@@ -352,20 +381,51 @@ export function OrdersView() {
 
           {['ongoing', 'completed', 'cancelled'].map((tab) => (
             <TabsContent key={tab} value={tab}>
-              {filteredOrders.length === 0 ? (
+              {/* Loading state */}
+              {isLoading && <OrdersSkeleton />}
+
+              {/* Error state */}
+              {error && !isLoading && (
+                <div className="text-center py-12">
+                  <XCircle className="h-12 w-12 mx-auto mb-3 text-destructive/40" />
+                  <p className="text-sm font-medium text-destructive mb-2">{error}</p>
+                  <Button variant="outline" size="sm" onClick={() => fetchOrders()} className="gap-1">
+                    <RefreshCw className="h-3 w-3" />
+                    Tentar novamente
+                  </Button>
+                </div>
+              )}
+
+              {/* Empty state */}
+              {!isLoading && !error && filteredOrders.length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
                   <Package className="h-12 w-12 mx-auto mb-3 text-muted-foreground/30" />
-                  <p>Nenhum pedido encontrado</p>
+                  <p className="font-medium">Nenhum pedido encontrado</p>
+                  <p className="text-xs text-muted-foreground mt-1 mb-4">
+                    {orders.length === 0
+                      ? 'Faça sua primeira compra para ver seus pedidos aqui'
+                      : 'Nenhum pedido corresponde aos filtros selecionados'
+                    }
+                  </p>
+                  {orders.length === 0 && (
+                    <Button onClick={() => navigate('home')} size="sm" className="gap-1">
+                      <Store className="h-3 w-3" />
+                      Explorar lojas
+                    </Button>
+                  )}
                   {hasActiveFilters && (
                     <button
                       onClick={clearFilters}
-                      className="text-sm text-primary hover:underline mt-1"
+                      className="block mx-auto text-sm text-primary hover:underline mt-2"
                     >
                       Limpar filtros
                     </button>
                   )}
                 </div>
-              ) : (
+              )}
+
+              {/* Orders list */}
+              {!isLoading && !error && filteredOrders.length > 0 && (
                 <div className="space-y-3">
                   {filteredOrders.map((order, idx) => {
                     const config = statusConfig[order.status] || statusConfig.PENDING
@@ -396,6 +456,12 @@ export function OrdersView() {
                           <span>{timeAgo(order.createdAt)}</span>
                           <span className="text-border">•</span>
                           <span>{order.items?.length || 0} {order.items?.length === 1 ? 'item' : 'itens'}</span>
+                          {order.paymentMethod && (
+                            <>
+                              <span className="text-border">•</span>
+                              <span>{paymentLabels[order.paymentMethod] || order.paymentMethod}</span>
+                            </>
+                          )}
                           <span className={`ml-auto flex items-center gap-1 rounded-md px-1.5 py-0.5 ${order.deliveryType === 'PICKUP' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400' : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400'}`}>
                             {order.deliveryType === 'PICKUP' ? <MapPin className="h-3 w-3" /> : <Truck className="h-3 w-3" />}
                             <span className="text-[10px] font-medium">{order.deliveryType === 'PICKUP' ? 'Retirada' : 'Entrega'}</span>
@@ -572,6 +638,26 @@ export function OrderDetail() {
             {order.status === 'PREPARING' && <p className="text-xs opacity-80">A loja está preparando seu pedido</p>}
             {order.status === 'CONFIRMED' && <p className="text-xs opacity-80">Pedido confirmado pela loja</p>}
             {order.status === 'CANCELLED' && <p className="text-xs opacity-80">Este pedido foi cancelado</p>}
+          </div>
+        </div>
+
+        {/* Payment & Delivery info */}
+        <div className="bg-card rounded-xl border border-border p-4">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Pagamento</p>
+              <p className="font-medium">{paymentLabels[order.paymentMethod || ''] || order.paymentMethod || '—'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Tipo de entrega</p>
+              <p className="font-medium">{order.deliveryType === 'PICKUP' ? 'Retirada na Loja' : 'Entrega'}</p>
+            </div>
+            {(order.deliveryType === 'DELIVERY' && order.deliveryAddress) && (
+              <div className="col-span-2">
+                <p className="text-xs text-muted-foreground mb-1">Endereço de entrega</p>
+                <p className="font-medium text-xs">{order.deliveryAddress}</p>
+              </div>
+            )}
           </div>
         </div>
 

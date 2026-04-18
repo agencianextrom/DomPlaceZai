@@ -42,6 +42,8 @@ import { DailyDeals } from '@/components/home/DailyDeals'
 import { DeliveryFeeCalculator } from '@/components/home/DeliveryFeeCalculator'
 import { NeighborhoodSelector } from '@/components/home/NeighborhoodSelector'
 import { ProductQuickAdd } from '@/components/product/ProductQuickAdd'
+import { DriverDashboard } from '@/components/driver/DriverDashboard'
+import { AffiliateDashboard } from '@/components/affiliate/AffiliateDashboard'
 import { Share2 } from 'lucide-react'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -753,6 +755,14 @@ export default function Home() {
         ) : currentView === 'support-center' ? (
           <motion.div key="support-center" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <SupportCenter />
+          </motion.div>
+        ) : currentView === 'driver-dashboard' ? (
+          <motion.div key="driver-dashboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <DriverDashboard />
+          </motion.div>
+        ) : currentView === 'affiliate-dashboard' ? (
+          <motion.div key="affiliate-dashboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <AffiliateDashboard />
           </motion.div>
         ) : currentView === 'favorites' ? (
           <FavoritesView products={featuredProducts} onShareClick={() => setWishlistShareOpen(true)} />

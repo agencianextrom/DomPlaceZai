@@ -66,12 +66,13 @@ export function Header() {
   
   return (
     <>
-      <header className={`sticky top-0 z-50 backdrop-blur-xl transition-all duration-300 ${isScrolled ? 'bg-background/95 shadow-md' : 'bg-background/70'} relative`}>
+      <header className={`sticky top-0 z-50 backdrop-blur-xl transition-all duration-300 safe-top ${isScrolled ? 'bg-background/95 shadow-md shadow-black/[0.03]' : 'bg-background/70'} relative`}>
         {/* Gradient border-bottom that intensifies on scroll */}
         <motion.div
           initial={{ opacity: 0, scaleY: 1 }}
-          animate={{ opacity: isScrolled ? 1 : 0.3, scaleY: isScrolled ? 1.5 : 1 }}
-          className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none"
+          animate={{ opacity: isScrolled ? 1 : 0, scaleY: isScrolled ? 1 : 0.5 }}
+          transition={{ duration: 0.3 }}
+          className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none"
           style={{ originY: 1 }}
         />
         {/* Subtle gradient glow on scroll */}
@@ -92,14 +93,14 @@ export function Header() {
               ) : (
                 <button 
                   onClick={() => navigate('home')}
-                  className="flex items-center gap-2 min-w-0"
+                  className="flex items-center gap-2.5 min-w-0 group"
                 >
                   <img 
                     src="/domplace-logo.png" 
                     alt="DomPlace" 
-                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg shrink-0"
+                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg shrink-0 transition-transform duration-200 group-hover:scale-105"
                   />
-                  <span className="font-bold text-lg sm:text-xl text-primary">DomPlace</span>
+                  <span className="font-bold text-lg sm:text-xl text-primary gradient-text">DomPlace</span>
                 </button>
               )}
               
@@ -146,7 +147,7 @@ export function Header() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className={`relative h-10 w-10 transition-all duration-200 hover-glow ${currentView === 'cart' ? 'text-primary' : ''}`}
+                className={`relative h-10 w-10 transition-all duration-200 hover-glow ${currentView === 'cart' ? 'text-primary bg-primary/5' : ''}`}
                 onClick={() => navigate('cart')}
               >
                 <ShoppingCart className="h-5 w-5" />
@@ -154,11 +155,11 @@ export function Header() {
                   {cartCount > 0 && (
                     <motion.span
                       key={cartCount}
-                      initial={{ scale: 0, y: -8 }}
+                      initial={{ scale: 0, y: -10 }}
                       animate={{ scale: 1, y: 0 }}
-                      exit={{ scale: 0, y: 8 }}
-                      transition={{ type: 'spring', stiffness: 600, damping: 20 }}
-                      className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-2 border-background rounded-full font-bold badge-ping"
+                      exit={{ scale: 0, y: 10 }}
+                      transition={{ type: 'spring', stiffness: 700, damping: 18 }}
+                      className="absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] bg-accent text-accent-foreground border-2 border-background rounded-full font-bold shadow-sm cart-badge-enhanced"
                     >
                       {cartCount > 99 ? '99+' : cartCount}
                     </motion.span>

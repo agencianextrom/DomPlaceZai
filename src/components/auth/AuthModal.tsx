@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2, Store, Truck, UserCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -16,10 +16,20 @@ import {
 } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppStore } from '@/store/useAppStore'
+import { useAuth } from '@/hooks/useAuth'
 import { toast } from 'sonner'
+
+type RegisterRole = 'USER' | 'STORE_OWNER' | 'DELIVERY_DRIVER'
+
+const roleOptions: { value: RegisterRole; label: string; icon: React.ReactNode; description: string }[] = [
+  { value: 'USER', label: 'Usuário', icon: <UserCircle className="h-4 w-4" />, description: 'Comprar e pedir delivery' },
+  { value: 'STORE_OWNER', label: 'Lojista', icon: <Store className="h-4 w-4" />, description: 'Vender produtos online' },
+  { value: 'DELIVERY_DRIVER', label: 'Entregador', icon: <Truck className="h-4 w-4" />, description: 'Realizar entregas' },
+]
 
 export function AuthModal() {
   const { isAuthModalOpen, closeAuthModal } = useAppStore()
+  const { login, register } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -35,25 +45,28 @@ export function AuthModal() {
   const [regPassword, setRegPassword] = useState('')
   const [regConfirmPassword, setRegConfirmPassword] = useState('')
   const [regTermsAccepted, setRegTermsAccepted] = useState(false)
+  const [regRole, setRegRole] = useState<RegisterRole>('USER')
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!loginEmail || !loginPassword) {
       toast.error('Preencha todos os campos')
       return
     }
     setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      toast.success('Login realizado com sucesso! Bem-vindo de volta.')
+    const success = await login(loginEmail, loginPassword)
+    setIsLoading(false)
+    if (success) {
+      setLoginEmail('')
+      setLoginPassword('')
       closeAuthModal()
-    }, 1500)
+    }
   }
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!regName || !regEmail || !regPhone || !regPassword || !regConfirmPassword) {
-      toast.error('Preencha todos os campos')
+    if (!regName || !regEmail || !regPassword || !regConfirmPassword) {
+      toast.error('Preencha todos os campos obrigatórios')
       return
     }
     if (regPassword !== regConfirmPassword) {
@@ -69,11 +82,24 @@ export function AuthModal() {
       return
     }
     setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      toast.success('Conta criada com sucesso! Bem-vindo ao DomPlace.')
+    const success = await register({
+      name: regName,
+      email: regEmail,
+      phone: regPhone,
+      password: regPassword,
+      role: regRole,
+    })
+    setIsLoading(false)
+    if (success) {
+      setRegName('')
+      setRegEmail('')
+      setRegPhone('')
+      setRegPassword('')
+      setRegConfirmPassword('')
+      setRegTermsAccepted(false)
+      setRegRole('USER')
       closeAuthModal()
-    }, 1500)
+    }
   }
 
   return (
@@ -113,6 +139,7 @@ export function AuthModal() {
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     className="pl-9 h-11"
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -133,6 +160,7 @@ export function AuthModal() {
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     className="pl-9 pr-10 h-11"
+                    autoComplete="current-password"
                   />
                   <button
                     type="button"
@@ -182,6 +210,28 @@ export function AuthModal() {
           {/* Register */}
           <TabsContent value="register" className="p-6 mt-0">
             <form onSubmit={handleRegister} className="space-y-3">
+              {/* Role selector */}
+              <div className="space-y-2">
+                <Label className="text-sm">Tipo de conta</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {roleOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setRegRole(option.value)}
+                      className={`flex flex-col items-center gap-1 p-2.5 rounded-lg border-2 text-center transition-all ${
+                        regRole === option.value
+                          ? 'border-primary bg-primary/5 text-primary'
+                          : 'border-muted hover:border-muted-foreground/30'
+                      }`}
+                    >
+                      {option.icon}
+                      <span className="text-xs font-medium">{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="reg-name" className="text-sm">Nome completo</Label>
                 <div className="relative">
@@ -208,6 +258,7 @@ export function AuthModal() {
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
                     className="pl-9 h-11"
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -238,6 +289,7 @@ export function AuthModal() {
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
                     className="pl-9 pr-10 h-11"
+                    autoComplete="new-password"
                   />
                   <button
                     type="button"
@@ -260,6 +312,7 @@ export function AuthModal() {
                     value={regConfirmPassword}
                     onChange={(e) => setRegConfirmPassword(e.target.value)}
                     className="pl-9 pr-10 h-11"
+                    autoComplete="new-password"
                   />
                   <button
                     type="button"

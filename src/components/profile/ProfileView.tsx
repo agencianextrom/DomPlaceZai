@@ -5,7 +5,7 @@ import {
   User, MapPin, CreditCard, Heart, ClipboardList, Gift, Users, Settings, LogOut, 
   Star, ChevronRight, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock,
   Bell, Moon, MapPinned, Share2, Ticket, Copy, Check, ListChecks, LayoutDashboard,
-  BellRing, Shield, Headphones, PartyPopper
+  BellRing, Shield, Headphones, PartyPopper, Truck, UserPlus
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -77,6 +77,8 @@ const menuItems = [
   { id: 'notifications', icon: BellRing, label: 'Notificações', desc: 'Central de notificações' },
   { id: 'shopping-lists', icon: ListChecks, label: 'Listas de Compras', desc: 'Organize suas compras' },
   { id: 'referral', icon: Users, label: 'Indique Amigos', desc: 'Ganhe com indicações' },
+  { id: 'driver-dashboard', icon: Truck, label: 'Painel do Entregador', desc: 'Gerencie suas entregas' },
+  { id: 'affiliate-dashboard', icon: UserPlus, label: 'Painel do Afiliado', desc: 'Ganhe com indicações' },
   { id: 'store-dashboard', icon: LayoutDashboard, label: 'Painel da Loja', desc: 'Gerencie sua loja' },
   { id: 'admin-dashboard', icon: Shield, label: 'Painel do Admin', desc: 'Administração da plataforma' },
   { id: 'support-center', icon: Headphones, label: 'Ajuda & Suporte', desc: 'FAQ, chamados e contato' },
@@ -312,7 +314,7 @@ export function ProfileView() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-2xl mb-6"
+        className="relative overflow-hidden rounded-2xl mb-5"
       >
         {/* Cover gradient area */}
         <div className="relative bg-gradient-to-br from-primary via-emerald-600 to-teal-600 pt-6 pb-8 text-white">
@@ -335,7 +337,7 @@ export function ProfileView() {
                 transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
                 className="relative"
               >
-                <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
+                <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg avatar-gradient-ring">
                   M
                 </div>
                 {/* Online indicator */}
@@ -580,7 +582,7 @@ export function ProfileView() {
         </Card>
       </motion.div>
 
-      <Separator className="my-4" />
+      <Separator className="my-3 section-divider" />
       
       {/* Menu items - with premium card hover */}
       <motion.div
@@ -606,6 +608,10 @@ export function ProfileView() {
                   navigate('shopping-lists')
                 } else if (item.id === 'store-dashboard') {
                   navigate('store-dashboard')
+                } else if (item.id === 'driver-dashboard') {
+                  navigate('driver-dashboard')
+                } else if (item.id === 'affiliate-dashboard') {
+                  navigate('affiliate-dashboard')
                 } else if (item.id === 'notifications') {
                   navigate('notifications')
                 } else if (item.id === 'admin-dashboard') {
@@ -618,7 +624,7 @@ export function ProfileView() {
                   setActiveSection('spin-wheel')
                 }
               }}
-              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-sm transition-all text-left group elevated-card ripple-effect"
+              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 hover:shadow-sm transition-all text-left group menu-item-hover elevated-card ripple-effect"
             >
               <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                 <item.icon className="h-5 w-5 text-primary" />
@@ -633,7 +639,7 @@ export function ProfileView() {
         </div>
       </motion.div>
       
-      <Separator className="my-4" />
+      <Separator className="my-3 section-divider" />
       
       {/* Logout */}
       <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 h-12">
