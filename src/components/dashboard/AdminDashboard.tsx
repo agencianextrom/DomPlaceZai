@@ -800,7 +800,7 @@ export function AdminDashboard() {
         <div className="max-w-6xl mx-auto px-4 pt-4">
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="w-full h-auto flex flex-wrap gap-1 bg-transparent p-0 mb-4">
-            {/* Animated accent line */
+            {/* Animated accent line */}
             <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-accent/50 to-transparent" />
             {tabs.map(tab => (
               <TabsTrigger
@@ -833,6 +833,7 @@ export function AdminDashboard() {
           </AnimatePresence>
         </Tabs>
       </div>
+    </div>
     </div>
   )
 }

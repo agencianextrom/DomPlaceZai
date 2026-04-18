@@ -30,8 +30,9 @@ import { SupportCenter } from '@/components/support/SupportCenter'
 import { ProductQuickView } from '@/components/product/ProductQuickView'
 import { StoreSearch } from '@/components/home/StoreSearch'
 import { LoyaltyTier } from '@/components/profile/LoyaltyTier'
-import { SupportCenter } from '@/components/support/SupportCenter'
-import { StoreSearch } from '@/components/home/StoreSearch'
+import { RecentOrders } from '@/components/home/RecentOrders'
+import { WishlistShare } from '@/components/profile/WishlistShare'
+import { Share2 } from 'lucide-react'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
@@ -185,11 +186,12 @@ function CompareFloatingButton() {
 }
 
 // Favorites view component with filters, sorting, and grid/list toggle
-function FavoritesView({ products }: { products: ProductData[] }) {
+function FavoritesView({ products, onShareClick }: { products: ProductData[]; onShareClick?: () => void }) {
   const { selectProduct, navigate } = useAppStore()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState<'recent' | 'price_asc' | 'price_desc' | 'rating'>('recent')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const setWishlistShareOpenFromParent = useAppStore((s: any) => s.setWishlistShareOpen) as ((v: boolean) => void) | undefined
   
   const categories = useMemo(() => {
     const cats = new Set(products.map(p => p.category))
@@ -279,6 +281,19 @@ function FavoritesView({ products }: { products: ProductData[] }) {
           </Badge>
         </h1>
         <div className="flex items-center gap-1">
+          {onShareClick && products.length > 0 && (
+            <motion.div whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs gap-1.5 border-primary/30 hover:bg-primary/5"
+                onClick={onShareClick}
+              >
+                <Share2 className="h-3.5 w-3.5 text-primary" />
+                Compartilhar
+              </Button>
+            </motion.div>
+          )}
           {/* Grid/List toggle */}
           <div className="flex bg-secondary/50 rounded-lg p-0.5">
             <button
@@ -408,6 +423,7 @@ export default function Home() {
   const { currentView, isSearchOpen, activeCategory } = useAppStore()
   const [quickViewProduct, setQuickViewProduct] = useQVState<ProductData | null>(null)
   const [quickViewOpen, setQuickViewOpen] = useQVState(false)
+  const [wishlistShareOpen, setWishlistShareOpen] = useQVState(false)
   const [apiProducts, setApiProducts] = useState<ProductData[]>([])
   const [apiStores, setApiStores] = useState<StoreData[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -493,6 +509,9 @@ export default function Home() {
                       <FlashSale />
                     </section>
                     
+                    {/* Recent Orders - after greeting */}
+                    <RecentOrders />
+
                     {/* Welcome greeting */}
                     <motion.section 
                       className="mt-6"
@@ -674,7 +693,7 @@ export default function Home() {
             <SupportCenter />
           </motion.div>
         ) : currentView === 'favorites' ? (
-          <FavoritesView products={featuredProducts} />
+          <FavoritesView products={featuredProducts} onShareClick={() => setWishlistShareOpen(true)} />
         ) : null}
       </AnimatePresence>
 
@@ -695,6 +714,19 @@ export default function Home() {
 
       {/* Product Quick View Modal */}
       <ProductQuickView product={quickViewProduct} open={quickViewOpen} onClose={() => setQuickViewOpen(false)} />
+
+      {/* Wishlist Share Modal */}
+      <WishlistShare
+        items={featuredProducts.map(p => ({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          storeName: p.storeName || 'Loja',
+          category: p.category,
+        }))}
+        open={wishlistShareOpen}
+        onOpenChange={setWishlistShareOpen}
+      />
     </div>
   )
 }

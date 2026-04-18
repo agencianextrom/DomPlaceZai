@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { useAppStore, type StoreData, type ProductData } from '@/store/useAppStore'
 import { ProductCard, formatBRL } from '@/components/product/ProductCard'
 import { StarRating } from '@/components/ui/StarRating'
+import { StoreRatingBreakdown } from './StoreRatingBreakdown'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
@@ -590,38 +591,12 @@ export function StoreProfile({ store }: StoreProfileProps) {
               transition={{ duration: 0.2 }}
               className="mt-4 space-y-4"
             >
-              {/* Rating summary */}
-              <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 border-amber-200/50 dark:border-amber-800/30 card-spotlight">
-                <CardContent className="p-6 text-center">
-                  <Star className="h-10 w-10 mx-auto mb-2 text-amber-500 fill-amber-500" />
-                  <p className="text-3xl font-bold">{store.rating.toFixed(1)}</p>
-                  <div className="flex justify-center mt-2">
-                    <StarRating rating={store.rating} size="md" showCount count={store.totalReviews} />
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-1">{store.totalReviews} avaliações</p>
-                  {/* Star distribution */}
-                  <div className="mt-4 space-y-1.5 max-w-xs mx-auto">
-                    {[5, 4, 3, 2, 1].map((s) => {
-                      const percentage = s === 5 ? 65 : s === 4 ? 20 : s === 3 ? 10 : s === 2 ? 3 : 2
-                      return (
-                        <div key={s} className="flex items-center gap-2">
-                          <span className="text-xs w-3">{s}</span>
-                          <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                            <motion.div 
-                              className="h-full bg-amber-500 rounded-full"
-                              initial={{ width: 0 }}
-                              animate={{ width: `${percentage}%` }}
-                              transition={{ delay: 0.3 + (5 - s) * 0.1, duration: 0.6 }}
-                            />
-                          </div>
-                          <span className="text-xs text-muted-foreground w-8 text-right">{percentage}%</span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Rating breakdown */}
+              <StoreRatingBreakdown
+                rating={store.rating}
+                totalReviews={store.totalReviews}
+                storeName={store.name}
+              />
               
               {/* Reviews list */}
               {mockReviews.map((review, i) => (

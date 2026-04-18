@@ -188,7 +188,7 @@ export function StoreDashboard() {
       <div className="max-w-5xl mx-auto px-4 mt-4">
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="w-full sm:w-auto overflow-x-auto hide-scrollbar mb-4 relative">
-            {/* Animated underline indicator */
+            {/* Animated underline indicator */}
             <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-300" />
             <TabsTrigger value="overview" className="gap-1.5 text-xs sm:text-sm">
               <BarChart3 className="h-3.5 w-3.5" />
@@ -287,7 +287,7 @@ export function StoreDashboard() {
                     </CardHeader>
                     <CardContent className="px-4 pb-4">
                       {/* Chart area with gradient + grid */}
-                      <div className="rounded-lg bg-gradient-to-b from-primary/[0.03] to-transparent grid-pattern p-3"
+                      <div className="rounded-lg bg-gradient-to-b from-primary/[0.03] to-transparent grid-pattern p-3">
                         <div className="flex items-end gap-2 h-36">
                           {weeklySales.map((day, i) => {
                             const isToday = i === new Date().getDay() - 1

@@ -11,6 +11,7 @@ import { StarRating } from '@/components/ui/StarRating'
 import { ShareButton } from './ShareButton'
 import { ProductReviews } from './ProductReviews'
 import { ProductGallery } from './ProductGallery'
+import { DeliveryTimeCalculator } from './DeliveryTimeCalculator'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -294,6 +295,15 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </div>
         </motion.div>
         
+        <Separator className="my-4" />
+
+        {/* Delivery Time Calculator */}
+        <DeliveryTimeCalculator
+          storeName={product.storeName || undefined}
+          deliveryFee={5}
+          freeDeliveryAbove={50}
+        />
+
         <Separator className="my-4" />
         
         {/* Description */}

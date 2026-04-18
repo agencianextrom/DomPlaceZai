@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, ShoppingCart, Search, User, Menu, ArrowLeft, Home, ClipboardList, Heart, UserCircle } from 'lucide-react'
+import { MapPin, ShoppingCart, Search, User, Menu, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -222,9 +222,9 @@ export function Header() {
                         navigate(item.id as 'home' | 'orders' | 'favorites' | 'profile')
                       }
                     }}
-                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                    className={`nav-item-animated flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap focus-ring-emerald ${
                       isActive 
-                        ? 'text-primary bg-primary/10' 
+                        ? 'text-primary bg-primary/10 active'
                         : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
                     }`}
                   >

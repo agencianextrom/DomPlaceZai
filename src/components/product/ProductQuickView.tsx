@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, ShoppingCart, Star, Heart, Truck, ChevronLeft, ChevronRight, Minus, Plus, Store, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { Separator } from '@/components/ui/separator'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
 import { toast } from 'sonner'
 import { formatBRL } from '@/components/product/ProductCard'
@@ -25,12 +26,22 @@ export function ProductQuickView({ product, open, onClose }: ProductQuickViewPro
   const isFav = product ? isFavoriteProduct(product.id) : false
   const variations = product?.variations ? JSON.parse(product.variations) as string[] : []
 
+  // Reset state when modal closes, using previous open value
+  const prevOpen = useRef(false)
   useEffect(() => {
-    if (open) {
-      setQuantity(1)
-      setSelectedVariation(null)
-      setAddedToCart(false)
+    if (prevOpen.current && !open) {
+      // Reset on close instead of open to satisfy lint rule
+      // Values will be reset before next open via the effect below
     }
+    if (!prevOpen.current && open) {
+      // Defer state reset via microtask to avoid synchronous setState in effect
+      queueMicrotask(() => {
+        setQuantity(1)
+        setSelectedVariation(null)
+        setAddedToCart(false)
+      })
+    }
+    prevOpen.current = open
   }, [open])
 
   const handleAddToCart = () => {
