@@ -6,6 +6,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
+import dynamic from 'next/dynamic'
+
+// ─── Leaflet dynamically imported (no SSR) ───
+const LeafletMapInner = dynamic(() => import('./LeafletMapInner'), { ssr: false })
 
 interface OrderMapProps {
   storeName: string
@@ -26,17 +30,6 @@ export function OrderMap({ storeName, estimatedMinutes }: OrderMapProps) {
   const [etaMinutes, setEtaMinutes] = useState(estimatedMinutes)
   const [etaSeconds, setEtaSeconds] = useState(0)
   const [driverProgress, setDriverProgress] = useState(0.35)
-  const [routePoints] = useState(() => {
-    // Generate curved route points
-    const points: { x: number; y: number }[] = []
-    for (let i = 0; i <= 20; i++) {
-      const t = i / 20
-      const x = 15 + t * 70
-      const y = 70 - t * 50 + Math.sin(t * Math.PI * 2) * 8
-      points.push({ x, y })
-    }
-    return points
-  })
 
   // Countdown timer
   useEffect(() => {
@@ -70,161 +63,22 @@ export function OrderMap({ storeName, estimatedMinutes }: OrderMapProps) {
   const pad = (n: number) => String(n).padStart(2, '0')
   const progressPercent = Math.round(driverProgress * 100)
 
-  // Calculate driver position on route
-  const driverIdx = Math.floor(driverProgress * (routePoints.length - 1))
-  const driverPos = routePoints[Math.min(driverIdx, routePoints.length - 1)]
-
   return (
     <div className="space-y-3">
       {/* Map Container */}
       <div className="relative w-full h-56 sm:h-64 lg:h-72 rounded-2xl overflow-hidden">
-        {/* Map background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-100 via-teal-50 to-cyan-100 dark:from-emerald-900/40 dark:via-teal-900/30 dark:to-cyan-900/40" />
-        
-        {/* Street grid pattern */}
-        <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          {/* Grid streets */}
-          <line x1="0" y1="30%" x2="100%" y2="30%" stroke="currentColor" strokeWidth="2" className="text-muted-foreground/15" />
-          <line x1="0" y1="60%" x2="100%" y2="60%" stroke="currentColor" strokeWidth="2" className="text-muted-foreground/15" />
-          <line x1="25%" y1="0" x2="25%" y2="100%" stroke="currentColor" strokeWidth="2" className="text-muted-foreground/15" />
-          <line x1="55%" y1="0" x2="55%" y2="100%" stroke="currentColor" strokeWidth="2" className="text-muted-foreground/15" />
-          <line x1="80%" y1="0" x2="80%" y2="100%" stroke="currentColor" strokeWidth="1" className="text-muted-foreground/8" />
-          <line x1="0" y1="45%" x2="100%" y2="45%" stroke="currentColor" strokeWidth="1" className="text-muted-foreground/8" />
-          <line x1="0" y1="80%" x2="100%" y2="80%" stroke="currentColor" strokeWidth="1" className="text-muted-foreground/8" />
-          
-          {/* Building blocks */}
-          {[
-            { x: '2%', y: '5%', w: '20%', h: '22%' },
-            { x: '28%', y: '5%', w: '24%', h: '22%' },
-            { x: '58%', y: '5%', w: '19%', h: '22%' },
-            { x: '2%', y: '34%', w: '20%', h: '22%' },
-            { x: '58%', y: '34%', w: '19%', h: '22%' },
-            { x: '2%', y: '64%', w: '20%', h: '12%' },
-            { x: '58%', y: '64%', w: '19%', h: '12%' },
-            { x: '28%', y: '64%', w: '24%', h: '12%' },
-            { x: '28%', y: '34%', w: '24%', h: '22%' },
-          ].map((block, i) => (
-            <rect
-              key={i}
-              x={block.x}
-              y={block.y}
-              width={block.w}
-              height={block.h}
-              rx="4"
-              fill="currentColor"
-              className="text-muted-foreground/8"
-            />
-          ))}
-          
-          {/* Route path - dashed animated line */}
-          <path
-            d={routePoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x}% ${p.y}%`).join(' ')}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-            className="text-primary/30"
-            strokeDasharray="8 6"
-          />
-          {/* Completed route portion - solid */}
-          <motion.path
-            d={routePoints.slice(0, driverIdx + 1).map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x}% ${p.y}%`).join(' ')}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-            className="text-primary"
-            strokeLinecap="round"
-          />
-        </svg>
-
-        {/* Store Marker */}
-        <div className="absolute" style={{ left: `${routePoints[0].x}%`, top: `${routePoints[0].y}%`, transform: 'translate(-50%, -100%)' }}>
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.3, type: 'spring', stiffness: 300 }}
-          >
-            <div className="relative">
-              <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center shadow-lg border-2 border-white z-10 relative">
-                <Store className="h-5 w-5 text-white" />
-              </div>
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-primary rotate-45 -z-10" />
-              <motion.div
-                className="absolute inset-0 rounded-full border-2 border-primary/40"
-                animate={{ scale: [1, 1.6], opacity: [0.5, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </div>
-          </motion.div>
-          <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap">
-            <span className="text-[9px] font-bold bg-white dark:bg-card px-1.5 py-0.5 rounded-md shadow-sm border border-border">
-              {storeName}
-            </span>
-          </div>
-        </div>
-
-        {/* Destination Marker */}
-        <div className="absolute" style={{ left: `${routePoints[routePoints.length - 1].x}%`, top: `${routePoints[routePoints.length - 1].y}%`, transform: 'translate(-50%, -100%)' }}>
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
-          >
-            <div className="relative">
-              <div className="h-10 w-10 rounded-full bg-red-500 flex items-center justify-center shadow-lg border-2 border-white z-10 relative">
-                <MapPin className="h-5 w-5 text-white fill-white" />
-              </div>
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-red-500 rotate-45 -z-10" />
-              <motion.div
-                className="absolute inset-0 rounded-full border-2 border-red-400"
-                animate={{ scale: [1, 1.6], opacity: [0.5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-              />
-            </div>
-          </motion.div>
-          <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap">
-            <span className="text-[9px] font-bold bg-white dark:bg-card px-1.5 py-0.5 rounded-md shadow-sm border border-border">
-              Sua casa
-            </span>
-          </div>
-        </div>
-
-        {/* Driver Marker (animated) */}
-        <motion.div
-          className="absolute z-20"
-          style={{
-            left: `${driverPos.x}%`,
-            top: `${driverPos.y}%`,
-            transform: 'translate(-50%, -50%)',
-          }}
-          animate={{
-            left: `${driverPos.x}%`,
-            top: `${driverPos.y}%`,
-          }}
-          transition={{ duration: 1, ease: 'linear' }}
-        >
-          <motion.div
-            animate={{ rotate: [-5, 5, -5] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <div className="relative">
-              <div className="h-11 w-11 rounded-full bg-amber-500 flex items-center justify-center shadow-xl border-3 border-white">
-                <Truck className="h-5 w-5 text-white" />
-              </div>
-              <motion.div
-                className="absolute -inset-1 rounded-full border-2 border-amber-400/50"
-                animate={{ scale: [1, 1.8], opacity: [0.6, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              />
-            </div>
-          </motion.div>
-        </motion.div>
+        {/* Leaflet Map */}
+        <LeafletMapInner
+          storeName={storeName}
+          driverProgress={driverProgress}
+        />
 
         {/* Live indicator */}
         <motion.div
           initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
-          className="absolute top-3 right-3 bg-emerald-500/95 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-md"
+          className="absolute top-3 right-3 bg-emerald-500/95 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-md z-[1000]"
         >
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
@@ -238,7 +92,7 @@ export function OrderMap({ storeName, estimatedMinutes }: OrderMapProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="absolute bottom-3 left-3 bg-white/95 dark:bg-card/95 backdrop-blur-md rounded-xl px-4 py-2.5 shadow-lg border border-border/50"
+          className="absolute bottom-3 left-3 bg-white/95 dark:bg-card/95 backdrop-blur-md rounded-xl px-4 py-2.5 shadow-lg border border-border/50 z-[1000]"
         >
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Navigation className="h-3 w-3 text-primary" />
@@ -261,7 +115,7 @@ export function OrderMap({ storeName, estimatedMinutes }: OrderMapProps) {
         </motion.div>
 
         {/* Compass */}
-        <div className="absolute top-3 left-3 bg-white/90 dark:bg-card/90 backdrop-blur-sm rounded-full h-8 w-8 flex items-center justify-center shadow-md border border-border/50">
+        <div className="absolute top-3 left-3 bg-white/90 dark:bg-card/90 backdrop-blur-sm rounded-full h-8 w-8 flex items-center justify-center shadow-md border border-border/50 z-[1000]">
           <Navigation className="h-4 w-4 text-muted-foreground" style={{ transform: 'rotate(-15deg)' }} />
         </div>
       </div>

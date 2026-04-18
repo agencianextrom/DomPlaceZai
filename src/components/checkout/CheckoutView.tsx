@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, MapPin, CreditCard, Banknote, QrCode, FileText, Check, Store, Truck, Shield, ChevronRight, Clock, Calendar, Tag, X, Loader2 } from 'lucide-react'
+import { ArrowLeft, MapPin, CreditCard, Banknote, QrCode, FileText, Check, Store, Truck, Shield, ChevronRight, Clock, Calendar, Tag, X, Loader2, Search, Copy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -102,6 +102,48 @@ export function CheckoutView() {
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
   const [couponError, setCouponError] = useState('')
   const [createdOrder, setCreatedOrder] = useState<any>(null)
+  const [pixQrCode, setPixQrCode] = useState<string | null>(null)
+  const [pixQrCodeText, setPixQrCodeText] = useState<string | null>(null)
+  const [cepLoading, setCepLoading] = useState(false)
+  const [cepError, setCepError] = useState('')
+
+  // ViaCEP auto-fill for checkout address
+  const handleCepChange = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 8)
+    let masked = ''
+    for (let i = 0; i < digits.length; i++) {
+      if (i === 5) masked += '-'
+      masked += digits[i]
+    }
+    setAddress({ ...address, zip: masked })
+    setCepError('')
+
+    if (digits.length === 8) {
+      setCepLoading(true)
+      try {
+        fetch(`/api/cep/${digits}`)
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data && !data.erro) {
+              setAddress(prev => ({
+                ...prev,
+                street: data.street || prev.street,
+                neighborhood: data.neighborhood || prev.neighborhood,
+                city: data.city || prev.city,
+                state: data.state || prev.state,
+                zip: data.zip || prev.zip,
+              }))
+            } else if (data && data.erro) {
+              setCepError('CEP não encontrado')
+            }
+          })
+          .catch(() => { /* silently fail */ })
+          .finally(() => setCepLoading(false))
+      } catch {
+        setCepLoading(false)
+      }
+    }
+  }
 
   // Address form state
   const [address, setAddress] = useState({
@@ -159,11 +201,10 @@ export function CheckoutView() {
     }
 
     setIsProcessing(true)
+    setPixQrCode(null)
+    setPixQrCodeText(null)
 
     try {
-      // For each store group, create a separate order (multi-store checkout)
-      // For simplicity, if there's only one store, create one order
-      // If multiple stores, create an order for the first group
       const primaryGroup = groups[0]
       const orderItems = primaryGroup.items.map(item => ({
         productId: item.productId,
@@ -187,9 +228,33 @@ export function CheckoutView() {
         discount: discount + freteDiscount,
       }
 
-      // If user is authenticated, the API will use session; otherwise pass accountId
       if (currentUser?.id) {
         requestBody.accountId = currentUser.id
+      }
+
+      // If payment is PIX, try to get QR code from Mercado Pago
+      if (payment === 'PIX') {
+        try {
+          const paymentRes = await fetch('/api/payments/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              items: orderItems.map(i => ({
+                title: i.productName,
+                quantity: i.quantity,
+                unit_price: i.price,
+              })),
+              payment_method: 'pix',
+            }),
+          })
+          if (paymentRes.ok) {
+            const paymentData = await paymentRes.json()
+            if (paymentData.qrCode) setPixQrCode(paymentData.qrCode)
+            if (paymentData.qrCodeText) setPixQrCodeText(paymentData.qrCodeText)
+          }
+        } catch {
+          // Payment API unavailable, continue with normal order
+        }
       }
 
       const response = await fetch('/api/orders', {
@@ -219,6 +284,13 @@ export function CheckoutView() {
     } catch {
       toast.error('Erro de conexão. Verifique sua internet e tente novamente.')
       setIsProcessing(false)
+    }
+  }
+
+  const copyPixCode = () => {
+    if (pixQrCodeText) {
+      navigator.clipboard.writeText(pixQrCodeText)
+      toast.success('Código Pix copiado!')
     }
   }
 
@@ -308,6 +380,49 @@ export function CheckoutView() {
           >
             Você receberá atualizações sobre o status do seu pedido.
           </motion.p>
+
+          {/* Pix QR Code Section */}
+          {payment === 'PIX' && pixQrCode && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.85 }}
+              className="bg-card rounded-xl border border-border p-5 mb-6 text-center max-w-sm mx-auto"
+            >
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <QrCode className="h-5 w-5 text-primary" />
+                <p className="font-semibold text-sm">Pagamento via Pix</p>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                Escaneie o QR Code ou copie o código Pix
+              </p>
+              {pixQrCode && (
+                <div className="flex justify-center mb-4">
+                  <img
+                    src={`data:image/png;base64,${pixQrCode}`}
+                    alt="QR Code Pix"
+                    className="w-48 h-48 rounded-lg border border-border bg-white p-2"
+                  />
+                </div>
+              )}
+              {pixQrCodeText && (
+                <div className="space-y-2">
+                  <p className="text-[10px] text-muted-foreground truncate max-w-[250px] mx-auto font-mono">
+                    {pixQrCodeText}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 text-xs"
+                    onClick={copyPixCode}
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                    Copiar código Pix
+                  </Button>
+                </div>
+              )}
+            </motion.div>
+          )}
 
           {/* Order summary card */}
           {createdOrder && (
@@ -525,12 +640,27 @@ export function CheckoutView() {
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">CEP</Label>
-                          <Input
-                            placeholder="Ex: 68555-000"
-                            value={address.zip}
-                            onChange={(e) => setAddress({...address, zip: e.target.value})}
-                            className="mt-1"
-                          />
+                          <div className="relative mt-1">
+                            <Input
+                              placeholder="Ex: 68555-000"
+                              value={address.zip}
+                              onChange={(e) => handleCepChange(e.target.value)}
+                              className={`pr-9 ${cepLoading ? 'opacity-70' : ''}`}
+                              maxLength={9}
+                              disabled={cepLoading}
+                            />
+                            {cepLoading && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                              </div>
+                            )}
+                            {!cepLoading && address.zip.replace(/\D/g, '').length >= 8 && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                <Search className="h-4 w-4 text-muted-foreground" />
+                              </div>
+                            )}
+                          </div>
+                          {cepError && <p className="text-[10px] text-amber-600 mt-0.5">{cepError}</p>}
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">Cidade</Label>

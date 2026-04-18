@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Package, Store, Sparkles, Clock, TrendingUp, MessageCircle, CloudSun, ChevronLeft, ChevronRight, Thermometer, Droplets } from 'lucide-react'
+import { Package, Store, Sparkles, Clock, TrendingUp, MessageCircle, CloudSun, ChevronLeft, ChevronRight, Thermometer, Droplets, Sun, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Wind, Loader2 } from 'lucide-react'
 
 // Mock data for the quick info panel
 const quickStats = [
@@ -56,19 +56,41 @@ const dailyTips = [
   },
 ]
 
-// Mock weather data
-const weatherData = {
+// Weather icon mapping from Open-Meteo WMO codes / Portuguese conditions
+function getWeatherIcon(condition: string) {
+  const lower = condition.toLowerCase()
+  if (lower.includes('sol') || lower.includes('clear') || lower.includes('ensolarado') || lower.includes('céu limpo')) return Sun
+  if (lower.includes('parcial') || lower.includes('cloud')) return CloudSun
+  if (lower.includes('nublado') || lower.includes('overcast') || lower.includes('coberto')) return Cloud
+  if (lower.includes('chuva') || lower.includes('rain') || lower.includes('garoa') || lower.includes('chuvoso')) return CloudRain
+  if (lower.includes('trovão') || lower.includes('thunder') || lower.includes('tempestade')) return CloudLightning
+  if (lower.includes('névoa') || lower.includes('fog') || lower.includes('neblina')) return CloudFog
+  if (lower.includes('neve') || lower.includes('snow')) return CloudSnow
+  if (lower.includes('vento') || lower.includes('wind')) return Wind
+  return CloudSun // default
+}
+
+interface WeatherData {
+  temp: string
+  condition: string
+  humidity: string
+  feelsLike: string
+}
+
+// Fallback mock data for when API is unavailable
+const fallbackWeather: WeatherData = {
   temp: '32°C',
   condition: 'Parcialmente nublado',
   humidity: '78%',
   feelsLike: '36°C',
-  icon: CloudSun,
 }
 
 export function QuickInfo() {
   const [currentTip, setCurrentTip] = useState(0)
   const [currentTime, setCurrentTime] = useState('')
   const [currentDate, setCurrentDate] = useState('')
+  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [weatherLoading, setWeatherLoading] = useState(true)
 
   // Update time every minute
   useEffect(() => {
@@ -84,6 +106,37 @@ export function QuickInfo() {
     const interval = setInterval(updateTime, 60000)
     return () => clearInterval(interval)
   }, [])
+
+  // Fetch real weather data from Open-Meteo API
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const res = await fetch('/api/weather')
+        if (res.ok) {
+          const data = await res.json()
+          setWeather({
+            temp: `${Math.round(data.temperature)}°C`,
+            condition: data.condition || 'Nuvens dispersas',
+            humidity: `${data.humidity || 70}%`,
+            feelsLike: `${Math.round(data.feelsLike || data.temperature + 4)}°C`,
+          })
+        } else {
+          setWeather(fallbackWeather)
+        }
+      } catch {
+        setWeather(fallbackWeather)
+      } finally {
+        setWeatherLoading(false)
+      }
+    }
+    fetchWeather()
+    // Refresh every 30 minutes
+    const interval = setInterval(fetchWeather, 30 * 60 * 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const weatherData = weather || fallbackWeather
+  const WeatherIcon = getWeatherIcon(weatherData.condition)
 
   // Auto-rotate tips every 5s
   useEffect(() => {
@@ -126,6 +179,12 @@ export function QuickInfo() {
         >
           <div className="gradient-mesh relative p-4">
             <div className="relative z-10">
+              {weatherLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              ) : (
+                <>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Dom Eliseu, PA</p>
@@ -139,7 +198,7 @@ export function QuickInfo() {
                   transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                   className="h-14 w-14 rounded-2xl bg-gradient-to-br from-amber-200 to-orange-200 dark:from-amber-800/30 dark:to-orange-800/30 flex items-center justify-center shadow-lg"
                 >
-                  <weatherData.icon className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+                  <WeatherIcon className="h-8 w-8 text-amber-600 dark:text-amber-400" />
                 </motion.div>
               </div>
               <div className="flex items-center gap-4 mt-3">
@@ -152,6 +211,8 @@ export function QuickInfo() {
                   Umidade: {weatherData.humidity}
                 </div>
               </div>
+              </>
+              )}
             </div>
           </div>
         </motion.div>

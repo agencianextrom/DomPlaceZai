@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Home, Building2, MapPin, Plus, Pencil, Trash2, Star, Check } from 'lucide-react'
+import { Home, Building2, MapPin, Plus, Pencil, Trash2, Star, Check, Loader2, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -109,6 +109,56 @@ export function AddressManager() {
   const [editingAddress, setEditingAddress] = useState<Address | null>(null)
   const [form, setForm] = useState<AddressFormData>(emptyForm)
   const [errors, setErrors] = useState<Partial<Record<keyof AddressFormData, string>>>({})
+  const [cepLoading, setCepLoading] = useState(false)
+  const [cepError, setCepError] = useState('')
+
+  // ViaCEP auto-fill on CEP blur
+  const handleCepChange = (value: string) => {
+    // Apply CEP mask: 00000-000
+    const digits = value.replace(/\D/g, '').slice(0, 8)
+    let masked = ''
+    for (let i = 0; i < digits.length; i++) {
+      if (i === 5) masked += '-'
+      masked += digits[i]
+    }
+    setForm({ ...form, zip: masked })
+    setCepError('')
+
+    // Auto-fetch when 8 digits entered
+    if (digits.length === 8) {
+      fetchCepData(digits)
+    }
+  }
+
+  const fetchCepData = async (digits: string) => {
+    setCepLoading(true)
+    setCepError('')
+    try {
+      const res = await fetch(`/api/cep/${digits}`)
+      if (res.ok) {
+        const data = await res.json()
+        if (data.erro) {
+          setCepError('CEP não encontrado. Preencha manualmente.')
+          return
+        }
+        setForm(prev => ({
+          ...prev,
+          street: data.street || prev.street,
+          neighborhood: data.neighborhood || prev.neighborhood,
+          city: data.city || prev.city,
+          state: data.state || prev.state,
+          zip: data.zip || prev.zip,
+        }))
+        toast.success('Endereço preenchido automaticamente')
+      } else {
+        setCepError('CEP não encontrado. Preencha manualmente.')
+      }
+    } catch {
+      // Silently fail, user can type manually
+    } finally {
+      setCepLoading(false)
+    }
+  }
 
   const openAddDialog = () => {
     setEditingAddress(null)
@@ -447,15 +497,29 @@ export function AddressManager() {
               <Label htmlFor="addr-zip" className="text-sm font-medium">
                 CEP <span className="text-destructive">*</span>
               </Label>
-              <Input
-                id="addr-zip"
-                placeholder="00000-000"
-                className={`h-10 text-sm ${errors.zip ? 'border-destructive' : ''}`}
-                value={form.zip}
-                onChange={(e) => setForm({ ...form, zip: e.target.value })}
-                maxLength={9}
-              />
+              <div className="relative">
+                <Input
+                  id="addr-zip"
+                  placeholder="00000-000"
+                  className={`h-10 text-sm pr-10 ${errors.zip ? 'border-destructive' : ''} ${cepLoading ? 'opacity-70' : ''}`}
+                  value={form.zip}
+                  onChange={(e) => handleCepChange(e.target.value)}
+                  maxLength={9}
+                  disabled={cepLoading}
+                />
+                {cepLoading && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  </div>
+                )}
+                {!cepLoading && form.zip.replace(/\D/g, '').length >= 8 && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <Search className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
               {errors.zip && <p className="text-[10px] text-destructive">{errors.zip}</p>}
+              {cepError && <p className="text-[10px] text-amber-600 flex items-center gap-1"><span>⚠</span>{cepError}</p>}
             </div>
 
             {/* Complemento */}

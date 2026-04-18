@@ -972,3 +972,205 @@ Stage Summary:
 6. **MEDIUM**: SEO meta tags and Open Graph
 7. **LOW**: LGPD data export tools
 8. **LOW**: Email notifications (order updates, promotions)
+
+---
+Task ID: 9-A
+Agent: Backend API Developer
+Task: Create all Phase 1 + Phase 2 backend API routes and utilities
+
+Work Log:
+- **ViaCEP Proxy** (`/api/cep/[cep]/route.ts`): Created free CEP lookup proxy to viacep.com.br. Validates 8-digit CEP, strips non-digits, returns { street, neighborhood, city, state, zip }. Returns 404 for invalid/not-found CEPs. No API key needed.
+- **Open-Meteo Weather Proxy** (`/api/weather/route.ts`): Created free weather proxy to open-meteo.com. Returns { temp, feelsLike, humidity, condition, icon, isDay }. Maps WMO weather codes to Portuguese descriptions (30 codes). Defaults to Dom Eliseu (lat=-3.44, lon=-47.36). No API key needed.
+- **Cloudflare Turnstile** (`/api/turnstile/verify/route.ts`): POST endpoint for Turnstile token verification. If TURNSTILE_SECRET_KEY empty, returns { success: true, bypassed: true }. Otherwise POSTs to challenges.cloudflare.com/turnstile/v0/siteverify.
+- **Mercado Pago Checkout** (`/api/payments/checkout/route.ts`): POST endpoint supporting PIX and credit card payments. If MERCADO_PAGO_ACCESS_TOKEN empty, creates mock payment with SVG QR code base64, QR text, ticketUrl. If configured, uses mercadopago SDK for real payments. Updates order status in database when orderId provided.
+- **Mercado Pago Webhook** (`/api/payments/webhook/route.ts`): POST endpoint for payment notifications. Processes 'approved' → updates order to CONFIRMED + adds loyalty points. Processes 'cancelled'/'rejected' → updates order to CANCELLED. Verifies signature when configured. Always returns 200 to prevent retries.
+- **FCM Token Registration** (`/api/notifications/register/route.ts`): POST endpoint storing FCM tokens in-memory (Map<accountId, string[]>). Deduplicates tokens. Exports getFCMTokensForAccount() for use by send route.
+- **FCM Send Notification** (`/api/notifications/send/route.ts`): POST endpoint to push notifications. If FIREBASE_SERVER_KEY empty, logs and returns { sent: false, reason: 'no_firebase_config' }. If configured, sends via FCM HTTP v1 API.
+- **Resend Email Utility** (`/lib/email.ts`): Three functions: sendOrderConfirmation (order details with HTML table), sendWelcomeEmail (500 points bonus info), sendPasswordReset (reset link with 24h expiry). If RESEND_API_KEY empty, logs and returns mock success. Professional HTML template with emerald branding (#059669). All text in Portuguese.
+- **FCM Client Utility** (`/lib/notification.ts`): 'use client' module with requestNotificationPermission() and registerFCMToken(accountId). Only initializes Firebase if NEXT_PUBLIC_FIREBASE_API_KEY configured. Falls back to mock token registration.
+- **Auth OAuth Providers** (`/lib/auth.ts`): Added GoogleProvider (conditional on GOOGLE_CLIENT_ID/SECRET) and FacebookProvider (conditional on FACEBOOK_CLIENT_ID/SECRET). OAuth sign-in auto-creates account with role USER, 500 welcome loyalty points, same logic as register route. Added signIn callback for OAuth account creation + jwt trigger: 'update' for session refresh.
+- **Cloudinary Upload** (`/api/upload/route.ts`): Enhanced existing local upload with Cloudinary integration. If CLOUDINARY_CLOUD_NAME + API_KEY + API_SECRET all configured, uploads to Cloudinary with SHA1 signature. Falls back to local upload on failure.
+- **Middleware** (`/middleware.ts`): Added 5 new public paths: /api/cep, /api/weather, /api/turnstile, /api/payments, /api/notifications. Updated matcher exclusion pattern.
+
+Stage Summary:
+- 9 new files created, 3 existing files updated
+- All 7 new API routes with graceful fallback when env vars not configured
+- 2 new utility modules (email.ts, notification.ts)
+- Free services (ViaCEP, Open-Meteo) — no API key needed
+- Paid services (Turnstile, Mercado Pago, Cloudinary, FCM, Resend) — all degrade gracefully to mock/log mode
+- ESLint: 0 errors
+- Dev server: compiling successfully, GET / returns 200
+- No frontend files modified
+- No prisma schema modified
+
+---
+Task ID: 9-B
+Agent: Frontend Integration Developer
+Task: Update all Phase 1 + Phase 2 frontend components to integrate with new API routes
+
+Work Log:
+- **AddressManager.tsx** (`/src/components/profile/AddressManager.tsx`): ViaCEP auto-fill integration
+  - Added CEP mask formatting (00000-000) as user types
+  - Auto-fetches from `/api/cep/{digits}` when 8 digits entered
+  - Auto-fills street, neighborhood, city, state, zip from API response
+  - Shows loading spinner (Loader2) during fetch, error message if CEP not found
+  - Graceful fallback — form remains editable if API fails
+  - Added cepLoading, cepError states and Search, Loader2 icon imports
+
+- **CheckoutView.tsx** (`/src/components/checkout/CheckoutView.tsx`): ViaCEP + Mercado Pago PIX QR integration
+  - ViaCEP auto-fill in checkout address form (same pattern as AddressManager)
+  - PIX payment integration: calls `/api/payments/checkout` with items before creating order
+  - Shows QR code image (base64) and copy-paste code in confirmation view
+  - "Escaneie o QR Code ou copie o código Pix" instruction text
+  - "Copiar código Pix" button with navigator.clipboard integration + toast feedback
+  - CASH_ON_DELIVERY and BOLETO proceed as before (mock)
+  - Graceful fallback if payment API unavailable — order still created
+  - Added pixQrCode, pixQrCodeText, cepLoading, cepError states
+
+- **QuickInfo.tsx** (`/src/components/home/QuickInfo.tsx`): Open-Meteo real weather integration
+  - Removed hardcoded weatherData const, replaced with dynamic state
+  - Added weather, weatherLoading states
+  - Fetches from `/api/weather` (defaults to Dom Eliseu coordinates)
+  - Weather icon mapping function getWeatherIcon() for 9 conditions (Sun, CloudSun, Cloud, CloudRain, CloudLightning, CloudFog, CloudSnow, Wind)
+  - Fallback to mock data (32°C Parcialmente nublado) if API fails
+  - Loading skeleton spinner (Loader2) while fetching
+  - Auto-refresh every 30 minutes via setInterval
+  - Added WeatherData interface and fallbackWeather const
+
+- **AuthModal.tsx** (`/src/components/auth/AuthModal.tsx`): Google/Facebook OAuth + Cloudflare Turnstile
+  - Google OAuth button: dynamically imports signIn from next-auth/react on click
+  - Facebook OAuth button with SVG icon, same dynamic import pattern
+  - Buttons disabled when providers not configured (NEXT_PUBLIC_GOOGLE_CLIENT_ID / NEXT_PUBLIC_FACEBOOK_CLIENT_ID)
+  - Cloudflare Turnstile: dynamic import via next/dynamic (no SSR)
+  - Turnstile rendered before submit buttons in both login and register forms
+  - Turnstile verification enforced in handleLogin/handleRegister if env var configured
+  - "Complete a verificação de segurança" warning message shown when not verified
+  - If env var NOT configured, Turnstile is completely hidden (no verification required)
+  - Added GoogleIcon and FacebookIcon inline SVG components
+  - Reset turnstileToken on form close/submit success
+
+- **OrderMap.tsx** (`/src/components/orders/OrderMap.tsx`): Replaced SVG fake map with real Leaflet/OpenStreetMap
+  - Created new **LeafletMapInner** component (`/src/components/orders/LeafletMapInner.tsx`)
+  - Dynamic import via next/dynamic (ssr: false) to avoid SSR issues
+  - Real Leaflet map centered on Dom Eliseu [-3.44, -47.36] with OpenStreetMap tiles
+  - Custom L.DivIcon markers with inline SVG icons: Store (green), Destination (red), Driver (amber)
+  - Animated route polyline (dashed = remaining, solid = completed)
+  - Driver position updates in real-time as progress changes via useEffect
+  - Fixed Leaflet default marker icon paths for webpack/Next.js (CDN URLs)
+  - All existing overlays preserved: AO VIVO badge (z-[1000]), ETA card, compass
+  - Driver info card, call/chat buttons, ETA countdown — all unchanged
+  - Used useRef instead of useState for isReady to avoid lint set-state-in-effect warning
+
+Stage Summary:
+- 5 existing components updated, 1 new component created (LeafletMapInner)
+- All API integrations have graceful fallback when services unavailable
+- ESLint: 0 errors
+- Dev server: compiling successfully
+- All text in Brazilian Portuguese
+- No API routes, prisma schema, middleware, or .env files modified
+---
+Task ID: 9 (Round 8 — Phase 1 & Phase 2 API Integrations)
+Agent: Master Agent + Backend Developer + Frontend Developer
+Task: Implement 9 third-party API integrations (ViaCEP, NextAuth OAuth, Leaflet, Open-Meteo, Turnstile, Mercado Pago, Resend, FCM, Cloudinary)
+
+Work Log:
+
+**Packages Installed:**
+- leaflet, react-leaflet, @types/leaflet, react-turnstile, mercadopago, resend, firebase, next-cloudinary
+
+**Environment Variables (.env):**
+- Added 15+ new env vars for Google OAuth, Facebook OAuth, Cloudflare Turnstile, Mercado Pago, Resend, Firebase FCM, Cloudinary
+- All keys empty by default — services degrade gracefully without configuration
+
+**Backend — 7 New API Routes Created:**
+1. `GET /api/cep/[cep]` — ViaCEP proxy (FREE, no key). Returns street, neighborhood, city, state, zip
+2. `GET /api/weather` — Open-Meteo proxy (FREE, no key). Returns temp, feelsLike, humidity, condition, icon for Dom Eliseu (-3.44, -47.36)
+3. `POST /api/turnstile/verify` — Cloudflare Turnstile verification. Skips if no secret key configured
+4. `POST /api/payments/checkout` — Mercado Pago checkout. Returns mock payment with QR code when no access token
+5. `POST /api/payments/webhook` — Mercado Pago webhook receiver. Returns 200 always to prevent retries
+6. `POST /api/notifications/register` — FCM device token registration (in-memory Map)
+7. `POST /api/notifications/send` — Push notification sender. Logs when Firebase not configured
+
+**Backend — 3 New Utility Modules Created:**
+1. `src/lib/email.ts` — Resend email utility with sendOrderConfirmation(), sendWelcomeEmail(), sendPasswordReset(). Professional HTML templates with emerald branding
+2. `src/lib/notification.ts` — Client-side FCM utility with requestNotificationPermission() and registerFCMToken()
+3. `src/lib/mp.ts` — Mercado Pago payment utility for creating PIX/card payments
+
+**Backend — 3 Existing Files Updated:**
+1. `src/lib/auth.ts` — Added Google OAuth + Facebook OAuth providers (conditional on env vars). Auto-creates account with 500 welcome loyalty points on first OAuth login
+2. `src/app/api/upload/route.ts` — Added Cloudinary upload with SHA1 signature. Falls back to local upload when not configured
+3. `src/middleware.ts` — Added all 5 new API path groups to public routes and matcher exclusion
+
+**Frontend — 6 Components Updated:**
+1. `src/components/profile/AddressManager.tsx` — ViaCEP auto-fill: CEP mask (00000-000), fetches address on blur, auto-fills street/neighborhood/city/state, loading spinner, error handling
+2. `src/components/checkout/CheckoutView.tsx` — ViaCEP auto-fill for CEP + Mercado Pago PIX integration (QR code display + copy-paste code in confirmation)
+3. `src/components/home/QuickInfo.tsx` — Real weather from Open-Meteo API (24°C, Nublado, 97% humidity confirmed for Dom Eliseu). 9 weather icon mappings, 30-min auto-refresh, loading skeleton, fallback to mock
+4. `src/components/auth/AuthModal.tsx` — Google/Facebook OAuth buttons (enabled when env vars configured), Cloudflare Turnstile widget (dynamic import, no SSR), verification enforcement
+5. `src/components/orders/OrderMap.tsx` — Replaced SVG fake map with real Leaflet/OpenStreetMap map. Created LeafletMapInner.tsx with dynamic import (ssr: false), custom markers, route polyline, driver position animation. All overlays (AO VIVO, ETA, compass, driver card) preserved
+6. `src/components/orders/LeafletMapInner.tsx` — New file: Leaflet map component with custom HTML divIcons, OpenStreetMap tiles centered on Dom Eliseu, animated route polyline
+
+**QA Results:**
+- ESLint: 0 errors
+- All 5 new API routes tested and verified:
+  - ViaCEP: `GET /api/cep/01001000` → 200 (Praça da Sé, São Paulo)
+  - Weather: `GET /api/weather` → 200 (24°C, Nublado, 97% humidity, Dom Eliseu)
+  - Turnstile: `POST /api/turnstile/verify` → 200 ({success: true, bypassed: true})
+  - Payments: `POST /api/payments/checkout` → 200 (mock payment with QR code)
+  - Notifications: `POST /api/notifications/register` → 200 ({success: true})
+- Main page: GET / → 200 (89,679 bytes rendered)
+- Dev server: compiling successfully
+
+---
+## CURRENT PROJECT STATUS (Post Round 8 — API Integration)
+
+### Overall Assessment: STABLE — 9 third-party APIs integrated with graceful degradation
+
+### What's New This Round:
+1. **ViaCEP** — Real CEP lookup (free) in AddressManager and CheckoutView
+2. **Open-Meteo** — Real weather data (free) in QuickInfo sidebar
+3. **Leaflet + OpenStreetMap** — Real interactive map in OrderMap delivery tracker
+4. **Google + Facebook OAuth** — NextAuth providers with auto-account creation
+5. **Cloudflare Turnstile** — Anti-bot protection on login/register
+6. **Mercado Pago** — PIX QR code payment flow with mock fallback
+7. **Resend** — Email templates for order confirmation, welcome, password reset
+8. **Firebase FCM** — Push notification infrastructure (token registration + sending)
+9. **Cloudinary** — Cloud image upload with local fallback
+
+### Architecture: Graceful Degradation
+Every integration checks for API keys/environment variables:
+- **Without keys**: Mock data, console.log, or skip verification — app works normally
+- **With keys**: Full functionality enabled automatically
+- Zero configuration needed for basic operation
+
+### Environment Variables Required for Full Activation:
+```
+GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET → Google OAuth
+FACEBOOK_CLIENT_ID + FACEBOOK_CLIENT_SECRET → Facebook OAuth
+TURNSTILE_SITE_KEY + TURNSTILE_SECRET_KEY → Anti-bot protection
+MERCADO_PAGO_ACCESS_TOKEN → Real PIX/card payments
+MERCADO_PAGO_WEBHOOK_URL → Payment confirmation webhooks
+RESEND_API_KEY → Email notifications
+NEXT_PUBLIC_FIREBASE_* → Push notifications (6 vars)
+CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET → Cloud image upload
+```
+
+### Total Project Stats:
+- ~105+ component files
+- 15 API routes (8 original + 7 new)
+- 20+ Prisma models
+- 45+ CSS utility classes and animations
+- 9 third-party integrations
+- 15+ views
+
+### Unresolved Issues:
+1. Pre-existing LibsqlError URL_INVALID on Turso connection (non-blocking for routes without DB)
+2. Google/Facebook buttons still disabled until env vars configured
+3. Payment confirmation flow needs webhook endpoint configured with real Mercado Pago token
+
+### Priority Recommendations for Next Phase:
+1. **HIGH**: Configure Mercado Pago token for real payments
+2. **HIGH**: Configure Google/Facebook OAuth credentials
+3. **MEDIUM**: Configure Resend for email confirmations on order creation
+4. **MEDIUM**: Configure Firebase for push notifications
+5. **MEDIUM**: Configure Cloudinary for cloud image uploads
+6. **LOW**: Connect dashboard components to real database APIs

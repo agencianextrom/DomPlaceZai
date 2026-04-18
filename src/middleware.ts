@@ -19,6 +19,12 @@ export default withAuth({
         '/api/orders',
         '/api/reviews',
         '/api/favorites',
+        // Phase 1 & 2 API integrations
+        '/api/cep',
+        '/api/weather',
+        '/api/turnstile',
+        '/api/payments',
+        '/api/notifications',
       ]
 
       // Check if path is public
@@ -46,6 +52,6 @@ export default withAuth({
 
 export const config = {
   matcher: [
-    '/api/((?!auth|products|stores|banners|seed|route|upload|cart|orders|reviews|favorites).*)',
+    '/api/((?!auth|products|stores|banners|seed|route|upload|cart|orders|reviews|favorites|cep|weather|turnstile|payments|notifications).*)',
   ],
 }
