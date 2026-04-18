@@ -507,3 +507,94 @@
 .confetti-particle-4 { animation: confetti-fall-2 0.9s ease-out 0.15s forwards; opacity: 0; }
 .confetti-particle-5 { animation: confetti-fall-1 1.3s ease-out 0.25s forwards; opacity: 0; }
 .confetti-particle-6 { animation: confetti-fall-3 1s ease-out 0.05s forwards; opacity: 0; }
+
+/* ==============================
+   NOISE TEXTURE OVERLAY
+   ============================== */
+.noise-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==============================
+   GRADIENT MESH BACKGROUND
+   ============================== */
+.gradient-mesh {
+  background: 
+    radial-gradient(at 20% 20%, oklch(0.45 0.1 155 / 0.08) 0%, transparent 50%),
+    radial-gradient(at 80% 80%, oklch(0.78 0.16 70 / 0.06) 0%, transparent 50%),
+    radial-gradient(at 50% 50%, oklch(0.55 0.08 140 / 0.04) 0%, transparent 50%);
+}
+.dark .gradient-mesh {
+  background: 
+    radial-gradient(at 20% 20%, oklch(0.55 0.12 155 / 0.12) 0%, transparent 50%),
+    radial-gradient(at 80% 80%, oklch(0.72 0.16 70 / 0.08) 0%, transparent 50%),
+    radial-gradient(at 50% 50%, oklch(0.50 0.08 140 / 0.06) 0%, transparent 50%);
+}
+
+/* ==============================
+   STAGGER CHILDREN ANIMATIONS
+   ============================== */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: stagger-in 0.4s ease-out forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 360ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 420ms; }
+
+@keyframes stagger-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==============================
+   BREATHE ANIMATION (subtle scale)
+   ============================== */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* ==============================
+   TOOLTIP ARROW
+   ============================== */
+.tooltip-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid oklch(0.20 0.02 150 / 0.9);
+}
+
+/* ==============================
+   BADGE PULSE
+   ============================== */
+@keyframes badge-ping {
+  0% { transform: scale(1); opacity: 1; }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+.badge-ping::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: badge-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}

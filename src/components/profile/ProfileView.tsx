@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { 
   User, MapPin, CreditCard, Heart, ClipboardList, Gift, Users, Settings, LogOut, 
   Star, ChevronRight, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock,
-  Bell, Moon, MapPinned, Share2, Ticket, Copy, Check
+  Bell, Moon, MapPinned, Share2, Ticket, Copy, Check, ListChecks, LayoutDashboard
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -15,6 +15,8 @@ import { useAppStore } from '@/store/useAppStore'
 import { motion } from 'framer-motion'
 import { formatBRL } from '@/components/product/ProductCard'
 import { RewardsSection } from './RewardsSection'
+import { ShoppingLists } from './ShoppingLists'
+import { AddressManager } from './AddressManager'
 import { toast } from 'sonner'
 
 // Demo recent orders
@@ -67,7 +69,9 @@ const menuItems = [
   { id: 'favorites', icon: Heart, label: 'Favoritos', desc: 'Lojas e produtos favoritos' },
   { id: 'orders', icon: ClipboardList, label: 'Pedidos', desc: 'Histórico de pedidos' },
   { id: 'loyalty', icon: Award, label: 'Programa de Fidelidade', desc: 'Pontos e recompensas' },
+  { id: 'shopping-lists', icon: ListChecks, label: 'Listas de Compras', desc: 'Organize suas compras' },
   { id: 'referral', icon: Users, label: 'Indique Amigos', desc: 'Ganhe com indicações' },
+  { id: 'store-dashboard', icon: LayoutDashboard, label: 'Painel da Loja', desc: 'Gerencie sua loja' },
   { id: 'settings', icon: Settings, label: 'Configurações', desc: 'Notificações e preferências' },
 ]
 
@@ -96,48 +100,13 @@ export function ProfileView() {
   if (activeSection === 'addresses') {
     return (
       <div className="min-h-screen p-4 pb-24">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
-              <ChevronRight className="h-5 w-5 rotate-180" />
-            </Button>
-            <h1 className="text-lg font-bold">Endereços</h1>
-          </div>
-          <Button size="sm" className="bg-primary text-primary-foreground">
-            <Plus className="h-4 w-4 mr-1" />
-            Novo
+        <div className="flex items-center gap-3 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+            <ChevronRight className="h-5 w-5 rotate-180" />
           </Button>
+          <h1 className="text-lg font-bold">Endereços</h1>
         </div>
-        
-        <div className="space-y-3">
-          {savedAddresses.map((addr) => (
-            <Card key={addr.id} className={addr.isPrimary ? 'border-2 border-primary' : ''}>
-              <CardContent className="p-4 relative">
-                {addr.isPrimary && (
-                  <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground text-[10px]">Principal</Badge>
-                )}
-                <p className="font-semibold text-sm">{addr.label}</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {addr.address}<br />
-                  {addr.neighborhood}<br />
-                  {addr.city}, {addr.zip}
-                </p>
-                <div className="flex gap-2 mt-3">
-                  <Button variant="ghost" size="sm" className="text-xs h-8">
-                    <Edit3 className="h-3 w-3 mr-1" />
-                    Editar
-                  </Button>
-                  {!addr.isPrimary && (
-                    <Button variant="ghost" size="sm" className="text-xs h-8 text-destructive">
-                      <Trash2 className="h-3 w-3 mr-1" />
-                      Remover
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <AddressManager />
       </div>
     )
   }
@@ -512,6 +481,10 @@ export function ProfileView() {
                   navigate('orders')
                 } else if (item.id === 'favorites') {
                   navigate('favorites')
+                } else if (item.id === 'shopping-lists') {
+                  navigate('shopping-lists')
+                } else if (item.id === 'store-dashboard') {
+                  navigate('store-dashboard')
                 } else if (['loyalty', 'addresses', 'coupons', 'referral', 'settings'].includes(item.id)) {
                   setActiveSection(item.id)
                 }

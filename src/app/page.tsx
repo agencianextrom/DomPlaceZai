@@ -13,13 +13,17 @@ import { CartView } from '@/components/cart/CartView'
 import { CheckoutView } from '@/components/checkout/CheckoutView'
 import { OrdersView, OrderDetail } from '@/components/orders/OrdersView'
 import { ProfileView } from '@/components/profile/ProfileView'
+import { StoreDashboard } from '@/components/dashboard/StoreDashboard'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { WelcomeModal } from '@/components/onboarding/WelcomeModal'
 import { AIChatBot } from '@/components/chat/AIChatBot'
+import { CookieConsent } from '@/components/layout/CookieConsent'
+import { QuickInfo } from '@/components/home/QuickInfo'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
-import { Heart, Sparkles, MapPin } from 'lucide-react'
+import { ShoppingLists } from '@/components/profile/ShoppingLists'
+import { Heart, Sparkles, MapPin, LayoutDashboard } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { ProductData, StoreData } from '@/store/useAppStore'
@@ -188,126 +192,134 @@ export default function Home() {
           </motion.div>
         ) : currentView === 'home' ? (
           <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-            {isLoading ? (
-              <HomeSkeleton />
-            ) : (
-              <>
-                {/* Hero */}
-                <section className="mt-4">
-                  <HeroBanner banners={fallbackBanners} />
-                </section>
-                
-                {/* Welcome greeting */}
-                <motion.section 
-                  className="mt-6"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-lg sm:text-xl font-bold">
-                        Bem-vindo de volta, Maria! 👋
-                      </h2>
-                      <div className="flex items-center gap-1.5 mt-1 text-sm text-muted-foreground">
-                        <MapPin className="h-3.5 w-3.5 text-primary" />
-                        <span>Entregando em Dom Eliseu, PA</span>
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 ml-0.5" />
+            <div className="flex gap-6">
+              {/* Main content area */}
+              <div className="flex-1 min-w-0">
+                {isLoading ? (
+                  <HomeSkeleton />
+                ) : (
+                  <>
+                    {/* Hero */}
+                    <section className="mt-4">
+                      <HeroBanner banners={fallbackBanners} />
+                    </section>
+                    
+                    {/* Welcome greeting */}
+                    <motion.section 
+                      className="mt-6"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h2 className="text-lg sm:text-xl font-bold">
+                            Bem-vindo de volta, Maria! 👋
+                          </h2>
+                          <div className="flex items-center gap-1.5 mt-1 text-sm text-muted-foreground">
+                            <MapPin className="h-3.5 w-3.5 text-primary" />
+                            <span>Entregando em Dom Eliseu, PA</span>
+                            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 ml-0.5" />
+                          </div>
+                        </div>
+                        <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
+                          <Sparkles className="h-4 w-4 text-amber-500" />
+                          <span>3 lojas com ofertas novas</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
-                      <Sparkles className="h-4 w-4 text-amber-500" />
-                      <span>3 lojas com ofertas novas</span>
-                    </div>
-                  </div>
-                </motion.section>
-                
-                {/* Categories - now filterable */}
-                <section className="mt-8">
-                  <CategoryBar />
-                </section>
+                    </motion.section>
+                    
+                    {/* Categories - now filterable */}
+                    <section className="mt-8">
+                      <CategoryBar />
+                    </section>
 
-                {/* Active category indicator */}
-                {activeCategory && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-semibold">
-                        Mostrando: {allProducts.filter(p => p.category === activeCategory).length} produtos em{' '}
-                        {activeCategory.replace(/_/g, ' ')}
-                      </h3>
-                      <button 
-                        onClick={() => useAppStore.getState().setActiveCategory(null)}
-                        className="text-xs text-primary hover:underline"
+                    {/* Active category indicator */}
+                    {activeCategory && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="mt-4"
                       >
-                        Ver todos
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-semibold">
+                            Mostrando: {allProducts.filter(p => p.category === activeCategory).length} produtos em{' '}
+                            {activeCategory.replace(/_/g, ' ')}
+                          </h3>
+                          <button 
+                            onClick={() => useAppStore.getState().setActiveCategory(null)}
+                            className="text-xs text-primary hover:underline"
+                          >
+                            Ver todos
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
 
-                <Separator className="my-8 bg-border/50" />
-                
-                {/* Offers of the Day */}
-                {offerProducts.length > 0 && (
-                  <section>
-                    <ProductCarousel title="🔥 Ofertas do Dia" products={offerProducts} />
-                  </section>
-                )}
+                    <Separator className="my-8 bg-border/50" />
+                    
+                    {/* Offers of the Day */}
+                    {offerProducts.length > 0 && (
+                      <section>
+                        <ProductCarousel title="🔥 Ofertas do Dia" products={offerProducts} />
+                      </section>
+                    )}
 
-                <Separator className="my-8 bg-border/50" />
-                
-                {/* New in City */}
-                {newProducts.length > 0 && (
-                  <section>
-                    <ProductCarousel title="✨ Novidades na Cidade" products={newProducts} />
-                  </section>
-                )}
+                    <Separator className="my-8 bg-border/50" />
+                    
+                    {/* New in City */}
+                    {newProducts.length > 0 && (
+                      <section>
+                        <ProductCarousel title="✨ Novidades na Cidade" products={newProducts} />
+                      </section>
+                    )}
 
-                <Separator className="my-8 bg-border/50" />
-                
-                {/* Featured Stores */}
-                {filteredStores.length > 0 && (
-                  <section>
-                    <StoreCarousel title="🏪 Lojas em Destaque" stores={filteredStores} />
-                  </section>
-                )}
+                    <Separator className="my-8 bg-border/50" />
+                    
+                    {/* Featured Stores */}
+                    {filteredStores.length > 0 && (
+                      <section>
+                        <StoreCarousel title="🏪 Lojas em Destaque" stores={filteredStores} />
+                      </section>
+                    )}
 
-                <Separator className="my-8 bg-border/50" />
-                
-                {/* Suggestions */}
-                {suggestedProducts.length > 0 && (
-                  <section>
-                    <ProductCarousel title="💡 Sugestões para Você" products={suggestedProducts} />
-                  </section>
-                )}
+                    <Separator className="my-8 bg-border/50" />
+                    
+                    {/* Suggestions */}
+                    {suggestedProducts.length > 0 && (
+                      <section>
+                        <ProductCarousel title="💡 Sugestões para Você" products={suggestedProducts} />
+                      </section>
+                    )}
 
-                <Separator className="my-8 bg-border/50" />
-                
-                {/* Partners */}
-                <section>
-                  <PartnersBanner />
-                </section>
+                    <Separator className="my-8 bg-border/50" />
+                    
+                    {/* Partners */}
+                    <section>
+                      <PartnersBanner />
+                    </section>
 
-                <Separator className="my-8 bg-border/50" />
-                
-                {/* Segmented Ads */}
-                {filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5').length > 0 && (
-                  <section>
-                    <ProductCarousel 
-                      title="📢 Anúncios Segmentados" 
-                      products={filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5')} 
-                    />
-                  </section>
+                    <Separator className="my-8 bg-border/50" />
+                    
+                    {/* Segmented Ads */}
+                    {filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5').length > 0 && (
+                      <section>
+                        <ProductCarousel 
+                          title="📢 Anúncios Segmentados" 
+                          products={filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5')} 
+                        />
+                      </section>
+                    )}
+                  </>
                 )}
-              </>
-            )}
-            
-            <div className="h-4" />
+                
+                <div className="h-4" />
+              </div>
+
+              {/* Desktop sidebar - Quick Info panel */}
+              <QuickInfo />
+            </div>
           </motion.div>
         ) : currentView === 'product' ? (
           <ProductDetailView />
@@ -330,6 +342,14 @@ export default function Home() {
         ) : currentView === 'profile' ? (
           <motion.div key="profile" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <ProfileView />
+          </motion.div>
+        ) : currentView === 'store-dashboard' ? (
+          <motion.div key="store-dashboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <StoreDashboard />
+          </motion.div>
+        ) : currentView === 'shopping-lists' ? (
+          <motion.div key="shopping-lists" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <ShoppingLists />
           </motion.div>
         ) : currentView === 'favorites' ? (
           <motion.div key="favorites" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-7xl mx-auto px-4 pt-4">
@@ -354,6 +374,9 @@ export default function Home() {
 
       {/* AI Chat Bot - always mounted, floating */}
       <AIChatBot />
+
+      {/* Cookie Consent Banner - shows on first visit */}
+      <CookieConsent />
     </div>
   )
 }

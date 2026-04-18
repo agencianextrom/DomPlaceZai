@@ -9,6 +9,7 @@ import { useAppStore, type ProductData } from '@/store/useAppStore'
 import { formatBRL, CategoryIcon } from './ProductCard'
 import { StarRating } from '@/components/ui/StarRating'
 import { ShareButton } from './ShareButton'
+import { ProductReviews } from './ProductReviews'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -24,33 +25,7 @@ const gradients = [
   'from-lime-100 to-green-200 dark:from-lime-900/30 dark:to-green-800/30',
 ]
 
-// Demo reviews
-const demoReviews = [
-  {
-    id: 'r1',
-    name: 'Maria Silva',
-    avatar: 'M',
-    rating: 5,
-    date: '2 dias atrás',
-    comment: 'Produto excelente! Entrega rápida e chegou bem embalado. Super recomendo!',
-  },
-  {
-    id: 'r2',
-    name: 'João Santos',
-    avatar: 'J',
-    rating: 4,
-    date: '1 semana atrás',
-    comment: 'Boa qualidade pelo preço. A entrega demorou um pouco mais que o esperado, mas no geral estou satisfeito.',
-  },
-  {
-    id: 'r3',
-    name: 'Ana Oliveira',
-    avatar: 'A',
-    rating: 5,
-    date: '2 semanas atrás',
-    comment: 'Sempre compro aqui. Produtos frescos e preços justos. A melhor loja de Dom Eliseu!',
-  },
-]
+
 
 // Mock similar products
 const mockSimilarProducts: ProductData[] = [
@@ -342,38 +317,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
         <Separator className="my-4" />
         
         {/* Reviews */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold flex items-center gap-2">
-              Avaliações
-            </h3>
-            <span className="text-sm text-muted-foreground">{product.totalReviews} avaliações</span>
-          </div>
-          
-          <div className="space-y-4">
-            {demoReviews.map((review) => (
-              <Card key={review.id} className="border-border/50">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">
-                      {review.avatar}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <p className="font-semibold text-sm">{review.name}</p>
-                        <span className="text-xs text-muted-foreground">{review.date}</span>
-                      </div>
-                      <div className="mt-0.5">
-                        <StarRating rating={review.rating} size="sm" />
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{review.comment}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+        <ProductReviews 
+          productId={product.id} 
+          productRating={product.rating} 
+          totalReviews={product.totalReviews} 
+        />
 
         <Separator className="my-4" />
 
