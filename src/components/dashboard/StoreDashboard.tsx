@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator'
 import { useAppStore } from '@/store/useAppStore'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ReviewsManagement } from './ReviewsManagement'
+import { ProductForm } from './ProductForm'
 
 // ─── Animated Counter Hook ───
 function useAnimatedCounter(target: number, duration = 1200, decimals = 0) {
@@ -206,6 +207,10 @@ export function StoreDashboard() {
             <TabsTrigger value="reviews" className="gap-1.5 text-xs sm:text-sm">
               <MessageSquare className="h-3.5 w-3.5" />
               Avaliações
+            </TabsTrigger>
+            <TabsTrigger value="new-product" className="gap-1.5 text-xs sm:text-sm">
+              <Plus className="h-3.5 w-3.5" />
+              Novo Produto
             </TabsTrigger>
           </TabsList>
 
@@ -651,6 +656,21 @@ export function StoreDashboard() {
                 transition={{ duration: 0.25 }}
               >
                 <ReviewsManagement />
+              </motion.div>
+            </AnimatePresence>
+          </TabsContent>
+
+          {/* ── New Product Tab ── */}
+          <TabsContent value="new-product">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key="new-product"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                <ProductForm />
               </motion.div>
             </AnimatePresence>
           </TabsContent>

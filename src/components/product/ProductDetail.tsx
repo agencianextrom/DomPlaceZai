@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { ArrowLeft, Heart, ShoppingCart, Store, Clock, Package, Scale, CheckCircle, ChevronDown, ChevronUp, Truck, Tag, Minus, Plus } from 'lucide-react'
+import { useState, useEffect, useRef, Fragment } from 'react'
+import { ArrowLeft, Heart, ShoppingCart, Store, Package, Scale, CheckCircle, ChevronDown, ChevronUp, Truck, Tag, Minus, Plus, ShieldCheck, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -26,6 +26,12 @@ const gradients = [
 ]
 
 
+// Trust badges
+const trustBadges = [
+  { icon: ShieldCheck, label: 'Garantia de satisfação', desc: 'Devolução fácil em até 7 dias', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+  { icon: Truck, label: 'Entrega rápida', desc: 'Receba em 30-45 minutos', color: 'text-primary', bg: 'bg-primary/5' },
+  { icon: Zap, label: 'Pagamento seguro', desc: 'Pix, cartão e dinheiro', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20' },
+]
 
 // Mock similar products
 const mockSimilarProducts: ProductData[] = [
@@ -37,11 +43,20 @@ const mockSimilarProducts: ProductData[] = [
   { id: 'sp6', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Smoothie de Açaí', slug: 'smoothie-acai', description: 'Smoothie refrescante de açaí com frutas.', price: 18.00, comparePrice: null, images: '[]', stock: 40, rating: 4.8, totalReviews: 28, isFeatured: true, isNew: true, isOffer: false, tags: '["novidade"]', variations: null, category: 'FOOD' },
 ]
 
+// "Frequently bought together" mock data
+const frequentlyBoughtTogether: ProductData[] = [
+  { id: 'fbt1', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Açúcar Cristal 1kg', slug: 'acucar-cristal', description: 'Açúcar cristal premium.', price: 5.49, comparePrice: null, images: '[]', stock: 120, rating: 4.2, totalReviews: 18, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+  { id: 'fbt2', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Café Torrado 500g', slug: 'cafe-torrado', description: 'Café premium.', price: 18.90, comparePrice: 22.00, images: '[]', stock: 60, rating: 4.6, totalReviews: 32, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: null, category: 'FOOD' },
+]
+
 export function ProductDetail({ product }: ProductDetailProps) {
   const { goBack, navigate, selectStore, addToCart, isFavoriteProduct, toggleFavoriteProduct } = useAppStore()
   const [quantity, setQuantity] = useState(1)
+  const [selectedVariation, setSelectedVariation] = useState<string | null>(null)
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [similarProducts, setSimilarProducts] = useState<ProductData[]>(mockSimilarProducts)
+  const [showStickyBar, setShowStickyBar] = useState(false)
+  const buySectionRef = useRef<HTMLDivElement>(null)
   
   const isFav = isFavoriteProduct(product.id)
   const discount = product.comparePrice
@@ -52,6 +67,24 @@ export function ProductDetail({ product }: ProductDetailProps) {
   
   const variations = product.variations ? JSON.parse(product.variations) : []
   const tags = product.tags ? JSON.parse(product.tags) : []
+
+  useEffect(() => {
+    // Set default variation
+    if (variations.length > 0 && !selectedVariation) {
+      setSelectedVariation(variations[0])
+    }
+  }, [variations, selectedVariation])
+
+  // Show sticky bar when scrolled past the buy section
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!buySectionRef.current) return
+      const rect = buySectionRef.current.getBoundingClientRect()
+      setShowStickyBar(rect.bottom < 0)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Try to fetch similar products from API
   useEffect(() => {
@@ -82,6 +115,10 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const handleAddToCart = () => {
     addToCart(product, product.storeName || 'Loja', quantity)
   }
+
+  // Calculate "frequently bought together" total
+  const fbtTotal = product.price + frequentlyBoughtTogether.reduce((sum, p) => sum + p.price, 0)
+  const fbtSavings = frequentlyBoughtTogether.reduce((sum, p) => sum + ((p.comparePrice || p.price) - p.price), 0)
   
   return (
     <div className="max-w-3xl mx-auto pb-28 md:pb-24">
@@ -99,25 +136,40 @@ export function ProductDetail({ product }: ProductDetailProps) {
               className="h-10 w-10"
               onClick={() => toggleFavoriteProduct(product.id)}
             >
-              <Heart className={`h-5 w-5 transition-colors ${isFav ? 'fill-red-500 text-red-500' : ''}`} />
+              <motion.div whileTap={{ scale: 1.3 }}>
+                <Heart className={`h-5 w-5 transition-colors ${isFav ? 'fill-red-500 text-red-500' : ''}`} />
+              </motion.div>
             </Button>
           </div>
         </div>
       </div>
       
-      {/* Large Product Image */}
+      {/* Large Product Image — improved gradient placeholder */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className={`relative aspect-[4/3] sm:aspect-square bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}
       >
+        {/* Decorative pattern overlay */}
         <div className="absolute inset-0 opacity-[0.04]" style={{
           backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
           backgroundSize: '24px 24px',
         }} />
+        {/* Decorative floating shapes */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+          className="absolute top-8 right-8 w-20 h-20 rounded-full border border-white/10"
+        />
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          className="absolute bottom-12 left-8 w-16 h-16 rounded-lg border border-white/10"
+        />
+        
         <motion.div 
-          className="relative z-10 h-24 w-24 sm:h-32 sm:w-32 rounded-3xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-md"
-          whileHover={{ scale: 1.05 }}
+          className="relative z-10 h-24 w-24 sm:h-32 sm:w-32 rounded-3xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-lg card-spotlight"
+          whileHover={{ scale: 1.08, rotate: 2 }}
           transition={{ type: 'spring', stiffness: 300 }}
         >
           <div className="scale-150">
@@ -128,19 +180,25 @@ export function ProductDetail({ product }: ProductDetailProps) {
         {/* Badges */}
         <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
           {discount > 0 && (
-            <Badge className="bg-red-500 text-white border-0 text-sm px-3 py-1 shadow-lg">
-              -{discount}% OFF
-            </Badge>
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
+              <Badge className="bg-red-500 text-white border-0 text-sm px-3 py-1 shadow-lg font-bold">
+                -{discount}% OFF
+              </Badge>
+            </motion.div>
           )}
           {product.isNew && (
-            <Badge className="bg-primary text-primary-foreground border-0 text-sm px-3 py-1 shadow-lg">
-              Novo
-            </Badge>
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
+              <Badge className="bg-primary text-primary-foreground border-0 text-sm px-3 py-1 shadow-lg">
+                Novo
+              </Badge>
+            </motion.div>
           )}
           {product.isOffer && !discount && (
-            <Badge className="bg-amber-500 text-white border-0 text-sm px-3 py-1 shadow-lg">
-              Oferta
-            </Badge>
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
+              <Badge className="bg-amber-500 text-white border-0 text-sm px-3 py-1 shadow-lg">
+                Oferta
+              </Badge>
+            </motion.div>
           )}
         </div>
       </motion.div>
@@ -149,7 +207,10 @@ export function ProductDetail({ product }: ProductDetailProps) {
       <div className="px-1 mt-4">
         {/* Store link */}
         {product.storeName && (
-          <button
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
             onClick={() => {
               if (product.storeId) {
                 selectStore({
@@ -182,57 +243,96 @@ export function ProductDetail({ product }: ProductDetailProps) {
             <Store className="h-4 w-4" />
             {product.storeName}
             <ChevronDown className="h-3 w-3" />
-          </button>
+          </motion.button>
         )}
         
         <h1 className="text-xl sm:text-2xl font-bold mt-2">{product.name}</h1>
         
         {/* Rating using StarRating */}
         {product.rating > 0 && (
-          <div className="flex items-center gap-2 mt-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="flex items-center gap-2 mt-2"
+          >
             <StarRating rating={product.rating} size="sm" showCount count={product.totalReviews} />
-          </div>
+          </motion.div>
         )}
         
         {/* Price */}
-        <div className="flex items-baseline gap-3 mt-3">
+        <motion.div 
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex items-baseline gap-3 mt-3"
+        >
           <span className="text-2xl sm:text-3xl font-bold text-primary">{formatBRL(product.price)}</span>
           {product.comparePrice && product.comparePrice > product.price && (
             <span className="text-lg text-muted-foreground line-through">{formatBRL(product.comparePrice)}</span>
           )}
-        </div>
+          {discount > 0 && (
+            <Badge variant="secondary" className="text-xs bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-0">
+              Economize {formatBRL(product.comparePrice! - product.price)}
+            </Badge>
+          )}
+        </motion.div>
 
         {/* Product specs */}
-        <div className="mt-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="mt-4"
+        >
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <div className="bg-secondary/50 rounded-lg p-3 text-center">
-              <Package className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
-              <p className="text-[10px] text-muted-foreground">Estoque</p>
-              <p className="font-semibold text-xs">{product.stock > 50 ? 'Disponível' : product.stock > 0 ? `${product.stock} un.` : 'Esgotado'}</p>
-            </div>
-            <div className="bg-secondary/50 rounded-lg p-3 text-center">
-              <Scale className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
-              <p className="text-[10px] text-muted-foreground">Categoria</p>
-              <p className="font-semibold text-xs capitalize">{product.category.replace(/_/g, ' ')}</p>
-            </div>
-            <div className="bg-secondary/50 rounded-lg p-3 text-center">
-              <CheckCircle className="h-4 w-4 mx-auto mb-1 text-emerald-500" />
-              <p className="text-[10px] text-muted-foreground">Garantia</p>
-              <p className="font-semibold text-xs">Satisfação</p>
-            </div>
-            <div className="bg-secondary/50 rounded-lg p-3 text-center">
-              <Truck className="h-4 w-4 mx-auto mb-1 text-primary" />
-              <p className="text-[10px] text-muted-foreground">Entrega</p>
-              <p className="font-semibold text-xs">30-45 min</p>
-            </div>
+            {[
+              { icon: Package, label: 'Estoque', value: product.stock > 50 ? 'Disponível' : product.stock > 0 ? `${product.stock} un.` : 'Esgotado', iconColor: 'text-muted-foreground' },
+              { icon: Scale, label: 'Categoria', value: product.category.replace(/_/g, ' '), iconColor: 'text-muted-foreground' },
+              { icon: CheckCircle, label: 'Garantia', value: 'Satisfação', iconColor: 'text-emerald-500' },
+              { icon: Truck, label: 'Entrega', value: '30-45 min', iconColor: 'text-primary' },
+            ].map((spec, i) => (
+              <motion.div 
+                key={spec.label}
+                className="bg-secondary/50 rounded-lg p-3 text-center card-spotlight"
+                whileHover={{ y: -2 }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 + i * 0.05 }}
+              >
+                <spec.icon className={`h-4 w-4 mx-auto mb-1 ${spec.iconColor}`} />
+                <p className="text-[10px] text-muted-foreground">{spec.label}</p>
+                <p className="font-semibold text-xs">{spec.value}</p>
+              </motion.div>
+            ))}
           </div>
-        </div>
+        </motion.div>
+
+        {/* Trust badges section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+          className="mt-4 grid grid-cols-3 gap-2"
+        >
+          {trustBadges.map((badge, i) => (
+            <motion.div
+              key={badge.label}
+              whileHover={{ y: -2 }}
+              className={`flex flex-col items-center gap-1.5 p-3 rounded-xl ${badge.bg} border border-border/50 hover:shadow-sm transition-all cursor-default`}
+            >
+              <badge.icon className={`h-5 w-5 ${badge.color}`} />
+              <span className="text-[10px] font-semibold text-center leading-tight">{badge.label}</span>
+              <span className="text-[9px] text-muted-foreground text-center leading-tight">{badge.desc}</span>
+            </motion.div>
+          ))}
+        </motion.div>
 
         {/* Delivery info */}
         <motion.div 
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.4 }}
           className="mt-3 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl p-3 border border-emerald-200/50 dark:border-emerald-800/30"
         >
           <div className="flex items-center gap-3 text-sm">
@@ -284,16 +384,41 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </div>
         )}
 
-        {/* Variations */}
+        {/* Variations — improved pill styling */}
         {variations.length > 0 && (
           <div className="mt-4">
-            <h3 className="font-semibold mb-2">Variações</h3>
+            <h3 className="font-semibold mb-2">
+              Variações
+              {selectedVariation && <span className="text-primary ml-1 text-sm font-normal">· {selectedVariation}</span>}
+            </h3>
             <div className="flex flex-wrap gap-2">
-              {variations.map((v: string) => (
-                <Badge key={v} variant="outline" className="px-3 py-1.5 cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors">
-                  {v}
-                </Badge>
-              ))}
+              {variations.map((v: string) => {
+                const isSelected = selectedVariation === v
+                return (
+                  <motion.button
+                    key={v}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setSelectedVariation(v)}
+                    className={`relative px-4 py-2 rounded-full text-sm font-medium border-2 transition-all duration-200 ${
+                      isSelected
+                        ? 'border-primary bg-primary text-primary-foreground shadow-md'
+                        : 'border-border bg-card hover:border-primary/40 hover:bg-primary/5 text-foreground'
+                    }`}
+                  >
+                    {v}
+                    {isSelected && (
+                      <motion.div
+                        layoutId="variation-check"
+                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center"
+                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      >
+                        <CheckCircle className="h-3 w-3" />
+                      </motion.div>
+                    )}
+                  </motion.button>
+                )
+              })}
             </div>
           </div>
         )}
@@ -301,16 +426,27 @@ export function ProductDetail({ product }: ProductDetailProps) {
         <Separator className="my-4" />
         
         {/* Quantity */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between" ref={buySectionRef}>
           <h3 className="font-semibold">Quantidade</h3>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-              <Minus className="h-4 w-4" />
-            </Button>
-            <span className="w-8 text-center font-semibold">{quantity}</span>
-            <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => setQuantity(quantity + 1)}>
-              <Plus className="h-4 w-4" />
-            </Button>
+            <motion.div whileTap={{ scale: 0.9 }}>
+              <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                <Minus className="h-4 w-4" />
+              </Button>
+            </motion.div>
+            <motion.span 
+              key={quantity}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+              className="w-8 text-center font-semibold"
+            >
+              {quantity}
+            </motion.span>
+            <motion.div whileTap={{ scale: 0.9 }}>
+              <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => setQuantity(quantity + 1)}>
+                <Plus className="h-4 w-4" />
+              </Button>
+            </motion.div>
           </div>
         </div>
 
@@ -325,27 +461,108 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
         <Separator className="my-4" />
 
+        {/* Frequently bought together */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-2"
+        >
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            <ShoppingCart className="h-4 w-4 text-primary" />
+            Compre junto
+          </h3>
+          <Card className="border-primary/20 overflow-hidden">
+            <CardContent className="p-4">
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                {/* Main product */}
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className={`h-14 w-14 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-sm`}>
+                    <CategoryIcon category={product.category} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold line-clamp-2">{product.name}</p>
+                    <p className="text-sm font-bold text-primary">{formatBRL(product.price)}</p>
+                  </div>
+                </div>
+                
+                {/* Plus signs */}
+                {frequentlyBoughtTogether.map((fbt) => (
+                  <Fragment key={fbt.id}>
+                    <div className="hidden sm:flex h-8 w-8 rounded-full bg-muted items-center justify-center shrink-0">
+                      <Plus className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="sm:hidden flex h-6 w-6 rounded-full bg-muted items-center justify-center shrink-0">
+                      <Plus className="h-3 w-3 text-muted-foreground" />
+                    </div>
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-amber-100 to-orange-200 dark:from-amber-900/30 dark:to-orange-800/30 flex items-center justify-center shrink-0 shadow-sm">
+                        <CategoryIcon category={fbt.category} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold line-clamp-2">{fbt.name}</p>
+                        <p className="text-sm font-bold text-primary">{formatBRL(fbt.price)}</p>
+                      </div>
+                    </div>
+                  </Fragment>
+                ))}
+
+                {/* Total */}
+                <div className="w-full sm:w-auto pt-3 sm:pt-0 sm:ml-2">
+                  <div className="bg-gradient-to-r from-primary/5 to-amber-500/5 rounded-xl p-3 border border-primary/10 text-center sm:text-left sm:min-w-[120px]">
+                    <p className="text-[10px] text-muted-foreground">Total juntos</p>
+                    <p className="text-lg font-bold text-primary">{formatBRL(fbtTotal)}</p>
+                    {fbtSavings > 0 && (
+                      <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                        Economize {formatBRL(fbtSavings)}
+                      </p>
+                    )}
+                    <Button size="sm" className="w-full mt-2 h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground">
+                      Comprar todos
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <Separator className="my-4" />
+
         {/* Similar products */}
         <div>
           <h3 className="font-semibold mb-4">Produtos similares</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {similarProducts.length > 0 ? similarProducts.slice(0, 6).map(p => (
+            {similarProducts.length > 0 ? similarProducts.slice(0, 6).map((p, i) => (
               <motion.div
                 key={p.id}
-                whileHover={{ y: -2 }}
-                className="bg-card rounded-xl border border-border overflow-hidden cursor-pointer"
+                whileHover={{ y: -3 }}
+                className="bg-card rounded-xl border border-border overflow-hidden cursor-pointer card-spotlight hover:shadow-lg transition-shadow"
                 onClick={() => {
                   useAppStore.getState().selectProduct(p)
                   navigate('product')
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
               >
-                <div className="aspect-square bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                <div className="aspect-square bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative">
                   <CategoryIcon category={p.category} />
+                  {p.isOffer && p.comparePrice && (
+                    <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[9px] px-1.5 py-0 font-bold">
+                      -{Math.round(((p.comparePrice - p.price) / p.comparePrice) * 100)}%
+                    </Badge>
+                  )}
                 </div>
-                <div className="p-2">
+                <div className="p-2.5">
                   <h4 className="text-xs font-semibold line-clamp-2">{p.name}</h4>
-                  <p className="text-sm font-bold text-primary mt-1">{formatBRL(p.price)}</p>
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <p className="text-sm font-bold text-primary">{formatBRL(p.price)}</p>
+                    {p.comparePrice && p.comparePrice > p.price && (
+                      <span className="text-[10px] text-muted-foreground line-through">{formatBRL(p.comparePrice)}</span>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )) : (
@@ -360,7 +577,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
         {/* About the Store mini-card */}
         {product.storeName && (
-          <Card className="border-primary/20 cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+          <Card className="border-primary/20 cursor-pointer hover:shadow-md transition-shadow card-spotlight" onClick={() => {
             if (product.storeId) {
               selectStore({
                 id: product.storeId,
@@ -398,7 +615,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                   <span className="text-[10px] text-muted-foreground">· 30-45 min</span>
                 </div>
               </div>
-              <Badge variant="outline" className="text-[10px] shrink-0">
+              <Badge variant="outline" className="text-[10px] shrink-0 hover:bg-primary/5">
                 Ver loja
               </Badge>
             </CardContent>
@@ -406,38 +623,84 @@ export function ProductDetail({ product }: ProductDetailProps) {
         )}
       </div>
       
-      {/* Sticky bottom bar */}
-      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-muted-foreground">Total</p>
-              <p className="text-lg font-bold text-primary">{formatBRL(product.price * quantity)}</p>
+      {/* Sticky bottom bar — appears when scrolling past buy section */}
+      <AnimatePresence>
+        {showStickyBar && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
+          >
+            <div className="max-w-3xl mx-auto">
+              <div className="flex items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground truncate">{product.name}</p>
+                  <p className="text-lg font-bold text-primary">{formatBRL(product.price * quantity)}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-11 px-4 border-primary text-primary hidden sm:flex"
+                    onClick={handleAddToCart}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Adicionar
+                  </Button>
+                  <Button
+                    className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow"
+                    onClick={handleBuyNow}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
+                    Comprar agora
+                  </Button>
+                </div>
+              </div>
+              {/* iOS safe area */}
+              <div className="h-[env(safe-area-inset-bottom)] md:hidden" />
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                className="h-12 px-4 border-primary text-primary hidden sm:flex"
-                onClick={handleAddToCart}
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Adicionar
-              </Button>
-              <Button
-                className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
-                onClick={handleBuyNow}
-              >
-                <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
-                Comprar agora
-              </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Always-visible bottom buy section (shown when sticky is hidden) */}
+      <AnimatePresence>
+        {!showStickyBar && (
+          <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3">
+            <div className="max-w-3xl mx-auto">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">Total</p>
+                  <p className="text-lg font-bold text-primary">{formatBRL(product.price * quantity)}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-12 px-4 border-primary text-primary hidden sm:flex"
+                    onClick={handleAddToCart}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Adicionar
+                  </Button>
+                  <Button
+                    className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+                    onClick={handleBuyNow}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
+                    Comprar agora
+                  </Button>
+                </div>
+              </div>
+              <ShareButton productName={product.name} productPrice={product.price} storeName={product.storeName || 'Loja'} />
+              {/* iOS safe area */}
+              <div className="h-[env(safe-area-inset-bottom)] md:hidden" />
             </div>
           </div>
-          {/* Share button below buy */}
-          <ShareButton productName={product.name} productPrice={product.price} storeName={product.storeName || 'Loja'} />
-        </div>
-        {/* iOS safe area */}
-        <div className="h-[env(safe-area-inset-bottom)] md:hidden" />
-      </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
+
+

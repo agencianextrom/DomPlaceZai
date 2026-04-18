@@ -74,8 +74,8 @@ const initialNotifications: Notification[] = [
     id: '3',
     category: 'system',
     icon: CheckCircle2,
-    iconColor: 'text-blue-600 dark:text-blue-400',
-    iconBg: 'bg-blue-100 dark:bg-blue-900/40',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
     title: 'Conta verificada com sucesso',
     description: 'Seu e-mail foi confirmado. Agora você pode aproveitar todos os recursos.',
     time: 'Há 1h',
@@ -85,8 +85,8 @@ const initialNotifications: Notification[] = [
     id: '4',
     category: 'orders',
     icon: Star,
-    iconColor: 'text-purple-600 dark:text-purple-400',
-    iconBg: 'bg-purple-100 dark:bg-purple-900/40',
+    iconColor: 'text-amber-600 dark:text-amber-400',
+    iconBg: 'bg-amber-100 dark:bg-amber-900/40',
     title: 'Avalie seu pedido',
     description: 'Como foi sua experiência com Açaí da Boa? Deixe sua avaliação.',
     time: 'Há 3h',
@@ -118,8 +118,8 @@ const initialNotifications: Notification[] = [
     id: '7',
     category: 'system',
     icon: Info,
-    iconColor: 'text-blue-600 dark:text-blue-400',
-    iconBg: 'bg-blue-100 dark:bg-blue-900/40',
+    iconColor: 'text-teal-600 dark:text-teal-400',
+    iconBg: 'bg-teal-100 dark:bg-teal-900/40',
     title: 'Atualização do app',
     description: 'Novos recursos disponíveis: listas de compras e rastreamento de pedidos.',
     time: 'Há 2 dias',
@@ -191,34 +191,36 @@ function NotificationList({
             variants={itemVariants}
             onClick={() => onToggleRead(notification.id)}
             className={`w-full flex gap-3 px-4 py-3 hover:bg-secondary/50 transition-colors text-left relative group ${
-              notification.unread ? 'bg-primary/[0.03]' : ''
+              notification.unread
+                ? 'bg-primary/[0.03] border-l-[3px] border-l-primary'
+                : 'border-l-[3px] border-l-transparent'
             }`}
           >
             {notification.unread && (
               <motion.div
                 layoutId={`unread-dot-${notification.id}`}
-                className="absolute left-1 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-blue-500"
+                className="absolute right-3 top-3 h-2 w-2 rounded-full bg-emerald-500"
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               />
             )}
             <div
-              className={`h-9 w-9 rounded-full ${notification.iconBg} flex items-center justify-center shrink-0 ml-1.5 transition-transform group-hover:scale-110`}
+              className={`h-9 w-9 rounded-full ${notification.iconBg} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110`}
             >
               <Icon className={`h-4 w-4 ${notification.iconColor}`} />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 pr-4">
               <div className="flex items-center gap-2">
-                <p className={`text-sm leading-tight ${notification.unread ? 'font-semibold' : 'font-medium'}`}>
+                <p className={`text-sm leading-tight ${notification.unread ? 'font-semibold' : 'font-medium text-muted-foreground'}`}>
                   {notification.title}
                 </p>
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+              <p className={`text-xs mt-0.5 line-clamp-2 ${notification.unread ? 'text-foreground/80' : 'text-muted-foreground'}`}>
                 {notification.description}
               </p>
-              <p className="text-[10px] text-muted-foreground/70 mt-1">{notification.time}</p>
+              <p className="text-[10px] text-muted-foreground/60 mt-1">{notification.time}</p>
             </div>
             {!notification.unread && (
-              <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground/30 self-center shrink-0" />
+              <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground/20 self-center shrink-0" />
             )}
           </motion.button>
         )
@@ -275,7 +277,7 @@ export function NotificationPanel() {
           {unreadCount > 0 && (
             <Badge
               variant="secondary"
-              className="text-[10px] px-1.5 py-0 h-5 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
+              className="text-[10px] px-1.5 py-0 h-5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
             >
               {unreadCount} nova{unreadCount > 1 ? 's' : ''}
             </Badge>

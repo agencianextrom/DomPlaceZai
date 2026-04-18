@@ -10,6 +10,7 @@ import { formatBRL } from '@/components/product/ProductCard'
 import { StarRating } from '@/components/ui/StarRating'
 import { DeliveryTracker } from './DeliveryTracker'
 import { OrderMap } from './OrderMap'
+import { RateOrderModal } from './RateOrderModal'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import type { OrderData } from '@/store/useAppStore'
@@ -40,6 +41,7 @@ function timeAgo(dateStr: string): string {
 
 export function OrdersView() {
   const { navigate, selectOrder, selectedOrderTab, addToCart } = useAppStore()
+  const [ratingOrder, setRatingOrder] = useState<OrderData | null>(null)
   const [orders] = useState<OrderData[]>([
     {
       id: '1', orderNumber: 'DP000001', storeId: '5', storeName: 'Padaria Pão Quente',
@@ -127,7 +129,7 @@ export function OrdersView() {
   }
 
   const handleRateOrder = (order: OrderData) => {
-    toast.success(`Obrigado! Avaliação do pedido #${order.orderNumber} registrada.`)
+    setRatingOrder(order)
   }
   
   return (
@@ -283,6 +285,13 @@ export function OrdersView() {
           ))}
         </Tabs>
       </div>
+
+      {/* Rate Order Modal */}
+      <RateOrderModal
+        order={ratingOrder!}
+        isOpen={!!ratingOrder}
+        onClose={() => setRatingOrder(null)}
+      />
     </div>
   )
 }
@@ -455,7 +464,8 @@ export function OrderDetail() {
         {order.status === 'DELIVERED' && (
           <div className="space-y-2">
             <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white gap-2" onClick={() => {
-              toast.success(`Obrigado! Avaliação do pedido #${order.orderNumber} registrada.`)
+              selectOrder(order)
+              navigate('orders')
             }}>
               <Star className="h-4 w-4" />
               Avaliar Pedido

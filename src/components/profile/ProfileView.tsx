@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { 
   User, MapPin, CreditCard, Heart, ClipboardList, Gift, Users, Settings, LogOut, 
   Star, ChevronRight, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock,
-  Bell, Moon, MapPinned, Share2, Ticket, Copy, Check, ListChecks, LayoutDashboard
+  Bell, Moon, MapPinned, Share2, Ticket, Copy, Check, ListChecks, LayoutDashboard,
+  BellRing
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -15,6 +16,7 @@ import { useAppStore } from '@/store/useAppStore'
 import { motion } from 'framer-motion'
 import { formatBRL } from '@/components/product/ProductCard'
 import { RewardsSection } from './RewardsSection'
+import { LoyaltyHistory } from './LoyaltyHistory'
 import { ShoppingLists } from './ShoppingLists'
 import { AddressManager } from './AddressManager'
 import { toast } from 'sonner'
@@ -69,6 +71,7 @@ const menuItems = [
   { id: 'favorites', icon: Heart, label: 'Favoritos', desc: 'Lojas e produtos favoritos' },
   { id: 'orders', icon: ClipboardList, label: 'Pedidos', desc: 'Histórico de pedidos' },
   { id: 'loyalty', icon: Award, label: 'Programa de Fidelidade', desc: 'Pontos e recompensas' },
+  { id: 'notifications', icon: BellRing, label: 'Notificações', desc: 'Central de notificações' },
   { id: 'shopping-lists', icon: ListChecks, label: 'Listas de Compras', desc: 'Organize suas compras' },
   { id: 'referral', icon: Users, label: 'Indique Amigos', desc: 'Ganhe com indicações' },
   { id: 'store-dashboard', icon: LayoutDashboard, label: 'Painel da Loja', desc: 'Gerencie sua loja' },
@@ -92,7 +95,7 @@ export function ProfileView() {
           </Button>
           <h1 className="text-lg font-bold">Programa de Fidelidade</h1>
         </div>
-        <RewardsSection />
+        <LoyaltyHistory />
       </div>
     )
   }
@@ -533,6 +536,8 @@ export function ProfileView() {
                   navigate('shopping-lists')
                 } else if (item.id === 'store-dashboard') {
                   navigate('store-dashboard')
+                } else if (item.id === 'notifications') {
+                  navigate('notifications')
                 } else if (['loyalty', 'addresses', 'coupons', 'referral', 'settings'].includes(item.id)) {
                   setActiveSection(item.id)
                 }

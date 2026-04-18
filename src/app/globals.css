@@ -855,3 +855,243 @@
 .badge-spring {
   animation: badge-spring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
+
+/* ==============================
+   HOVER 3D (perspective tilt)
+   ============================== */
+.hover-3d {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+}
+.hover-3d:hover {
+  transform: perspective(800px) rotateX(2deg) rotateY(-2deg) translateY(-4px);
+  box-shadow: 
+    0 16px 40px oklch(0 0 0 / 0.1),
+    -4px 8px 16px oklch(0 0 0 / 0.05);
+}
+.dark .hover-3d:hover {
+  box-shadow: 
+    0 16px 40px oklch(0 0 0 / 0.3),
+    -4px 8px 16px oklch(0 0 0 / 0.15);
+}
+
+/* ==============================
+   TEXT OUTLINE (stroke effect)
+   ============================== */
+.text-outline {
+  -webkit-text-stroke: 1.5px oklch(0.45 0.1 155);
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.text-outline-white {
+  -webkit-text-stroke: 1.5px white;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ==============================
+   SHIMMER TEXT (gradient text animation)
+   ============================== */
+@keyframes shimmer-text {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    oklch(0.45 0.1 155) 0%,
+    oklch(0.78 0.16 70) 25%,
+    oklch(0.55 0.12 155) 50%,
+    oklch(0.78 0.16 70) 75%,
+    oklch(0.45 0.1 155) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer-text 3s linear infinite;
+}
+.dark .shimmer-text {
+  background: linear-gradient(
+    90deg,
+    oklch(0.65 0.12 155) 0%,
+    oklch(0.85 0.14 70) 25%,
+    oklch(0.70 0.12 155) 50%,
+    oklch(0.85 0.14 70) 75%,
+    oklch(0.65 0.12 155) 100%
+  );
+  background-size: 200% auto;
+}
+
+/* ==============================
+   BORDER DASHED ANIMATED
+   ============================== */
+@keyframes dash-move {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 20; }
+}
+.border-dashed-animated {
+  position: relative;
+  overflow: hidden;
+}
+.border-dashed-animated::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px dashed oklch(0.45 0.1 155 / 0.3);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: dash-spin 12s linear infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 2px;
+}
+@keyframes dash-spin {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+.dark .border-dashed-animated::before {
+  border-color: oklch(0.55 0.12 155 / 0.25);
+}
+
+/* ==============================
+   BACKDROP BLUR COLOR VARIANTS
+   ============================== */
+.backdrop-blur-emerald {
+  background: oklch(0.45 0.1 155 / 0.15);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+}
+.dark .backdrop-blur-emerald {
+  background: oklch(0.55 0.12 155 / 0.12);
+}
+.backdrop-blur-amber {
+  background: oklch(0.78 0.16 70 / 0.15);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+}
+.dark .backdrop-blur-amber {
+  background: oklch(0.72 0.16 70 / 0.12);
+}
+
+/* ==============================
+   FLIP CARD CSS
+   ============================== */
+.flip-card {
+  perspective: 1000px;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+}
+.flip-card:hover .flip-card-inner,
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* ==============================
+   CARD SPOTLIGHT (CSS-only radial highlight)
+   ============================== */
+.card-spotlight {
+  position: relative;
+  overflow: hidden;
+}
+.card-spotlight::before {
+  content: '';
+  position: absolute;
+  top: var(--mouse-y, 50%);
+  left: var(--mouse-x, 50%);
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, oklch(1 0 0 / 0.12) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.dark .card-spotlight::before {
+  background: radial-gradient(circle, oklch(1 0 0 / 0.05) 0%, transparent 70%);
+}
+.card-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* ==============================
+   PULSE GLOW ACCENT (amber pulse)
+   ============================== */
+@keyframes pulse-glow-amber {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.78 0.16 70 / 0.4); }
+  50% { box-shadow: 0 0 0 8px oklch(0.78 0.16 70 / 0); }
+}
+.pulse-glow-amber {
+  animation: pulse-glow-amber 2s ease-in-out infinite;
+}
+
+/* ==============================
+   GRADIENT UNDERLINE (animated)
+   ============================== */
+.gradient-underline {
+  position: relative;
+  display: inline-block;
+}
+.gradient-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70));
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gradient-underline:hover::after,
+.gradient-underline.active::after {
+  transform: scaleX(1);
+}
+
+/* ==============================
+   PROGRESS BAR ANIMATED FILL
+   ============================== */
+@keyframes progress-fill {
+  0% { width: 0%; }
+}
+.progress-animated {
+  animation: progress-fill 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ==============================
+   FLOATING ACTION BUTTON (FAB) PULSE RING
+   ============================== */
+@keyframes fab-ping {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+.fab-ping::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  background: oklch(0.22 0.14 142 / 0.3);
+  animation: fab-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  z-index: -1;
+}
