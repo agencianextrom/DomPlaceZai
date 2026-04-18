@@ -140,6 +140,10 @@ interface AppState {
   isMobileMenuOpen: boolean
   isAuthModalOpen: boolean
   isChatOpen: boolean
+  quickAddProduct: ProductData | null
+  isQuickAddOpen: boolean
+  neighborhoodSelectorOpen: boolean
+  selectedNeighborhood: string
   
   // Actions
   navigate: (view: AppView) => void
@@ -181,6 +185,11 @@ interface AppState {
   openAuthModal: () => void
   closeAuthModal: () => void
   toggleChat: () => void
+  openQuickAdd: (product: ProductData) => void
+  closeQuickAdd: () => void
+  openNeighborhoodSelector: () => void
+  closeNeighborhoodSelector: () => void
+  setSelectedNeighborhood: (name: string) => void
   
   // Comparison actions
   toggleCompareProduct: (productId: string) => void
@@ -223,6 +232,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   isMobileMenuOpen: false,
   isAuthModalOpen: false,
   isChatOpen: false,
+  quickAddProduct: null,
+  isQuickAddOpen: false,
+  neighborhoodSelectorOpen: false,
+  selectedNeighborhood: loadFromStorage<string>('domplace-neighborhood', 'Centro'),
   
   // Actions
   navigate: (view) => set((state) => ({
@@ -361,6 +374,14 @@ export const useAppStore = create<AppState>((set, get) => ({
   openAuthModal: () => set({ isAuthModalOpen: true }),
   closeAuthModal: () => set({ isAuthModalOpen: false }),
   toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
+  openQuickAdd: (product) => set({ quickAddProduct: product, isQuickAddOpen: true }),
+  closeQuickAdd: () => set({ isQuickAddOpen: false }),
+  openNeighborhoodSelector: () => set({ neighborhoodSelectorOpen: true }),
+  closeNeighborhoodSelector: () => set({ neighborhoodSelectorOpen: false }),
+  setSelectedNeighborhood: (name) => {
+    saveToStorage('domplace-neighborhood', name)
+    set({ selectedNeighborhood: name, neighborhoodSelectorOpen: false })
+  },
   
   // Comparison actions
   toggleCompareProduct: (productId) => set((state) => {

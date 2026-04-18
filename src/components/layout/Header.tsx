@@ -31,6 +31,8 @@ export function Header() {
     isSearchOpen,
     openSearch: openSearchStore,
     navigationHistory,
+    selectedNeighborhood,
+    openNeighborhoodSelector,
   } = useAppStore()
 
   const desktopSearchValue = !isSearchOpen ? searchQuery : ''
@@ -64,8 +66,15 @@ export function Header() {
   
   return (
     <>
-      <header className={`sticky top-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border/60 shadow-[0_1px_3px_oklch(0_0_0/0.04)] dark:shadow-[0_1px_3px_oklch(0_0_0/0.2)] transition-all duration-300 ${isScrolled ? 'bg-background/90 shadow-md' : ''}`}>
-        {/* Subtle gradient on scroll */}
+      <header className={`sticky top-0 z-50 backdrop-blur-xl transition-all duration-300 ${isScrolled ? 'bg-background/95 shadow-md' : 'bg-background/70'} relative`}>
+        {/* Gradient border-bottom that intensifies on scroll */}
+        <motion.div
+          initial={{ opacity: 0, scaleY: 1 }}
+          animate={{ opacity: isScrolled ? 1 : 0.3, scaleY: isScrolled ? 1.5 : 1 }}
+          className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none"
+          style={{ originY: 1 }}
+        />
+        {/* Subtle gradient glow on scroll */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: isScrolled ? 1 : 0 }}
@@ -94,16 +103,16 @@ export function Header() {
                 </button>
               )}
               
-              {/* Location */}
+              {/* Location - opens NeighborhoodSelector */}
               <button 
-                onClick={() => navigate('home')}
+                onClick={openNeighborhoodSelector}
                 className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors shrink-0"
               >
                 <div className="relative flex items-center justify-center">
                   <MapPin className="h-3.5 w-3.5 text-primary" />
                   <span className="absolute -bottom-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-emerald-500 ring-2 ring-background animate-pulse" />
                 </div>
-                <span className="truncate text-shadow-sm">Dom Eliseu, PA</span>
+                <span className="truncate text-shadow-sm">{selectedNeighborhood}, Dom Eliseu</span>
               </button>
             </div>
             
@@ -118,7 +127,7 @@ export function Header() {
                   placeholder="Buscar produtos, lojas..." 
                   value={desktopSearchValue}
                   onChange={(e) => handleDesktopSearchChange(e.target.value)}
-                  className="pl-9 pr-4 bg-secondary/50 h-10 focus:bg-background transition-all duration-300 search-pulse"
+                  className="pl-9 pr-4 bg-secondary/50 h-10 focus:bg-background transition-all duration-300 search-pulse focus:shadow-[0_0_0_3px_oklch(0.45_0.1_155/0.15),0_0_12px_oklch(0.45_0.1_155/0.1)] dark:focus:shadow-[0_0_0_3px_oklch(0.55_0.12_155/0.2),0_0_16px_oklch(0.55_0.12_155/0.12)]"
                 />
               </div>
             </form>
@@ -137,22 +146,22 @@ export function Header() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="relative h-10 w-10"
+                className={`relative h-10 w-10 transition-all duration-200 hover-glow ${currentView === 'cart' ? 'text-primary' : ''}`}
                 onClick={() => navigate('cart')}
               >
                 <ShoppingCart className="h-5 w-5" />
-                <AnimatePresence>
+                <AnimatePresence mode="popLayout">
                   {cartCount > 0 && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                    <motion.span
+                      key={cartCount}
+                      initial={{ scale: 0, y: -8 }}
+                      animate={{ scale: 1, y: 0 }}
+                      exit={{ scale: 0, y: 8 }}
+                      transition={{ type: 'spring', stiffness: 600, damping: 20 }}
+                      className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-2 border-background rounded-full font-bold badge-ping"
                     >
-                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-0 rounded-full font-bold badge-ping">
-                        {cartCount > 99 ? '99+' : cartCount}
-                      </span>
-                    </motion.div>
+                      {cartCount > 99 ? '99+' : cartCount}
+                    </motion.span>
                   )}
                 </AnimatePresence>
               </Button>

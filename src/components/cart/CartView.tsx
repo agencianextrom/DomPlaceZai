@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper } from 'lucide-react'
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper, Heart, Edit3, Share2, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -10,6 +10,7 @@ import { formatBRL } from '@/components/product/ProductCard'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
 import { PromoCodeWidget } from '@/components/promotions/PromoCodeWidget'
+import { toast } from 'sonner'
 import type { ProductData } from '@/store/useAppStore'
 
 const gradients = [
@@ -27,6 +28,18 @@ const suggestedProducts: ProductData[] = [
   { id: 'sp5', storeId: 's8', storeName: 'Salão da Bella', storeLogo: null, name: 'Manicure Completa', slug: 'manicure-completa', description: 'Manicure e pedicure completa com esmaltação.', price: 50.00, comparePrice: null, images: '[]', stock: 999, rating: 4.7, totalReviews: 54, isFeatured: false, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'BEAUTY' },
 ]
 
+// Mock delivery times per store
+const storeDeliveryTimes: Record<string, string> = {
+  s1: '20-30 min',
+  s2: '15-25 min',
+  s3: '40-60 min',
+  s4: '25-35 min',
+  s5: '15-25 min',
+  s6: '25-40 min',
+  s7: '30-45 min',
+  s8: '20-35 min',
+}
+
 const FREE_DELIVERY_THRESHOLD = 50
 
 export function CartView() {
@@ -37,6 +50,9 @@ export function CartView() {
     getCartGroupedByStore,
     getCartTotal,
     navigate,
+    toggleFavoriteProduct,
+    isFavoriteProduct,
+    openQuickAdd,
   } = useAppStore()
 
   const [suggestionScrollPos, setSuggestionScrollPos] = useState(0)
@@ -59,6 +75,25 @@ export function CartView() {
     container.scrollTo({ left: newScroll, behavior: 'smooth' })
     setSuggestionScrollPos(newScroll)
   }
+
+  const handleEditItem = (item: typeof cartItems[0]) => {
+    openQuickAdd(item.product)
+  }
+
+  const handleMoveToFavorites = (item: typeof cartItems[0]) => {
+    toggleFavoriteProduct(item.productId)
+    toast.success(`${item.product.name} salvo nos favoritos`)
+  }
+
+  const handleShareCart = () => {
+    const itemsList = cartItems
+      .map(item => `• ${item.quantity}x ${item.product.name} - ${formatBRL(item.product.price * item.quantity)}`)
+      .join('\n')
+    const message = `🛒 *Meu carrinho DomPlace*\n\n${itemsList}\n\n💰 Total: ${formatBRL(total)}\n\nConfira em DomPlace!`
+    const encoded = encodeURIComponent(message)
+    window.open(`https://wa.me/?text=${encoded}`, '_blank')
+    toast.success('Link do carrinho copiado!')
+  }
   
   if (cartItems.length === 0) {
     return (
@@ -73,7 +108,6 @@ export function CartView() {
           transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
           className="relative mb-8"
         >
-          {/* Floating animated shopping bag */}
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
@@ -87,11 +121,8 @@ export function CartView() {
             </motion.div>
           </motion.div>
           
-          {/* Orbiting sparkle */}
           <motion.div
-            animate={{ 
-              rotate: 360,
-            }}
+            animate={{ rotate: 360 }}
             transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
             className="absolute inset-0"
             style={{ transformOrigin: 'center center' }}
@@ -101,7 +132,6 @@ export function CartView() {
             </div>
           </motion.div>
           
-          {/* Second orbiting sparkle - opposite direction */}
           <motion.div
             animate={{ rotate: -360 }}
             transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
@@ -147,9 +177,22 @@ export function CartView() {
             Carrinho
             <Badge variant="secondary" className="text-xs">{cartItems.length} {cartItems.length === 1 ? 'item' : 'itens'}</Badge>
           </h1>
-          <Button variant="ghost" size="sm" className="text-destructive" onClick={() => useAppStore.getState().clearCart()}>
-            Limpar
-          </Button>
+          <div className="flex items-center gap-1">
+            {/* Share cart button */}
+            <motion.div whileTap={{ scale: 0.9 }} className="mr-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-primary"
+                onClick={handleShareCart}
+              >
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </motion.div>
+            <Button variant="ghost" size="sm" className="text-destructive" onClick={() => useAppStore.getState().clearCart()}>
+              Limpar
+            </Button>
+          </div>
         </div>
       </div>
       
@@ -243,14 +286,22 @@ export function CartView() {
             >
               <div className="flex items-center gap-2 px-4 py-3 bg-secondary/30">
                 <Store className="h-4 w-4 text-primary" />
-                <span className="font-semibold text-sm">{group.storeName}</span>
-                <span className="text-xs text-muted-foreground ml-auto">{group.items.length} {group.items.length === 1 ? 'item' : 'itens'}</span>
+                <span className="font-semibold text-sm flex-1 truncate">{group.storeName}</span>
+                <span className="text-xs text-muted-foreground">{group.items.length} {group.items.length === 1 ? 'item' : 'itens'}</span>
+                {/* Delivery time badge */}
+                {storeDeliveryTimes[group.storeId] && (
+                  <Badge variant="secondary" className="text-[10px] bg-primary/5 text-primary border-0 ml-1 flex items-center gap-1">
+                    <Clock className="h-2.5 w-2.5" />
+                    {storeDeliveryTimes[group.storeId]}
+                  </Badge>
+                )}
               </div>
               
               <div className="divide-y divide-border">
                 {group.items.map((item, index) => {
                   const gradient = gradients[Math.abs(item.product.name.charCodeAt(0)) % gradients.length]
                   const icon = icons[Math.abs(item.product.name.charCodeAt(0)) % icons.length]
+                  const isFav = isFavoriteProduct(item.productId)
                   
                   return (
                     <motion.div
@@ -265,7 +316,28 @@ export function CartView() {
                         {icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-semibold truncate">{item.product.name}</h3>
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="text-sm font-semibold truncate">{item.product.name}</h3>
+                          {/* Action buttons */}
+                          <div className="flex items-center gap-0.5 shrink-0">
+                            <motion.button
+                              whileTap={{ scale: 0.85 }}
+                              onClick={() => handleMoveToFavorites(item)}
+                              className="h-7 w-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                              title="Mover para favoritos"
+                            >
+                              <Heart className={`h-3.5 w-3.5 ${isFav ? 'fill-red-500 text-red-500' : ''}`} />
+                            </motion.button>
+                            <motion.button
+                              whileTap={{ scale: 0.85 }}
+                              onClick={() => handleEditItem(item)}
+                              className="h-7 w-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                              title="Editar item"
+                            >
+                              <Edit3 className="h-3.5 w-3.5" />
+                            </motion.button>
+                          </div>
+                        </div>
                         <p className="text-sm font-bold text-primary mt-1">{formatBRL(item.product.price)}</p>
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center gap-2">
@@ -310,14 +382,23 @@ export function CartView() {
               </div>
               
               <div className="px-4 py-3 bg-secondary/20 flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Subtotal da loja</span>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Subtotal da loja</span>
+                  {storeDeliveryTimes[group.storeId] && (
+                    <span className="flex items-center gap-0.5 text-[11px] text-primary">
+                      <Clock className="h-3 w-3" />
+                      {storeDeliveryTimes[group.storeId]}
+                    </span>
+                  )}
+                </div>
                 <span className="font-semibold">{formatBRL(group.subtotal)}</span>
               </div>
             </motion.div>
           ))}
         </AnimatePresence>
         
-        {/* Promo code widget */}\n        <PromoCodeWidget />
+        {/* Promo code widget */}
+        <PromoCodeWidget />
         
         {/* Order bump - only show if not yet at free delivery */}
         {!hasFreeDelivery && (
@@ -358,13 +439,27 @@ export function CartView() {
               <span className="text-primary">{formatBRL(total)}</span>
             </div>
           </div>
-          <Button
-            className="w-full h-12 mt-3 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine"
-            onClick={() => navigate('checkout')}
-          >
-            Finalizar Pedido
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
+          <div className="flex gap-2 mt-3">
+            {/* Share cart button */}
+            <motion.div whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-12 w-12 shrink-0 rounded-xl border-primary/20 hover:bg-primary/5"
+                onClick={handleShareCart}
+                title="Compartilhar carrinho"
+              >
+                <Share2 className="h-5 w-5 text-primary" />
+              </Button>
+            </motion.div>
+            <Button
+              className="flex-1 h-12 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl"
+              onClick={() => navigate('checkout')}
+            >
+              Finalizar Pedido
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

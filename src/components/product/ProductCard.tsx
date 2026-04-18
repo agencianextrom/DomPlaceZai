@@ -2,7 +2,7 @@
 
 import { 
   Heart, ShoppingCart, Star, Utensils, Sprout, HeartPulse, Smartphone, PawPrint, 
-  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows, Eye
+  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows, Eye, Plus
 } from 'lucide-react'
 import { PriceDropAlert } from './PriceDropAlert'
 import { Badge } from '@/components/ui/badge'
@@ -69,7 +69,7 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct, isComparing, toggleCompareProduct } = useAppStore()
+  const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct, isComparing, toggleCompareProduct, openQuickAdd } = useAppStore()
   const [showCartBtn, setShowCartBtn] = useState(false)
   const [cartAnimating, setCartAnimating] = useState(false)
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false)
@@ -201,6 +201,18 @@ export function ProductCard({ product }: ProductCardProps) {
           aria-label='Visualização rápida'
         >
           <Eye className="h-3 w-3 text-muted-foreground" />
+        </button>
+        
+        {/* Quick add button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            openQuickAdd(product)
+          }}
+          className="absolute bottom-2 right-[4.25rem] z-10 h-6 w-6 rounded-md bg-white/80 dark:bg-black/40 hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground flex items-center justify-center transition-colors group"
+          aria-label='Adicionar rápido'
+        >
+          <Plus className="h-3 w-3 text-muted-foreground group-hover:text-primary-foreground" />
         </button>
         
         {/* Quick add to cart (hover) */}

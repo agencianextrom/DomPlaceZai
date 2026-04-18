@@ -34,6 +34,10 @@ import { RecentOrders } from '@/components/home/RecentOrders'
 import { WishlistShare } from '@/components/profile/WishlistShare'
 import { StoreFavorites } from '@/components/home/StoreFavorites'
 import { MapStoreLocator } from '@/components/home/MapStoreLocator'
+import { DailyDeals } from '@/components/home/DailyDeals'
+import { DeliveryFeeCalculator } from '@/components/home/DeliveryFeeCalculator'
+import { NeighborhoodSelector } from '@/components/home/NeighborhoodSelector'
+import { ProductQuickAdd } from '@/components/product/ProductQuickAdd'
 import { Share2 } from 'lucide-react'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -510,6 +514,11 @@ export default function Home() {
                     <section className="mt-4">
                       <FlashSale />
                     </section>
+
+                    <Separator className="my-8 bg-border/50" />
+
+                    {/* Daily Deals */}
+                    <DailyDeals />
                     
                     {/* Recent Orders - after greeting */}
                     <RecentOrders />
@@ -601,6 +610,11 @@ export default function Home() {
 
                     <Separator className="my-8 bg-border/50" />
 
+                    {/* Delivery Fee Calculator */}
+                    <DeliveryFeeCalculator />
+
+                    <Separator className="my-8 bg-border/50" />
+
                     {/* Store Search */}
                     <section>
                       <StoreSearch stores={filteredStores} />
@@ -619,13 +633,6 @@ export default function Home() {
 
                     {/* Smart Suggestions (AI) */}
                     <SmartSuggestions />
-
-                    <Separator className="my-8 bg-border/50" />
-
-                    {/* Store Search */}
-                    <section>
-                      <StoreSearch stores={allStores} />
-                    </section>
 
                     <Separator className="my-8 bg-border/50" />
 
@@ -728,6 +735,12 @@ export default function Home() {
 
       {/* Product Quick View Modal */}
       <ProductQuickView product={quickViewProduct} open={quickViewOpen} onClose={() => setQuickViewOpen(false)} />
+
+      {/* Product Quick Add Bottom Sheet */}
+      <ProductQuickAdd />
+
+      {/* Neighborhood Selector Bottom Sheet */}
+      <NeighborhoodSelector />
 
       {/* Wishlist Share Modal */}
       <WishlistShare

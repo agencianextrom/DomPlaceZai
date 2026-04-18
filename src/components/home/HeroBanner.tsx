@@ -75,8 +75,16 @@ function useCountdown() {
 export function HeroBanner({ banners }: HeroBannerProps) {
   const [current, setCurrent] = useState(0)
   const [progress, setProgress] = useState(0)
+  const [scrollY, setScrollY] = useState(0)
   const { navigate, setActiveCategory } = useAppStore()
   const countdown = useCountdown()
+
+  // Track scroll for parallax effect
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const enhancedBanners = useMemo(() => {
     return banners.map((b, i) => ({
@@ -125,24 +133,24 @@ export function HeroBanner({ banners }: HeroBannerProps) {
       <AnimatePresence mode="wait">
         <motion.div
           key={banner.id}
-          initial={{ opacity: 0, scale: 1.02 }}
+          initial={{ opacity: 0, scale: 1.04 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.5 }}
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className={`relative w-full h-48 sm:h-60 md:h-72 lg:h-80 ${banner.gradient} flex items-center overflow-hidden`}
         >
-          {/* Dot pattern texture overlay */}
-          <div className="absolute inset-0 dot-pattern opacity-60" />
+          {/* Dot pattern texture overlay with parallax */}
+          <div className="absolute inset-0 dot-pattern opacity-60" style={{ transform: `translateY(${scrollY * 0.15}px)` }} />
 
-          {/* Morph blob decorative elements */}
-          <div className="absolute right-0 top-0 w-2/3 h-full opacity-15">
+          {/* Morph blob decorative elements with parallax depth */}
+          <div className="absolute right-0 top-0 w-2/3 h-full opacity-15" style={{ transform: `translateY(${scrollY * 0.08}px)` }}>
             <div className="morph-blob absolute right-10 top-10 w-32 h-32 bg-white/30" />
             <div className="morph-blob absolute right-0 bottom-0 w-48 h-48 bg-white/20" style={{ animationDelay: '-2s' }} />
             <div className="morph-blob absolute right-20 top-1/2 w-16 h-16 bg-white/15" style={{ animationDelay: '-4s' }} />
             <div className="morph-blob absolute -right-8 -top-8 w-24 h-24 bg-white/10" style={{ animationDelay: '-6s' }} />
             <div className="morph-blob absolute right-40 bottom-10 w-12 h-12 bg-white/12" style={{ animationDelay: '-1s' }} />
           </div>
-          <div className="absolute left-1/3 bottom-0 opacity-10">
+          <div className="absolute left-1/3 bottom-0 opacity-10" style={{ transform: `translateY(${scrollY * 0.2}px)` }}>
             <div className="morph-blob w-20 h-20 bg-white/30" style={{ animationDelay: '-3s' }} />
           </div>
 
@@ -236,9 +244,10 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             >
               <Button
                 onClick={handleVerOfertas}
-                className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-6 animate-pulse-ring elevated-card"
+                className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden"
               >
-                Ver Ofertas
+                <span className="ripple-effect absolute inset-0 rounded-lg" />
+                <span className="relative z-10">Ver Ofertas</span>
               </Button>
             </motion.div>
 

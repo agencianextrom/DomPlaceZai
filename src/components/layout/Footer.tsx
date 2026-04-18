@@ -68,7 +68,10 @@ export function Footer() {
     <div className="relative mt-auto">
       {/* Gradient mesh-2 decorative background */}
       <div className="gradient-mesh-2 absolute inset-0 pointer-events-none" />
-    <footer className="bg-secondary/30 border-t border-border relative">
+    <footer className="bg-secondary/30 relative">
+      {/* Glassmorphism top edge with gradient divider */}
+      <div className="absolute inset-x-0 -top-4 h-4 bg-gradient-to-b from-transparent via-background/80 to-background pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8 relative z-10">
         {/* Newsletter section with animated gradient */}
         <motion.div
@@ -168,7 +171,7 @@ export function Footer() {
             <ul className="space-y-2">
               {['Sobre o DomPlace', 'Central de Ajuda', 'Seja Parceiro', 'Trabalhe Conosco'].map((link) => (
                 <li key={link}>
-                  <button className="text-sm text-muted-foreground hover:text-foreground transition-colors hover:translate-x-0.5 transform inline-block">
+                  <button className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline">
                     {link}
                   </button>
                 </li>
@@ -186,7 +189,7 @@ export function Footer() {
                 { icon: HelpCircle, label: 'FAQ' },
               ].map((link) => (
                 <li key={link.label}>
-                  <button className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 hover:translate-x-0.5 transform">
+                  <button className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 link-underline">
                     <link.icon className="h-3.5 w-3.5" />
                     {link.label}
                   </button>
