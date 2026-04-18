@@ -19,6 +19,7 @@ import { WelcomeModal } from '@/components/onboarding/WelcomeModal'
 import { AIChatBot } from '@/components/chat/AIChatBot'
 import { CookieConsent } from '@/components/layout/CookieConsent'
 import { QuickInfo } from '@/components/home/QuickInfo'
+import { PromoBanner } from '@/components/home/PromoBanner'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
@@ -199,8 +200,13 @@ export default function Home() {
                   <HomeSkeleton />
                 ) : (
                   <>
+                    {/* Promo Banner Ticker */}
+                    <section className="mt-2">
+                      <PromoBanner />
+                    </section>
+
                     {/* Hero */}
-                    <section className="mt-4">
+                    <section className="mt-2">
                       <HeroBanner banners={fallbackBanners} />
                     </section>
                     

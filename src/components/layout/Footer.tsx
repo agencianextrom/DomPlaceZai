@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { ShieldCheck, HelpCircle, FileText, Lock, ArrowUp, QrCode, CreditCard, Banknote, Smartphone } from 'lucide-react'
+import { useState, useCallback, useEffect } from 'react'
+import { ShieldCheck, HelpCircle, FileText, Lock, ArrowUp, QrCode, CreditCard, Banknote, Smartphone, Heart } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { motion, AnimatePresence } from 'framer-motion'
+import { toast } from 'sonner'
 
 const socialLinks = [
   { name: 'Instagram', initial: 'In', color: 'hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500' },
@@ -25,32 +26,75 @@ export function Footer() {
   const [email, setEmail] = useState('')
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [subscribed, setSubscribed] = useState(false)
+  const [gradientAngle, setGradientAngle] = useState(0)
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
   // Show back-to-top button on scroll
-  if (typeof window !== 'undefined') {
-    window.addEventListener('scroll', () => {
+  useEffect(() => {
+    const handleScroll = () => {
       setShowBackToTop(window.scrollY > 400)
-    })
-  }
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Animate newsletter gradient
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGradientAngle((prev) => (prev + 0.3) % 360)
+    }, 50)
+    return () => clearInterval(interval)
+  }, [])
 
   const handleSubscribe = useCallback(() => {
-    if (email && email.includes('@')) {
+    if (email && email.includes('@') && email.includes('.')) {
       setSubscribed(true)
+      toast.success('Inscrição confirmada! 🎉', {
+        description: 'Você receberá nossas novidades e ofertas exclusivas.',
+      })
       setEmail('')
       setTimeout(() => setSubscribed(false), 3000)
+    } else {
+      toast.error('E-mail inválido', {
+        description: 'Por favor, insira um e-mail válido para se inscrever.',
+      })
     }
   }, [email])
 
   return (
     <footer className="bg-secondary/30 border-t border-border mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
-        {/* Newsletter section */}
-        <div className="mb-8 p-4 sm:p-6 rounded-xl bg-gradient-to-r from-primary/5 via-primary/10 to-accent/5 border border-primary/10">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        {/* Newsletter section with animated gradient */}
+        <motion.div
+          className="mb-8 p-4 sm:p-6 rounded-xl border border-primary/10 overflow-hidden relative"
+          style={{
+            background: `linear-gradient(${gradientAngle}deg, rgba(16,185,129,0.05) 0%, rgba(16,185,129,0.1) 40%, rgba(245,158,11,0.05) 100%)`,
+          }}
+        >
+          {/* Subtle animated gradient orbs */}
+          <motion.div
+            className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-primary/5 blur-2xl"
+            animate={{
+              x: [0, 20, 0],
+              y: [0, -15, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-accent/5 blur-2xl"
+            animate={{
+              x: [0, -15, 0],
+              y: [0, 20, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          />
+
+          <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="flex-1">
               <h3 className="font-semibold text-sm sm:text-base">Receba ofertas exclusivas</h3>
               <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
@@ -70,6 +114,7 @@ export function Footer() {
                 size="sm"
                 className="h-9 px-4 text-sm shrink-0"
                 onClick={handleSubscribe}
+                disabled={subscribed}
               >
                 {subscribed ? '✓ Inscrito' : 'Inscrever'}
               </Button>
@@ -81,13 +126,13 @@ export function Footer() {
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="text-xs text-emerald-600 mt-2 font-medium"
+                className="relative text-xs text-emerald-600 dark:text-emerald-400 mt-2 font-medium"
               >
                 🎉 Obrigado! Você receberá nossas novidades em breve.
               </motion.p>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Brand */}
@@ -188,10 +233,11 @@ export function Footer() {
         
         <Separator className="my-6" />
         
+        {/* Copyright */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-          <p>DomPlace © 2025 - Dom Eliseu, PA. Todos os direitos reservados.</p>
+          <p>DomPlace © 2025 — Todos os direitos reservados.</p>
           <p className="flex items-center gap-1.5">
-            Feito com <span className="text-red-500">♥</span> para a comunidade de Dom Eliseu
+            Feito com <Heart className="h-3 w-3 text-red-500 fill-red-500" /> em Dom Eliseu, PA
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react'
+import { ChevronLeft, ChevronRight, MapPin, Flame, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
@@ -28,12 +28,55 @@ const floatingDots = [
   { size: 3, top: '10%', right: '45%', delay: 2.5, duration: 4.2 },
 ]
 
+// Sparkle particle positions
+const sparkleParticles = Array.from({ length: 12 }, (_, i) => ({
+  id: i,
+  size: Math.random() * 4 + 2,
+  top: `${Math.random() * 80 + 5}%`,
+  left: `${Math.random() * 50 + 5}%`,
+  delay: Math.random() * 3,
+  duration: Math.random() * 2 + 2,
+  scaleRange: [0.5, 1.2] as [number, number],
+}))
+
 const SLIDE_DURATION = 5000
+
+// Countdown hook - starts at 2h 34m 56s and ticks down
+function useCountdown() {
+  const [time, setTime] = useState({ hours: 2, minutes: 34, seconds: 56 })
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(prev => {
+        let { hours, minutes, seconds } = prev
+        seconds--
+        if (seconds < 0) {
+          seconds = 59
+          minutes--
+        }
+        if (minutes < 0) {
+          minutes = 59
+          hours--
+        }
+        if (hours < 0) {
+          hours = 23
+          minutes = 59
+          seconds = 59
+        }
+        return { hours, minutes, seconds }
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  return time
+}
 
 export function HeroBanner({ banners }: HeroBannerProps) {
   const [current, setCurrent] = useState(0)
   const [progress, setProgress] = useState(0)
   const { navigate, setActiveCategory } = useAppStore()
+  const countdown = useCountdown()
 
   const enhancedBanners = useMemo(() => {
     return banners.map((b, i) => ({
@@ -75,6 +118,8 @@ export function HeroBanner({ banners }: HeroBannerProps) {
 
   const banner = enhancedBanners[current]
 
+  const pad = (n: number) => String(n).padStart(2, '0')
+
   return (
     <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl">
       <AnimatePresence mode="wait">
@@ -101,10 +146,34 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             <div className="w-20 h-20 rounded-full bg-white/30" />
           </div>
 
+          {/* Sparkle / particle effects behind hero text */}
+          {sparkleParticles.map((particle) => (
+            <motion.div
+              key={`sparkle-${particle.id}`}
+              className="absolute rounded-full bg-white"
+              style={{
+                width: particle.size,
+                height: particle.size,
+                top: particle.top,
+                left: particle.left,
+              }}
+              animate={{
+                scale: particle.scaleRange,
+                opacity: [0.2, 0.9, 0.2],
+              }}
+              transition={{
+                duration: particle.duration,
+                delay: particle.delay,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
+
           {/* Floating animated dots */}
           {floatingDots.map((dot, i) => (
             <motion.div
-              key={i}
+              key={`dot-${i}`}
               className="absolute rounded-full bg-white/20"
               style={{
                 width: dot.size,
@@ -172,6 +241,36 @@ export function HeroBanner({ banners }: HeroBannerProps) {
                 Ver Ofertas
               </Button>
             </motion.div>
+
+            {/* Promotional countdown timer */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="mt-4 inline-flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10"
+            >
+              <Flame className="h-4 w-4 text-amber-300 flex-shrink-0" />
+              <span className="text-white text-xs sm:text-sm font-medium whitespace-nowrap">
+                Oferta relâmpago termina em
+              </span>
+              <div className="flex items-center gap-0.5">
+                {[
+                  { value: pad(countdown.hours), label: 'h' },
+                  { value: pad(countdown.minutes), label: 'm' },
+                  { value: pad(countdown.seconds), label: 's' },
+                ].map((unit, idx) => (
+                  <span key={unit.label} className="flex items-center">
+                    <span className="inline-flex items-center justify-center min-w-[28px] h-7 rounded-md bg-white/20 backdrop-blur-sm font-mono text-white text-sm font-bold tabular-nums">
+                      {unit.value}
+                    </span>
+                    <span className="text-white/60 text-[10px] font-medium ml-0.5 mr-1">{unit.label}</span>
+                    {idx < 2 && (
+                      <span className="text-white/50 font-bold mx-0.5">:</span>
+                    )}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
           </div>
 
           {/* SVG Wave bottom edge */}
@@ -200,7 +299,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         <ChevronRight className="h-5 w-5" />
       </Button>
 
-      {/* Dots + Progress bar */}
+      {/* Dots + Progress bar + Swipe indicator */}
       <div className="absolute bottom-4 left-0 right-0 z-20 flex flex-col items-center gap-2">
         <div className="flex gap-1.5">
           {enhancedBanners.map((_, i) => (
@@ -222,6 +321,28 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             className="h-full bg-white rounded-full"
             style={{ width: `${progress}%` }}
           />
+        </div>
+        {/* Mobile swipe indicator dots */}
+        <div className="flex items-center gap-1.5 md:hidden">
+          {enhancedBanners.map((_, i) => (
+            <div
+              key={`swipe-${i}`}
+              className={`flex items-center justify-center transition-all duration-300 ${
+                i === current
+                  ? 'scale-125'
+                  : 'opacity-50'
+              }`}
+            >
+              <div
+                className={`rounded-full transition-all duration-300 ${
+                  i === current
+                    ? 'w-2 h-2 bg-white shadow-[0_0_6px_rgba(255,255,255,0.6)]'
+                    : 'w-1.5 h-1.5 bg-white/70'
+                }`}
+              />
+            </div>
+          ))}
+          <Sparkles className="h-3 w-3 text-white/40 ml-1" />
         </div>
       </div>
     </div>
