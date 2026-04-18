@@ -268,54 +268,100 @@ export function ProfileView() {
   
   return (
     <div className="min-h-screen p-4 pb-24">
-      {/* Profile header with larger avatar and stats */}
+      {/* Profile header with gradient cover area and wave bottom */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-emerald-600 p-6 text-white mb-6"
+        className="relative overflow-hidden rounded-2xl mb-6"
       >
-        {/* Background pattern */}
-        <div className="absolute inset-0 opacity-[0.06]" style={{
-          backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-          backgroundSize: '20px 20px',
-        }} />
-        <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-        
-        <div className="relative flex items-center gap-4">
-          {/* Larger avatar */}
-          <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
-            M
+        {/* Cover gradient area */}
+        <div className="relative bg-gradient-to-br from-primary via-emerald-600 to-teal-600 pt-6 pb-8 text-white">
+          {/* Background decorations */}
+          <div className="absolute inset-0 opacity-[0.06]" style={{
+            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+          }} />
+          <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
+          <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-white/[0.03] rounded-full" />
+          
+          {/* Profile info */}
+          <div className="relative px-6">
+            <div className="flex items-end gap-4">
+              {/* Avatar with ring and gradient border */}
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
+                className="relative"
+              >
+                <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
+                  M
+                </div>
+                {/* Online indicator */}
+                <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-400 border-[3px] border-emerald-600" />
+              </motion.div>
+              <div className="flex-1 pb-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-shadow-lg">Maria Silva</h1>
+                <p className="text-sm text-white/70 mt-0.5">maria@email.com</p>
+              </div>
+              <Button 
+                size="sm" 
+                className="bg-white/15 hover:bg-white/25 text-white border border-white/20 text-sm backdrop-blur-sm shrink-0"
+                onClick={() => useAppStore.getState().openAuthModal()}
+              >
+                <Edit3 className="h-3 w-3 mr-1" />
+                Editar
+              </Button>
+            </div>
           </div>
-          <div className="flex-1">
-            <h1 className="text-xl sm:text-2xl font-bold">Maria Silva</h1>
-            <p className="text-sm text-white/80 mt-0.5">maria@email.com</p>
-            <Button 
-              size="sm" 
-              className="mt-2 bg-white/20 hover:bg-white/30 text-white border-0 text-sm backdrop-blur-sm"
-              onClick={() => useAppStore.getState().openAuthModal()}
-            >
-              <Edit3 className="h-3 w-3 mr-1" />
-              Editar perfil
-            </Button>
-          </div>
+          
+          {/* SVG wave bottom edge */}
+          <svg className="absolute bottom-0 left-0 right-0 z-10" viewBox="0 0 1440 32" fill="none" preserveAspectRatio="none">
+            <path d="M0 16C180 28 360 4 540 16C720 28 900 4 1080 16C1260 28 1440 16 1440 16V32H0V16Z" fill="oklch(0.99 0.002 120)" className="dark:hidden" />
+            <path d="M0 16C180 28 360 4 540 16C720 28 900 4 1080 16C1260 28 1440 16 1440 16V32H0V16Z" fill="oklch(0.15 0.015 150)" className="hidden dark:block" />
+          </svg>
         </div>
         
-        {/* Quick stats */}
-        <div className="grid grid-cols-3 gap-3 mt-5">
-          <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-            <ShoppingBag className="h-4 w-4 mx-auto mb-1 opacity-80" />
-            <p className="text-xl font-bold">3</p>
-            <p className="text-[10px] text-white/70">Pedidos</p>
-          </div>
-          <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-            <Heart className="h-4 w-4 mx-auto mb-1 opacity-80" />
-            <p className="text-xl font-bold">12</p>
-            <p className="text-[10px] text-white/70">Favoritos</p>
-          </div>
-          <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-            <Award className="h-4 w-4 mx-auto mb-1 opacity-80" />
-            <p className="text-xl font-bold">1.250</p>
-            <p className="text-[10px] text-white/70">Pontos</p>
+        {/* Stats row (overlapping the wave) */}
+        <div className="relative z-20 px-4 -mt-3">
+          <div className="grid grid-cols-3 gap-2.5">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm card-premium-hover"
+            >
+              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
+                <ShoppingBag className="h-4 w-4 text-primary" />
+              </div>
+              <p className="text-lg font-bold text-primary animate-count-up">3</p>
+              <p className="text-[10px] text-muted-foreground">Pedidos</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm card-premium-hover"
+            >
+              <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center mx-auto mb-1.5">
+                <Heart className="h-4 w-4 text-red-500" />
+              </div>
+              <p className="text-lg font-bold text-red-500 animate-count-up" style={{ animationDelay: '0.1s' }}>12</p>
+              <p className="text-[10px] text-muted-foreground">Favoritos</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm card-premium-hover"
+            >
+              <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-1.5">
+                <Award className="h-4 w-4 text-amber-500" />
+              </div>
+              <p className="text-lg font-bold text-amber-500 animate-count-up" style={{ animationDelay: '0.2s' }}>1.250</p>
+              <p className="text-[10px] text-muted-foreground">Pontos</p>
+            </motion.div>
           </div>
         </div>
       </motion.div>
@@ -463,19 +509,21 @@ export function ProfileView() {
 
       <Separator className="my-4" />
       
-      {/* Menu items */}
+      {/* Menu items - with premium card hover */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.25 }}
       >
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           {menuItems.map((item, idx) => (
             <motion.button
               key={item.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.25 + idx * 0.03 }}
+              whileHover={{ x: 4, transition: { duration: 0.2 } }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => {
                 if (item.id === 'orders') {
                   navigate('orders')
@@ -489,16 +537,16 @@ export function ProfileView() {
                   setActiveSection(item.id)
                 }
               }}
-              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-secondary/50 transition-colors text-left"
+              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-sm transition-all text-left group"
             >
-              <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+              <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                 <item.icon className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm">{item.label}</p>
                 <p className="text-xs text-muted-foreground truncate">{item.desc}</p>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-0.5 shrink-0 transition-all" />
             </motion.button>
           ))}
         </div>

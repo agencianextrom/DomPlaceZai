@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type AppView = 'home' | 'search' | 'store' | 'product' | 'cart' | 'checkout' | 'orders' | 'profile' | 'order-detail' | 'favorites' | 'store-dashboard' | 'shopping-lists'
+export type AppView = 'home' | 'search' | 'store' | 'product' | 'cart' | 'checkout' | 'orders' | 'profile' | 'order-detail' | 'favorites' | 'store-dashboard' | 'shopping-lists' | 'product-comparison'
 
 export interface StoreData {
   id: string
@@ -133,6 +133,9 @@ interface AppState {
   // Recent searches (persisted)
   recentSearches: string[]
   
+  // Product comparison
+  compareProductIds: string[]
+  
   // UI
   isMobileMenuOpen: boolean
   isAuthModalOpen: boolean
@@ -178,6 +181,11 @@ interface AppState {
   openAuthModal: () => void
   closeAuthModal: () => void
   toggleChat: () => void
+  
+  // Comparison actions
+  toggleCompareProduct: (productId: string) => void
+  clearComparison: () => void
+  isComparing: (productId: string) => boolean
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -207,6 +215,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   
   // Recent searches (loaded from localStorage on client)
   recentSearches: loadFromStorage<string[]>('domplace-recent-searches', ['Açaí congelado', 'Ração para cachorro', 'Pão de queijo']),
+  
+  // Product comparison
+  compareProductIds: [],
   
   // UI
   isMobileMenuOpen: false,
@@ -350,4 +361,16 @@ export const useAppStore = create<AppState>((set, get) => ({
   openAuthModal: () => set({ isAuthModalOpen: true }),
   closeAuthModal: () => set({ isAuthModalOpen: false }),
   toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
+  
+  // Comparison actions
+  toggleCompareProduct: (productId) => set((state) => {
+    const exists = state.compareProductIds.includes(productId)
+    if (exists) {
+      return { compareProductIds: state.compareProductIds.filter(id => id !== productId) }
+    }
+    if (state.compareProductIds.length >= 3) return state
+    return { compareProductIds: [...state.compareProductIds, productId] }
+  }),
+  clearComparison: () => set({ compareProductIds: [] }),
+  isComparing: (productId) => get().compareProductIds.includes(productId),
 }))

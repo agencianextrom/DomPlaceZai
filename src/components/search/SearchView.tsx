@@ -1,6 +1,6 @@
 'use client'
 
-import { Search, SlidersHorizontal, TrendingUp, Clock, X, ArrowUpDown, Sparkles } from 'lucide-react'
+import { Search, SlidersHorizontal, TrendingUp, Clock, X, ArrowUpDown, Sparkles, Eye, Package } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -208,13 +208,52 @@ export function SearchView() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="text-center py-12"
+                className="text-center py-16"
               >
-                <div className="w-16 h-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
-                  <Search className="h-8 w-8 text-muted-foreground/40" />
+                {/* Animated empty state illustration */}
+                <div className="relative w-20 h-20 mx-auto mb-5">
+                  <motion.div
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                    className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center"
+                  >
+                    <Search className="h-8 w-8 text-primary/40" />
+                  </motion.div>
+                  {/* Orbiting sparkles */}
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                    className="absolute inset-0"
+                  >
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1">
+                      <Sparkles className="h-3 w-3 text-accent/60" />
+                    </div>
+                  </motion.div>
+                  <motion.div
+                    animate={{ rotate: -360 }}
+                    transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+                    className="absolute inset-0"
+                  >
+                    <div className="absolute bottom-0 right-0">
+                      <Package className="h-3 w-3 text-primary/30" />
+                    </div>
+                  </motion.div>
                 </div>
                 <p className="text-muted-foreground font-medium">Nenhum resultado para &quot;{searchQuery}&quot;</p>
                 <p className="text-sm text-muted-foreground mt-1">Tente buscar por outro termo</p>
+                <div className="flex items-center justify-center gap-2 mt-4">
+                  {['Açaí', 'Pão', 'Ração'].map((s) => (
+                    <motion.button
+                      key={s}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setSearchQuery(s)}
+                      className="px-3 py-1.5 rounded-full bg-secondary/80 text-xs font-medium hover:bg-secondary transition-colors"
+                    >
+                      {s}
+                    </motion.button>
+                  ))}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -265,11 +304,41 @@ export function SearchView() {
               </motion.div>
             )}
             
+            {/* Recently viewed - decorative section */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-8"
+            >
+              <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5">
+                <Eye className="h-4 w-4 text-muted-foreground" />
+                Vistos recentemente
+              </h3>
+              <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-1">
+                {[{ name: 'Açaí 500ml', store: 'Açaí da Boa' }, { name: 'Pão Francês', store: 'Padaria Pão Quente' }, { name: 'Ração Premium', store: 'Agropecuária SP' }].map((item, i) => (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 0.6, x: 0 }}
+                    transition={{ delay: 0.3 + i * 0.08 }}
+                    className="shrink-0 w-28"
+                  >
+                    <div className="h-28 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-border/50 flex flex-col items-center justify-center gap-1.5 p-2">
+                      <Package className="h-6 w-6 text-primary/30" />
+                      <p className="text-[10px] font-medium text-center line-clamp-2 leading-tight">{item.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{item.store}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
             {/* Trending / Buscas Populares */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
+              transition={{ delay: 0.25 }}
             >
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5">
                 <TrendingUp className="h-4 w-4 text-primary" />

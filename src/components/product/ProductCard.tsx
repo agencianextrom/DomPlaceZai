@@ -2,7 +2,7 @@
 
 import { 
   Heart, ShoppingCart, Star, Utensils, Sprout, HeartPulse, Smartphone, PawPrint, 
-  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck
+  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -67,11 +67,12 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct } = useAppStore()
+  const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct, isComparing, toggleCompareProduct } = useAppStore()
   const [showCartBtn, setShowCartBtn] = useState(false)
   const [cartAnimating, setCartAnimating] = useState(false)
 
   const isFav = isFavoriteProduct(product.id)
+  const isCompared = isComparing(product.id)
   
   const discount = product.comparePrice 
     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) 
@@ -169,6 +170,22 @@ export function ProductCard({ product }: ProductCardProps) {
           >
             <Heart className={`h-3.5 w-3.5 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
           </motion.div>
+        </button>
+
+        {/* Compare button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleCompareProduct(product.id)
+          }}
+          className={`absolute bottom-2 right-2 z-10 h-6 w-6 rounded-md flex items-center justify-center transition-colors ${
+            isCompared
+              ? 'bg-primary text-primary-foreground shadow-sm'
+              : 'bg-white/80 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60'
+          }`}
+          aria-label={isCompared ? 'Remover da comparação' : 'Adicionar à comparação'}
+        >
+          <GitCompareArrows className={`h-3 w-3 ${isCompared ? '' : 'text-muted-foreground'}`} />
         </button>
         
         {/* Quick add to cart (hover) */}

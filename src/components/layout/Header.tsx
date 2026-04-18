@@ -9,7 +9,7 @@ import { useAppStore } from '@/store/useAppStore'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MobileNav } from './MobileNav'
 import { NotificationPanel } from '@/components/notifications/NotificationPanel'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const desktopNavItems = [
   { id: 'home', icon: Home, label: 'Início' },
@@ -37,6 +37,16 @@ export function Header() {
 
   const cartCount = getCartItemCount()
   const canGoBack = navigationHistory.length > 1 && currentView !== 'home'
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  // Track scroll for header gradient effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
   
   const handleDesktopSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,7 +64,13 @@ export function Header() {
   
   return (
     <>
-      <header className="sticky top-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border/60 shadow-[0_1px_3px_oklch(0_0_0/0.04)] dark:shadow-[0_1px_3px_oklch(0_0_0/0.2)]">
+      <header className={`sticky top-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border/60 shadow-[0_1px_3px_oklch(0_0_0/0.04)] dark:shadow-[0_1px_3px_oklch(0_0_0/0.2)] transition-all duration-300 ${isScrolled ? 'bg-background/90 shadow-md' : ''}`}>
+        {/* Subtle gradient on scroll */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isScrolled ? 1 : 0 }}
+          className="absolute inset-x-0 top-0 h-8 header-scrolled-gradient pointer-events-none"
+        />
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           {/* Top bar */}
           <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
@@ -131,10 +147,11 @@ export function Header() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 25 }}
                     >
-                      <Badge className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-0">
+                      <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-0 rounded-full font-bold badge-ping">
                         {cartCount > 99 ? '99+' : cartCount}
-                      </Badge>
+                      </span>
                     </motion.div>
                   )}
                 </AnimatePresence>

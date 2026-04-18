@@ -1,15 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { Trash2, Plus, Minus, ArrowRight, Tag, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper } from 'lucide-react'
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
+import { PromoCodeWidget } from '@/components/promotions/PromoCodeWidget'
 import type { ProductData } from '@/store/useAppStore'
 
 const gradients = [
@@ -30,16 +30,15 @@ const suggestedProducts: ProductData[] = [
 const FREE_DELIVERY_THRESHOLD = 50
 
 export function CartView() {
-  const { 
-    cartItems, 
-    removeFromCart, 
-    updateCartQuantity, 
+  const {
+    cartItems,
+    removeFromCart,
+    updateCartQuantity,
     getCartGroupedByStore,
     getCartTotal,
     navigate,
   } = useAppStore()
-  
-  const [promoCode, setPromoCode] = useState('')
+
   const [suggestionScrollPos, setSuggestionScrollPos] = useState(0)
   const groups = getCartGroupedByStore()
   const subtotal = getCartTotal()
@@ -314,22 +313,7 @@ export function CartView() {
           ))}
         </AnimatePresence>
         
-        {/* Promo code */}
-        <div className="bg-card rounded-xl border border-border p-4 card-shine">
-          <div className="flex items-center gap-2">
-            <Tag className="h-4 w-4 text-primary" />
-            <span className="text-sm font-semibold">Código promocional</span>
-          </div>
-          <div className="flex gap-2 mt-3">
-            <Input
-              placeholder="Digite seu cupom"
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value)}
-              className="flex-1 h-10"
-            />
-            <Button variant="outline" className="h-10">Aplicar</Button>
-          </div>
-        </div>
+        {/* Promo code widget */}\n        <PromoCodeWidget />
         
         {/* Order bump - only show if not yet at free delivery */}
         {!hasFreeDelivery && (

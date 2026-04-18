@@ -180,12 +180,23 @@ export async function GET() {
     for (const pd of productsData) {
       const product = await db.product.create({
         data: {
-          ...pd,
+          storeId: pd.storeId,
+          name: pd.name,
           slug: pd.slug,
+          description: pd.description,
+          price: pd.price,
+          comparePrice: pd.comparePrice,
+          stock: pd.stock,
+          rating: pd.rating,
+          totalReviews: pd.totalReviews,
+          isFeatured: pd.isFeatured,
+          isNew: pd.isNew,
+          isOffer: pd.isOffer,
+          tags: pd.tags,
+          variations: pd.variations || null,
           soldCount: Math.floor(Math.random() * 100),
           images: '[]',
           status: 'ACTIVE',
-          variations: pd.variations || null,
         },
       })
       products.push(product)

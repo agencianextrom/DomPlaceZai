@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Star, ThumbsUp, Camera, CheckCircle, MessageSquare, ChevronDown, ChevronUp, Send } from 'lucide-react'
+import { Star, ThumbsUp, Camera, CheckCircle, MessageSquare, ChevronDown, ChevronUp, Send, Shield, ImageIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
@@ -124,7 +124,9 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
   return (
     <div className="space-y-6">
       {/* ── Reviews Summary ── */}
-      <Card className="border-border/50 overflow-hidden">
+      <Card className="border-border/50 overflow-hidden relative">
+        {/* Subtle gradient top accent */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary/40 via-primary to-accent/40" />
         <CardContent className="p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row gap-6">
             {/* Big Rating */}
@@ -325,7 +327,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                 animate="visible"
                 exit={{ opacity: 0, x: -30, transition: { duration: 0.2 } }}
               >
-                <Card className="border-border/50 hover:shadow-sm transition-shadow">
+                <Card className="border-border/50 hover:border-primary/15 hover:shadow-md transition-all">
                   <CardContent className="p-4">
                     {/* Header */}
                     <div className="flex items-start gap-3">
@@ -338,8 +340,8 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                         <div className="flex items-center gap-2 flex-wrap">
                           <p className="font-semibold text-sm">{review.name}</p>
                           {review.verified && (
-                            <Badge className="text-[9px] px-1.5 py-0 gap-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border-0">
-                              <CheckCircle className="h-2.5 w-2.5" />
+                            <Badge className="text-[9px] px-1.5 py-0 gap-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/30 font-medium">
+                              <Shield className="h-2.5 w-2.5" />
                               Compra verificada
                             </Badge>
                           )}
@@ -362,8 +364,23 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                       </div>
                     </div>
 
+                  {/* Photo gallery thumbnails (decorative) */}
+                  {review.verified && review.rating >= 4 && (
+                    <div className="flex gap-1.5 mt-3">
+                      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 border border-border/50 flex items-center justify-center">
+                        <ImageIcon className="h-4 w-4 text-muted-foreground/50" />
+                      </div>
+                      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-accent/10 to-amber-100/50 dark:from-accent/10 dark:to-amber-900/20 border border-border/50 flex items-center justify-center">
+                        <ImageIcon className="h-4 w-4 text-muted-foreground/50" />
+                      </div>
+                      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-emerald-50 to-primary/10 border border-border/50 flex items-center justify-center text-[9px] font-medium text-muted-foreground">
+                        +2
+                      </div>
+                    </div>
+                  )}
+
                     {/* Review text */}
-                    <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{review.text}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{review.text}</p>
 
                     {/* Useful button */}
                     <div className="flex items-center gap-4 mt-3">

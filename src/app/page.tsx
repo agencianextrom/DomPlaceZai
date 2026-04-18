@@ -20,11 +20,15 @@ import { AIChatBot } from '@/components/chat/AIChatBot'
 import { CookieConsent } from '@/components/layout/CookieConsent'
 import { QuickInfo } from '@/components/home/QuickInfo'
 import { PromoBanner } from '@/components/home/PromoBanner'
+import { FlashSale } from '@/components/home/FlashSale'
+import { ProductComparison } from '@/components/product/ProductComparison'
+import { OrderMap } from '@/components/orders/OrderMap'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
 import { ShoppingLists } from '@/components/profile/ShoppingLists'
-import { Heart, Sparkles, MapPin, LayoutDashboard } from 'lucide-react'
+import { Heart, Sparkles, MapPin, LayoutDashboard, GitCompareArrows } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { ProductData, StoreData } from '@/store/useAppStore'
@@ -128,6 +132,47 @@ function OrderDetailView() {
   )
 }
 
+// Floating compare button component
+function CompareFloatingButton() {
+  const { compareProductIds, navigate } = useAppStore()
+  
+  if (compareProductIds.length === 0) return null
+  
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0, opacity: 0 }}
+        className="fixed bottom-24 md:bottom-6 right-4 z-50"
+      >
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            onClick={() => navigate('product-comparison')}
+            className="h-12 px-4 bg-gradient-to-r from-primary to-emerald-600 text-white hover:from-primary/90 hover:to-emerald-600/90 shadow-xl rounded-full gap-2"
+          >
+            <motion.div
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <GitCompareArrows className="h-4 w-4" />
+            </motion.div>
+            <span className="text-sm font-semibold">Comparar</span>
+            <motion.div
+              key={compareProductIds.length}
+              initial={{ scale: 0.5 }}
+              animate={{ scale: 1 }}
+              className="h-6 w-6 rounded-full bg-white/25 flex items-center justify-center text-xs font-bold"
+            >
+              {compareProductIds.length}
+            </motion.div>
+          </Button>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
 export default function Home() {
   const { currentView, isSearchOpen, activeCategory } = useAppStore()
   const [apiProducts, setApiProducts] = useState<ProductData[]>([])
@@ -208,6 +253,11 @@ export default function Home() {
                     {/* Hero */}
                     <section className="mt-2">
                       <HeroBanner banners={fallbackBanners} />
+                    </section>
+
+                    {/* Flash Sale */}
+                    <section className="mt-4">
+                      <FlashSale />
                     </section>
                     
                     {/* Welcome greeting */}
@@ -357,6 +407,10 @@ export default function Home() {
           <motion.div key="shopping-lists" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <ShoppingLists />
           </motion.div>
+        ) : currentView === 'product-comparison' ? (
+          <motion.div key="product-comparison" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <ProductComparison />
+          </motion.div>
         ) : currentView === 'favorites' ? (
           <motion.div key="favorites" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-7xl mx-auto px-4 pt-4">
             <h1 className="text-xl font-bold mb-4 flex items-center gap-2">
@@ -383,6 +437,9 @@ export default function Home() {
 
       {/* Cookie Consent Banner - shows on first visit */}
       <CookieConsent />
+
+      {/* Floating Compare Button */}
+      <CompareFloatingButton />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff } from 'lucide-react'
+import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff, Truck, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -9,18 +9,19 @@ import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
 import { StarRating } from '@/components/ui/StarRating'
 import { DeliveryTracker } from './DeliveryTracker'
+import { OrderMap } from './OrderMap'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import type { OrderData } from '@/store/useAppStore'
 
-const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
-  PENDING: { label: 'Pendente', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock },
-  CONFIRMED: { label: 'Confirmado', color: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400', icon: ClipboardList },
-  PREPARING: { label: 'Preparando', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400', icon: Package },
-  READY: { label: 'Pronto', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle2 },
-  DELIVERING: { label: 'Em entrega', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: Package },
-  DELIVERED: { label: 'Entregue', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle2 },
-  CANCELLED: { label: 'Cancelado', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400', icon: XCircle },
+const statusConfig: Record<string, { label: string; color: string; icon: any; gradient: string }> = {
+  PENDING: { label: 'Pendente', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock, gradient: 'badge-gradient-amber' },
+  CONFIRMED: { label: 'Confirmado', color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400', icon: ClipboardList, gradient: 'badge-gradient-emerald' },
+  PREPARING: { label: 'Preparando', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400', icon: Package, gradient: 'badge-gradient-amber' },
+  READY: { label: 'Pronto', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle2, gradient: 'badge-gradient-emerald' },
+  DELIVERING: { label: 'Em entrega', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: Package, gradient: 'badge-gradient-emerald' },
+  DELIVERED: { label: 'Entregue', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle2, gradient: 'badge-gradient-emerald' },
+  CANCELLED: { label: 'Cancelado', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400', icon: XCircle, gradient: 'badge-gradient-red' },
 }
 
 const statusTimeline = ['PENDING', 'CONFIRMED', 'PREPARING', 'READY', 'DELIVERING']
@@ -161,41 +162,62 @@ export function OrdersView() {
                         key={order.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="w-full bg-card rounded-xl border border-border p-4 hover:shadow-sm transition-shadow"
+                        whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                        className="w-full bg-card rounded-xl border border-border p-4 hover:shadow-md hover:border-primary/15 transition-all"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2 min-w-0">
                             <Store className="h-4 w-4 text-primary shrink-0" />
                             <span className="font-semibold text-sm truncate">{order.storeName}</span>
                           </div>
-                          <Badge className={`${config.color} border-0 text-xs shrink-0 ml-2`}>
+                          <Badge className={`${config.gradient} border-0 text-[10px] font-semibold shrink-0 ml-2`}>
                             <StatusIcon className="h-3 w-3 mr-1" />
                             {config.label}
                           </Badge>
                         </div>
                         
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
                           <span>Pedido #{order.orderNumber}</span>
-                          <span>•</span>
+                          <span className="text-border">•</span>
                           <span>{timeAgo(order.createdAt)}</span>
-                          <span>•</span>
+                          <span className="text-border">•</span>
                           <span>{order.items?.length || 0} {order.items?.length === 1 ? 'item' : 'itens'}</span>
+                          {/* Delivery type icon */}
+                          <span className={`ml-auto flex items-center gap-1 rounded-md px-1.5 py-0.5 ${order.deliveryType === 'PICKUP' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400' : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400'}`}>
+                            {order.deliveryType === 'PICKUP' ? <MapPin className="h-3 w-3" /> : <Truck className="h-3 w-3" />}
+                            <span className="text-[10px] font-medium">{order.deliveryType === 'PICKUP' ? 'Retirada' : 'Entrega'}</span>
+                          </span>
                         </div>
 
                         {/* Mini timeline for active orders */}
                         {!['DELIVERED', 'CANCELLED'].includes(order.status) && (
-                          <div className="flex items-center gap-1 mb-3">
+                          <div className="flex items-center gap-1 mb-3 px-1">
                             {statusTimeline.slice(0, 4).map((s, idx) => {
                               const stepIdx = statusTimeline.indexOf(order.status)
                               const isActive = idx <= stepIdx
                               const isCurrent = s === order.status
+                              const StepConfig = statusConfig[s]
+                              const StepIcon = StepConfig.icon
                               return (
                                 <div key={s} className="flex items-center flex-1">
-                                  <div className={`h-2 w-2 rounded-full shrink-0 ${
-                                    isActive ? 'bg-primary' : 'bg-muted'
-                                  } ${isCurrent ? 'ring-2 ring-primary/20' : ''}`} />
+                                  <motion.div
+                                    animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                                    className={`relative h-5 w-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                                      isActive
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'bg-muted text-muted-foreground'
+                                    } ${isCurrent ? 'ring-[3px] ring-primary/20 neon-glow-primary' : ''}`}
+                                  >
+                                    <StepIcon className="h-2.5 w-2.5" />
+                                  </motion.div>
                                   {idx < 3 && (
-                                    <div className={`flex-1 h-0.5 ${idx < stepIdx ? 'bg-primary' : 'bg-muted'}`} />
+                                    <motion.div
+                                      className={`h-[2px] flex-1 rounded-full ${idx < stepIdx ? 'bg-primary' : 'bg-muted'}`}
+                                      initial={{ scaleX: 0 }}
+                                      animate={{ scaleX: 1 }}
+                                      transition={{ delay: 0.1 + idx * 0.08, duration: 0.4 }}
+                                    />
                                   )}
                                 </div>
                               )
@@ -333,8 +355,16 @@ export function OrderDetail() {
           </div>
         </div>
 
-        {/* Delivery Tracker for active orders */}
-        {(order.status === 'DELIVERING' || order.status === 'PREPARING' || order.status === 'CONFIRMED') && (
+        {/* Order Map for DELIVERING orders */}
+        {order.status === 'DELIVERING' && (
+          <OrderMap
+            storeName={order.storeName || 'Loja'}
+            estimatedMinutes={25}
+          />
+        )}
+
+        {/* Delivery Tracker for other active orders */}
+        {(order.status === 'PREPARING' || order.status === 'CONFIRMED') && (
           <DeliveryTracker
             orderNumber={order.orderNumber}
             storeName={order.storeName || 'Loja'}

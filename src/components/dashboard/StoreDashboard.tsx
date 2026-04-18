@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   Store, ArrowLeft, DollarSign, ShoppingCart, Package, Star,
   TrendingUp, TrendingDown, Plus, Eye, MoreVertical, ChevronRight,
-  Clock, User, BarChart3, ThumbsUp, ThumbsDown, Minus,
+  Clock, User, BarChart3, ThumbsUp, ThumbsDown, Minus, MessageSquare,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -14,6 +14,7 @@ import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import { useAppStore } from '@/store/useAppStore'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ReviewsManagement } from './ReviewsManagement'
 
 // ─── Animated Counter Hook ───
 function useAnimatedCounter(target: number, duration = 1200, decimals = 0) {
@@ -122,10 +123,12 @@ function StatCard({
       animate="visible"
       transition={{ delay }}
     >
-      <Card className="border-border/50 hover:shadow-md transition-shadow">
+      <Card className="border-border/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 overflow-hidden relative">
+        {/* Subtle gradient accent top line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-emerald-400 to-accent/60 opacity-60" />
         <CardContent className="p-4">
           <div className="flex items-start justify-between">
-            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center shrink-0">
               <Icon className="h-5 w-5 text-primary" />
             </div>
             <Badge
@@ -164,7 +167,10 @@ export function StoreDashboard() {
   const maxSaleValue = Math.max(...weeklySales.map(s => s.value))
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-24 relative">
+      {/* Subtle grid pattern background */}
+      <div className="absolute inset-0 grid-pattern pointer-events-none" />
+      <div className="relative">
       {/* Header */}
       <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center gap-3">
@@ -196,6 +202,10 @@ export function StoreDashboard() {
             <TabsTrigger value="analytics" className="gap-1.5 text-xs sm:text-sm">
               <TrendingUp className="h-3.5 w-3.5" />
               Análises
+            </TabsTrigger>
+            <TabsTrigger value="reviews" className="gap-1.5 text-xs sm:text-sm">
+              <MessageSquare className="h-3.5 w-3.5" />
+              Avaliações
             </TabsTrigger>
           </TabsList>
 
@@ -231,27 +241,27 @@ export function StoreDashboard() {
 
                 <div className="grid grid-cols-3 gap-3">
                   <motion.div variants={itemVariants} transition={{ delay: 0.12 }}>
-                    <Card className="border-border/50">
+                    <Card className="stat-gradient-primary hover:shadow-md transition-shadow">
                       <CardContent className="p-3 text-center">
-                        <p className="text-lg font-bold text-primary">R$ {todayRevenue}</p>
+                        <p className="text-lg font-bold text-primary animate-count-up">R$ {todayRevenue}</p>
                         <p className="text-[10px] text-muted-foreground">Hoje</p>
                       </CardContent>
                     </Card>
                   </motion.div>
                   <motion.div variants={itemVariants} transition={{ delay: 0.15 }}>
-                    <Card className="border-border/50">
+                    <Card className="stat-gradient-amber hover:shadow-md transition-shadow">
                       <CardContent className="p-3 text-center">
-                        <p className="text-lg font-bold text-primary">{todayOrders}</p>
+                        <p className="text-lg font-bold text-amber-600 dark:text-amber-400 animate-count-up" style={{ animationDelay: '0.1s' }}>{todayOrders}</p>
                         <p className="text-[10px] text-muted-foreground">Pedidos hoje</p>
                       </CardContent>
                     </Card>
                   </motion.div>
                   <motion.div variants={itemVariants} transition={{ delay: 0.18 }}>
-                    <Card className="border-border/50">
+                    <Card className="stat-gradient-teal hover:shadow-md transition-shadow">
                       <CardContent className="p-3 text-center">
                         <div className="flex items-center justify-center gap-1">
                           <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
-                          <p className="text-lg font-bold">{ratingValue}</p>
+                          <p className="text-lg font-bold animate-count-up" style={{ animationDelay: '0.2s' }}>{ratingValue}</p>
                         </div>
                         <p className="text-[10px] text-muted-foreground">Avaliação</p>
                       </CardContent>
@@ -261,7 +271,7 @@ export function StoreDashboard() {
 
                 {/* Weekly Sales Chart */}
                 <motion.div variants={itemVariants} transition={{ delay: 0.2 }}>
-                  <Card className="border-border/50">
+                  <Card className="border-border/50 overflow-hidden">
                     <CardHeader className="pb-2 pt-4 px-4">
                       <CardTitle className="text-sm font-semibold flex items-center gap-2">
                         <BarChart3 className="h-4 w-4 text-primary" />
@@ -269,32 +279,41 @@ export function StoreDashboard() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="px-4 pb-4">
-                      <div className="flex items-end gap-2 h-36">
-                        {weeklySales.map((day, i) => (
-                          <motion.div
-                            key={day.day}
-                            className="flex-1 flex flex-col items-center gap-1.5"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            transition={{ delay: 0.3 + i * 0.08, type: 'spring', stiffness: 200 }}
-                          >
-                            <motion.span
-                              className="text-[10px] font-semibold text-muted-foreground"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ delay: 0.5 + i * 0.08 }}
-                            >
-                              {day.value}
-                            </motion.span>
-                            <motion.div
-                              className="w-full rounded-t-md bg-gradient-to-t from-primary to-emerald-400 min-h-[4px]"
-                              initial={{ height: 0 }}
-                              animate={{ height: `${(day.value / maxSaleValue) * 100}%` }}
-                              transition={{ delay: 0.3 + i * 0.08, type: 'spring', stiffness: 150, damping: 20 }}
-                            />
-                            <span className="text-[10px] text-muted-foreground">{day.day}</span>
-                          </motion.div>
-                        ))}
+                      {/* Chart area with subtle gradient bg */}
+                      <div className="rounded-lg bg-gradient-to-b from-primary/[0.02] to-transparent p-3">
+                        <div className="flex items-end gap-2 h-36">
+                          {weeklySales.map((day, i) => {
+                            const isToday = i === new Date().getDay() - 1
+                            return (
+                              <motion.div
+                                key={day.day}
+                                className="flex-1 flex flex-col items-center gap-1.5"
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                transition={{ delay: 0.3 + i * 0.08, type: 'spring', stiffness: 200 }}
+                              >
+                                <motion.span
+                                  className={`text-[10px] font-semibold ${isToday ? 'text-primary' : 'text-muted-foreground'}`}
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.5 + i * 0.08 }}
+                                >
+                                  {day.value}
+                                </motion.span>
+                                <motion.div
+                                  className={`w-full rounded-t-md min-h-[4px] ${isToday
+                                    ? 'bg-gradient-to-t from-primary to-emerald-300 shadow-sm shadow-primary/20'
+                                    : 'bg-gradient-to-t from-primary/60 to-emerald-400/60'
+                                  }`}
+                                  initial={{ height: 0 }}
+                                  animate={{ height: `${(day.value / maxSaleValue) * 100}%` }}
+                                  transition={{ delay: 0.3 + i * 0.08, type: 'spring', stiffness: 150, damping: 20 }}
+                                />
+                                <span className={`text-[10px] ${isToday ? 'font-bold text-primary' : 'text-muted-foreground'}`}>{day.day}</span>
+                              </motion.div>
+                            )
+                          })}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -620,7 +639,23 @@ export function StoreDashboard() {
               </motion.div>
             </AnimatePresence>
           </TabsContent>
+
+          {/* ── Reviews Tab ── */}
+          <TabsContent value="reviews">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key="reviews"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                <ReviewsManagement />
+              </motion.div>
+            </AnimatePresence>
+          </TabsContent>
         </Tabs>
+      </div>
       </div>
     </div>
   )

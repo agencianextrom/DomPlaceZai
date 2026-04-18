@@ -598,3 +598,260 @@
   background: inherit;
   animation: badge-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
+
+/* ==============================
+   GLASSMORPHISM STRONG
+   ============================== */
+.glassmorphism-strong {
+  background: oklch(1 0 0 / 0.45);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid oklch(1 0 0 / 0.25);
+  box-shadow: 0 8px 32px oklch(0 0 0 / 0.06);
+}
+.dark .glassmorphism-strong {
+  background: oklch(0.15 0.015 150 / 0.55);
+  border: 1px solid oklch(1 0 0 / 0.06);
+  box-shadow: 0 8px 32px oklch(0 0 0 / 0.25);
+}
+
+/* ==============================
+   TEXT GRADIENT PRIMARY (emerald gradient)
+   ============================== */
+.text-gradient-primary {
+  background: linear-gradient(135deg, oklch(0.45 0.1 155), oklch(0.55 0.12 155), oklch(0.78 0.16 70));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ==============================
+   ANIMATE COUNT UP (for stat numbers)
+   ============================== */
+@keyframes count-fade-in {
+  0% { opacity: 0; transform: translateY(8px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-count-up {
+  animation: count-fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ==============================
+   NEON GLOW PRIMARY
+   ============================== */
+.neon-glow-primary {
+  box-shadow: 
+    0 0 6px oklch(0.45 0.1 155 / 0.25),
+    0 0 18px oklch(0.45 0.1 155 / 0.12),
+    0 0 36px oklch(0.45 0.1 155 / 0.06);
+}
+.dark .neon-glow-primary {
+  box-shadow: 
+    0 0 8px oklch(0.55 0.12 155 / 0.35),
+    0 0 22px oklch(0.55 0.12 155 / 0.15),
+    0 0 44px oklch(0.55 0.12 155 / 0.08);
+}
+
+/* ==============================
+   SKELETON SHIMMER (improved loading)
+   ============================== */
+@keyframes skeleton-wave {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.96 0.01 120 / 0.5) 0%,
+    oklch(0.96 0.01 120 / 1) 20%,
+    oklch(0.96 0.01 120 / 1) 40%,
+    oklch(0.96 0.01 120 / 0.5) 60%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-wave 2s ease-in-out infinite;
+  border-radius: inherit;
+}
+.dark .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.25 0.02 150 / 0.4) 0%,
+    oklch(0.30 0.02 150 / 0.8) 20%,
+    oklch(0.30 0.02 150 / 0.8) 40%,
+    oklch(0.25 0.02 150 / 0.4) 60%
+  );
+  background-size: 200% 100%;
+}
+
+/* ==============================
+   SCROLL PROGRESS INDICATOR
+   ============================== */
+.scroll-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 100;
+  background: transparent;
+}
+.scroll-indicator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--scroll-progress, 0%);
+  background: linear-gradient(90deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70));
+  border-radius: 0 2px 2px 0;
+  transition: width 0.1s linear;
+}
+
+/* ==============================
+   GRID PATTERN BACKGROUND
+   ============================== */
+.grid-pattern {
+  background-image: 
+    linear-gradient(oklch(0 0 0 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0 0 0 / 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.dark .grid-pattern {
+  background-image: 
+    linear-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(1 0 0 / 0.04) 1px, transparent 1px);
+}
+
+/* ==============================
+   GRADIENT BADGE (for status pills)
+   ============================== */
+.badge-gradient-emerald {
+  background: linear-gradient(135deg, oklch(0.45 0.1 155 / 0.12), oklch(0.55 0.08 140 / 0.12));
+  color: oklch(0.35 0.08 155);
+  border: 1px solid oklch(0.45 0.1 155 / 0.2);
+}
+.dark .badge-gradient-emerald {
+  background: linear-gradient(135deg, oklch(0.55 0.12 155 / 0.15), oklch(0.50 0.08 140 / 0.15));
+  color: oklch(0.75 0.12 155);
+  border: 1px solid oklch(0.55 0.12 155 / 0.25);
+}
+
+.badge-gradient-amber {
+  background: linear-gradient(135deg, oklch(0.78 0.16 70 / 0.12), oklch(0.82 0.14 60 / 0.12));
+  color: oklch(0.68 0.14 70);
+  border: 1px solid oklch(0.78 0.16 70 / 0.2);
+}
+.dark .badge-gradient-amber {
+  background: linear-gradient(135deg, oklch(0.72 0.16 70 / 0.15), oklch(0.68 0.14 60 / 0.15));
+  color: oklch(0.85 0.14 70);
+  border: 1px solid oklch(0.72 0.16 70 / 0.25);
+}
+
+.badge-gradient-red {
+  background: linear-gradient(135deg, oklch(0.577 0.245 27 / 0.1), oklch(0.62 0.2 25 / 0.1));
+  color: oklch(0.50 0.2 25);
+  border: 1px solid oklch(0.577 0.245 27 / 0.18);
+}
+.dark .badge-gradient-red {
+  background: linear-gradient(135deg, oklch(0.704 0.191 22 / 0.15), oklch(0.65 0.17 24 / 0.15));
+  color: oklch(0.80 0.15 22);
+  border: 1px solid oklch(0.704 0.191 22 / 0.25);
+}
+
+/* ==============================
+   CARD PREMIUM HOVER
+   ============================== */
+.card-premium-hover {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.card-premium-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 28px oklch(0.18 0.02 150 / 0.08),
+    0 4px 8px oklch(0.18 0.02 150 / 0.05);
+}
+.dark .card-premium-hover:hover {
+  box-shadow: 
+    0 12px 28px oklch(0 0 0 / 0.25),
+    0 4px 8px oklch(0 0 0 / 0.15);
+}
+
+/* ==============================
+   WAVE SVG BOTTOM (for hero sections)
+   ============================== */
+.wave-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1440 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 12C240 0 480 24 720 12C960 0 1200 24 1440 12V24H0V12Z' fill='currentColor'/%3E%3C/svg%3E") no-repeat bottom center;
+  background-size: 100% 100%;
+}
+
+/* ==============================
+   DELICATE INSET SHADOW
+   ============================== */
+.inset-shadow-delicate {
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.5), inset 0 -1px 0 oklch(0 0 0 / 0.04);
+}
+.dark .inset-shadow-delicate {
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.06), inset 0 -1px 0 oklch(0 0 0 / 0.2);
+}
+
+/* ==============================
+   STAT CARD GRADIENT
+   ============================== */
+.stat-gradient-primary {
+  background: linear-gradient(135deg, oklch(0.45 0.1 155 / 0.06), oklch(0.55 0.08 140 / 0.03));
+  border: 1px solid oklch(0.45 0.1 155 / 0.12);
+}
+.dark .stat-gradient-primary {
+  background: linear-gradient(135deg, oklch(0.55 0.12 155 / 0.1), oklch(0.50 0.08 140 / 0.05));
+  border: 1px solid oklch(0.55 0.12 155 / 0.15);
+}
+
+.stat-gradient-amber {
+  background: linear-gradient(135deg, oklch(0.78 0.16 70 / 0.06), oklch(0.82 0.14 60 / 0.03));
+  border: 1px solid oklch(0.78 0.16 70 / 0.12);
+}
+.dark .stat-gradient-amber {
+  background: linear-gradient(135deg, oklch(0.72 0.16 70 / 0.1), oklch(0.68 0.14 60 / 0.05));
+  border: 1px solid oklch(0.72 0.16 70 / 0.15);
+}
+
+.stat-gradient-teal {
+  background: linear-gradient(135deg, oklch(0.55 0.08 140 / 0.06), oklch(0.60 0.12 90 / 0.03));
+  border: 1px solid oklch(0.55 0.08 140 / 0.12);
+}
+.dark .stat-gradient-teal {
+  background: linear-gradient(135deg, oklch(0.50 0.08 140 / 0.1), oklch(0.65 0.10 90 / 0.05));
+  border: 1px solid oklch(0.50 0.08 140 / 0.15);
+}
+
+/* ==============================
+   HEADER SCROLL GRADIENT
+   ============================== */
+@keyframes header-shimmer {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+.header-scrolled-gradient {
+  background: linear-gradient(180deg, oklch(0.45 0.1 155 / 0.03) 0%, transparent 100%);
+}
+.dark .header-scrolled-gradient {
+  background: linear-gradient(180deg, oklch(0.55 0.12 155 / 0.06) 0%, transparent 100%);
+}
+
+/* ==============================
+   BADGE SPRING (notification badge animation)
+   ============================== */
+@keyframes badge-spring {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.3); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.badge-spring {
+  animation: badge-spring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
