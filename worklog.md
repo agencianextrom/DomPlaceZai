@@ -215,3 +215,79 @@ Stage Summary:
 6. **MEDIUM**: Add affiliate system with referral links and commission tracking
 7. **LOW**: Add delivery driver matching algorithm and app
 8. **LOW**: LGPD compliance tools (data export, consent management UI)
+
+---
+Task ID: 5-c/5-d/5-e/5-f
+Agent: Features Developer
+Task: AI Chat Bot, Onboarding, Enhanced Search, Favorites
+
+Work Log:
+- Updated Zustand store (`/src/store/useAppStore.ts`): added `isChatOpen` state and `toggleChat()` action
+- Created AIChatBot component (`/src/components/chat/AIChatBot.tsx`):
+  - Floating action button (FAB) with pulse animation in bottom-right corner
+  - Sheet panel sliding from bottom with emerald gradient header
+  - Pre-loaded greeting message from bot
+  - Mock AI responses based on keyword matching (entrega/frete, pagamento/pix/cartão, devolução/troca, horário/funcionamento)
+  - Typing indicator (3 dots animation) with 1.5s delay before response
+  - Message bubbles: user on right (primary bg), bot on left (secondary bg)
+  - Quick action chips for common questions
+  - Auto-scroll to latest message
+  - Online status indicator with ping animation
+  - Used shadcn/ui Sheet, Button, Input, ScrollArea
+  - Used Framer Motion for all animations
+- Created WelcomeModal component (`/src/components/onboarding/WelcomeModal.tsx`):
+  - Full-screen modal with 3-step onboarding carousel
+  - Step 1: Welcome message with Store icon and animated gradient circles
+  - Step 2: Category discovery with 6 category icon cards (Alimentação, Saúde, Serviços, Pets, Beleza, Compras)
+  - Step 3: Call-to-action with "Criar conta gratuita" and "Usar sem conta" buttons
+  - Dots indicator with animated active dot
+  - "Pular" button in top-right
+  - localStorage flag 'domplace-welcomed' for first-visit detection
+  - 800ms delay for smooth entrance
+  - Swipeable step transitions with spring physics via Framer Motion
+  - "Criar conta" triggers AuthModal via store
+  - Used shadcn/ui Dialog, Button
+- Enhanced SearchView (`/src/components/search/SearchView.tsx`):
+  - Added "Buscas populares" section with 7 clickable search tags (Açaí, Pão, Ração, Farmácia, Cabelo, Entrega, Promoção) in a 2-column grid with icons
+  - Updated sort filters: replaced "Maior preço" with "Maior desconto" and "Avaliação" with "Melhor avaliado"
+  - Added results counter with Sparkles icon: "X resultados encontrados"
+  - Enhanced empty state: Package icon, helpful message, suggestion chips
+  - Added staggered entrance animations for search results (containerVariants + itemVariants)
+  - Added staggered animations for recent searches and popular/trending tags
+  - Added hover effects on recent search chips (X close icon on hover)
+  - Improved "Limpar" button styling
+- Integrated into page.tsx:
+  - Imported and rendered WelcomeModal (always mounted, self-managed visibility)
+  - Imported and rendered AIChatBot (outside AnimatePresence, always mounted)
+  - Existing code preserved without breaking changes
+
+Stage Summary:
+- 2 new components created (AIChatBot, WelcomeModal)
+- 1 existing component enhanced (SearchView)
+- 3 files modified (useAppStore.ts, SearchView.tsx, page.tsx)
+- ESLint: 0 errors; Dev server: compiling successfully
+- All text in Brazilian Portuguese; emerald/amber theme maintained
+- Mobile-first responsive design
+
+---
+Task ID: 5-b
+Agent: Styling Polish Expert
+Task: Deep styling polish and micro-interactions
+
+Work Log:
+- **globals.css**: Added `.card-shine` with `@keyframes shine` for sweeping shine/gleam effect on card hover; added `.text-shadow-sm` and `.text-shadow-lg` utility classes with dark mode variants; added `.border-gradient` always-visible gradient border using mask-composite technique; added `.btn-glow` hover glow effect with primary color box-shadow and active scale; improved `.custom-scrollbar` dark mode thumb styles; added `.search-pulse` focus animation with dark mode variant; added 6 confetti particle keyframe animations (`confetti-fall-1/2/3` + 6 particle classes) for checkout confirmation
+- **Header.tsx**: Enhanced glassmorphism (bg-background/70 + backdrop-blur-xl + subtle shadow with dark mode variant); added pulsing green dot (animate-pulse) on location indicator; added text-shadow-sm on location text; search bar expands on focus (max-w-md → max-w-lg with transition); added search-pulse animation on search input; added gradient underline (layoutId="desktop-nav-underline") on active nav items using Framer Motion shared layout; added same underline to cart button
+- **MobileNav.tsx**: Redesigned with elevated floating cart button (center, -mt-5, rounded-2xl, primary bg with shadow); added haptic-like feedback (whileTap scale 0.82) on all nav items; added cart count badge (accent bg, spring animation) on cart button; added active state gradient dot indicator (w-6 h-[3px] from-primary/80 to-primary); improved touch targets (min-w-[52px] min-h-[44px]); nav split into left 2 items + center cart + right 3 items; added dynamic shadow on cart when items present
+- **CartView.tsx**: Enhanced empty state with orbiting sparkles (two counter-rotating orbits), floating shopping bag with dual-axis animation, staggered entrance animations; added free delivery progress banner with animated progress bar (R$50 threshold), gradient card-shine; added "🎉 Frete grátis!" celebration banner with PartyPopper icon when threshold met; added slide-in animation (x: 40→0, staggered per item) for cart items; added exit animation (x: -60) for item removal; added quantity bounce animation on change; added whileTap scale on buttons; card-shine on suggestion cards and promo code card; styled checkout button with gradient + btn-glow; dynamic delivery fee display (free when threshold met)
+- **CheckoutView.tsx**: Enhanced step indicator with animated scale pulse on current step, filled progress line (scaleX motion), improved completed/current/upcoming visual states; added circular checkmark badge (h-5 w-5 bg-primary) on selected delivery type and payment method; added hover elevation (whileHover y:-2 + box-shadow) on delivery and payment cards; added whileTap scale:0.97 on all interactive cards; added ConfettiBurst component with 18 particles in 6 colors + 4 shapes radiating from center; added staggered entrance animations on confirmation state; styled buttons with gradient + btn-glow; added shadow-[0_2px_12px...] on selected cards
+- **SearchView.tsx**: Added search-pulse animation on input; enhanced filter chips with slide-in animation (opacity:0 x:20 → opacity:1 x:0, staggered per chip); added icons to filter chips (Sparkles, ArrowUpDown, TrendingUp); converted chips to round pill buttons; added AnimatePresence wrapper for filter section; added results count badge with active sort label and clear button; added staggered entrance animations (y:20 → 0) for search results; enhanced recent searches with "Limpar tudo" button styling, hover:bg-secondary, group-hover color transitions, AnimatePresence exit; redesigned "Buscas populares" as numbered list items (ranked 1-7) with colored rank badges (accent for #1, primary for #2-3, muted for rest), hover effects with TrendingUp icon reveal
+
+Stage Summary:
+- 6 files modified with deep styling polish and micro-interactions
+- 10+ new CSS utility classes/animations added to globals.css
+- Header: glassmorphism, pulsing dot, search expand, gradient nav underline
+- MobileNav: floating cart button, haptic feedback, cart badge, active dots
+- CartView: orbiting empty state, free delivery progress bar, slide-in items, celebration banner
+- CheckoutView: animated step indicator, card elevation, confetti burst on confirmation
+- SearchView: pulse search, animated filter chips, ranked popular searches, staggered results
+- ESLint: 0 errors; Dev server: compiling successfully

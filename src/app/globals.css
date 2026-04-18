@@ -161,10 +161,6 @@
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: oklch(0.7 0 0 / 0.3);
-  border-radius: 9999px;
-}
 
 /* ==============================
    GLASSMORPHISM CARD
@@ -356,3 +352,158 @@
 .dark .dot-pattern {
   background-image: radial-gradient(circle, oklch(1 0 0 / 0.04) 1px, transparent 1px);
 }
+
+/* ==============================
+   CARD SHINE EFFECT
+   ============================== */
+@keyframes shine {
+  0% { left: -75%; }
+  100% { left: 125%; }
+}
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+.card-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.08) 40%,
+    oklch(1 0 0 / 0.15) 50%,
+    oklch(1 0 0 / 0.08) 60%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: none;
+  pointer-events: none;
+  z-index: 2;
+}
+.dark .card-shine::after {
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.03) 40%,
+    oklch(1 0 0 / 0.06) 50%,
+    oklch(1 0 0 / 0.03) 60%,
+    transparent 100%
+  );
+}
+.card-shine:hover::after {
+  animation: shine 0.7s ease-in-out;
+}
+
+/* ==============================
+   TEXT SHADOW UTILITIES
+   ============================== */
+.text-shadow-sm {
+  text-shadow: 0 1px 2px oklch(0 0 0 / 0.12);
+}
+.dark .text-shadow-sm {
+  text-shadow: 0 1px 2px oklch(0 0 0 / 0.5);
+}
+.text-shadow-lg {
+  text-shadow: 0 2px 8px oklch(0 0 0 / 0.18), 0 1px 3px oklch(0 0 0 / 0.1);
+}
+.dark .text-shadow-lg {
+  text-shadow: 0 2px 8px oklch(0 0 0 / 0.6), 0 1px 3px oklch(0 0 0 / 0.4);
+}
+
+/* ==============================
+   GRADIENT BORDER (always visible variant)
+   ============================== */
+.border-gradient {
+  position: relative;
+  background-clip: padding-box;
+}
+.border-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(135deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+/* ==============================
+   BUTTON GLOW EFFECT
+   ============================== */
+.btn-glow {
+  transition: box-shadow 0.3s ease, transform 0.15s ease;
+}
+.btn-glow:hover {
+  box-shadow: 0 0 20px oklch(0.45 0.1 155 / 0.35), 0 0 6px oklch(0.45 0.1 155 / 0.2);
+}
+.dark .btn-glow:hover {
+  box-shadow: 0 0 20px oklch(0.55 0.12 155 / 0.3), 0 0 6px oklch(0.55 0.12 155 / 0.15);
+}
+.btn-glow:active {
+  transform: scale(0.97);
+}
+
+/* ==============================
+   IMPROVED DARK MODE SCROLLBAR
+   ============================== */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: oklch(0.7 0 0 / 0.25);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.55 0.05 150 / 0.5);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: oklch(0.5 0.05 150 / 0.4);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.55 0.08 150 / 0.6);
+}
+
+/* ==============================
+   SEARCH PULSE ANIMATION
+   ============================== */
+@keyframes search-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.45 0.1 155 / 0); }
+  50% { box-shadow: 0 0 0 4px oklch(0.45 0.1 155 / 0.12); }
+}
+.search-pulse:focus {
+  animation: search-pulse 2s ease-in-out infinite;
+}
+.dark .search-pulse:focus {
+  animation-name: search-pulse-dark;
+}
+@keyframes search-pulse-dark {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.55 0.12 155 / 0); }
+  50% { box-shadow: 0 0 0 4px oklch(0.55 0.12 155 / 0.15); }
+}
+
+/* ==============================
+   CONFETTI BURST KEYFRAMES
+   ============================== */
+@keyframes confetti-fall-1 {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translateY(-120px) rotate(720deg) scale(0); opacity: 0; }
+}
+@keyframes confetti-fall-2 {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translateY(-100px) translateX(60px) rotate(540deg) scale(0); opacity: 0; }
+}
+@keyframes confetti-fall-3 {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translateY(-80px) translateX(-50px) rotate(360deg) scale(0); opacity: 0; }
+}
+.confetti-particle-1 { animation: confetti-fall-1 1.2s ease-out forwards; }
+.confetti-particle-2 { animation: confetti-fall-2 1s ease-out 0.1s forwards; opacity: 0; }
+.confetti-particle-3 { animation: confetti-fall-3 1.1s ease-out 0.2s forwards; opacity: 0; }
+.confetti-particle-4 { animation: confetti-fall-2 0.9s ease-out 0.15s forwards; opacity: 0; }
+.confetti-particle-5 { animation: confetti-fall-1 1.3s ease-out 0.25s forwards; opacity: 0; }
+.confetti-particle-6 { animation: confetti-fall-3 1s ease-out 0.05s forwards; opacity: 0; }

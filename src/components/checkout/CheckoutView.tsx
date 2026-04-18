@@ -36,6 +36,60 @@ const stepLabels = [
   { id: 'confirmation' as CheckoutStep, num: 3, title: 'Confirmação' },
 ]
 
+// Confetti particles configuration
+const confettiColors = ['#10b981', '#f59e0b', '#06b6d4', '#f97316', '#84cc16', '#ec4899']
+const confettiShapes = ['●', '■', '▲', '★']
+
+function ConfettiBurst() {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {Array.from({ length: 18 }).map((_, i) => {
+        const angle = (i / 18) * Math.PI * 2
+        const distance = 60 + Math.random() * 80
+        const tx = Math.cos(angle) * distance
+        const ty = Math.sin(angle) * distance - 30
+        const color = confettiColors[i % confettiColors.length]
+        const shape = confettiShapes[i % confettiShapes.length]
+        const size = 6 + Math.random() * 8
+        const delay = i * 0.03
+        
+        return (
+          <motion.div
+            key={i}
+            initial={{ 
+              x: 0, 
+              y: 0, 
+              scale: 1, 
+              opacity: 1, 
+              rotate: 0 
+            }}
+            animate={{ 
+              x: tx, 
+              y: ty, 
+              scale: 0, 
+              opacity: 0,
+              rotate: (Math.random() - 0.5) * 720,
+            }}
+            transition={{ 
+              duration: 1 + Math.random() * 0.5, 
+              delay: 0.2 + delay,
+              ease: 'easeOut' 
+            }}
+            className="absolute left-1/2 top-1/2"
+            style={{
+              color,
+              fontSize: `${size}px`,
+              lineHeight: 1,
+            }}
+          >
+            {shape}
+          </motion.div>
+        )
+      })}
+    </div>
+  )
+}
+
 export function CheckoutView() {
   const { goBack, navigate, getCartGroupedByStore, getCartTotal, getCartItemCount, clearCart } = useAppStore()
   const [step, setStep] = useState<CheckoutStep>('address')
@@ -114,35 +168,68 @@ export function CheckoutView() {
   if (step === 'confirmation') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200 }}
-          className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center mb-6 shadow-lg"
-        >
-          <Check className="h-12 w-12 text-white" />
-        </motion.div>
+        <div className="relative">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+            className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center mb-6 shadow-lg relative z-10"
+          >
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+            >
+              <Check className="h-12 w-12 text-white" />
+            </motion.div>
+          </motion.div>
+          {/* Confetti burst around the checkmark */}
+          <ConfettiBurst />
+        </div>
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
           className="text-center"
         >
-          <h2 className="text-2xl font-bold mb-2">Pedido Confirmado!</h2>
-          <p className="text-muted-foreground mb-1">
+          <motion.h2 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="text-2xl font-bold mb-2 text-shadow-sm"
+          >
+            Pedido Confirmado!
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="text-muted-foreground mb-1"
+          >
             Seu pedido #DP{Date.now().toString().slice(-6)} foi realizado com sucesso.
-          </p>
-          <p className="text-sm text-muted-foreground mb-8">
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="text-sm text-muted-foreground mb-8"
+          >
             Você receberá atualizações sobre o status do seu pedido.
-          </p>
-          <div className="flex gap-3 justify-center">
-            <Button variant="outline" onClick={() => navigate('orders')}>
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+            className="flex gap-3 justify-center"
+          >
+            <Button variant="outline" onClick={() => navigate('orders')} className="h-11">
               Ver Pedidos
             </Button>
-            <Button onClick={() => navigate('home')} className="bg-primary text-primary-foreground">
+            <Button onClick={() => navigate('home')} className="bg-primary text-primary-foreground h-11 btn-glow">
               Continuar Comprando
             </Button>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     )
@@ -157,33 +244,42 @@ export function CheckoutView() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-lg font-bold">Finalizar Pedido</h1>
+            <h1 className="text-lg font-bold text-shadow-sm">Finalizar Pedido</h1>
             
             {/* Step indicator */}
-            <div className="flex items-center gap-0 mt-2">
+            <div className="flex items-center gap-0 mt-2.5">
               {stepLabels.map((s, i) => {
                 const isCompleted = i < currentStepIndex
                 const isCurrent = i === currentStepIndex
                 return (
                   <div key={s.id} className="flex items-center flex-1">
                     <div className="flex items-center gap-2">
-                      <div className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                        isCompleted 
-                          ? 'bg-primary text-primary-foreground' 
-                          : isCurrent 
-                            ? 'bg-primary text-primary-foreground ring-4 ring-primary/20' 
-                            : 'bg-muted text-muted-foreground'
-                      }`}>
+                      <motion.div
+                        animate={isCurrent ? { scale: [1, 1.1, 1] } : {}}
+                        transition={{ duration: 0.3 }}
+                        className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+                          isCompleted 
+                            ? 'bg-primary text-primary-foreground' 
+                            : isCurrent 
+                              ? 'bg-primary text-primary-foreground ring-[3px] ring-primary/20' 
+                              : 'bg-muted text-muted-foreground'
+                        }`}
+                      >
                         {isCompleted ? <Check className="h-3.5 w-3.5" /> : s.num}
-                      </div>
-                      <span className={`text-xs font-medium hidden sm:block ${isCurrent ? 'text-foreground' : 'text-muted-foreground'}`}>
+                      </motion.div>
+                      <span className={`text-xs font-medium hidden sm:block transition-colors duration-300 ${isCurrent ? 'text-foreground font-semibold' : isCompleted ? 'text-primary' : 'text-muted-foreground'}`}>
                         {s.title}
                       </span>
                     </div>
                     {i < stepLabels.length - 1 && (
-                      <div className={`flex-1 h-0.5 mx-2 rounded-full transition-all ${
-                        i < currentStepIndex ? 'bg-primary' : 'bg-muted'
-                      }`} />
+                      <div className="flex-1 h-[2px] mx-2 rounded-full overflow-hidden bg-muted">
+                        <motion.div
+                          initial={false}
+                          animate={{ scaleX: i < currentStepIndex ? 1 : 0 }}
+                          transition={{ duration: 0.4, ease: 'easeOut' }}
+                          className="h-full w-full bg-primary origin-left"
+                        />
+                      </div>
                     )}
                   </div>
                 )
@@ -201,26 +297,56 @@ export function CheckoutView() {
               <div className="mb-6">
                 <h3 className="font-semibold mb-3">Tipo de entrega</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  <button
+                  <motion.button
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => setDeliveryType('delivery')}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${
-                      deliveryType === 'delivery' ? 'border-primary bg-primary/5 shadow-sm' : 'border-border hover:border-primary/30'
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                      deliveryType === 'delivery' 
+                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]' 
+                        : 'border-border hover:border-primary/30 hover:shadow-sm'
                     }`}
                   >
-                    <Truck className={`h-6 w-6 mb-2 ${deliveryType === 'delivery' ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <Truck className={`h-6 w-6 mb-2 transition-colors ${deliveryType === 'delivery' ? 'text-primary' : 'text-muted-foreground'}`} />
                     <p className="font-semibold text-sm">Entrega</p>
                     <p className="text-xs text-muted-foreground">Receba em casa</p>
-                  </button>
-                  <button
+                    {deliveryType === 'delivery' && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-3 right-3"
+                      >
+                        <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="h-3 w-3 text-primary-foreground" />
+                        </div>
+                      </motion.div>
+                    )}
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => setDeliveryType('pickup')}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${
-                      deliveryType === 'pickup' ? 'border-primary bg-primary/5 shadow-sm' : 'border-border hover:border-primary/30'
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 relative ${
+                      deliveryType === 'pickup' 
+                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]' 
+                        : 'border-border hover:border-primary/30 hover:shadow-sm'
                     }`}
                   >
-                    <Store className={`h-6 w-6 mb-2 ${deliveryType === 'pickup' ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <Store className={`h-6 w-6 mb-2 transition-colors ${deliveryType === 'pickup' ? 'text-primary' : 'text-muted-foreground'}`} />
                     <p className="font-semibold text-sm">Retirada</p>
                     <p className="text-xs text-muted-foreground">Retire na loja</p>
-                  </button>
+                    {deliveryType === 'pickup' && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-3 right-3"
+                      >
+                        <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="h-3 w-3 text-primary-foreground" />
+                        </div>
+                      </motion.div>
+                    )}
+                  </motion.button>
                 </div>
               </div>
               
@@ -324,7 +450,7 @@ export function CheckoutView() {
               )}
               
               <Button 
-                className="w-full h-12 mt-6 bg-primary text-primary-foreground font-semibold" 
+                className="w-full h-12 mt-6 bg-primary text-primary-foreground font-semibold btn-glow" 
                 onClick={() => setStep('payment')}
                 disabled={!canProceed()}
               >
@@ -347,28 +473,33 @@ export function CheckoutView() {
                     {deliveryTimeOptions.map((option) => {
                       const OptionIcon = option.icon
                       return (
-                        <button
+                        <motion.button
                           key={option.id}
+                          whileHover={{ y: -2 }}
+                          whileTap={{ scale: 0.97 }}
                           onClick={() => setDeliveryTime(option.id)}
-                          className={`p-3 rounded-xl border-2 text-left transition-all ${
+                          className={`p-3 rounded-xl border-2 text-left transition-all duration-200 relative ${
                             deliveryTime === option.id 
-                              ? 'border-primary bg-primary/5 shadow-sm' 
-                              : 'border-border hover:border-primary/30'
+                              ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]' 
+                              : 'border-border hover:border-primary/30 hover:shadow-sm'
                           }`}
                         >
-                          <OptionIcon className={`h-5 w-5 mb-1.5 ${deliveryTime === option.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                          <OptionIcon className={`h-5 w-5 mb-1.5 transition-colors ${deliveryTime === option.id ? 'text-primary' : 'text-muted-foreground'}`} />
                           <p className="font-semibold text-xs">{option.label}</p>
                           <p className="text-[10px] text-muted-foreground">{option.desc}</p>
                           {deliveryTime === option.id && (
                             <motion.div 
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
+                              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
                               className="absolute top-2 right-2"
                             >
-                              <Check className="h-3 w-3 text-primary" />
+                              <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                                <Check className="h-3 w-3 text-primary-foreground" />
+                              </div>
                             </motion.div>
                           )}
-                        </button>
+                        </motion.button>
                       )
                     })}
                   </div>
@@ -381,17 +512,19 @@ export function CheckoutView() {
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 {paymentMethods.map((method) => (
-                  <button
+                  <motion.button
                     key={method.id}
+                    whileHover={{ y: -2, boxShadow: '0 4px 16px oklch(0.45 0.1 155 / 0.08)' }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all relative ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 relative ${
                       payment === method.id 
-                        ? 'border-primary bg-primary/5 shadow-sm' 
+                        ? 'border-primary bg-primary/5 shadow-[0_2px_16px_oklch(0.45_0.1_155/0.1)]' 
                         : 'border-border hover:border-primary/30'
                     }`}
                   >
-                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center mb-3 ${payment === method.id ? 'bg-primary/10' : 'bg-muted'}`}>
-                      <method.icon className={`h-5 w-5 ${payment === method.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center mb-3 transition-colors duration-200 ${payment === method.id ? 'bg-primary/10' : 'bg-muted'}`}>
+                      <method.icon className={`h-5 w-5 transition-colors duration-200 ${payment === method.id ? 'text-primary' : 'text-muted-foreground'}`} />
                     </div>
                     <p className="font-semibold text-sm">{method.label}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{method.desc}</p>
@@ -399,12 +532,15 @@ export function CheckoutView() {
                       <motion.div 
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 25 }}
                         className="absolute top-2 right-2"
                       >
-                        <Check className="h-4 w-4 text-primary" />
+                        <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="h-3 w-3 text-primary-foreground" />
+                        </div>
                       </motion.div>
                     )}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
 
@@ -415,24 +551,29 @@ export function CheckoutView() {
                   Cupom de desconto
                 </h3>
                 {appliedCoupon ? (
-                  <Card className="border-primary/20 bg-primary/5">
-                    <CardContent className="p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <Tag className="h-4 w-4 text-primary" />
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <Card className="border-primary/20 bg-primary/5">
+                      <CardContent className="p-3 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Tag className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-bold text-sm">{appliedCoupon}</p>
+                            <p className="text-[10px] text-muted-foreground">
+                              {appliedCoupon === 'ACAI10' ? '10% de desconto aplicado' : 'R$5 de desconto no frete'}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-bold text-sm">{appliedCoupon}</p>
-                          <p className="text-[10px] text-muted-foreground">
-                            {appliedCoupon === 'ACAI10' ? '10% de desconto aplicado' : 'R$5 de desconto no frete'}
-                          </p>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm" className="h-8 text-xs text-destructive" onClick={handleRemoveCoupon}>
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </CardContent>
-                  </Card>
+                        <Button variant="ghost" size="sm" className="h-8 text-xs text-destructive" onClick={handleRemoveCoupon}>
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 ) : (
                   <div className="flex gap-2">
                     <div className="flex-1">
@@ -522,7 +663,7 @@ export function CheckoutView() {
                   Voltar
                 </Button>
                 <Button 
-                  className="flex-1 h-12 bg-primary text-primary-foreground font-semibold"
+                  className="flex-1 h-12 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground font-semibold btn-glow"
                   onClick={handlePlaceOrder}
                   disabled={isProcessing || !termsAccepted}
                 >

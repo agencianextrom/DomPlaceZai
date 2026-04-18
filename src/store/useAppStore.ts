@@ -136,6 +136,7 @@ interface AppState {
   // UI
   isMobileMenuOpen: boolean
   isAuthModalOpen: boolean
+  isChatOpen: boolean
   
   // Actions
   navigate: (view: AppView) => void
@@ -176,6 +177,7 @@ interface AppState {
   toggleMobileMenu: () => void
   openAuthModal: () => void
   closeAuthModal: () => void
+  toggleChat: () => void
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -209,6 +211,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   // UI
   isMobileMenuOpen: false,
   isAuthModalOpen: false,
+  isChatOpen: false,
   
   // Actions
   navigate: (view) => set((state) => ({
@@ -346,4 +349,5 @@ export const useAppStore = create<AppState>((set, get) => ({
   toggleMobileMenu: () => set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen })),
   openAuthModal: () => set({ isAuthModalOpen: true }),
   closeAuthModal: () => set({ isAuthModalOpen: false }),
+  toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
 }))

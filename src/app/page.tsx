@@ -14,6 +14,8 @@ import { CheckoutView } from '@/components/checkout/CheckoutView'
 import { OrdersView, OrderDetail } from '@/components/orders/OrdersView'
 import { ProfileView } from '@/components/profile/ProfileView'
 import { AuthModal } from '@/components/auth/AuthModal'
+import { WelcomeModal } from '@/components/onboarding/WelcomeModal'
+import { AIChatBot } from '@/components/chat/AIChatBot'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
@@ -84,6 +86,40 @@ function HomeSkeleton() {
         </div>
       ))}
     </div>
+  )
+}
+
+function ProductDetailView() {
+  const { selectedProduct } = useAppStore()
+  return (
+    <motion.div key="product" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4">
+      {selectedProduct ? (
+        <ProductDetail product={selectedProduct} />
+      ) : (
+        <p className="text-center py-12 text-muted-foreground">Produto não encontrado</p>
+      )}
+    </motion.div>
+  )
+}
+
+function StoreProfileView() {
+  const { selectedStore } = useAppStore()
+  return (
+    <motion.div key="store" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4">
+      {selectedStore ? (
+        <StoreProfile store={selectedStore} />
+      ) : (
+        <p className="text-center py-12 text-muted-foreground">Loja não encontrada</p>
+      )}
+    </motion.div>
+  )
+}
+
+function OrderDetailView() {
+  return (
+    <motion.div key="order-detail" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+      <OrderDetail />
+    </motion.div>
   )
 }
 
@@ -274,21 +310,9 @@ export default function Home() {
             <div className="h-4" />
           </motion.div>
         ) : currentView === 'product' ? (
-          <motion.div key="product" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4">
-            {useAppStore.getState().selectedProduct ? (
-              <ProductDetail product={useAppStore.getState().selectedProduct!} />
-            ) : (
-              <p className="text-center py-12 text-muted-foreground">Produto não encontrado</p>
-            )}
-          </motion.div>
+          <ProductDetailView />
         ) : currentView === 'store' ? (
-          <motion.div key="store" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4">
-            {useAppStore.getState().selectedStore ? (
-              <StoreProfile store={useAppStore.getState().selectedStore!} />
-            ) : (
-              <p className="text-center py-12 text-muted-foreground">Loja não encontrada</p>
-            )}
-          </motion.div>
+          <StoreProfileView />
         ) : currentView === 'cart' ? (
           <motion.div key="cart" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <CartView />
@@ -302,9 +326,7 @@ export default function Home() {
             <OrdersView />
           </motion.div>
         ) : currentView === 'order-detail' ? (
-          <motion.div key="order-detail" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <OrderDetail />
-          </motion.div>
+          <OrderDetailView />
         ) : currentView === 'profile' ? (
           <motion.div key="profile" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <ProfileView />
@@ -326,6 +348,12 @@ export default function Home() {
 
       {/* Auth Modal - always rendered */}
       <AuthModal />
+
+      {/* Welcome Modal - shows on first visit */}
+      <WelcomeModal />
+
+      {/* AI Chat Bot - always mounted, floating */}
+      <AIChatBot />
     </div>
   )
 }

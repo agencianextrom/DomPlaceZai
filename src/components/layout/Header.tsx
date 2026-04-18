@@ -54,7 +54,7 @@ export function Header() {
   
   return (
     <>
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+      <header className="sticky top-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border/60 shadow-[0_1px_3px_oklch(0_0_0/0.04)] dark:shadow-[0_1px_3px_oklch(0_0_0/0.2)]">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           {/* Top bar */}
           <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
@@ -85,15 +85,15 @@ export function Header() {
               >
                 <div className="relative flex items-center justify-center">
                   <MapPin className="h-3.5 w-3.5 text-primary" />
-                  <span className="absolute -bottom-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-emerald-500 ring-2 ring-background" />
+                  <span className="absolute -bottom-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-emerald-500 ring-2 ring-background animate-pulse" />
                 </div>
-                <span className="truncate">Dom Eliseu, PA</span>
+                <span className="truncate text-shadow-sm">Dom Eliseu, PA</span>
               </button>
             </div>
             
             {/* Search bar - hidden on mobile, always visible on desktop */}
             <form 
-              className="hidden md:flex flex-1 max-w-md mx-4" 
+              className="hidden md:flex flex-1 max-w-md mx-4 transition-all duration-300 focus-within:max-w-lg" 
               onSubmit={handleDesktopSearchSubmit}
             >
               <div className="relative w-full">
@@ -102,7 +102,7 @@ export function Header() {
                   placeholder="Buscar produtos, lojas..." 
                   value={desktopSearchValue}
                   onChange={(e) => handleDesktopSearchChange(e.target.value)}
-                  className="pl-9 pr-4 bg-secondary/50 h-10 focus:bg-background transition-colors"
+                  className="pl-9 pr-4 bg-secondary/50 h-10 focus:bg-background transition-all duration-300 search-pulse"
                 />
               </div>
             </form>
@@ -213,6 +213,13 @@ export function Header() {
                   >
                     <item.icon className="h-4 w-4" />
                     {item.label}
+                    {isActive && (
+                      <motion.div
+                        layoutId="desktop-nav-underline"
+                        className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r from-primary via-primary/70 to-transparent"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      />
+                    )}
                     {item.id === 'cart' && cartCount > 0 && (
                       <span className="ml-1 h-5 min-w-5 px-1.5 flex items-center justify-center text-[10px] font-bold bg-primary text-primary-foreground rounded-full">
                         {cartCount > 99 ? '99+' : cartCount}
@@ -233,6 +240,13 @@ export function Header() {
               >
                 <ShoppingCart className="h-4 w-4" />
                 Carrinho
+                {currentView === 'cart' && (
+                  <motion.div
+                    layoutId="desktop-nav-underline"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r from-primary via-primary/70 to-transparent"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
                 {cartCount > 0 && (
                   <span className="h-5 min-w-5 px-1.5 flex items-center justify-center text-[10px] font-bold bg-primary text-primary-foreground rounded-full">
                     {cartCount > 99 ? '99+' : cartCount}
