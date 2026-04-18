@@ -3052,3 +3052,230 @@
   );
   background-size: 2000px 100%;
 }
+
+/* ==============================
+   GRADIENT RING (animated rotating border)
+   ============================== */
+@keyframes gradient-ring-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.gradient-ring {
+  position: relative;
+}
+.gradient-ring::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from 0deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70), oklch(0.55 0.08 140), oklch(0.45 0.1 155));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  animation: gradient-ring-spin 3s linear infinite;
+  pointer-events: none;
+}
+.dark .gradient-ring::before {
+  background: conic-gradient(from 0deg, oklch(0.55 0.12 155), oklch(0.72 0.16 70), oklch(0.50 0.08 140), oklch(0.55 0.12 155));
+}
+
+/* ==============================
+   SCROLL SHADOW (gradient at top/bottom of scrollable)
+   ============================== */
+.scroll-shadow-top::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(to bottom, oklch(0.18 0.02 150 / 0.06), transparent);
+  pointer-events: none;
+  z-index: 5;
+}
+.dark .scroll-shadow-top::before {
+  background: linear-gradient(to bottom, oklch(0 0 0 / 0.15), transparent);
+}
+.scroll-shadow-bottom::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(to top, oklch(0.18 0.02 150 / 0.06), transparent);
+  pointer-events: none;
+  z-index: 5;
+}
+.dark .scroll-shadow-bottom::after {
+  background: linear-gradient(to top, oklch(0 0 0 / 0.15), transparent);
+}
+
+/* ==============================
+   TOUCH FEEDBACK (press scale for mobile)
+   ============================== */
+.touch-feedback {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.touch-feedback:active {
+  transform: scale(0.96);
+  opacity: 0.85;
+}
+
+/* ==============================
+   SHIMMER LOADING (content placeholder)
+   ============================== */
+@keyframes shimmer-loading {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-loading {
+  background: linear-gradient(
+    90deg,
+    oklch(0.93 0.01 120) 25%,
+    oklch(0.93 0.01 120) 50%,
+    oklch(0.93 0.01 120) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-loading 1.5s ease-in-out infinite;
+  border-radius: inherit;
+}
+.dark .shimmer-loading {
+  background: linear-gradient(
+    90deg,
+    oklch(0.25 0.02 150) 25%,
+    oklch(0.25 0.02 150) 50%,
+    oklch(0.25 0.02 150) 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* ==============================
+   PRESS EFFECT (click scale down)
+   ============================== */
+.press-effect {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+}
+.press-effect:active {
+  transform: scale(0.97);
+  box-shadow: inset 0 2px 4px oklch(0 0 0 / 0.06);
+}
+.dark .press-effect:active {
+  box-shadow: inset 0 2px 4px oklch(0 0 0 / 0.2);
+}
+
+/* ==============================
+   GLASS CARD DARK (dark mode glassmorphism)
+   ============================== */
+.glass-card-dark {
+  background: oklch(0.12 0.015 150 / 0.7);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid oklch(1 0 0 / 0.06);
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.2);
+}
+
+/* ==============================
+   SAFE AREA BOTTOM (iOS notch support)
+   ============================== */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ==============================
+   TABULAR NUMS (for price alignment)
+   ============================== */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==============================
+   GRADIENT MESH ANIMATED (slow moving background)
+   ============================== */
+@keyframes gradient-mesh-move {
+  0%, 100% { background-position: 0% 50%; }
+  33% { background-position: 100% 0%; }
+  66% { background-position: 50% 100%; }
+}
+.morph-bg {
+  background-size: 200% 200%;
+  animation: gradient-mesh-move 15s ease-in-out infinite;
+}
+
+/* ==============================
+   AURORA GRADIENT (flowing multi-color)
+   ============================== */
+@keyframes aurora-flow {
+  0%, 100% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+  50% { background-position: 100% 50%; filter: hue-rotate(30deg); }
+}
+.aurora-gradient {
+  background: linear-gradient(
+    135deg,
+    oklch(0.45 0.1 155 / 0.08) 0%,
+    oklch(0.55 0.12 155 / 0.05) 25%,
+    oklch(0.78 0.16 70 / 0.06) 50%,
+    oklch(0.60 0.10 160 / 0.08) 75%,
+    oklch(0.45 0.1 155 / 0.08) 100%
+  );
+  background-size: 300% 300%;
+  animation: aurora-flow 10s ease-in-out infinite;
+}
+.dark .aurora-gradient {
+  background: linear-gradient(
+    135deg,
+    oklch(0.55 0.12 155 / 0.12) 0%,
+    oklch(0.65 0.10 140 / 0.08) 25%,
+    oklch(0.72 0.16 70 / 0.1) 50%,
+    oklch(0.50 0.08 140 / 0.12) 75%,
+    oklch(0.55 0.12 155 / 0.12) 100%
+  );
+}
+
+/* ==============================
+   DOT PULSE (ping animation for status dots)
+   ============================== */
+@keyframes dot-ping-anim {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+.dot-ping {
+  position: relative;
+}
+.dot-ping::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  border-radius: 50%;
+  background: oklch(0.45 0.1 155 / 0.4);
+  animation: dot-ping-anim 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ==============================
+   SMOOTH CORNER (extra rounded for premium cards)
+   ============================== */
+.smooth-corner {
+  border-radius: 16px;
+}
+
+/* ==============================
+   GLASSMORPHISM SUBTLE (lighter glass effect)
+   ============================== */
+.glass-subtle {
+  background: oklch(1 0 0 / 0.4);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid oklch(1 0 0 / 0.15);
+}
+.dark .glass-subtle {
+  background: oklch(0.20 0.02 150 / 0.4);
+  border: 1px solid oklch(1 0 0 / 0.04);
+}

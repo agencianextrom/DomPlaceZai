@@ -21,6 +21,8 @@ import { CookieConsent } from '@/components/layout/CookieConsent'
 import { QuickInfo } from '@/components/home/QuickInfo'
 import { PromoBanner } from '@/components/home/PromoBanner'
 import { FlashSale } from '@/components/home/FlashSale'
+import { WeekendSpecials } from '@/components/home/WeekendSpecials'
+import { StoreComparison } from '@/components/home/StoreComparison'
 import { ProductComparison } from '@/components/product/ProductComparison'
 import { OrderMap } from '@/components/orders/OrderMap'
 import { NotificationsPage } from '@/components/notifications/NotificationsPage'
@@ -33,6 +35,8 @@ import { LoyaltyTier } from '@/components/profile/LoyaltyTier'
 import { RecentOrders } from '@/components/home/RecentOrders'
 import { WishlistShare } from '@/components/profile/WishlistShare'
 import { StoreFavorites } from '@/components/home/StoreFavorites'
+import { OrderTimeline } from '@/components/profile/OrderTimeline'
+import { SpinWheel } from '@/components/promotions/SpinWheel'
 import { MapStoreLocator } from '@/components/home/MapStoreLocator'
 import { DailyDeals } from '@/components/home/DailyDeals'
 import { DeliveryFeeCalculator } from '@/components/home/DeliveryFeeCalculator'
@@ -43,7 +47,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
 import { ShoppingLists } from '@/components/profile/ShoppingLists'
-import { Heart, Sparkles, MapPin, LayoutDashboard, GitCompareArrows, Grid3X3, List, ArrowUpDown } from 'lucide-react'
+import { Heart, Sparkles, MapPin, LayoutDashboard, GitCompareArrows, Grid3X3, List, ArrowUpDown, ChevronRight } from 'lucide-react'
 import { useState as useQVState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -515,6 +519,11 @@ export default function Home() {
                       <FlashSale />
                     </section>
 
+                    {/* Weekend Specials */}
+                    <section className="mt-4">
+                      <WeekendSpecials />
+                    </section>
+
                     <Separator className="my-8 bg-border/50" />
 
                     {/* Daily Deals */}
@@ -657,6 +666,38 @@ export default function Home() {
                         />
                       </section>
                     )}
+
+                    <Separator className="my-8 bg-border/50" />
+
+                    {/* Store Comparison CTA */}
+                    <section>
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="bg-gradient-to-r from-primary/5 to-emerald-50 dark:from-primary/10 dark:to-emerald-900/10 rounded-2xl p-4 border border-primary/10"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm">
+                              <GitCompareArrows className="h-5 w-5 text-white" />
+                            </div>
+                            <div>
+                              <h3 className="text-sm font-bold">Comparar Lojas</h3>
+                              <p className="text-xs text-muted-foreground">Compare precos e avaliacoes lado a lado</p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="border-primary/30 hover:bg-primary/5 text-primary h-9"
+                            onClick={() => useAppStore.getState().navigate('store-comparison')}
+                          >
+                            Comparar
+                          </Button>
+                        </div>
+                      </motion.div>
+                    </section>
                   </>
                 )}
                 
@@ -715,6 +756,18 @@ export default function Home() {
           </motion.div>
         ) : currentView === 'favorites' ? (
           <FavoritesView products={featuredProducts} onShareClick={() => setWishlistShareOpen(true)} />
+        ) : currentView === 'store-comparison' ? (
+          <motion.div key="store-comparison" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4">
+            <div className="max-w-3xl mx-auto pt-4 pb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <Button variant="ghost" size="icon" onClick={() => useAppStore.getState().goBack()} className="h-10 w-10">
+                  <ChevronRight className="h-5 w-5 rotate-180" />
+                </Button>
+                <h1 className="text-lg font-bold">Comparar Lojas</h1>
+              </div>
+              <StoreComparison stores={allStores.slice(0, 3)} />
+            </div>
+          </motion.div>
         ) : null}
       </AnimatePresence>
 

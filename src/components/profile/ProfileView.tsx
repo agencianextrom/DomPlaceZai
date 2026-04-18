@@ -5,7 +5,7 @@ import {
   User, MapPin, CreditCard, Heart, ClipboardList, Gift, Users, Settings, LogOut, 
   Star, ChevronRight, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock,
   Bell, Moon, MapPinned, Share2, Ticket, Copy, Check, ListChecks, LayoutDashboard,
-  BellRing, Shield, Headphones
+  BellRing, Shield, Headphones, PartyPopper
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -20,6 +20,8 @@ import { LoyaltyHistory } from './LoyaltyHistory'
 import { LoyaltyTier } from './LoyaltyTier'
 import { ShoppingLists } from './ShoppingLists'
 import { AddressManager } from './AddressManager'
+import { OrderTimeline } from './OrderTimeline'
+import { SpinWheel } from '@/components/promotions/SpinWheel'
 import { toast } from 'sonner'
 
 // Demo recent orders
@@ -78,7 +80,8 @@ const menuItems = [
   { id: 'store-dashboard', icon: LayoutDashboard, label: 'Painel da Loja', desc: 'Gerencie sua loja' },
   { id: 'admin-dashboard', icon: Shield, label: 'Painel do Admin', desc: 'Administração da plataforma' },
   { id: 'support-center', icon: Headphones, label: 'Ajuda & Suporte', desc: 'FAQ, chamados e contato' },
-  { id: 'settings', icon: Settings, label: 'Configurações', desc: 'Notificações e preferências' },
+  { id: 'settings', icon: Settings, label: 'Configuracoes', desc: 'Notificacoes e preferencias' },
+  { id: 'spin-wheel', icon: PartyPopper, label: 'Roleta de Premios', desc: 'Gire e ganhe descontos exclusivos' },
 ]
 
 export function ProfileView() {
@@ -267,6 +270,37 @@ export function ProfileView() {
               </CardContent>
             </Card>
           ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (activeSection === 'spin-wheel') {
+    return (
+      <div className="min-h-screen p-4 pb-24">
+        <div className="flex items-center gap-3 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+            <ChevronRight className="h-5 w-5 rotate-180" />
+          </Button>
+          <h1 className="text-lg font-bold flex items-center gap-2">
+            <PartyPopper className="h-5 w-5 text-amber-500" />
+            Roleta de Premios
+          </h1>
+        </div>
+
+        <div className="max-w-sm mx-auto">
+          {/* Spin Wheel Info */}
+          <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 border-amber-200/50 dark:border-amber-800/30 mb-6">
+            <CardContent className="p-4 text-center">
+              <h2 className="font-bold text-sm mb-1">Gire a roleta e ganhe!</h2>
+              <p className="text-xs text-muted-foreground">
+                Uma girada gratis por dia. Descontos exclusivos esperando por voce!
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Spin Wheel Component */}
+          <SpinWheel />
         </div>
       </div>
     )
@@ -516,6 +550,36 @@ export function ProfileView() {
         </div>
       </motion.div>
 
+      {/* Spin Wheel Promo Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.22 }}
+        className="mb-4"
+      >
+        <Card
+          className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 border-amber-200/50 dark:border-amber-800/30 cursor-pointer hover:shadow-md transition-shadow overflow-hidden"
+          onClick={() => setActiveSection('spin-wheel')}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shrink-0 shadow-md"
+              >
+                <PartyPopper className="h-6 w-6 text-white" />
+              </motion.div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm">Roleta de Premios</p>
+                <p className="text-xs text-muted-foreground">Gire e ganhe descontos exclusivos hoje!</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
       <Separator className="my-4" />
       
       {/* Menu items - with premium card hover */}
@@ -550,6 +614,8 @@ export function ProfileView() {
                   setActiveSection(item.id)
                 } else if (item.id === 'support-center') {
                   navigate('support-center')
+                } else if (item.id === 'spin-wheel') {
+                  setActiveSection('spin-wheel')
                 }
               }}
               className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-sm transition-all text-left group elevated-card ripple-effect"

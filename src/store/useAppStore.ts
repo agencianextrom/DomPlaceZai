@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type AppView = 'home' | 'search' | 'store' | 'product' | 'cart' | 'checkout' | 'orders' | 'profile' | 'order-detail' | 'favorites' | 'store-dashboard' | 'shopping-lists' | 'product-comparison' | 'notifications' | 'admin-dashboard' | 'support-center'
+export type AppView = 'home' | 'search' | 'store' | 'product' | 'cart' | 'checkout' | 'orders' | 'profile' | 'order-detail' | 'favorites' | 'store-dashboard' | 'shopping-lists' | 'product-comparison' | 'notifications' | 'admin-dashboard' | 'support-center' | 'store-comparison'
 
 export interface StoreData {
   id: string
