@@ -65,8 +65,11 @@ export function Footer() {
   }, [email])
 
   return (
-    <footer className="bg-secondary/30 border-t border-border mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
+    <div className="relative mt-auto">
+      {/* Gradient mesh-2 decorative background */}
+      <div className="gradient-mesh-2 absolute inset-0 pointer-events-none" />
+    <footer className="bg-secondary/30 border-t border-border relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8 relative z-10">
         {/* Newsletter section with animated gradient */}
         <motion.div
           className="mb-8 p-4 sm:p-6 rounded-xl border border-primary/10 overflow-hidden relative"
@@ -150,7 +153,7 @@ export function Footer() {
               {socialLinks.map((social) => (
                 <button
                   key={social.name}
-                  className={`h-9 w-9 rounded-full bg-secondary text-xs font-semibold flex items-center justify-center transition-all duration-300 hover:scale-110 hover:text-white hover:shadow-md ${social.color}`}
+                  className={`h-9 w-9 rounded-full bg-secondary text-xs font-semibold flex items-center justify-center transition-all duration-300 hover:text-white magnetic-btn ${social.color}`}
                   aria-label={social.name}
                 >
                   {social.initial}
@@ -231,7 +234,22 @@ export function Footer() {
           </div>
         </div>
         
-        <Separator className="my-6" />
+        {/* Marquee scroll partners/payment section */}
+        <div className="marquee-scroll py-4 -mx-4 px-4 border-y border-border/50 mb-4">
+          <div className="inline-flex items-center gap-8">
+            {[...paymentMethods, ...paymentMethods, ...paymentMethods, ...paymentMethods].map((method, i) => (
+              <div
+                key={`marquee-${i}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/50 text-xs font-medium text-muted-foreground/60 shrink-0 select-none"
+              >
+                <method.icon className="h-3 w-3" />
+                {method.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <Separator className="my-4" />
         
         {/* Copyright */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
@@ -258,5 +276,6 @@ export function Footer() {
         )}
       </AnimatePresence>
     </footer>
+    </div>
   )
 }

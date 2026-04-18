@@ -62,7 +62,11 @@ export function CartView() {
   
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24 relative overflow-hidden">
+        {/* Morph blob background decoration */}
+        <div className="morph-blob absolute top-1/4 -left-20 w-48 h-48 bg-primary/5" style={{ animationDelay: '-2s' }} />
+        <div className="morph-blob absolute bottom-1/4 -right-16 w-36 h-36 bg-accent/5" style={{ animationDelay: '-5s' }} />
+
         <motion.div 
           initial={{ scale: 0.6, opacity: 0, rotate: -10 }}
           animate={{ scale: 1, opacity: 1, rotate: 0 }}
@@ -159,7 +163,7 @@ export function CartView() {
           >
             <div className="flex items-center gap-2 mb-2.5">
               <Truck className="h-4 w-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">Frete grátis a partir de {formatBRL(FREE_DELIVERY_THRESHOLD)}</span>
+              <span className="text-sm font-semibold text-primary">Frete grátis a partir de <span className="tag-chip ml-1">{formatBRL(FREE_DELIVERY_THRESHOLD)}</span></span>
             </div>
             <div className="relative h-2 bg-muted rounded-full overflow-hidden">
               <motion.div
@@ -189,14 +193,14 @@ export function CartView() {
               <PartyPopper className="h-5 w-5 text-emerald-600" />
             </motion.div>
             <div>
-              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">🎉 Frete grátis!</p>
+              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400"><span className="tag-chip">🎉 Frete grátis!</span></p>
               <p className="text-xs text-muted-foreground">Você ganhou entrega gratuita neste pedido</p>
             </div>
           </motion.div>
         )}
 
         {/* Suggested products - "Add more items" */}
-        <div className="bg-card rounded-xl border border-border p-4 card-shine">
+        <div className="bg-card rounded-xl border border-border p-4 card-shine elevated-card">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
@@ -235,7 +239,7 @@ export function CartView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -100, transition: { duration: 0.3 } }}
-              className="bg-card rounded-xl border border-border overflow-hidden card-shine"
+              className="bg-card rounded-xl border border-border overflow-hidden card-shine elevated-card"
             >
               <div className="flex items-center gap-2 px-4 py-3 bg-secondary/30">
                 <Store className="h-4 w-4 text-primary" />

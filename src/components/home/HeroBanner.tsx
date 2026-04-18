@@ -134,16 +134,16 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           {/* Dot pattern texture overlay */}
           <div className="absolute inset-0 dot-pattern opacity-60" />
 
-          {/* Large decorative shapes - background */}
-          <div className="absolute right-0 top-0 w-2/3 h-full opacity-20">
-            <div className="absolute right-10 top-10 w-32 h-32 rounded-full bg-white/30" />
-            <div className="absolute right-0 bottom-0 w-48 h-48 rounded-full bg-white/20" />
-            <div className="absolute right-20 top-1/2 w-16 h-16 rounded-full bg-white/15" />
-            <div className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-white/10" />
-            <div className="absolute right-40 bottom-10 w-12 h-12 rounded-full bg-white/12" />
+          {/* Morph blob decorative elements */}
+          <div className="absolute right-0 top-0 w-2/3 h-full opacity-15">
+            <div className="morph-blob absolute right-10 top-10 w-32 h-32 bg-white/30" />
+            <div className="morph-blob absolute right-0 bottom-0 w-48 h-48 bg-white/20" style={{ animationDelay: '-2s' }} />
+            <div className="morph-blob absolute right-20 top-1/2 w-16 h-16 bg-white/15" style={{ animationDelay: '-4s' }} />
+            <div className="morph-blob absolute -right-8 -top-8 w-24 h-24 bg-white/10" style={{ animationDelay: '-6s' }} />
+            <div className="morph-blob absolute right-40 bottom-10 w-12 h-12 bg-white/12" style={{ animationDelay: '-1s' }} />
           </div>
           <div className="absolute left-1/3 bottom-0 opacity-10">
-            <div className="w-20 h-20 rounded-full bg-white/30" />
+            <div className="morph-blob w-20 h-20 bg-white/30" style={{ animationDelay: '-3s' }} />
           </div>
 
           {/* Sparkle / particle effects behind hero text */}
@@ -198,9 +198,9 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           <div className="relative z-10 p-5 sm:p-8 max-w-lg">
             {/* Location indicator */}
             <motion.div
-              initial={{ opacity: 0, x: -10 }}
+              initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.15, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="flex items-center gap-1.5 mb-3 text-white/80 text-xs sm:text-sm"
             >
               <MapPin className="h-3.5 w-3.5" />
@@ -208,9 +208,9 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             </motion.div>
 
             <motion.h2
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
+              transition={{ delay: 0.25, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight"
               style={{ textShadow: '0 2px 12px rgba(0,0,0,0.2)' }}
             >
@@ -221,7 +221,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
+                transition={{ delay: 0.4, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                 className="text-sm sm:text-base text-white/90 mt-2 drop-shadow-sm max-w-md"
               >
                 {banner.subtitle}
@@ -231,12 +231,12 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
+              transition={{ delay: 0.55, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="mt-4 flex items-center gap-3"
             >
               <Button
                 onClick={handleVerOfertas}
-                className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-6 animate-pulse-ring"
+                className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-6 animate-pulse-ring elevated-card"
               >
                 Ver Ofertas
               </Button>
@@ -246,7 +246,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.7, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="mt-4 inline-flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10"
             >
               <Flame className="h-4 w-4 text-amber-300 flex-shrink-0" />

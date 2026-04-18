@@ -1095,3 +1095,264 @@
   animation: fab-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
   z-index: -1;
 }
+
+/* ==============================
+   MARQUEE SCROLL (horizontal infinite)
+   ============================== */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-scroll {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-scroll > * {
+  display: inline-flex;
+  animation: marquee 25s linear infinite;
+}
+.marquee-scroll:hover > * {
+  animation-play-state: paused;
+}
+
+/* ==============================
+   MAGNETIC BUTTON (attraction on hover)
+   ============================== */
+.magnetic-btn {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+.magnetic-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 8px 24px oklch(0.45 0.1 155 / 0.2),
+    0 2px 8px oklch(0.45 0.1 155 / 0.1);
+}
+.magnetic-btn:active {
+  transform: scale(0.97);
+}
+.dark .magnetic-btn:hover {
+  box-shadow: 
+    0 8px 24px oklch(0.55 0.12 155 / 0.25),
+    0 2px 8px oklch(0.55 0.12 155 / 0.12);
+}
+
+/* ==============================
+   MORPH BLOB (organic shape morphing)
+   ============================== */
+@keyframes morph-blob-anim {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  50% { border-radius: 50% 60% 30% 60% / 30% 50% 70% 60%; }
+  75% { border-radius: 60% 30% 50% 40% / 70% 40% 60% 30%; }
+}
+.morph-blob {
+  animation: morph-blob-anim 8s ease-in-out infinite;
+}
+
+/* ==============================
+   REVEAL UP (scroll-triggered content reveal)
+   ============================== */
+@keyframes reveal-up-keyframes {
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.reveal-up {
+  opacity: 0;
+  animation: reveal-up-keyframes 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.reveal-up.revealed {
+  opacity: 1;
+  animation: none;
+  transform: none;
+}
+
+/* ==============================
+   TYPEWRITER TEXT (cursor blink)
+   ============================== */
+@keyframes typewriter-blink {
+  0%, 100% { border-right-color: transparent; }
+  50% { border-right-color: oklch(0.45 0.1 155); }
+}
+.typewriter-text {
+  border-right: 2px solid oklch(0.45 0.1 155);
+  padding-right: 2px;
+  animation: typewriter-blink 0.8s step-end infinite;
+}
+.dark .typewriter-text {
+  border-right-color: oklch(0.55 0.12 155);
+}
+@keyframes typewriter-blink-dark {
+  0%, 100% { border-right-color: transparent; }
+  50% { border-right-color: oklch(0.55 0.12 155); }
+}
+.dark .typewriter-text {
+  animation-name: typewriter-blink-dark;
+}
+
+/* ==============================
+   ELEVATED CARD (multi-layer shadow + scale)
+   ============================== */
+.elevated-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  box-shadow: 
+    0 1px 2px oklch(0 0 0 / 0.04),
+    0 2px 4px oklch(0 0 0 / 0.03);
+}
+.elevated-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 
+    0 4px 8px oklch(0 0 0 / 0.06),
+    0 8px 16px oklch(0 0 0 / 0.06),
+    0 16px 32px oklch(0 0 0 / 0.04);
+}
+.dark .elevated-card {
+  box-shadow: 
+    0 1px 2px oklch(0 0 0 / 0.15),
+    0 2px 4px oklch(0 0 0 / 0.1);
+}
+.dark .elevated-card:hover {
+  box-shadow: 
+    0 4px 8px oklch(0 0 0 / 0.2),
+    0 8px 16px oklch(0 0 0 / 0.15),
+    0 16px 32px oklch(0 0 0 / 0.1);
+}
+
+/* ==============================
+   GLASS BORDER (glassmorphism + visible border)
+   ============================== */
+.glass-border {
+  background: oklch(1 0 0 / 0.5);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid oklch(0.45 0.1 155 / 0.2);
+  box-shadow: 
+    0 4px 16px oklch(0 0 0 / 0.04),
+    inset 0 1px 0 oklch(1 0 0 / 0.3);
+}
+.dark .glass-border {
+  background: oklch(0.20 0.02 150 / 0.5);
+  border: 1px solid oklch(0.55 0.12 155 / 0.25);
+  box-shadow: 
+    0 4px 16px oklch(0 0 0 / 0.2),
+    inset 0 1px 0 oklch(1 0 0 / 0.05);
+}
+
+/* ==============================
+   TEXT GLOW EMERALD
+   ============================== */
+.text-glow-emerald {
+  color: oklch(0.45 0.1 155);
+  text-shadow: 
+    0 0 8px oklch(0.45 0.1 155 / 0.35),
+    0 0 20px oklch(0.45 0.1 155 / 0.15);
+}
+.dark .text-glow-emerald {
+  color: oklch(0.65 0.12 155);
+  text-shadow: 
+    0 0 10px oklch(0.55 0.12 155 / 0.45),
+    0 0 24px oklch(0.55 0.12 155 / 0.2);
+}
+
+/* ==============================
+   GRADIENT MESH 2 (teal-focused variant)
+   ============================== */
+.gradient-mesh-2 {
+  background: 
+    radial-gradient(at 80% 20%, oklch(0.55 0.08 140 / 0.08) 0%, transparent 50%),
+    radial-gradient(at 20% 80%, oklch(0.45 0.1 155 / 0.06) 0%, transparent 50%),
+    radial-gradient(at 50% 30%, oklch(0.60 0.10 160 / 0.05) 0%, transparent 50%);
+}
+.dark .gradient-mesh-2 {
+  background: 
+    radial-gradient(at 80% 20%, oklch(0.50 0.08 140 / 0.12) 0%, transparent 50%),
+    radial-gradient(at 20% 80%, oklch(0.55 0.12 155 / 0.1) 0%, transparent 50%),
+    radial-gradient(at 50% 30%, oklch(0.65 0.10 160 / 0.08) 0%, transparent 50%);
+}
+
+/* ==============================
+   SKELETON PULSE (loading state)
+   ============================== */
+@keyframes skeleton-pulse-anim {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.skeleton-pulse {
+  animation: skeleton-pulse-anim 1.5s ease-in-out infinite;
+  background-color: oklch(0.93 0.01 120);
+  border-radius: inherit;
+}
+.dark .skeleton-pulse {
+  background-color: oklch(0.25 0.02 150);
+}
+
+/* ==============================
+   PARALLAX SLOW (translateY on hover for decorative)
+   ============================== */
+.parallax-slow {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.parallax-slow:hover {
+  transform: translateY(-8px);
+}
+
+/* ==============================
+   RIPPLE EFFECT (Material Design on click)
+   ============================== */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-effect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: oklch(1 0 0 / 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+.ripple-effect:active::after {
+  width: 250%;
+  height: 250%;
+  opacity: 1;
+  transition: width 0s, height 0s, opacity 0s;
+}
+.dark .ripple-effect::after {
+  background: oklch(1 0 0 / 0.08);
+}
+
+/* ==============================
+   TAG CHIP (gradient border pill)
+   ============================== */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  position: relative;
+  background: oklch(0.97 0.005 150);
+  color: oklch(0.35 0.08 155);
+  border: 1px solid oklch(0.45 0.1 155 / 0.15);
+  transition: all 0.25s ease;
+}
+.tag-chip:hover {
+  border-color: oklch(0.45 0.1 155 / 0.35);
+  box-shadow: 0 1px 4px oklch(0.45 0.1 155 / 0.1);
+}
+.dark .tag-chip {
+  background: oklch(0.25 0.02 150 / 0.6);
+  color: oklch(0.70 0.12 155);
+  border-color: oklch(0.55 0.12 155 / 0.2);
+}
+.dark .tag-chip:hover {
+  border-color: oklch(0.55 0.12 155 / 0.4);
+  box-shadow: 0 1px 4px oklch(0.55 0.12 155 / 0.15);
+}

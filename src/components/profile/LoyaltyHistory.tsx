@@ -11,6 +11,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
+import { WishlistShare } from './WishlistShare'
 
 interface PointsEntry {
   id: string
@@ -57,6 +58,7 @@ type FilterType = 'all' | 'earned' | 'redeemed'
 export function LoyaltyHistory() {
   const [filter, setFilter] = useState<FilterType>('all')
   const [redeemModal, setRedeemModal] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
 
   const filtered = useMemo(() => {
     if (filter === 'all') return pointsHistory
@@ -109,6 +111,14 @@ export function LoyaltyHistory() {
           >
             <Gift className="h-4 w-4" />
             Trocar pontos
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full mt-2 gap-2 h-10 border-primary/30 text-primary hover:bg-primary/5"
+            onClick={() => setShareOpen(true)}
+          >
+            <ShoppingBag className="h-4 w-4" />
+            Compartilhar favoritos
           </Button>
         </CardContent>
       </Card>
@@ -354,6 +364,19 @@ export function LoyaltyHistory() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Wishlist Share Dialog */}
+      <WishlistShare
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        items={[
+          { id: 'w1', name: 'Açaí 500ml', price: 15.00, storeName: 'Açaí da Boa', category: 'FOOD' },
+          { id: 'w2', name: 'Arroz Tio João 5kg', price: 24.90, storeName: 'Mercado do Zé', category: 'FOOD' },
+          { id: 'w3', name: 'Pão Francês (6 un)', price: 6.00, storeName: 'Padaria Pão Quente', category: 'FOOD' },
+          { id: 'w4', name: 'Vitamina C 500mg', price: 35.00, storeName: 'Farmácia Vida', category: 'HEALTH' },
+          { id: 'w5', name: 'Café Torrado 500g', price: 18.90, storeName: 'Mercado do Zé', category: 'FOOD' },
+        ]}
+      />
     </div>
   )
 }

@@ -24,6 +24,8 @@ import { FlashSale } from '@/components/home/FlashSale'
 import { ProductComparison } from '@/components/product/ProductComparison'
 import { OrderMap } from '@/components/orders/OrderMap'
 import { NotificationsPage } from '@/components/notifications/NotificationsPage'
+import { AdminDashboard } from '@/components/dashboard/AdminDashboard'
+import { SmartSuggestions } from '@/components/home/SmartSuggestions'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
@@ -242,7 +244,7 @@ function FavoritesView({ products }: { products: ProductData[] }) {
           </p>
           <motion.div whileTap={{ scale: 0.95 }} className="mt-6">
             <Button 
-              onClick={() => useAppStore.getState().setCurrentView('home')}
+              onClick={() => useAppStore.getState().navigate('home')}
               className="bg-primary hover:bg-primary/90 text-primary-foreground btn-glow"
             >
               Explorar produtos
@@ -572,6 +574,11 @@ export default function Home() {
                     )}
 
                     <Separator className="my-8 bg-border/50" />
+
+                    {/* Smart Suggestions (AI) */}
+                    <SmartSuggestions />
+
+                    <Separator className="my-8 bg-border/50" />
                     
                     {/* Partners */}
                     <section>
@@ -632,6 +639,10 @@ export default function Home() {
         ) : currentView === 'product-comparison' ? (
           <motion.div key="product-comparison" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <ProductComparison />
+          </motion.div>
+        ) : currentView === 'admin-dashboard' ? (
+          <motion.div key="admin-dashboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <AdminDashboard />
           </motion.div>
         ) : currentView === 'notifications' ? (
           <motion.div key="notifications" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>

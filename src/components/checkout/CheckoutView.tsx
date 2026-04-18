@@ -255,8 +255,8 @@ export function CheckoutView() {
                   <div key={s.id} className="flex items-center flex-1">
                     <div className="flex items-center gap-2">
                       <motion.div
-                        animate={isCurrent ? { scale: [1, 1.1, 1] } : {}}
-                        transition={{ duration: 0.3 }}
+                        animate={isCurrent ? { scale: [1, 1.12, 1] } : {}}
+                        transition={{ duration: 0.4, type: 'spring', stiffness: 400, damping: 20 }}
                         className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
                           isCompleted 
                             ? 'bg-primary text-primary-foreground' 
@@ -293,7 +293,7 @@ export function CheckoutView() {
         <AnimatePresence mode="wait">
           {step === 'address' && (
             <motion.div key="address" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              {/* Delivery type */}
+              <div className="reveal-up" style={{ animationDelay: '0.1s' }}>
               <div className="mb-6">
                 <h3 className="font-semibold mb-3">Tipo de entrega</h3>
                 <div className="grid grid-cols-2 gap-3">
@@ -450,18 +450,21 @@ export function CheckoutView() {
               )}
               
               <Button 
-                className="w-full h-12 mt-6 bg-primary text-primary-foreground font-semibold btn-glow" 
+                className="w-full h-12 mt-6 bg-primary text-primary-foreground font-semibold btn-glow reveal-up" 
+                style={{ animationDelay: '0.3s' }}
                 onClick={() => setStep('payment')}
                 disabled={!canProceed()}
               >
                 Continuar para pagamento
                 <ChevronRight className="h-4 w-4 ml-2" />
               </Button>
+              </div>
             </motion.div>
           )}
           
           {step === 'payment' && (
             <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <div className="reveal-up" style={{ animationDelay: '0.1s' }}>
               {/* Delivery time selector */}
               {deliveryType === 'delivery' && (
                 <div className="mb-6">
@@ -517,7 +520,7 @@ export function CheckoutView() {
                     whileHover={{ y: -2, boxShadow: '0 4px 16px oklch(0.45 0.1 155 / 0.08)' }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 relative ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 relative glass-border ${
                       payment === method.id 
                         ? 'border-primary bg-primary/5 shadow-[0_2px_16px_oklch(0.45_0.1_155/0.1)]' 
                         : 'border-border hover:border-primary/30'
@@ -679,6 +682,7 @@ export function CheckoutView() {
                     </>
                   )}
                 </Button>
+              </div>
               </div>
             </motion.div>
           )}

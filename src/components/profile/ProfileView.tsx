@@ -5,7 +5,7 @@ import {
   User, MapPin, CreditCard, Heart, ClipboardList, Gift, Users, Settings, LogOut, 
   Star, ChevronRight, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock,
   Bell, Moon, MapPinned, Share2, Ticket, Copy, Check, ListChecks, LayoutDashboard,
-  BellRing
+  BellRing, Shield
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -75,6 +75,7 @@ const menuItems = [
   { id: 'shopping-lists', icon: ListChecks, label: 'Listas de Compras', desc: 'Organize suas compras' },
   { id: 'referral', icon: Users, label: 'Indique Amigos', desc: 'Ganhe com indicações' },
   { id: 'store-dashboard', icon: LayoutDashboard, label: 'Painel da Loja', desc: 'Gerencie sua loja' },
+  { id: 'admin-dashboard', icon: Shield, label: 'Painel do Admin', desc: 'Administração da plataforma' },
   { id: 'settings', icon: Settings, label: 'Configurações', desc: 'Notificações e preferências' },
 ]
 
@@ -338,7 +339,7 @@ export function ProfileView() {
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
                 <ShoppingBag className="h-4 w-4 text-primary" />
               </div>
-              <p className="text-lg font-bold text-primary animate-count-up">3</p>
+              <p className="text-lg font-bold text-primary animate-count-up text-glow-emerald">3</p>
               <p className="text-[10px] text-muted-foreground">Pedidos</p>
             </motion.div>
             <motion.div
@@ -362,7 +363,7 @@ export function ProfileView() {
               <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Award className="h-4 w-4 text-amber-500" />
               </div>
-              <p className="text-lg font-bold text-amber-500 animate-count-up" style={{ animationDelay: '0.2s' }}>1.250</p>
+              <p className="text-lg font-bold text-amber-500 animate-count-up text-glow-emerald" style={{ animationDelay: '0.2s' }}>1.250</p>
               <p className="text-[10px] text-muted-foreground">Pontos</p>
             </motion.div>
           </div>
@@ -538,11 +539,13 @@ export function ProfileView() {
                   navigate('store-dashboard')
                 } else if (item.id === 'notifications') {
                   navigate('notifications')
+                } else if (item.id === 'admin-dashboard') {
+                  navigate('admin-dashboard')
                 } else if (['loyalty', 'addresses', 'coupons', 'referral', 'settings'].includes(item.id)) {
                   setActiveSection(item.id)
                 }
               }}
-              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-sm transition-all text-left group"
+              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-sm transition-all text-left group elevated-card ripple-effect"
             >
               <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                 <item.icon className="h-5 w-5 text-primary" />

@@ -10,6 +10,7 @@ import { formatBRL, CategoryIcon } from './ProductCard'
 import { StarRating } from '@/components/ui/StarRating'
 import { ShareButton } from './ShareButton'
 import { ProductReviews } from './ProductReviews'
+import { ProductGallery } from './ProductGallery'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -144,64 +145,13 @@ export function ProductDetail({ product }: ProductDetailProps) {
         </div>
       </div>
       
-      {/* Large Product Image — improved gradient placeholder */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className={`relative aspect-[4/3] sm:aspect-square bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}
-      >
-        {/* Decorative pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-        }} />
-        {/* Decorative floating shapes */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-8 right-8 w-20 h-20 rounded-full border border-white/10"
-        />
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          className="absolute bottom-12 left-8 w-16 h-16 rounded-lg border border-white/10"
-        />
-        
-        <motion.div 
-          className="relative z-10 h-24 w-24 sm:h-32 sm:w-32 rounded-3xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-lg card-spotlight"
-          whileHover={{ scale: 1.08, rotate: 2 }}
-          transition={{ type: 'spring', stiffness: 300 }}
-        >
-          <div className="scale-150">
-            <CategoryIcon category={product.category} />
-          </div>
-        </motion.div>
-        
-        {/* Badges */}
-        <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
-          {discount > 0 && (
-            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
-              <Badge className="bg-red-500 text-white border-0 text-sm px-3 py-1 shadow-lg font-bold">
-                -{discount}% OFF
-              </Badge>
-            </motion.div>
-          )}
-          {product.isNew && (
-            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-              <Badge className="bg-primary text-primary-foreground border-0 text-sm px-3 py-1 shadow-lg">
-                Novo
-              </Badge>
-            </motion.div>
-          )}
-          {product.isOffer && !discount && (
-            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-              <Badge className="bg-amber-500 text-white border-0 text-sm px-3 py-1 shadow-lg">
-                Oferta
-              </Badge>
-            </motion.div>
-          )}
-        </div>
-      </motion.div>
+      {/* Large Product Image — ProductGallery component */}
+      <ProductGallery
+        images={product.images && product.images !== '[]' ? JSON.parse(product.images) : undefined}
+        productName={product.name}
+        category={product.category}
+        count={5}
+      />
       
       {/* Info */}
       <div className="px-1 mt-4">
