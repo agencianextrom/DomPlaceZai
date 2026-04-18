@@ -187,7 +187,9 @@ export function StoreDashboard() {
 
       <div className="max-w-5xl mx-auto px-4 mt-4">
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="w-full sm:w-auto overflow-x-auto hide-scrollbar mb-4">
+          <TabsList className="w-full sm:w-auto overflow-x-auto hide-scrollbar mb-4 relative">
+            {/* Animated underline indicator */
+            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-300" />
             <TabsTrigger value="overview" className="gap-1.5 text-xs sm:text-sm">
               <BarChart3 className="h-3.5 w-3.5" />
               Visão Geral
@@ -276,7 +278,7 @@ export function StoreDashboard() {
 
                 {/* Weekly Sales Chart */}
                 <motion.div variants={itemVariants} transition={{ delay: 0.2 }}>
-                  <Card className="border-border/50 overflow-hidden">
+                  <Card className="border-border/50 overflow-hidden glassmorphism-strong">
                     <CardHeader className="pb-2 pt-4 px-4">
                       <CardTitle className="text-sm font-semibold flex items-center gap-2">
                         <BarChart3 className="h-4 w-4 text-primary" />
@@ -284,8 +286,8 @@ export function StoreDashboard() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="px-4 pb-4">
-                      {/* Chart area with subtle gradient bg */}
-                      <div className="rounded-lg bg-gradient-to-b from-primary/[0.02] to-transparent p-3">
+                      {/* Chart area with gradient + grid */}
+                      <div className="rounded-lg bg-gradient-to-b from-primary/[0.03] to-transparent grid-pattern p-3"
                         <div className="flex items-end gap-2 h-36">
                           {weeklySales.map((day, i) => {
                             const isToday = i === new Date().getDay() - 1
@@ -506,12 +508,15 @@ export function StoreDashboard() {
                               </div>
                               <div className="flex items-center gap-3">
                                 <span className="font-bold text-sm">{formatBRL(order.total)}</span>
-                                <Button variant="outline" size="sm" className="h-7 text-xs gap-1 px-2">
+                                <Button variant="outline" size="sm" className="h-7 text-xs gap-1 px-2 btn-shine">
                                   <Eye className="h-3 w-3" />
                                   Ver detalhes
                                 </Button>
                               </div>
                             </div>
+
+                            {/* Mini gradient accent line */}
+                            <div className="mt-3 h-[1px] bg-gradient-to-r from-primary/20 via-accent/20 to-transparent" />
                           </CardContent>
                         </Card>
                       </motion.div>
@@ -536,7 +541,7 @@ export function StoreDashboard() {
               >
                 {/* Top Products */}
                 <motion.div variants={itemVariants}>
-                  <Card className="border-border/50">
+                  <Card className="border-border/50 overflow-hidden card-aurora">
                     <CardHeader className="pb-2 pt-4 px-4">
                       <CardTitle className="text-sm font-semibold flex items-center gap-2">
                         <TrendingUp className="h-4 w-4 text-primary" />
@@ -569,7 +574,7 @@ export function StoreDashboard() {
 
                 {/* Revenue Comparison */}
                 <motion.div variants={itemVariants}>
-                  <Card className="border-border/50">
+                  <Card className="border-border/50 overflow-hidden glassmorphism-strong">
                     <CardHeader className="pb-2 pt-4 px-4">
                       <CardTitle className="text-sm font-semibold flex items-center gap-2">
                         <DollarSign className="h-4 w-4 text-primary" />

@@ -26,11 +26,18 @@ import { OrderMap } from '@/components/orders/OrderMap'
 import { NotificationsPage } from '@/components/notifications/NotificationsPage'
 import { AdminDashboard } from '@/components/dashboard/AdminDashboard'
 import { SmartSuggestions } from '@/components/home/SmartSuggestions'
+import { SupportCenter } from '@/components/support/SupportCenter'
+import { ProductQuickView } from '@/components/product/ProductQuickView'
+import { StoreSearch } from '@/components/home/StoreSearch'
+import { LoyaltyTier } from '@/components/profile/LoyaltyTier'
+import { SupportCenter } from '@/components/support/SupportCenter'
+import { StoreSearch } from '@/components/home/StoreSearch'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
 import { ShoppingLists } from '@/components/profile/ShoppingLists'
 import { Heart, Sparkles, MapPin, LayoutDashboard, GitCompareArrows, Grid3X3, List, ArrowUpDown } from 'lucide-react'
+import { useState as useQVState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -399,6 +406,8 @@ function FavoritesView({ products }: { products: ProductData[] }) {
 
 export default function Home() {
   const { currentView, isSearchOpen, activeCategory } = useAppStore()
+  const [quickViewProduct, setQuickViewProduct] = useQVState<ProductData | null>(null)
+  const [quickViewOpen, setQuickViewOpen] = useQVState(false)
   const [apiProducts, setApiProducts] = useState<ProductData[]>([])
   const [apiStores, setApiStores] = useState<StoreData[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -565,6 +574,13 @@ export default function Home() {
                     )}
 
                     <Separator className="my-8 bg-border/50" />
+
+                    {/* Store Search */}
+                    <section>
+                      <StoreSearch stores={filteredStores} />
+                    </section>
+
+                    <Separator className="my-8 bg-border/50" />
                     
                     {/* Suggestions */}
                     {suggestedProducts.length > 0 && (
@@ -577,6 +593,11 @@ export default function Home() {
 
                     {/* Smart Suggestions (AI) */}
                     <SmartSuggestions />
+
+                    <Separator className="my-8 bg-border/50" />
+
+                    {/* Store Search */}
+                    <StoreSearch stores={allStores} />
 
                     <Separator className="my-8 bg-border/50" />
                     
@@ -648,6 +669,10 @@ export default function Home() {
           <motion.div key="notifications" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <NotificationsPage />
           </motion.div>
+        ) : currentView === 'support-center' ? (
+          <motion.div key="support-center" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <SupportCenter />
+          </motion.div>
         ) : currentView === 'favorites' ? (
           <FavoritesView products={featuredProducts} />
         ) : null}
@@ -667,6 +692,9 @@ export default function Home() {
 
       {/* Floating Compare Button */}
       <CompareFloatingButton />
+
+      {/* Product Quick View Modal */}
+      <ProductQuickView product={quickViewProduct} open={quickViewOpen} onClose={() => setQuickViewOpen(false)} />
     </div>
   )
 }

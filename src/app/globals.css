@@ -1356,3 +1356,592 @@
   border-color: oklch(0.55 0.12 155 / 0.4);
   box-shadow: 0 1px 4px oklch(0.55 0.12 155 / 0.15);
 }
+
+/* ==============================
+   CARD AURORA (animated northern lights border)
+   ============================== */
+@keyframes aurora-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.card-aurora {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+.card-aurora::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    var(--aurora-angle, 135deg),
+    oklch(0.45 0.1 155),
+    oklch(0.78 0.16 70),
+    oklch(0.55 0.08 140),
+    oklch(0.60 0.12 90),
+    oklch(0.45 0.1 155)
+  );
+  background-size: 300% 300%;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  animation: aurora-shift 6s ease-in-out infinite;
+}
+.card-aurora:hover::before {
+  opacity: 1;
+}
+.card-aurora:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px oklch(0.45 0.1 155 / 0.08), 0 0 40px oklch(0.45 0.1 155 / 0.05);
+}
+.dark .card-aurora:hover {
+  box-shadow: 0 8px 24px oklch(0.55 0.12 155 / 0.15), 0 0 40px oklch(0.55 0.12 155 / 0.08);
+}
+
+/* ==============================
+   GLASSMORPHISM DARK (enhanced dark mode variant)
+   ============================== */
+.glass-morphism-dark {
+  background: oklch(0.10 0.02 150 / 0.6);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid oklch(1 0 0 / 0.06);
+  box-shadow: 0 8px 32px oklch(0 0 0 / 0.3), inset 0 1px 0 oklch(1 0 0 / 0.04);
+}
+
+/* ==============================
+   TEXT GLOW AMBER
+   ============================== */
+.text-glow-amber {
+  color: oklch(0.78 0.16 70);
+  text-shadow:
+    0 0 8px oklch(0.78 0.16 70 / 0.35),
+    0 0 20px oklch(0.78 0.16 70 / 0.15);
+}
+.dark .text-glow-amber {
+  color: oklch(0.85 0.14 70);
+  text-shadow:
+    0 0 10px oklch(0.72 0.16 70 / 0.45),
+    0 0 24px oklch(0.72 0.16 70 / 0.2);
+}
+
+/* ==============================
+   ANIMATE SLIDE UP STAGGER
+   ============================== */
+@keyframes slide-up-stagger-1 { 0%, 100% { transform: translateY(16px); opacity: 0; } 30%, 70% { transform: translateY(0); opacity: 1; } }
+@keyframes slide-up-stagger-2 { 0%, 20% { transform: translateY(16px); opacity: 0; } 40%, 80% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
+.animate-slide-up-stagger > * {
+  animation: slide-up-stagger-1 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+.animate-slide-up-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.animate-slide-up-stagger > *:nth-child(2) { animation-delay: 80ms; }
+.animate-slide-up-stagger > *:nth-child(3) { animation-delay: 160ms; }
+.animate-slide-up-stagger > *:nth-child(4) { animation-delay: 240ms; }
+.animate-slide-up-stagger > *:nth-child(5) { animation-delay: 320ms; }
+.animate-slide-up-stagger > *:nth-child(6) { animation-delay: 400ms; }
+.animate-slide-up-stagger > *:nth-child(7) { animation-delay: 480ms; }
+.animate-slide-up-stagger > *:nth-child(8) { animation-delay: 560ms; }
+
+/* ==============================
+   PERSPECTIVE 1000 (3D container)
+   ============================== */
+.perspective-1000 {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* ==============================
+   CARD HOLOGRAPHIC (rainbow shimmer on hover)
+   ============================== */
+@keyframes holographic-shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+.card-holographic {
+  position: relative;
+  overflow: hidden;
+}
+.card-holographic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    90deg,
+    oklch(0.45 0.1 155 / 0) 0%,
+    oklch(0.78 0.16 70 / 0.3) 15%,
+    oklch(0.55 0.08 140 / 0.3) 30%,
+    oklch(0.60 0.12 90 / 0.2) 45%,
+    oklch(0.45 0.1 155 / 0) 60%,
+    oklch(0.78 0.16 70 / 0.3) 75%,
+    oklch(0.45 0.1 155 / 0) 100%
+  );
+  background-size: 200% 100%;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.card-holographic:hover::before {
+  opacity: 1;
+  animation: holographic-shimmer 2s linear infinite;
+}
+.card-holographic::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, oklch(1 0 0 / 0.04) 0%, transparent 50%, oklch(1 0 0 / 0.04) 100%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  opacity: 0;
+}
+.card-holographic:hover::after {
+  opacity: 1;
+}
+
+/* ==============================
+   GRADIENT BORDER ANIMATED (rotating gradient)
+   ============================== */
+@keyframes gradient-rotate {
+  0% { --gradient-angle: 0deg; }
+  100% { --gradient-angle: 360deg; }
+}
+.gradient-border-animated {
+  position: relative;
+  --gradient-angle: 0deg;
+  animation: gradient-rotate 4s linear infinite;
+}
+.gradient-border-animated::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(var(--gradient-angle), oklch(0.45 0.1 155), oklch(0.78 0.16 70), oklch(0.55 0.08 140), oklch(0.45 0.1 155));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+@supports not (background: conic-gradient(from 0deg, red, blue)) {
+  .gradient-border-animated::before {
+    background: linear-gradient(135deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70));
+    animation: none;
+  }
+}
+
+/* ==============================
+   BACKDROP BLUR STRONG (20px+)
+   ============================== */
+.backdrop-blur-strong {
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+}
+
+/* ==============================
+   SHADOW NEON EMERALD
+   ============================== */
+.shadow-neon-emerald {
+  box-shadow:
+    0 0 4px oklch(0.45 0.1 155 / 0.4),
+    0 0 12px oklch(0.45 0.1 155 / 0.2),
+    0 0 24px oklch(0.45 0.1 155 / 0.1);
+}
+.dark .shadow-neon-emerald {
+  box-shadow:
+    0 0 6px oklch(0.55 0.12 155 / 0.5),
+    0 0 16px oklch(0.55 0.12 155 / 0.25),
+    0 0 32px oklch(0.55 0.12 155 / 0.12);
+}
+
+/* ==============================
+   SHADOW NEON AMBER
+   ============================== */
+.shadow-neon-amber {
+  box-shadow:
+    0 0 4px oklch(0.78 0.16 70 / 0.4),
+    0 0 12px oklch(0.78 0.16 70 / 0.2),
+    0 0 24px oklch(0.78 0.16 70 / 0.1);
+}
+.dark .shadow-neon-amber {
+  box-shadow:
+    0 0 6px oklch(0.72 0.16 70 / 0.5),
+    0 0 16px oklch(0.72 0.16 70 / 0.25),
+    0 0 32px oklch(0.72 0.16 70 / 0.12);
+}
+
+/* ==============================
+   BTN SHINE (sweeping light animation)
+   ============================== */
+@keyframes btn-shine-sweep {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.2) 40%,
+    oklch(1 0 0 / 0.35) 50%,
+    oklch(1 0 0 / 0.2) 60%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+  z-index: 1;
+  transition: none;
+}
+.btn-shine:hover::before {
+  animation: btn-shine-sweep 0.7s ease-out;
+}
+.dark .btn-shine::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.06) 40%,
+    oklch(1 0 0 / 0.1) 50%,
+    oklch(1 0 0 / 0.06) 60%,
+    transparent 100%
+  );
+}
+
+/* ==============================
+   SCROLL SNAP X (horizontal scroll snap)
+   ============================== */
+.scroll-snap-x {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scroll-snap-x::-webkit-scrollbar {
+  display: none;
+}
+.scroll-snap-x > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* ==============================
+   Round 8 — NEW CSS CLASSES
+   ============================== */
+
+/* ==============================
+   CARD AURORA (animated gradient border glow)
+   ============================== */
+@keyframes aurora-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.card-aurora {
+  position: relative;
+  overflow: hidden;
+}
+.card-aurora::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    135deg,
+    oklch(0.45 0.1 155) 0%,
+    oklch(0.55 0.08 140) 20%,
+    oklch(0.78 0.16 70) 40%,
+    oklch(0.45 0.1 155) 60%,
+    oklch(0.55 0.12 90) 80%,
+    oklch(0.45 0.1 155) 100%
+  );
+  background-size: 300% 300%;
+  animation: aurora-rotate 6s ease infinite;
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.card-aurora:hover::before {
+  opacity: 1;
+}
+
+/* ==============================
+   BTN SHINE (sweeping shine on hover)
+   ============================== */
+@keyframes btn-shine-anim {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.25) 45%,
+    oklch(1 0 0 / 0.35) 50%,
+    oklch(1 0 0 / 0.25) 55%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  animation: btn-shine-anim 0.6s ease-out;
+}
+
+/* ==============================
+   GRADIENT BORDER ANIMATED (rotating conic gradient)
+   ============================== */
+@keyframes gradient-spin {
+  0% { --angle: 0deg; }
+  100% { --angle: 360deg; }
+}
+.gradient-border-animated {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.gradient-border-animated::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: conic-gradient(
+    from 0deg,
+    oklch(0.45 0.1 155),
+    oklch(0.78 0.16 70),
+    oklch(0.55 0.08 140),
+    oklch(0.60 0.12 90),
+    oklch(0.45 0.1 155)
+  );
+  border-radius: inherit;
+  animation: conic-rotate 4s linear infinite;
+  z-index: -1;
+}
+@keyframes conic-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.gradient-border-animated::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--card, oklch(1 0 0));
+  border-radius: calc(inherit - 2px);
+  z-index: -1;
+}
+.dark .gradient-border-animated::after {
+  background: var(--card, oklch(0.20 0.02 150));
+}
+
+/* ==============================
+   SHADOW NEON EMERALD
+   ============================== */
+.shadow-neon-emerald {
+  box-shadow:
+    0 0 8px oklch(0.45 0.1 155 / 0.3),
+    0 0 24px oklch(0.45 0.1 155 / 0.15),
+    0 0 48px oklch(0.45 0.1 155 / 0.08);
+}
+.dark .shadow-neon-emerald {
+  box-shadow:
+    0 0 8px oklch(0.55 0.12 155 / 0.4),
+    0 0 24px oklch(0.55 0.12 155 / 0.2),
+    0 0 48px oklch(0.55 0.12 155 / 0.1);
+}
+
+/* ==============================
+   SHADOW NEON AMBER
+   ============================== */
+.shadow-neon-amber {
+  box-shadow:
+    0 0 8px oklch(0.78 0.16 70 / 0.3),
+    0 0 24px oklch(0.78 0.16 70 / 0.15),
+    0 0 48px oklch(0.78 0.16 70 / 0.08);
+}
+.dark .shadow-neon-amber {
+  box-shadow:
+    0 0 8px oklch(0.72 0.16 70 / 0.4),
+    0 0 24px oklch(0.72 0.16 70 / 0.2),
+    0 0 48px oklch(0.72 0.16 70 / 0.1);
+}
+
+/* ==============================
+   BACKDROP BLUR STRONG (20px+)
+   ============================== */
+.backdrop-blur-strong {
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+}
+
+/* ==============================
+   PERSPECTIVE CONTAINER (for 3D effects)
+   ============================== */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* ==============================
+   CARD HOLOGRAPHIC (rainbow shimmer)
+   ============================== */
+@keyframes holographic-shift {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 50%; }
+  50% { background-position: 100% 0%; }
+  75% { background-position: 0% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.card-holographic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    oklch(0.45 0.1 155 / 0.08) 0%,
+    oklch(0.78 0.16 70 / 0.06) 25%,
+    oklch(0.55 0.08 140 / 0.08) 50%,
+    oklch(0.72 0.14 60 / 0.06) 75%,
+    oklch(0.45 0.1 155 / 0.08) 100%
+  );
+  background-size: 200% 200%;
+  animation: holographic-shift 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.card-holographic:hover::before {
+  opacity: 1;
+}
+
+/* ==============================
+   ANIMATED GRADIENT BG (slow morph)
+   ============================== */
+@keyframes gradient-morph {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animated-gradient-bg {
+  background: linear-gradient(-45deg, oklch(0.45 0.1 155), oklch(0.55 0.08 140), oklch(0.78 0.16 70), oklch(0.60 0.12 90));
+  background-size: 400% 400%;
+  animation: gradient-morph 8s ease infinite;
+}
+
+/* ==============================
+   TICKER TAPE (scrolling text)
+   ============================== */
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-tape {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ticker-tape > * {
+  display: inline-block;
+  animation: ticker-scroll 30s linear infinite;
+}
+
+/* ==============================
+   ANIMATED UNDERLINE (center expand)
+   ============================== */
+.animated-underline {
+  position: relative;
+  display: inline-block;
+}
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70));
+  transition: width 0.3s ease, left 0.3s ease;
+  border-radius: 1px;
+}
+.animated-underline:hover::after,
+.animated-underline.active::after {
+  width: 100%;
+  left: 0;
+}
+
+/* ==============================
+   PULSE DOT (online indicator)
+   ============================== */
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.55 0.12 155 / 0.5); }
+  50% { box-shadow: 0 0 0 4px oklch(0.55 0.12 155 / 0); }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ==============================
+   GLOWING ORB (decorative background)
+   ============================== */
+.glowing-orb {
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.15;
+  animation: breathe 6s ease-in-out infinite;
+}
+.dark .glowing-orb {
+  opacity: 0.08;
+}
+
+/* ==============================
+   STACKED CARDS (overlapping effect)
+   ============================== */
+.stacked-cards > *:nth-child(1) { z-index: 3; }
+.stacked-cards > *:nth-child(2) { z-index: 2; transform: translateY(-8px) scale(0.97); opacity: 0.8; }
+.stacked-cards > *:nth-child(3) { z-index: 1; transform: translateY(-16px) scale(0.94); opacity: 0.6; }
+
+/* ==============================
+   FADE IN STAGGER (CSS-only, for lists)
+   ============================== */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in-stagger > *:nth-child(1) { animation: fade-in-up 0.4s ease-out 0ms both; }
+.fade-in-stagger > *:nth-child(2) { animation: fade-in-up 0.4s ease-out 50ms both; }
+.fade-in-stagger > *:nth-child(3) { animation: fade-in-up 0.4s ease-out 100ms both; }
+.fade-in-stagger > *:nth-child(4) { animation: fade-in-up 0.4s ease-out 150ms both; }
+.fade-in-stagger > *:nth-child(5) { animation: fade-in-up 0.4s ease-out 200ms both; }
+.fade-in-stagger > *:nth-child(6) { animation: fade-in-up 0.4s ease-out 250ms both; }
+.fade-in-stagger > *:nth-child(7) { animation: fade-in-up 0.4s ease-out 300ms both; }
+.fade-in-stagger > *:nth-child(8) { animation: fade-in-up 0.4s ease-out 350ms both; }

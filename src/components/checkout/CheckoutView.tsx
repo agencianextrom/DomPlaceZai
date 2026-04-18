@@ -170,14 +170,14 @@ export function CheckoutView() {
       <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24">
         <div className="relative">
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-            className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center mb-6 shadow-lg relative z-10"
+            className="w-28 h-28 rounded-full bg-gradient-to-br from-primary via-emerald-500 to-teal-500 flex items-center justify-center mb-6 shadow-neon-emerald relative z-10"
           >
             <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
               transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
             >
               <Check className="h-12 w-12 text-white" />
@@ -238,7 +238,7 @@ export function CheckoutView() {
   return (
     <div className="min-h-screen pb-28 md:pb-4">
       {/* Header */}
-      <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
+      <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-strong border-b border-border/50 -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={goBack} className="h-10 w-10">
             <ArrowLeft className="h-5 w-5" />
@@ -450,7 +450,7 @@ export function CheckoutView() {
               )}
               
               <Button 
-                className="w-full h-12 mt-6 bg-primary text-primary-foreground font-semibold btn-glow reveal-up" 
+                className="w-full h-12 mt-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-shine btn-glow ripple-effect reveal-up" 
                 style={{ animationDelay: '0.3s' }}
                 onClick={() => setStep('payment')}
                 disabled={!canProceed()}
@@ -597,9 +597,9 @@ export function CheckoutView() {
               </div>
               
               {/* Order summary card */}
-              <Card className="mt-6 border-primary/20">
+              <Card className="mt-6 gradient-border-animated bg-card rounded-xl overflow-hidden">
                 <CardContent className="p-4">
-                  <h4 className="font-semibold text-sm mb-3">Resumo do pedido</h4>
+                  <h4 className="font-semibold text-sm mb-3 flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-primary" />Resumo do pedido</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Subtotal ({getCartItemCount()} itens)</span>
@@ -666,7 +666,7 @@ export function CheckoutView() {
                   Voltar
                 </Button>
                 <Button 
-                  className="flex-1 h-12 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground font-semibold btn-glow"
+                  className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect"
                   onClick={handlePlaceOrder}
                   disabled={isProcessing || !termsAccepted}
                 >
@@ -691,7 +691,7 @@ export function CheckoutView() {
 
       {/* Bottom summary bar for mobile */}
       {step !== 'confirmation' && (
-        <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3">
+        <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-strong border-t px-4 py-3" style={{ borderTop: '1px solid transparent', backgroundImage: 'linear-gradient(90deg, transparent, oklch(0.45 0.1 155 / 0.3), oklch(0.78 0.16 70 / 0.3), transparent)', backgroundOrigin: 'top', backgroundRepeat: 'no-repeat', backgroundSize: '100% 1px' }}>
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">Total</p>

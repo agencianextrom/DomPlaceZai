@@ -126,6 +126,14 @@ function formatNumber(value: number): string {
   return new Intl.NumberFormat('pt-BR').format(value)
 }
 
+function percentHeight(value: number): string {
+  return `${Math.round(value)}%`
+}
+
+function barTitle(month: string, revenue: number, orders: number): string {
+  return `${month}: ${formatBRL(revenue)} · ${orders} pedidos`
+}
+
 const statusColors: Record<string, string> = {
   Aprovada: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0',
   Pendente: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-0',
@@ -176,10 +184,10 @@ function OverviewTab() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
           >
-            <Card className="border-border/50 overflow-hidden hover:shadow-md transition-shadow">
+            <Card className="border-border/50 overflow-hidden card-aurora">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center`}>
+                  <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-sm`}>
                     <stat.icon className="h-5 w-5 text-white" />
                   </div>
                   <div className="flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400">
@@ -196,8 +204,10 @@ function OverviewTab() {
       </div>
 
       {/* Growth Chart */}
-      <Card className="border-border/50">
-        <CardContent className="p-4">
+      <Card className="border-border/50 overflow-hidden">
+        <CardContent className="p-4 bg-gradient-to-b from-primary/[0.02] to-transparent">
+          {/* Animated section header accent line */}
+          <div className="absolute top-0 left-0 w-12 h-[2px] bg-gradient-to-r from-primary to-accent rounded-full" />
           <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
             <BarChart3 className="h-4 w-4 text-primary" />
             Crescimento mensal
@@ -209,9 +219,9 @@ function OverviewTab() {
                   <motion.div
                     className="w-full bg-gradient-to-t from-primary to-emerald-400 rounded-t-md min-h-[4px] cursor-pointer hover:from-primary/90 hover:to-emerald-300 transition-colors"
                     initial={{ height: 0 }}
-                    animate={{ height: `${(m.revenue / maxRevenue) * 100}%` }}
+                    animate={{ height: percentHeight((m.revenue / maxRevenue) * 100) }}
                     transition={{ delay: i * 0.06, duration: 0.5, ease: 'easeOut' }}
-                    title={`${m.month}: ${formatBRL(m.revenue)} · ${m.orders} pedidos`}
+                    title={barTitle(m.month, m.revenue, m.orders)}
                   />
                   {/* Tooltip */}
                   <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-[10px] rounded-lg p-2 shadow-lg border border-border opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
@@ -227,8 +237,9 @@ function OverviewTab() {
       </Card>
 
       {/* Recent Activity */}
-      <Card className="border-border/50">
-        <CardContent className="p-4">
+      <Card className="border-border/50 overflow-hidden">
+        <CardContent className="p-4 relative">
+          <div className="absolute top-0 left-0 w-8 h-[2px] bg-gradient-to-r from-primary/60 to-transparent rounded-full" />
           <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
             <Activity className="h-4 w-4 text-primary" />
             Atividade recente
@@ -702,8 +713,9 @@ function FinanceTab() {
       </Card>
 
       {/* Commission Tiers */}
-      <Card className="border-border/50">
-        <CardContent className="p-4">
+      <Card className="border-border/50 overflow-hidden">
+        <CardContent className="p-4 bg-gradient-to-b from-primary/[0.02] to-transparent relative">
+          <div className="absolute top-0 left-0 w-12 h-[2px] bg-gradient-to-r from-primary to-accent rounded-full" />
           <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
             <BarChart3 className="h-4 w-4 text-primary" />
             Faixas de comissão
@@ -756,35 +768,41 @@ function FinanceTab() {
 export function AdminDashboard() {
   const { goBack } = useAppStore()
 
+  const tabs = [
+    { value: 'overview', label: 'Visão Geral', icon: LayoutDashboard },
+    { value: 'stores', label: 'Lojas', icon: Store },
+    { value: 'users', label: 'Usuários', icon: Users },
+    { value: 'moderation', label: 'Moderação', icon: ShieldCheck },
+    { value: 'finance', label: 'Financeiro', icon: DollarSign },
+  ]
+
   return (
     <div className="min-h-screen pb-24 md:pb-8">
-      {/* Header */}
-      <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4">
-        <div className="flex items-center gap-3 py-3">
-          <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goBack}>
-            <ChevronRight className="h-5 w-5 rotate-180" />
-          </Button>
-          <div className="flex-1">
-            <h1 className="text-lg font-bold flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-primary" />
-              Painel de Administração
-            </h1>
-            <p className="text-[11px] text-muted-foreground">DomPlace · Dom Eliseu, PA</p>
+      <div className="absolute inset-0 grid-pattern pointer-events-none" />
+      <div className="relative">
+        {/* Header */}
+        <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-strong border-b border-border/50 -mx-4 px-4">
+          <div className="flex items-center gap-3 py-3">
+            <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goBack}>
+              <ChevronRight className="h-5 w-5 rotate-180" />
+            </Button>
+            <div className="flex-1">
+              <h1 className="text-lg font-bold flex items-center gap-2">
+                <ShieldCheck className="h-5 w-5 text-primary" />
+                Painel de Administração
+              </h1>
+              <p className="text-[11px] text-muted-foreground">DomPlace · Dom Eliseu, PA</p>
+            </div>
+            <Badge className="bg-primary text-primary-foreground text-[10px] px-2.5">Admin</Badge>
           </div>
-          <Badge className="bg-primary text-primary-foreground text-[10px] px-2.5">Admin</Badge>
         </div>
-      </div>
 
-      <div className="max-w-6xl mx-auto px-4 pt-4">
+        <div className="max-w-6xl mx-auto px-4 pt-4">
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="w-full h-auto flex flex-wrap gap-1 bg-transparent p-0 mb-4">
-            {[
-              { value: 'overview', label: 'Visão Geral', icon: LayoutDashboard },
-              { value: 'stores', label: 'Lojas', icon: Store },
-              { value: 'users', label: 'Usuários', icon: Users },
-              { value: 'moderation', label: 'Moderação', icon: ShieldCheck },
-              { value: 'finance', label: 'Financeiro', icon: DollarSign },
-            ].map(tab => (
+            {/* Animated accent line */
+            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-accent/50 to-transparent" />
+            {tabs.map(tab => (
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}

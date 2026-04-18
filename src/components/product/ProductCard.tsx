@@ -2,13 +2,14 @@
 
 import { 
   Heart, ShoppingCart, Star, Utensils, Sprout, HeartPulse, Smartphone, PawPrint, 
-  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows
+  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows, Eye
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
 import { useState, useCallback } from 'react'
+import { ProductQuickView } from './ProductQuickView'
 
 interface ProductCardProps {
   product: ProductData
@@ -70,6 +71,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct, isComparing, toggleCompareProduct } = useAppStore()
   const [showCartBtn, setShowCartBtn] = useState(false)
   const [cartAnimating, setCartAnimating] = useState(false)
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false)
 
   const isFav = isFavoriteProduct(product.id)
   const isCompared = isComparing(product.id)
@@ -187,6 +189,18 @@ export function ProductCard({ product }: ProductCardProps) {
         >
           <GitCompareArrows className={`h-3 w-3 ${isCompared ? '' : 'text-muted-foreground'}`} />
         </button>
+
+        {/* Quick view button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            setIsQuickViewOpen(true)
+          }}
+          className="absolute bottom-2 right-10 z-10 h-6 w-6 rounded-md bg-white/80 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60 flex items-center justify-center transition-colors"
+          aria-label='Visualização rápida'
+        >
+          <Eye className="h-3 w-3 text-muted-foreground" />
+        </button>
         
         {/* Quick add to cart (hover) */}
         <AnimatePresence>
@@ -245,6 +259,13 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       </div>
+
+      {/* Quick View Dialog */}
+      <ProductQuickView
+        product={product}
+        isOpen={isQuickViewOpen}
+        onClose={() => setIsQuickViewOpen(false)}
+      />
     </motion.div>
   )
 }

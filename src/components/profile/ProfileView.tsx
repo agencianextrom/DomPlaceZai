@@ -5,7 +5,7 @@ import {
   User, MapPin, CreditCard, Heart, ClipboardList, Gift, Users, Settings, LogOut, 
   Star, ChevronRight, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock,
   Bell, Moon, MapPinned, Share2, Ticket, Copy, Check, ListChecks, LayoutDashboard,
-  BellRing, Shield
+  BellRing, Shield, Headphones
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -17,6 +17,7 @@ import { motion } from 'framer-motion'
 import { formatBRL } from '@/components/product/ProductCard'
 import { RewardsSection } from './RewardsSection'
 import { LoyaltyHistory } from './LoyaltyHistory'
+import { LoyaltyTier } from './LoyaltyTier'
 import { ShoppingLists } from './ShoppingLists'
 import { AddressManager } from './AddressManager'
 import { toast } from 'sonner'
@@ -76,6 +77,7 @@ const menuItems = [
   { id: 'referral', icon: Users, label: 'Indique Amigos', desc: 'Ganhe com indicações' },
   { id: 'store-dashboard', icon: LayoutDashboard, label: 'Painel da Loja', desc: 'Gerencie sua loja' },
   { id: 'admin-dashboard', icon: Shield, label: 'Painel do Admin', desc: 'Administração da plataforma' },
+  { id: 'support-center', icon: Headphones, label: 'Ajuda & Suporte', desc: 'FAQ, chamados e contato' },
   { id: 'settings', icon: Settings, label: 'Configurações', desc: 'Notificações e preferências' },
 ]
 
@@ -370,6 +372,9 @@ export function ProfileView() {
         </div>
       </motion.div>
 
+      {/* Loyalty Tier Card */}
+      <LoyaltyTier />
+
       {/* Loyalty points card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -543,6 +548,8 @@ export function ProfileView() {
                   navigate('admin-dashboard')
                 } else if (['loyalty', 'addresses', 'coupons', 'referral', 'settings'].includes(item.id)) {
                   setActiveSection(item.id)
+                } else if (item.id === 'support-center') {
+                  navigate('support-center')
                 }
               }}
               className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-sm transition-all text-left group elevated-card ripple-effect"
