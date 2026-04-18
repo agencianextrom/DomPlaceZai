@@ -377,7 +377,7 @@ export function OrdersView() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.05 }}
                         whileHover={{ y: -2, transition: { duration: 0.2 } }}
-                        className="w-full bg-card rounded-xl border border-border p-4 hover:shadow-md hover:border-primary/15 transition-all"
+                        className="w-full bg-card rounded-xl border border-border p-4 hover:shadow-md hover:border-primary/15 transition-all order-card-enhanced hover-glow-soft"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2 min-w-0">
@@ -416,7 +416,7 @@ export function OrdersView() {
                                   <motion.div
                                     animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
                                     transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                                    className={`relative h-5 w-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                                    className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
                                       isActive
                                         ? 'bg-primary text-primary-foreground'
                                         : 'bg-muted text-muted-foreground'
@@ -450,7 +450,7 @@ export function OrdersView() {
                         )}
 
                         <div className="flex items-center justify-between mt-3">
-                          <span className="font-bold text-primary">{formatBRL(order.total)}</span>
+                          <span className="font-bold text-primary text-gradient-primary">{formatBRL(order.total)}</span>
                           <div className="flex gap-2">
                             {order.status === 'DELIVERED' && (
                               <>
@@ -666,7 +666,7 @@ export function OrderDetail() {
             </div>
             <div className="flex justify-between font-bold text-base pt-1 border-t border-border">
               <span>Total</span>
-              <span className="text-primary">{formatBRL(order.total)}</span>
+              <span className="font-bold text-primary text-gradient-primary">{formatBRL(order.total)}</span>
             </div>
           </div>
         </div>

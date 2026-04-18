@@ -18,7 +18,7 @@ export function MobileNav() {
   const cartCount = getCartItemCount()
   
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-t border-border/60 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-t border-border/60 md:hidden glow-edge-bottom">
       <div className="flex items-end justify-around h-[64px] px-2 pb-1">
         {/* Left side nav items */}
         {navItems.slice(0, 2).map((item) => {
@@ -35,14 +35,24 @@ export function MobileNav() {
               }}
               className="relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px]"
             >
+              {/* Active glow background */}
+              {isActive && (
+                <motion.div
+                  layoutId="mobile-nav-bg-left"
+                  className="absolute inset-x-1 -top-1 bottom-0 rounded-xl bg-primary/5"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
               <motion.div
                 whileTap={{ scale: 0.82 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 animate={isActive ? { scale: 1.1 } : { scale: 1 }}
               >
-                <item.icon className={`h-[22px] w-[22px] transition-colors duration-200 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                <item.icon className={`h-[22px] w-[22px] transition-all duration-200 ${isActive ? 'text-primary text-shadow-primary' : 'text-muted-foreground'}`} />
               </motion.div>
-              <span className={`text-[10px] font-medium transition-colors duration-200 leading-tight ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+              <span className={`text-[10px] font-medium transition-all duration-200 leading-tight ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
                 {item.label}
               </span>
               {isActive && (
@@ -66,23 +76,23 @@ export function MobileNav() {
           <motion.div
             animate={{ 
               boxShadow: cartCount > 0 
-                ? '0 4px 16px oklch(0.45 0.1 155 / 0.3)' 
+                ? '0 4px 20px oklch(0.45 0.1 155 / 0.35), 0 0 0 2px oklch(0.45 0.1 155 / 0.1)' 
                 : '0 2px 8px oklch(0 0 0 / 0.1)' 
             }}
             transition={{ duration: 0.3 }}
-            className="relative h-12 w-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-lg"
+            className="relative h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 text-primary-foreground flex items-center justify-center shadow-lg ripple-wave"
           >
             <ShoppingCart className="h-5 w-5" />
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: cartCount > 0 ? 1 : 0 }}
               transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-              className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-accent text-accent-foreground rounded-full shadow-sm border-2 border-background"
+              className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-accent text-accent-foreground rounded-full shadow-sm border-2 border-background badge-spring"
             >
               {cartCount > 99 ? '99' : cartCount}
             </motion.span>
           </motion.div>
-          <span className={`text-[10px] font-medium mt-0.5 leading-tight ${currentView === 'cart' ? 'text-primary' : 'text-muted-foreground'}`}>
+          <span className={`text-[10px] font-medium mt-0.5 leading-tight ${currentView === 'cart' ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
             Carrinho
           </span>
         </motion.button>
@@ -96,14 +106,24 @@ export function MobileNav() {
               onClick={() => navigate(item.id as 'orders' | 'favorites' | 'profile')}
               className="relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px]"
             >
+              {/* Active glow background */}
+              {isActive && (
+                <motion.div
+                  layoutId="mobile-nav-bg-right"
+                  className="absolute inset-x-1 -top-1 bottom-0 rounded-xl bg-primary/5"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
               <motion.div
                 whileTap={{ scale: 0.82 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 animate={isActive ? { scale: 1.1 } : { scale: 1 }}
               >
-                <item.icon className={`h-[22px] w-[22px] transition-colors duration-200 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                <item.icon className={`h-[22px] w-[22px] transition-all duration-200 ${isActive ? 'text-primary text-shadow-primary' : 'text-muted-foreground'}`} />
               </motion.div>
-              <span className={`text-[10px] font-medium transition-colors duration-200 leading-tight ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+              <span className={`text-[10px] font-medium transition-all duration-200 leading-tight ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
                 {item.label}
               </span>
               {isActive && (

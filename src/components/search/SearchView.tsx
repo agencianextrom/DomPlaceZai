@@ -1,16 +1,15 @@
 'use client'
 
-import { Search, SlidersHorizontal, TrendingUp, Clock, X, ArrowUpDown, Sparkles, Eye, Package } from 'lucide-react'
+import { Search, SlidersHorizontal, TrendingUp, X, ArrowUpDown, Sparkles, Eye, Package } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useAppStore } from '@/store/useAppStore'
 import { useState, useEffect, useMemo } from 'react'
 import { ProductCard } from '@/components/product/ProductCard'
+import { SearchHistory } from '@/components/search/SearchHistory'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { ProductData } from '@/store/useAppStore'
-
-const trendingSearches = ['Açaí', 'Ração', 'Pão', 'Remédio', 'Muda de planta', 'Celular', 'Roupas']
 
 const sortFilters = [
   { id: 'relevance', label: 'Relevância', icon: Sparkles },
@@ -21,7 +20,7 @@ const sortFilters = [
 ]
 
 export function SearchView() {
-  const { searchQuery, setSearchQuery, closeSearch, addRecentSearch, recentSearches, clearRecentSearches } = useAppStore()
+  const { searchQuery, setSearchQuery, closeSearch, addRecentSearch } = useAppStore()
   const [results, setResults] = useState<ProductData[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [activeSort, setActiveSort] = useState<string>('relevance')
@@ -80,7 +79,6 @@ export function SearchView() {
   }, [searchQuery, addRecentSearch])
   
   const hasQuery = searchQuery.length > 0
-  const displayedRecentSearches = recentSearches.slice(0, 5)
   
   return (
     <div className="min-h-screen bg-background">
@@ -262,47 +260,12 @@ export function SearchView() {
         {/* Default content (no query) */}
         {!hasQuery && (
           <div>
-            {/* Recent searches */}
-            {displayedRecentSearches.length > 0 && (
-              <motion.div 
-                className="mb-8"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold flex items-center gap-1.5">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                    Buscas recentes
-                  </h3>
-                  <motion.button 
-                    whileTap={{ scale: 0.95 }}
-                    onClick={clearRecentSearches}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md hover:bg-secondary"
-                  >
-                    Limpar tudo
-                  </motion.button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <AnimatePresence>
-                    {displayedRecentSearches.map((s, i) => (
-                      <motion.button
-                        key={s}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ delay: i * 0.04 }}
-                        whileTap={{ scale: 0.93 }}
-                        onClick={() => setSearchQuery(s)}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-secondary/80 text-sm hover:bg-secondary transition-colors group"
-                      >
-                        <Clock className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
-                        <span>{s}</span>
-                      </motion.button>
-                    ))}
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-            )}
+            {/* Search History - cloud of recent + trending */}
+            <SearchHistory
+              maxItems={8}
+              showTrending={true}
+              onSearch={(query) => setSearchQuery(query)}
+            />
             
             {/* Recently viewed - decorative section */}
             <motion.div
@@ -334,44 +297,7 @@ export function SearchView() {
               </div>
             </motion.div>
 
-            {/* Trending / Buscas Populares */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-            >
-              <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                Buscas populares
-                <span className="text-[10px] font-normal text-muted-foreground">em Dom Eliseu</span>
-              </h3>
-              <div className="space-y-1">
-                {trendingSearches.map((s, i) => (
-                  <motion.button
-                    key={s}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + i * 0.04 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setSearchQuery(s)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-secondary/70 transition-colors group"
-                  >
-                    <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold ${
-                      i === 0 ? 'bg-accent/20 text-accent-foreground' :
-                      i === 1 ? 'bg-primary/15 text-primary' :
-                      i === 2 ? 'bg-primary/10 text-primary' :
-                      'bg-muted text-muted-foreground'
-                    }`}>
-                      {i + 1}
-                    </span>
-                    <span className="text-sm group-hover:text-primary transition-colors">{s}</span>
-                    {i < 3 && (
-                      <TrendingUp className="h-3 w-3 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                    )}
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
+            {/* Trending section now provided by SearchHistory component above */}
           </div>
         )}
       </div>

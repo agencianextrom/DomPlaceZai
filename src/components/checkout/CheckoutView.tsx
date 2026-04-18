@@ -173,7 +173,7 @@ export function CheckoutView() {
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-            className="w-28 h-28 rounded-full bg-gradient-to-br from-primary via-emerald-500 to-teal-500 flex items-center justify-center mb-6 shadow-neon-emerald relative z-10"
+            className="w-28 h-28 rounded-full bg-gradient-to-br from-primary via-emerald-500 to-teal-500 flex items-center justify-center mb-6 shadow-neon-emerald relative z-10 ripple-wave"
           >
             <motion.div
               initial={{ scale: 0 }}
@@ -246,39 +246,28 @@ export function CheckoutView() {
           <div className="flex-1">
             <h1 className="text-lg font-bold text-shadow-sm">Finalizar Pedido</h1>
             
-            {/* Step indicator */}
-            <div className="flex items-center gap-0 mt-2.5">
+            {/* Step indicator using progress-steps CSS */}
+            <div className="progress-steps mt-2.5">
               {stepLabels.map((s, i) => {
                 const isCompleted = i < currentStepIndex
                 const isCurrent = i === currentStepIndex
                 return (
                   <div key={s.id} className="flex items-center flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="step">
                       <motion.div
                         animate={isCurrent ? { scale: [1, 1.12, 1] } : {}}
                         transition={{ duration: 0.4, type: 'spring', stiffness: 400, damping: 20 }}
-                        className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
-                          isCompleted 
-                            ? 'bg-primary text-primary-foreground' 
-                            : isCurrent 
-                              ? 'bg-primary text-primary-foreground ring-[3px] ring-primary/20' 
-                              : 'bg-muted text-muted-foreground'
-                        }`}
+                        className={`step-dot ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}
                       >
                         {isCompleted ? <Check className="h-3.5 w-3.5" /> : s.num}
                       </motion.div>
-                      <span className={`text-xs font-medium hidden sm:block transition-colors duration-300 ${isCurrent ? 'text-foreground font-semibold' : isCompleted ? 'text-primary' : 'text-muted-foreground'}`}>
+                      <span className={`text-[10px] font-medium mt-1 hidden sm:block transition-colors duration-300 ${isCurrent ? 'text-foreground font-semibold' : isCompleted ? 'text-primary' : 'text-muted-foreground'}`}>
                         {s.title}
                       </span>
                     </div>
                     {i < stepLabels.length - 1 && (
-                      <div className="flex-1 h-[2px] mx-2 rounded-full overflow-hidden bg-muted">
-                        <motion.div
-                          initial={false}
-                          animate={{ scaleX: i < currentStepIndex ? 1 : 0 }}
-                          transition={{ duration: 0.4, ease: 'easeOut' }}
-                          className="h-full w-full bg-primary origin-left"
-                        />
+                      <div className="step-line">
+                        <div className={`step-line-fill ${i < currentStepIndex ? 'filled' : ''}`} />
                       </div>
                     )}
                   </div>
@@ -292,7 +281,7 @@ export function CheckoutView() {
       <div className="p-4 max-w-3xl mx-auto">
         <AnimatePresence mode="wait">
           {step === 'address' && (
-            <motion.div key="address" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <motion.div key="address" initial={{ opacity: 0, x: 20, filter: 'blur(4px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, x: -20, filter: 'blur(4px)' }} transition={{ duration: 0.35 }}>
               <div className="reveal-up" style={{ animationDelay: '0.1s' }}>
               <div className="mb-6">
                 <h3 className="font-semibold mb-3">Tipo de entrega</h3>
@@ -463,7 +452,7 @@ export function CheckoutView() {
           )}
           
           {step === 'payment' && (
-            <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <motion.div key="payment" initial={{ opacity: 0, x: 20, filter: 'blur(4px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, x: -20, filter: 'blur(4px)' }} transition={{ duration: 0.35 }}>
               <div className="reveal-up" style={{ animationDelay: '0.1s' }}>
               {/* Delivery time selector */}
               {deliveryType === 'delivery' && (

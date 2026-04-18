@@ -114,7 +114,7 @@ export function FlashSale() {
       transition={{ delay: 0.15 }}
       className="relative"
     >
-      <div className="bg-gradient-to-r from-red-50 via-orange-50 to-amber-50 dark:from-red-900/10 dark:via-orange-900/10 dark:to-amber-900/10 rounded-2xl border border-red-200/50 dark:border-red-800/30 overflow-hidden">
+      <div className="bg-gradient-to-r from-red-50 via-orange-50 to-amber-50 dark:from-red-900/10 dark:via-orange-900/10 dark:to-amber-900/10 rounded-2xl border border-red-200/50 dark:border-red-800/30 overflow-hidden glass-card-hover">
         {/* Header */}
         <div className="flex items-center justify-between px-4 pt-4 pb-3">
           <div className="flex items-center gap-2.5">
@@ -137,7 +137,7 @@ export function FlashSale() {
           </div>
 
           {/* Countdown Timer */}
-          <div className="flex items-center gap-1 bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-xl px-3 py-2 border border-red-200/50 dark:border-red-800/30 shadow-sm">
+          <div className="flex items-center gap-1 bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-xl px-3 py-2 border border-red-200/50 dark:border-red-800/30 shadow-sm inner-shadow-accent">
             <Clock className="h-3.5 w-3.5 text-red-500 mr-1 hidden sm:block" />
             <div className="flex items-center gap-0.5">
               {[
@@ -150,12 +150,12 @@ export function FlashSale() {
                     key={unit.value}
                     initial={{ y: -4, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="inline-flex items-center justify-center min-w-[26px] h-7 rounded-md bg-gradient-to-b from-red-500 to-red-600 text-white text-sm font-bold tabular-nums shadow-sm"
+                    className="inline-flex items-center justify-center min-w-[28px] h-8 rounded-lg bg-gradient-to-b from-red-500 to-red-600 text-white text-sm font-bold tabular-nums shadow-sm"
                   >
                     {unit.value}
                   </motion.span>
                   <span className="text-[9px] font-medium text-muted-foreground ml-0.5 mr-0.5">{unit.label}</span>
-                  {idx < 2 && <span className="text-red-400 font-bold mx-0.5">:</span>}
+                  {idx < 2 && <span className="text-red-400 font-bold mx-0.5 animate-pulse-soft">:</span>}
                 </span>
               ))}
             </div>
@@ -202,7 +202,7 @@ export function FlashSale() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.08, duration: 0.4 }}
                       >
-                        <Card className="overflow-hidden hover:shadow-lg transition-all border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group">
+                        <Card className="overflow-hidden hover:shadow-lg transition-all border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover">
                           <CardContent className="p-0 h-full flex flex-col">
                             {/* Image */}
                             <div className={`relative aspect-square flex items-center justify-center bg-gradient-to-br ${gradient}`}>
@@ -230,7 +230,7 @@ export function FlashSale() {
                                   <motion.div
                                     animate={{ opacity: [1, 0.6, 1] }}
                                     transition={{ duration: 1.2, repeat: Infinity }}
-                                    className="flex items-center gap-0.5 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm"
+                                    className="flex items-center gap-0.5 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm badge-floating"
                                   >
                                     <AlertTriangle className="h-2.5 w-2.5" />
                                     Últimas!
@@ -250,7 +250,7 @@ export function FlashSale() {
                                 <div className="flex items-baseline gap-1.5">
                                   <span className="text-sm font-extrabold text-red-600 dark:text-red-400">{formatBRL(product.price)}</span>
                                   {product.comparePrice && (
-                                    <span className="text-[10px] text-muted-foreground line-through">
+                                    <span className="text-[10px] text-muted-foreground line-through-animated">
                                       {formatBRL(product.comparePrice)}
                                     </span>
                                   )}
@@ -280,7 +280,7 @@ export function FlashSale() {
                                 <motion.div className="mt-2">
                                   <Button
                                     size="sm"
-                                    className="w-full h-7 text-[10px] bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-0 gap-1"
+                                    className="w-full h-7 text-[10px] bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-0 gap-1 btn-smooth ripple-effect"
                                     onClick={(e) => {
                                       e.stopPropagation()
                                       addToCart(product, product.storeName || 'Loja')
@@ -318,8 +318,16 @@ export function FlashSale() {
           </button>
         </div>
 
-        {/* Bottom fire decoration */}
-        <div className="h-1 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500" />
+        {/* Bottom fire decoration with shimmer */}
+        <div className="h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 relative overflow-hidden">
+          <motion.div
+            className="absolute inset-0"
+            animate={{ x: ['-100%', '200%'] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
+          >
+            <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+          </motion.div>
+        </div>
       </div>
     </motion.section>
   )

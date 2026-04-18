@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, Fragment } from 'react'
-import { ArrowLeft, Heart, ShoppingCart, Store, Package, Scale, CheckCircle, ChevronDown, ChevronUp, Truck, Tag, Minus, Plus, ShieldCheck, Zap } from 'lucide-react'
+import { ArrowLeft, Heart, ShoppingCart, Store, Package, Scale, CheckCircle, ChevronDown, ChevronUp, Truck, Tag, ShieldCheck, Zap, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -12,6 +12,8 @@ import { ShareButton } from './ShareButton'
 import { ProductReviews } from './ProductReviews'
 import { ProductGallery } from './ProductGallery'
 import { DeliveryTimeCalculator } from './DeliveryTimeCalculator'
+import { PriceDropAlert } from './PriceDropAlert'
+import { QuantityStepper } from '@/components/ui/QuantityStepper'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -211,23 +213,36 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </motion.div>
         )}
         
+        {/* Price Drop Alert Card */}
+        {product.comparePrice && product.comparePrice > product.price && discount >= 5 && (
+          <motion.div 
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mt-3"
+          >
+            <PriceDropAlert
+              price={product.price}
+              comparePrice={product.comparePrice}
+              dropDaysAgo={1}
+              isLowest={product.isOffer}
+              size="lg"
+              variant="card"
+            />
+          </motion.div>
+        )}
+
         {/* Price */}
-        <motion.div 
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="flex items-baseline gap-3 mt-3"
-        >
-          <span className="text-2xl sm:text-3xl font-bold text-primary">{formatBRL(product.price)}</span>
-          {product.comparePrice && product.comparePrice > product.price && (
-            <span className="text-lg text-muted-foreground line-through">{formatBRL(product.comparePrice)}</span>
-          )}
-          {discount > 0 && (
-            <Badge variant="secondary" className="text-xs bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-0">
-              Economize {formatBRL(product.comparePrice! - product.price)}
-            </Badge>
-          )}
-        </motion.div>
+        {!product.comparePrice && (
+          <motion.div 
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex items-baseline gap-3 mt-3"
+          >
+            <span className="text-2xl sm:text-3xl font-bold text-primary">{formatBRL(product.price)}</span>
+          </motion.div>
+        )}
 
         {/* Product specs */}
         <motion.div 
@@ -269,8 +284,9 @@ export function ProductDetail({ product }: ProductDetailProps) {
           {trustBadges.map((badge, i) => (
             <motion.div
               key={badge.label}
-              whileHover={{ y: -2 }}
-              className={`flex flex-col items-center gap-1.5 p-3 rounded-xl ${badge.bg} border border-border/50 hover:shadow-sm transition-all cursor-default`}
+              whileHover={{ y: -2, scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+              className={`flex flex-col items-center gap-1.5 p-3 rounded-xl ${badge.bg} border border-border/50 hover-glow-soft cursor-default`}
             >
               <badge.icon className={`h-5 w-5 ${badge.color}`} />
               <span className="text-[10px] font-semibold text-center leading-tight">{badge.label}</span>
@@ -385,29 +401,17 @@ export function ProductDetail({ product }: ProductDetailProps) {
         
         <Separator className="my-4" />
         
-        {/* Quantity */}
-        <div className="flex items-center justify-between" ref={buySectionRef}>
-          <h3 className="font-semibold">Quantidade</h3>
-          <div className="flex items-center gap-3">
-            <motion.div whileTap={{ scale: 0.9 }}>
-              <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                <Minus className="h-4 w-4" />
-              </Button>
-            </motion.div>
-            <motion.span 
-              key={quantity}
-              initial={{ scale: 1.3 }}
-              animate={{ scale: 1 }}
-              className="w-8 text-center font-semibold"
-            >
-              {quantity}
-            </motion.span>
-            <motion.div whileTap={{ scale: 0.9 }}>
-              <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => setQuantity(quantity + 1)}>
-                <Plus className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          </div>
+        {/* Quantity - using QuantityStepper component */}
+        <div ref={buySectionRef}>
+          <QuantityStepper
+            value={quantity}
+            onChange={setQuantity}
+            min={1}
+            max={product.stock}
+            size="md"
+            showLabel
+            label="Quantidade"
+          />
         </div>
 
         <Separator className="my-4" />
@@ -520,7 +524,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                   <div className="flex items-baseline gap-1.5 mt-1">
                     <p className="text-sm font-bold text-primary">{formatBRL(p.price)}</p>
                     {p.comparePrice && p.comparePrice > p.price && (
-                      <span className="text-[10px] text-muted-foreground line-through">{formatBRL(p.comparePrice)}</span>
+                      <span className="text-[10px] text-muted-foreground line-through-animated">{formatBRL(p.comparePrice)}</span>
                     )}
                   </div>
                 </div>
@@ -591,25 +595,25 @@ export function ProductDetail({ product }: ProductDetailProps) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
+            className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] glow-edge-bottom"
           >
             <div className="max-w-3xl mx-auto">
               <div className="flex items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground truncate">{product.name}</p>
-                  <p className="text-lg font-bold text-primary">{formatBRL(product.price * quantity)}</p>
+                  <p className="text-lg font-bold text-primary text-gradient-primary">{formatBRL(product.price * quantity)}</p>
                 </div>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
-                    className="h-11 px-4 border-primary text-primary hidden sm:flex"
+                    className="h-11 px-4 border-primary text-primary hidden sm:flex hover-glow-soft"
                     onClick={handleAddToCart}
                   >
                     <ShoppingCart className="h-4 w-4 mr-2" />
                     Adicionar
                   </Button>
                   <Button
-                    className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow"
+                    className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine"
                     onClick={handleBuyNow}
                   >
                     <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
@@ -627,24 +631,24 @@ export function ProductDetail({ product }: ProductDetailProps) {
       {/* Always-visible bottom buy section (shown when sticky is hidden) */}
       <AnimatePresence>
         {!showStickyBar && (
-          <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3">
+          <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 glow-edge-bottom">
             <div className="max-w-3xl mx-auto">
               <div className="flex items-center gap-3 mb-2">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground">Total</p>
-                  <p className="text-lg font-bold text-primary">{formatBRL(product.price * quantity)}</p>
+                  <p className="text-lg font-bold text-primary text-gradient-primary">{formatBRL(product.price * quantity)}</p>
                 </div>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
-                    className="h-12 px-4 border-primary text-primary hidden sm:flex"
+                    className="h-12 px-4 border-primary text-primary hidden sm:flex hover-glow-soft"
                     onClick={handleAddToCart}
                   >
                     <ShoppingCart className="h-4 w-4 mr-2" />
                     Adicionar
                   </Button>
                   <Button
-                    className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+                    className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine"
                     onClick={handleBuyNow}
                   >
                     <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />

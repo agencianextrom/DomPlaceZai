@@ -4,6 +4,7 @@ import {
   Heart, ShoppingCart, Star, Utensils, Sprout, HeartPulse, Smartphone, PawPrint, 
   Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows, Eye
 } from 'lucide-react'
+import { PriceDropAlert } from './PriceDropAlert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -238,6 +239,16 @@ export function ProductCard({ product }: ProductCardProps) {
           <p className="text-[10px] font-medium text-primary truncate">{product.storeName}</p>
         )}
         <h3 className="text-xs font-semibold mt-0.5 line-clamp-2 leading-tight min-h-[2rem]">{product.name}</h3>
+        
+        {/* Price Drop Alert - inline badge */}
+        <div className="mt-1">
+          <PriceDropAlert
+            price={product.price}
+            comparePrice={product.comparePrice || 0}
+            size="sm"
+            variant="badge"
+          />
+        </div>
         
         <div className="mt-auto pt-1.5">
           <div className="flex items-baseline gap-1.5">

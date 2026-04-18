@@ -2449,3 +2449,377 @@
     0 4px 16px oklch(0.55 0.12 155 / 0.3),
     0 0 24px oklch(0.55 0.12 155 / 0.15);
 }
+
+/* ==============================
+   ROUND 10 — NEW CSS UTILITIES
+   ============================== */
+
+/* GLASS CARD HOVER — Glassmorphism that intensifies on hover (blur increases, shadow deepens) */
+.glass-card-hover {
+  background: oklch(1 0 0 / 0.45);
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  border: 1px solid oklch(1 0 0 / 0.2);
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.03);
+}
+.glass-card-hover:hover {
+  background: oklch(1 0 0 / 0.65);
+  backdrop-filter: blur(24px) saturate(220%);
+  -webkit-backdrop-filter: blur(24px) saturate(220%);
+  border-color: oklch(0.45 0.1 155 / 0.25);
+  box-shadow:
+    0 12px 40px oklch(0.45 0.1 155 / 0.1),
+    0 4px 12px oklch(0 0 0 / 0.06);
+  transform: translateY(-3px);
+}
+.dark .glass-card-hover {
+  background: oklch(0.20 0.02 150 / 0.45);
+  border-color: oklch(1 0 0 / 0.06);
+}
+.dark .glass-card-hover:hover {
+  background: oklch(0.25 0.02 150 / 0.6);
+  border-color: oklch(0.55 0.12 155 / 0.3);
+  box-shadow:
+    0 12px 40px oklch(0.55 0.12 155 / 0.12),
+    0 4px 12px oklch(0 0 0 / 0.18);
+}
+
+/* TEXT SHADOW AMBER — Amber colored text shadow */
+.text-shadow-amber {
+  text-shadow: 0 0 12px oklch(0.78 0.16 70 / 0.3), 0 1px 3px oklch(0.78 0.16 70 / 0.15);
+}
+.dark .text-shadow-amber {
+  text-shadow: 0 0 16px oklch(0.72 0.16 70 / 0.4), 0 1px 3px oklch(0.72 0.16 70 / 0.2);
+}
+
+/* ANIMATE BOUNCE IN — Bounce in from scale 0.8 */
+@keyframes bounce-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.97); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* BORDER SHIMMER — Animated gradient border cycle (improved with conic gradient) */
+@keyframes border-shimmer-cycle {
+  0% { --shimmer-angle: 0deg; }
+  100% { --shimmer-angle: 360deg; }
+}
+.border-shimmer-cycle {
+  --shimmer-angle: 0deg;
+  position: relative;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.border-shimmer-cycle::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--shimmer-angle),
+    oklch(0.45 0.1 155),
+    oklch(0.78 0.16 70),
+    oklch(0.55 0.08 140),
+    oklch(0.45 0.1 155)
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+  animation: border-shimmer-cycle 4s linear infinite;
+}
+
+/* TAG PILL HOVER — Expandable tag on hover */
+.tag-pill-hover {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: oklch(0.97 0.005 150);
+  color: oklch(0.35 0.08 155);
+  border: 1px solid oklch(0.45 0.1 155 / 0.12);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 120px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.tag-pill-hover:hover {
+  max-width: 260px;
+  padding: 4px 16px;
+  border-color: oklch(0.45 0.1 155 / 0.35);
+  box-shadow: 0 2px 8px oklch(0.45 0.1 155 / 0.12);
+  background: oklch(0.45 0.1 155 / 0.05);
+  color: oklch(0.30 0.08 155);
+}
+.dark .tag-pill-hover {
+  background: oklch(0.25 0.02 150 / 0.6);
+  color: oklch(0.70 0.12 155);
+  border-color: oklch(0.55 0.12 155 / 0.18);
+}
+.dark .tag-pill-hover:hover {
+  background: oklch(0.55 0.12 155 / 0.1);
+  border-color: oklch(0.55 0.12 155 / 0.4);
+  color: oklch(0.80 0.12 155);
+}
+
+/* STACK CARDS — Overlapping card stack effect */
+.stack-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.stack-cards > *:nth-child(1) { z-index: 3; position: relative; }
+.stack-cards > *:nth-child(2) { z-index: 2; position: relative; margin-top: -12px; transform: scale(0.97); opacity: 0.75; }
+.stack-cards > *:nth-child(3) { z-index: 1; position: relative; margin-top: -12px; transform: scale(0.94); opacity: 0.55; }
+.stack-cards > *:nth-child(2):hover,
+.stack-cards > *:nth-child(3):hover {
+  opacity: 1;
+  transform: scale(1) translateY(-4px);
+  z-index: 10;
+  box-shadow: 0 8px 24px oklch(0 0 0 / 0.12);
+}
+
+/* DOT INDICATOR — Active dot with scale animation (enhanced version) */
+@keyframes dot-active-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 oklch(0.45 0.1 155 / 0.3); }
+  50% { transform: scale(1.15); box-shadow: 0 0 0 6px oklch(0.45 0.1 155 / 0); }
+}
+.dot-indicator-active {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: oklch(0.45 0.1 155);
+  animation: dot-active-pulse 2s ease-in-out infinite;
+}
+
+/* PROGRESS STEPS — Horizontal step progress bar */
+.progress-steps {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+.progress-steps .step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.progress-steps .step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 2px solid oklch(0 0 0 / 0.1);
+  background: oklch(0.96 0.01 120);
+  color: oklch(0.50 0.03 150);
+}
+.progress-steps .step-dot.completed {
+  background: oklch(0.45 0.1 155);
+  border-color: oklch(0.45 0.1 155);
+  color: oklch(0.98 0.005 120);
+  box-shadow: 0 2px 8px oklch(0.45 0.1 155 / 0.2);
+}
+.progress-steps .step-dot.current {
+  border-color: oklch(0.45 0.1 155);
+  color: oklch(0.45 0.1 155);
+  box-shadow: 0 0 0 4px oklch(0.45 0.1 155 / 0.12);
+  animation: dot-active-pulse 2s ease-in-out infinite;
+}
+.progress-steps .step-line {
+  flex: 1;
+  height: 3px;
+  background: oklch(0 0 0 / 0.08);
+  border-radius: 2px;
+  margin: 0 -4px;
+  position: relative;
+  overflow: hidden;
+}
+.progress-steps .step-line-fill {
+  position: absolute;
+  inset: 0;
+  background: oklch(0.45 0.1 155);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.progress-steps .step-line-fill.filled {
+  transform: scaleX(1);
+}
+.dark .progress-steps .step-dot {
+  background: oklch(0.25 0.02 150);
+  border-color: oklch(1 0 0 / 0.08);
+  color: oklch(0.65 0.03 150);
+}
+.dark .progress-steps .step-dot.completed {
+  background: oklch(0.55 0.12 155);
+  border-color: oklch(0.55 0.12 155);
+  color: oklch(0.15 0.02 150);
+  box-shadow: 0 2px 8px oklch(0.55 0.12 155 / 0.2);
+}
+.dark .progress-steps .step-dot.current {
+  border-color: oklch(0.55 0.12 155);
+  color: oklch(0.55 0.12 155);
+  box-shadow: 0 0 0 4px oklch(0.55 0.12 155 / 0.12);
+}
+.dark .progress-steps .step-line {
+  background: oklch(1 0 0 / 0.06);
+}
+.dark .progress-steps .step-line-fill {
+  background: oklch(0.55 0.12 155);
+}
+
+/* RIPPLE WAVE — Expanding concentric ripple waves */
+@keyframes ripple-wave-expand {
+  0% { transform: scale(0.5); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+.ripple-wave {
+  position: relative;
+  overflow: visible;
+}
+.ripple-wave::before,
+.ripple-wave::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid oklch(0.45 0.1 155 / 0.3);
+  pointer-events: none;
+}
+.ripple-wave::before {
+  animation: ripple-wave-expand 2s ease-out infinite;
+}
+.ripple-wave::after {
+  animation: ripple-wave-expand 2s ease-out 0.8s infinite;
+}
+.dark .ripple-wave::before,
+.dark .ripple-wave::after {
+  border-color: oklch(0.55 0.12 155 / 0.2);
+}
+
+/* INNER SHADOW ACCENT — Inner glow with primary/accent color */
+.inner-shadow-accent {
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.3),
+    inset 0 -2px 4px oklch(0.45 0.1 155 / 0.06),
+    0 1px 3px oklch(0 0 0 / 0.04);
+}
+.dark .inner-shadow-accent {
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.05),
+    inset 0 -2px 4px oklch(0.55 0.12 155 / 0.08),
+    0 1px 3px oklch(0 0 0 / 0.15);
+}
+
+/* SLIDE IN BLUR — Slide in with blur effect */
+@keyframes slide-in-blur-keyframes {
+  0% { opacity: 0; transform: translateY(16px); filter: blur(8px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.animate-slide-in-blur {
+  animation: slide-in-blur-keyframes 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* SCROLL SHADOW TOP — Shadow at top of scroll container */
+.scroll-shadow-top {
+  position: relative;
+}
+.scroll-shadow-top::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, oklch(0 0 0 / 0.06), transparent);
+  pointer-events: none;
+  z-index: 2;
+  display: block;
+}
+.dark .scroll-shadow-top::before {
+  background: linear-gradient(to bottom, oklch(0 0 0 / 0.2), transparent);
+}
+
+/* HOVER GLOW SOFT — Soft ambient glow on hover */
+.hover-glow-soft {
+  transition: box-shadow 0.4s ease, transform 0.3s ease;
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.04);
+}
+.hover-glow-soft:hover {
+  box-shadow:
+    0 4px 12px oklch(0.45 0.1 155 / 0.08),
+    0 0 20px oklch(0.45 0.1 155 / 0.04);
+  transform: translateY(-1px);
+}
+.dark .hover-glow-soft {
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.15);
+}
+.dark .hover-glow-soft:hover {
+  box-shadow:
+    0 4px 12px oklch(0.55 0.12 155 / 0.12),
+    0 0 20px oklch(0.55 0.12 155 / 0.06);
+}
+
+/* TEXT GRADIENT AMBER — Amber-to-orange gradient text */
+.text-gradient-amber {
+  background: linear-gradient(135deg, oklch(0.78 0.16 70), oklch(0.72 0.14 60), oklch(0.65 0.18 50));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* BADGE FLOATING — Floating badge with gentle animation */
+@keyframes badge-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.badge-floating {
+  animation: badge-float 3s ease-in-out infinite;
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.1);
+}
+.dark .badge-floating {
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.25);
+}
+
+/* LINE THROUGH ANIMATED — Animated strikethrough for old prices */
+.line-through-animated {
+  position: relative;
+  display: inline-block;
+}
+.line-through-animated::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 50%;
+  height: 1.5px;
+  background: oklch(0.50 0.02 25);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.line-through-animated::after {
+  transform: scaleX(1);
+}
+.dark .line-through-animated::after {
+  background: oklch(0.65 0.05 25);
+}

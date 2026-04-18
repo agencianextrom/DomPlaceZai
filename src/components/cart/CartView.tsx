@@ -125,10 +125,10 @@ export function CartView() {
             Adicione produtos das lojas locais e aproveite as melhores ofertas de Dom Eliseu
           </p>
           <div className="flex gap-3 justify-center">
-            <Button onClick={() => navigate('home')} variant="outline" className="h-11 px-5">
+            <Button onClick={() => navigate('home')} variant="outline" className="h-11 px-5 hover-glow-soft">
               Explorar ofertas
             </Button>
-            <Button onClick={() => navigate('home')} className="bg-primary text-primary-foreground h-11 px-5 btn-glow">
+            <Button onClick={() => navigate('home')} className="bg-primary text-primary-foreground h-11 px-5 btn-glow btn-shine">
               Ver lojas
               <Store className="h-4 w-4 ml-2" />
             </Button>
@@ -259,7 +259,7 @@ export function CartView() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -60, transition: { duration: 0.25 } }}
                       transition={{ delay: index * 0.06, duration: 0.35 }}
-                      className="flex gap-3 p-4"
+                      className="flex gap-3 p-4 cart-item-hover hover-glow-soft"
                     >
                       <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0`}>
                         {icon}
@@ -359,7 +359,7 @@ export function CartView() {
             </div>
           </div>
           <Button
-            className="w-full h-12 mt-3 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow"
+            className="w-full h-12 mt-3 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine"
             onClick={() => navigate('checkout')}
           >
             Finalizar Pedido

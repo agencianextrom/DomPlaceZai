@@ -32,6 +32,8 @@ import { StoreSearch } from '@/components/home/StoreSearch'
 import { LoyaltyTier } from '@/components/profile/LoyaltyTier'
 import { RecentOrders } from '@/components/home/RecentOrders'
 import { WishlistShare } from '@/components/profile/WishlistShare'
+import { StoreFavorites } from '@/components/home/StoreFavorites'
+import { MapStoreLocator } from '@/components/home/MapStoreLocator'
 import { Share2 } from 'lucide-react'
 import { useState, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -567,6 +569,11 @@ export default function Home() {
 
                     <Separator className="my-8 bg-border/50" />
                     
+                    {/* Store Favorites Carousel */}
+                    <StoreFavorites stores={allStores} />
+
+                    <Separator className="my-8 bg-border/50" />
+                    
                     {/* Offers of the Day */}
                     {offerProducts.length > 0 && (
                       <section>
@@ -616,10 +623,17 @@ export default function Home() {
                     <Separator className="my-8 bg-border/50" />
 
                     {/* Store Search */}
-                    <StoreSearch stores={allStores} />
+                    <section>
+                      <StoreSearch stores={allStores} />
+                    </section>
 
                     <Separator className="my-8 bg-border/50" />
-                    
+
+                    {/* Map Store Locator */}
+                    <MapStoreLocator stores={allStores} />
+
+                    <Separator className="my-8 bg-border/50" />
+
                     {/* Partners */}
                     <section>
                       <PartnersBanner />
