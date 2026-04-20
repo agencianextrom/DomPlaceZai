@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Users, Copy, Check, Share2, QrCode, DollarSign, TrendingUp,
   Gift, ChevronRight, Star, Phone, Mail, Instagram, Facebook,
   BarChart3, Wallet, ArrowUpRight, ArrowDownRight, ExternalLink,
   UserPlus, ShoppingCart, Eye, Megaphone, Image as ImageIcon,
-  Sparkles, Trophy, Clock, Filter
+  Sparkles, Trophy, Clock, Filter, AlertCircle, RefreshCw, Loader2,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -15,35 +15,57 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { useAppStore } from '@/store/useAppStore'
 
-// Mock data
-const mockAffiliate = {
-  name: 'Ana Oliveira',
-  initials: 'AO',
-  referralCode: 'ANADEP25',
-  referralLink: 'https://domplace.com/convite/ANADEP25',
-  commissionRate: 3,
-  totalReferrals: 24,
-  totalConversions: 18,
-  pendingEarnings: 67.50,
-  availableBalance: 215.00,
-  totalEarnings: 842.50,
-  monthlyTarget: 500,
-  monthlyProgress: 65,
+// ── Types ──
+interface DashboardData {
+  referralCode: string
+  commissionRate: number
+  totalEarnings: number
+  pendingEarnings: number
+  totalReferrals: number
+  totalConversions: number
+  status: string
+  availableBalance: number
+  recentReferrals: ReferralItem[]
+  monthlyStats: { referrals: number; conversions: number }
 }
 
-const mockReferrals = [
-  { id: 'r1', name: 'Pedro Santos', date: '15/04/2025', status: 'active' as const, commission: 12.50, orderValue: 416.67 },
-  { id: 'r2', name: 'Julia Costa', date: '14/04/2025', status: 'active' as const, commission: 8.25, orderValue: 275.00 },
-  { id: 'r3', name: 'Lucas Mendes', date: '13/04/2025', status: 'converted' as const, commission: 15.00, orderValue: 500.00 },
-  { id: 'r4', name: 'Camila Ferreira', date: '12/04/2025', status: 'active' as const, commission: 6.75, orderValue: 225.00 },
-  { id: 'r5', name: 'Rafael Lima', date: '10/04/2025', status: 'converted' as const, commission: 18.00, orderValue: 600.00 },
-  { id: 'r6', name: 'Beatriz Alves', date: '08/04/2025', status: 'converted' as const, commission: 9.00, orderValue: 300.00 },
-  { id: 'r7', name: 'Gabriel Souza', date: '05/04/2025', status: 'pending' as const, commission: 0, orderValue: 0 },
-  { id: 'r8', name: 'Isabela Pereira', date: '03/04/2025', status: 'active' as const, commission: 7.50, orderValue: 250.00 },
+interface ReferralItem {
+  id: string
+  referredUserName: string
+  referredUserEmail?: string
+  order: { orderNumber: string; total: number } | null
+  amount: number
+  commission: number
+  status: string
+  createdAt: string
+}
+
+interface PayoutInfo {
+  availableBalance: number
+  pendingPayouts: number
+  recentPayoutHistory: { id: string; details: string; createdAt: string }[]
+  minPayoutAmount: number
+}
+
+const mockBanners = [
+  { id: 'b1', title: 'Ganhe 10% de volta', desc: 'Indique amigos e ganhe 10% de cashback nas compras deles!', gradient: 'from-primary to-emerald-600' },
+  { id: 'b2', title: 'Dom Eliseu entrega tudo', desc: 'De acai a agropecuaria, tudo chega na sua porta!', gradient: 'from-amber-500 to-orange-500' },
+  { id: 'b3', title: 'Primeira compra gratis', desc: 'Seus indicados ganham frete gratis na primeira compra!', gradient: 'from-teal-500 to-cyan-500' },
+]
+
+const mockPostTemplates = [
+  { id: 't1', platform: 'WhatsApp', text: 'Opa! Descobri o DomPlace, o app de entregas de Dom Eliseu! Tem de tudo: mercado, acai, farmacia, pet shop e mais. Baixe com meu link e ganhe R$10 de desconto: {link}', icon: 'MessageCircle', color: 'text-emerald-600' },
+  { id: 't2', platform: 'Instagram', text: 'Dom Eliseu agora tem delivery de verdade! No DomPlace voce encontra de tudo com entrega rapida. Use meu codigo {code} e ganhe desconto na primeira compra! {link}', icon: 'Instagram', color: 'text-pink-600' },
+  { id: 't3', platform: 'Facebook', text: 'Moradores de Dom Eliseu! O DomPlace facilitou minha vida. Encomendo de varias lojas sem sair de casa. Indico demais! {link}', icon: 'Facebook', color: 'text-sky-600' },
 ]
 
 const mockMonthlyChart = [
@@ -55,35 +77,18 @@ const mockMonthlyChart = [
   { month: 'Jun', amount: 215.00 },
 ]
 
-const mockBanners = [
-  { id: 'b1', title: 'Ganhe 10% de volta', desc: 'Indique amigos e ganhe 10% de cashback nas compras deles!', gradient: 'from-primary to-emerald-600' },
-  { id: 'b2', title: 'Dom Eliseu entrega tudo', desc: 'De acai a agropecuaria, tudo chega na sua porta!', gradient: 'from-amber-500 to-orange-500' },
-  { id: 'b3', title: 'Primeira compra gratis', desc: 'Seus indicados ganham frete gratis na primeira compra!', gradient: 'from-teal-500 to-cyan-500' },
-]
+function formatBRL(value: number): string {
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
+}
 
-const mockPostTemplates = [
-  {
-    id: 't1',
-    platform: 'WhatsApp',
-    text: 'Opa! Descobri o DomPlace, o app de entregas de Dom Eliseu! Tem de tudo: mercado, acai, farmacia, pet shop e mais. Baixe com meu link e ganhe R$10 de desconto: {link}',
-    icon: 'MessageCircle',
-    color: 'text-emerald-600',
-  },
-  {
-    id: 't2',
-    platform: 'Instagram',
-    text: 'Dom Eliseu agora tem delivery de verdade! No DomPlace voce encontra de tudo com entrega rapida. Use meu codigo {code} e ganhe desconto na primeira compra! {link}',
-    icon: 'Instagram',
-    color: 'text-pink-600',
-  },
-  {
-    id: 't3',
-    platform: 'Facebook',
-    text: 'Moradores de Dom Eliseu! O DomPlace facilitou minha vida. Encomendo de varias lojas sem sair de casa. Indico demais! {link}',
-    icon: 'Facebook',
-    color: 'text-sky-600',
-  },
-]
+function formatBRLShort(value: number): string {
+  return `R$ ${value.toFixed(2).replace('.', ',')}`
+}
+
+function formatDate(iso: string): string {
+  const d = new Date(iso)
+  return d.toLocaleDateString('pt-BR')
+}
 
 export function AffiliateDashboard() {
   const { navigate } = useAppStore()
@@ -91,27 +96,159 @@ export function AffiliateDashboard() {
   const [copiedLink, setCopiedLink] = useState(false)
   const [referralFilter, setReferralFilter] = useState<'all' | 'active' | 'converted' | 'pending'>('all')
 
-  const filteredReferrals = referralFilter === 'all'
-    ? mockReferrals
-    : mockReferrals.filter(r => r.status === referralFilter)
+  // API state
+  const [dashboard, setDashboard] = useState<DashboardData | null>(null)
+  const [referrals, setReferrals] = useState<ReferralItem[]>([])
+  const [referralsTotal, setReferralsTotal] = useState(0)
+  const [payoutInfo, setPayoutInfo] = useState<PayoutInfo | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [payoutLoading, setPayoutLoading] = useState(false)
+  const [payoutDialogOpen, setPayoutDialogOpen] = useState(false)
+  const [payoutAmount, setPayoutAmount] = useState('')
+  const [referralStatuses, setReferralStatuses] = useState<Record<string, string>>({})
+
+  const referralLink = dashboard ? `https://domplace.com/convite/${dashboard.referralCode}` : ''
+  const initials = dashboard?.referralCode?.slice(0, 2) || 'AF'
+
+  const fetchDashboard = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const res = await fetch('/api/affiliate/dashboard')
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Erro ao carregar dados')
+      }
+      const json = await res.json()
+      if (json.success) {
+        setDashboard(json.data)
+      } else {
+        throw new Error(json.error || 'Erro ao carregar dados')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro inesperado')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const fetchReferrals = useCallback(async (status: string = 'all') => {
+    try {
+      const res = await fetch(`/api/affiliate/referrals?status=${status}&limit=20`)
+      if (res.ok) {
+        const json = await res.json()
+        if (json.success) {
+          setReferrals(json.data.referrals)
+          setReferralsTotal(json.data.pagination.total)
+          const statusMap: Record<string, string> = {}
+          json.data.referrals.forEach((r: ReferralItem) => {
+            statusMap[r.id] = r.status
+          })
+          setReferralStatuses(prev => ({ ...prev, ...statusMap }))
+        }
+      }
+    } catch {
+      // Silently fail
+    }
+  }, [])
+
+  const fetchPayoutInfo = useCallback(async () => {
+    try {
+      const res = await fetch('/api/affiliate/payout')
+      if (res.ok) {
+        const json = await res.json()
+        if (json.success) {
+          setPayoutInfo(json.data)
+        }
+      }
+    } catch {
+      // Silently fail
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchDashboard()
+  }, [fetchDashboard])
+
+  useEffect(() => {
+    if (dashboard) {
+      fetchReferrals()
+      fetchPayoutInfo()
+    }
+  }, [dashboard, fetchReferrals, fetchPayoutInfo])
+
+  useEffect(() => {
+    fetchReferrals(referralFilter === 'all' ? 'all' : referralFilter)
+  }, [referralFilter, fetchReferrals])
 
   const copyCode = () => {
-    navigator.clipboard.writeText(mockAffiliate.referralCode)
+    if (!dashboard) return
+    navigator.clipboard.writeText(dashboard.referralCode)
     setCopiedCode(true)
     toast.success('Codigo copiado!')
     setTimeout(() => setCopiedCode(false), 2000)
   }
 
   const copyLink = () => {
-    navigator.clipboard.writeText(mockAffiliate.referralLink)
+    navigator.clipboard.writeText(referralLink)
     setCopiedLink(true)
     toast.success('Link copiado!')
     setTimeout(() => setCopiedLink(false), 2000)
   }
 
   const shareWhatsApp = () => {
-    const text = encodeURIComponent(`Opa! Descobri o DomPlace, o app de entregas de Dom Eliseu! Baixe com meu link e ganhe R$10 de desconto: ${mockAffiliate.referralLink}`)
+    const text = encodeURIComponent(`Opa! Descobri o DomPlace, o app de entregas de Dom Eliseu! Baixe com meu link e ganhe R$10 de desconto: ${referralLink}`)
     window.open(`https://wa.me/?text=${text}`, '_blank')
+  }
+
+  const handlePayout = async () => {
+    const amount = parseFloat(payoutAmount)
+    if (!amount || amount <= 0) {
+      toast.error('Insira um valor valido')
+      return
+    }
+    const minAmount = payoutInfo?.minPayoutAmount || 50
+    if (amount < minAmount) {
+      toast.error(`O valor minimo para saque e R$${minAmount},00`)
+      return
+    }
+    const available = dashboard?.availableBalance || 0
+    if (amount > available) {
+      toast.error('Saldo insuficiente')
+      return
+    }
+
+    setPayoutLoading(true)
+    try {
+      const res = await fetch('/api/affiliate/payout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount }),
+      })
+      const json = await res.json()
+      if (res.ok && json.success) {
+        toast.success(json.message || 'Solicitacao de saque enviada! Voce recebera em ate 2 dias uteis.')
+        setPayoutDialogOpen(false)
+        setPayoutAmount('')
+        fetchDashboard()
+        fetchPayoutInfo()
+      } else {
+        toast.error(json.error || 'Erro ao solicitar saque')
+      }
+    } catch {
+      toast.error('Erro de conexao. Tente novamente.')
+    } finally {
+      setPayoutLoading(false)
+    }
+  }
+
+  const getReferralStatus = (ref: ReferralItem): string => {
+    if (referralStatuses[ref.id]) return referralStatuses[ref.id]
+    if (ref.status === 'paid') return 'converted'
+    if (ref.status === 'approved') return 'converted'
+    if (ref.status === 'pending') return 'pending'
+    return 'active'
   }
 
   const getStatusBadge = (status: string) => {
@@ -123,9 +260,76 @@ export function AffiliateDashboard() {
       case 'pending':
         return <Badge className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 text-[10px] border-0">Pendente</Badge>
       default:
-        return null
+        return <Badge className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 text-[10px] border-0">{status}</Badge>
     }
   }
+
+  const filteredReferrals = referralFilter === 'all'
+    ? referrals
+    : referrals.filter(r => getReferralStatus(r) === referralFilter)
+
+  const referralCounts = {
+    all: referralsTotal,
+    active: referrals.filter(r => getReferralStatus(r) === 'active').length,
+    converted: referrals.filter(r => getReferralStatus(r) === 'converted').length,
+    pending: referrals.filter(r => getReferralStatus(r) === 'pending').length,
+  }
+
+  // ── Loading State ──
+  if (loading) {
+    return (
+      <div className="min-h-screen pb-24">
+        <div className="relative bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 pt-6 pb-8 text-white px-4">
+          <div className="flex items-center justify-between mb-5">
+            <Skeleton className="h-10 w-10 rounded-full bg-white/20" />
+            <Skeleton className="h-5 w-36 bg-white/20" />
+            <div className="w-10" />
+          </div>
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-16 w-16 rounded-2xl bg-white/20" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-6 w-32 bg-white/20" />
+              <Skeleton className="h-4 w-40 bg-white/20" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <Skeleton className="h-16 w-full rounded-2xl bg-white/15" />
+          </div>
+          <div className="grid grid-cols-4 gap-2 mt-4">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-16 rounded-xl bg-white/15" />
+            ))}
+          </div>
+        </div>
+        <div className="px-4 mt-4 space-y-4">
+          <Skeleton className="h-48 w-full rounded-xl" />
+          <Skeleton className="h-64 w-full rounded-xl" />
+          <Skeleton className="h-48 w-full rounded-xl" />
+        </div>
+      </div>
+    )
+  }
+
+  // ── Error State ──
+  if (error) {
+    return (
+      <div className="min-h-screen pb-24 flex items-center justify-center px-4">
+        <Card className="border-border/50 max-w-sm w-full">
+          <CardContent className="p-6 text-center space-y-4">
+            <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
+            <h2 className="text-lg font-bold">Erro ao carregar</h2>
+            <p className="text-sm text-muted-foreground">{error}</p>
+            <Button onClick={fetchDashboard} className="w-full" variant="outline">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Tentar novamente
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!dashboard) return null
 
   return (
     <div className="min-h-screen pb-24">
@@ -142,13 +346,15 @@ export function AffiliateDashboard() {
           }} />
           <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
-          
+
           <div className="relative flex items-center justify-between mb-5">
             <Button variant="ghost" size="icon" onClick={() => navigate('home')} className="text-white hover:bg-white/15 h-10 w-10">
               <ChevronRight className="h-5 w-5 rotate-180" />
             </Button>
             <h1 className="text-lg font-bold">Painel do Afiliado</h1>
-            <div className="w-10" />
+            <Button variant="ghost" size="icon" onClick={fetchDashboard} className="text-white hover:bg-white/15 h-10 w-10">
+              <RefreshCw className="h-4 w-4" />
+            </Button>
           </div>
 
           {/* Affiliate info */}
@@ -160,15 +366,15 @@ export function AffiliateDashboard() {
               className="relative"
             >
               <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-2xl font-bold border-2 border-white/30">
-                {mockAffiliate.initials}
+                {initials}
               </div>
               <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-amber-300 border-2 border-orange-500 flex items-center justify-center">
                 <Star className="h-3 w-3 text-orange-700" />
               </div>
             </motion.div>
             <div className="flex-1">
-              <h2 className="text-xl font-bold">{mockAffiliate.name}</h2>
-              <p className="text-sm text-white/70 mt-0.5">Afiliado desde Jan 2025</p>
+              <h2 className="text-xl font-bold">Afiliado</h2>
+              <p className="text-sm text-white/70 mt-0.5">Status: {dashboard.status === 'ACTIVE' ? 'Ativo' : dashboard.status}</p>
             </div>
           </div>
 
@@ -181,7 +387,7 @@ export function AffiliateDashboard() {
           >
             <p className="text-[10px] text-white/60 uppercase tracking-wider mb-2">Seu codigo de indicacao</p>
             <div className="flex items-center gap-2">
-              <code className="text-xl font-bold tracking-widest flex-1">{mockAffiliate.referralCode}</code>
+              <code className="text-xl font-bold tracking-widest flex-1">{dashboard.referralCode}</code>
               <Button
                 size="sm"
                 variant="ghost"
@@ -196,10 +402,10 @@ export function AffiliateDashboard() {
           {/* Stats row */}
           <div className="relative grid grid-cols-4 gap-2 mt-4">
             {[
-              { icon: Users, label: 'Indicacoes', value: mockAffiliate.totalReferrals },
-              { icon: ShoppingCart, label: 'Conversoes', value: mockAffiliate.totalConversions },
-              { icon: Clock, label: 'Pendente', value: `R$ ${mockAffiliate.pendingEarnings.toFixed(0).replace('.', ',')}` },
-              { icon: Trophy, label: 'Total', value: `R$ ${mockAffiliate.totalEarnings.toFixed(0).replace('.', ',')}` },
+              { icon: Users, label: 'Indicacoes', value: dashboard.totalReferrals },
+              { icon: ShoppingCart, label: 'Conversoes', value: dashboard.totalConversions },
+              { icon: Clock, label: 'Pendente', value: formatBRLShort(dashboard.pendingEarnings) },
+              { icon: Trophy, label: 'Total', value: formatBRLShort(dashboard.totalEarnings) },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -236,11 +442,11 @@ export function AffiliateDashboard() {
                 <Share2 className="h-4 w-4 text-primary" />
                 Compartilhe e ganhe
               </h3>
-              
+
               {/* Link */}
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex-1 bg-muted/50 rounded-xl px-3 py-2.5">
-                  <code className="text-xs truncate block">{mockAffiliate.referralLink}</code>
+                  <code className="text-xs truncate block">{referralLink}</code>
                 </div>
                 <Button
                   size="sm"
@@ -313,19 +519,27 @@ export function AffiliateDashboard() {
             <Card className="border-amber-200/50 dark:border-amber-800/30 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10">
               <CardContent className="p-4 text-center">
                 <p className="text-[10px] text-muted-foreground mb-1">Disponivel para saque</p>
-                <p className="text-2xl font-bold text-primary">R$ {mockAffiliate.availableBalance.toFixed(2).replace('.', ',')}</p>
+                <p className="text-2xl font-bold text-primary">{formatBRLShort(dashboard.availableBalance)}</p>
                 <Button
                   className="w-full mt-3 h-9 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold text-xs"
-                  onClick={() => toast.success('Solicitacao de saque enviada! Voce recebera em ate 2 dias uteis.')}
+                  onClick={() => {
+                    if (payoutInfo) {
+                      setPayoutAmount(String(dashboard.availableBalance))
+                    }
+                    setPayoutDialogOpen(true)
+                  }}
+                  disabled={dashboard.availableBalance < (payoutInfo?.minPayoutAmount || 50)}
                 >
-                  Sacar
+                  {dashboard.availableBalance < (payoutInfo?.minPayoutAmount || 50)
+                    ? `Min. R$${payoutInfo?.minPayoutAmount || 50}`
+                    : 'Sacar'}
                 </Button>
               </CardContent>
             </Card>
             <Card className="border-border/50">
               <CardContent className="p-4 text-center">
                 <p className="text-[10px] text-muted-foreground mb-1">Pendente (aguardando confirmacao)</p>
-                <p className="text-2xl font-bold text-amber-500">R$ {mockAffiliate.pendingEarnings.toFixed(2).replace('.', ',')}</p>
+                <p className="text-2xl font-bold text-amber-500">{formatBRLShort(dashboard.pendingEarnings)}</p>
                 <div className="mt-3 h-9 flex items-center justify-center">
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Clock className="h-3 w-3" />
@@ -342,15 +556,17 @@ export function AffiliateDashboard() {
               <div className="flex items-center justify-between mb-2">
                 <h4 className="text-xs font-bold flex items-center gap-1.5">
                   <TargetIcon className="h-4 w-4 text-amber-500" />
-                  Meta mensal
+                  Indicacoes este mes
                 </h4>
-                <span className="text-xs font-semibold text-primary">{mockAffiliate.monthlyProgress}%</span>
+                <span className="text-xs font-semibold text-primary">
+                  {dashboard.monthlyStats?.conversions || 0} conversoes
+                </span>
               </div>
-              <Progress value={mockAffiliate.monthlyProgress} className="h-2.5 mb-2" />
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] text-muted-foreground">R$ {mockAffiliate.monthlyProgress * mockAffiliate.monthlyTarget / 100} de R$ {mockAffiliate.monthlyTarget}</span>
-                <span className="text-[10px] text-muted-foreground">Comissao: {mockAffiliate.commissionRate}%</span>
+              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                <Users className="h-3 w-3" />
+                <span>{dashboard.monthlyStats?.referrals || 0} indicacoes no mes</span>
               </div>
+              <p className="text-[10px] text-muted-foreground mt-1">Comissao: {((dashboard.commissionRate || 0) * 100).toFixed(0)}%</p>
             </CardContent>
           </Card>
 
@@ -412,10 +628,10 @@ export function AffiliateDashboard() {
             {/* Filter chips */}
             <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-3 mb-3">
               {[
-                { key: 'all' as const, label: 'Todos', count: mockReferrals.length },
-                { key: 'active' as const, label: 'Ativos', count: mockReferrals.filter(r => r.status === 'active').length },
-                { key: 'converted' as const, label: 'Convertidos', count: mockReferrals.filter(r => r.status === 'converted').length },
-                { key: 'pending' as const, label: 'Pendentes', count: mockReferrals.filter(r => r.status === 'pending').length },
+                { key: 'all' as const, label: 'Todos', count: referralCounts.all },
+                { key: 'active' as const, label: 'Ativos', count: referralCounts.active },
+                { key: 'converted' as const, label: 'Convertidos', count: referralCounts.converted },
+                { key: 'pending' as const, label: 'Pendentes', count: referralCounts.pending },
               ].map((filter) => (
                 <button
                   key={filter.key}
@@ -434,36 +650,45 @@ export function AffiliateDashboard() {
             {/* Referrals list */}
             <div className="space-y-2">
               <AnimatePresence mode="popLayout">
-                {filteredReferrals.map((referral, i) => (
-                  <motion.div
-                    key={referral.id}
-                    layout
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ delay: i * 0.04 }}
-                  >
-                    <Card className="border-border/50 hover:border-primary/20 transition-all">
-                      <CardContent className="p-3 flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/10 to-emerald-100 dark:from-primary/20 dark:to-emerald-900/20 flex items-center justify-center shrink-0 text-sm font-bold text-primary">
-                          {referral.name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <p className="font-semibold text-sm truncate">{referral.name}</p>
-                            <p className="font-semibold text-sm text-primary shrink-0 ml-2">
-                              {referral.commission > 0 ? `+R$ ${referral.commission.toFixed(2).replace('.', ',')}` : '--'}
-                            </p>
+                {filteredReferrals.length === 0 ? (
+                  <Card className="border-border/50">
+                    <CardContent className="p-6 text-center">
+                      <Users className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">Nenhuma indicacao encontrada</p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  filteredReferrals.map((referral, i) => (
+                    <motion.div
+                      key={referral.id}
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ delay: i * 0.04 }}
+                    >
+                      <Card className="border-border/50 hover:border-primary/20 transition-all">
+                        <CardContent className="p-3 flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/10 to-emerald-100 dark:from-primary/20 dark:to-emerald-900/20 flex items-center justify-center shrink-0 text-sm font-bold text-primary">
+                            {referral.referredUserName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                           </div>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] text-muted-foreground">{referral.date}</span>
-                            {getStatusBadge(referral.status)}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <p className="font-semibold text-sm truncate">{referral.referredUserName}</p>
+                              <p className="font-semibold text-sm text-primary shrink-0 ml-2">
+                                {referral.commission > 0 ? `+${formatBRLShort(referral.commission)}` : '--'}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-[10px] text-muted-foreground">{formatDate(referral.createdAt)}</span>
+                              {getStatusBadge(getReferralStatus(referral))}
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))
+                )}
               </AnimatePresence>
             </div>
           </TabsContent>
@@ -490,7 +715,7 @@ export function AffiliateDashboard() {
                         <p className="text-sm text-white/80 mt-1">{banner.desc}</p>
                       </div>
                       <CardContent className="p-3 flex items-center justify-between">
-                        <span className="text-[10px] text-muted-foreground">DomPlace - {mockAffiliate.referralCode}</span>
+                        <span className="text-[10px] text-muted-foreground">DomPlace - {dashboard.referralCode}</span>
                         <Button
                           size="sm"
                           variant="ghost"
@@ -532,14 +757,14 @@ export function AffiliateDashboard() {
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground leading-relaxed mb-2">
-                          {template.text.replace('{link}', mockAffiliate.referralLink).replace('{code}', mockAffiliate.referralCode)}
+                          {template.text.replace('{link}', referralLink).replace('{code}', dashboard.referralCode)}
                         </p>
                         <Button
                           size="sm"
                           variant="ghost"
                           className="h-7 text-xs text-primary hover:bg-primary/5 gap-1"
                           onClick={() => {
-                            navigator.clipboard.writeText(template.text.replace('{link}', mockAffiliate.referralLink).replace('{code}', mockAffiliate.referralCode))
+                            navigator.clipboard.writeText(template.text.replace('{link}', referralLink).replace('{code}', dashboard.referralCode))
                             toast.success('Texto copiado!')
                           }}
                         >
@@ -583,6 +808,48 @@ export function AffiliateDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Payout Confirmation Dialog */}
+      <AlertDialog open={payoutDialogOpen} onOpenChange={setPayoutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar saque</AlertDialogTitle>
+            <AlertDialogDescription>
+              Voce esta solicitando um saque de{' '}
+              <span className="font-bold text-foreground">{formatBRL(parseFloat(payoutAmount) || 0)}</span>.
+              O valor sera creditado em ate 2 dias uteis.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-2">
+            <Label className="text-xs text-muted-foreground mb-1 block">Valor do saque (R$)</Label>
+            <Input
+              type="number"
+              min={payoutInfo?.minPayoutAmount || 50}
+              max={dashboard.availableBalance}
+              step={0.01}
+              value={payoutAmount}
+              onChange={(e) => setPayoutAmount(e.target.value)}
+              className="h-11"
+            />
+            <p className="text-[10px] text-muted-foreground mt-1">
+              Minimo: R$ {payoutInfo?.minPayoutAmount || 50},00 | Disponivel: {formatBRLShort(dashboard.availableBalance)}
+            </p>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={payoutLoading}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handlePayout} disabled={payoutLoading}>
+              {payoutLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Processando...
+                </>
+              ) : (
+                'Confirmar saque'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
@@ -595,4 +862,9 @@ function TargetIcon({ className }: { className?: string }) {
       <circle cx="12" cy="12" r="2" />
     </svg>
   )
+}
+
+// Need Label for the dialog
+function Label({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <label className={className}>{children}</label>
 }

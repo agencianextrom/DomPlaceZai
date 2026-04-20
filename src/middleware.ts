@@ -19,12 +19,15 @@ export default withAuth({
         '/api/orders',
         '/api/reviews',
         '/api/favorites',
-        // Phase 1 & 2 API integrations
         '/api/cep',
         '/api/weather',
         '/api/turnstile',
         '/api/payments',
         '/api/notifications',
+        '/api/affiliate/track',
+        '/_next',
+        '/favicon.ico',
+        '/public',
       ]
 
       // Check if path is public
@@ -38,6 +41,38 @@ export default withAuth({
 
       // Protected API routes require authentication
       if (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth')) {
+        // Admin API routes require ADMIN role
+        if (pathname.startsWith('/api/admin/')) {
+          const role = (token as Record<string, unknown>)?.role as string | undefined
+          return role === 'ADMIN'
+        }
+        // Driver API routes require DELIVERY_DRIVER role
+        if (pathname.startsWith('/api/driver/')) {
+          const role = (token as Record<string, unknown>)?.role as string | undefined
+          return role === 'DELIVERY_DRIVER' || role === 'ADMIN'
+        }
+        // Store dashboard API routes require STORE_OWNER role
+        if (pathname.startsWith('/api/store-dashboard/')) {
+          const role = (token as Record<string, unknown>)?.role as string | undefined
+          return role === 'STORE_OWNER' || role === 'ADMIN'
+        }
+        // Affiliate API routes require AFFILIATE role (except public track)
+        if (pathname.startsWith('/api/affiliate/') && !pathname.startsWith('/api/affiliate/track')) {
+          const role = (token as Record<string, unknown>)?.role as string | undefined
+          return role === 'AFFILIATE' || role === 'ADMIN'
+        }
+        // Profile API routes require any authenticated user
+        if (pathname.startsWith('/api/profile/')) {
+          return !!token
+        }
+        // Loyalty API routes require any authenticated user
+        if (pathname.startsWith('/api/loyalty')) {
+          return !!token
+        }
+        // Address API routes require any authenticated user
+        if (pathname.startsWith('/api/addresses')) {
+          return !!token
+        }
         return !!token
       }
 
@@ -52,6 +87,6 @@ export default withAuth({
 
 export const config = {
   matcher: [
-    '/api/((?!auth|products|stores|banners|seed|route|upload|cart|orders|reviews|favorites|cep|weather|turnstile|payments|notifications).*)',
+    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
   ],
 }

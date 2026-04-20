@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2, Store, Truck, UserCircle } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2, Store, Truck, UserCircle, UserPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -31,11 +31,12 @@ const TurnstileWidget = dynamic(
   { ssr: false }
 )
 
-type RegisterRole = 'USER' | 'STORE_OWNER' | 'DELIVERY_DRIVER'
+type RegisterRole = 'USER' | 'STORE_OWNER' | 'DELIVERY_DRIVER' | 'AFFILIATE'
 
 const roleOptions: { value: RegisterRole; label: string; icon: React.ReactNode; description: string }[] = [
   { value: 'USER', label: 'Usuário', icon: <UserCircle className="h-4 w-4" />, description: 'Comprar e pedir delivery' },
   { value: 'STORE_OWNER', label: 'Lojista', icon: <Store className="h-4 w-4" />, description: 'Vender produtos online' },
+  { value: 'AFFILIATE', label: 'Afiliado', icon: <UserPlus className="h-4 w-4" />, description: 'Indicar e ganhar comissão' },
   { value: 'DELIVERY_DRIVER', label: 'Entregador', icon: <Truck className="h-4 w-4" />, description: 'Realizar entregas' },
 ]
 
@@ -304,7 +305,7 @@ export function AuthModal() {
               {/* Role selector */}
               <div className="space-y-2">
                 <Label className="text-sm">Tipo de conta</Label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {roleOptions.map((option) => (
                     <button
                       key={option.value}

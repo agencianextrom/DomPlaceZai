@@ -14,6 +14,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
+import { useAppStore } from '@/store/useAppStore'
 
 interface ProductFormData {
   name: string
@@ -91,14 +92,59 @@ export function ProductForm() {
   const handleSubmit = async () => {
     if (!validate()) return
     setIsSubmitting(true)
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setIsSubmitting(false)
-    setSubmitted(true)
-    toast.success('Produto criado com sucesso!')
-    setTimeout(() => {
-      setSubmitted(false)
-      setForm(initialForm)
-    }, 3000)
+    try {
+      const { currentUser } = useAppStore.getState()
+      if (!currentUser?.id) {
+        toast.error('Você precisa estar logado para criar um produto')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Find the store for this user
+      const storeRes = await fetch(`/api/stores?accountId=${currentUser.id}&limit=1`)
+      const storeData = await storeRes.json()
+      const store = storeData.stores?.[0]
+      if (!store) {
+        toast.error('Nenhuma loja encontrada para sua conta')
+        setIsSubmitting(false)
+        return
+      }
+
+      const payload = {
+        name: form.name.trim(),
+        description: form.description.trim() || null,
+        price: parseFloat(form.price),
+        comparePrice: form.comparePrice ? parseFloat(form.comparePrice) : null,
+        stock: form.stock ? parseInt(form.stock) : 0,
+        category: form.category,
+        tags: JSON.stringify(tagsArray),
+        variations: variationsArray.length > 0 ? JSON.stringify(variationsArray) : null,
+        storeId: store.id,
+      }
+
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || 'Erro ao criar produto')
+      }
+
+      setIsSubmitting(false)
+      setSubmitted(true)
+      toast.success('Produto criado com sucesso!')
+      setTimeout(() => {
+        setSubmitted(false)
+        setForm(initialForm)
+      }, 3000)
+    } catch (error: unknown) {
+      setIsSubmitting(false)
+      const message = error instanceof Error ? error.message : 'Erro ao criar produto'
+      toast.error(message)
+    }
   }
 
   const tagsArray = form.tags

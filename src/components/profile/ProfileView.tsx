@@ -1,66 +1,108 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   User, MapPin, CreditCard, Heart, ClipboardList, Gift, Users, Settings, LogOut, 
   Star, ChevronRight, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock,
   Bell, Moon, MapPinned, Share2, Ticket, Copy, Check, ListChecks, LayoutDashboard,
-  BellRing, Shield, Headphones, PartyPopper, Truck, UserPlus
+  BellRing, Shield, Headphones, PartyPopper, Truck, UserPlus, Loader2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { useAppStore } from '@/store/useAppStore'
 import { motion } from 'framer-motion'
 import { formatBRL } from '@/components/product/ProductCard'
-import { RewardsSection } from './RewardsSection'
 import { LoyaltyHistory } from './LoyaltyHistory'
 import { LoyaltyTier } from './LoyaltyTier'
-import { ShoppingLists } from './ShoppingLists'
 import { AddressManager } from './AddressManager'
-import { OrderTimeline } from './OrderTimeline'
 import { SpinWheel } from '@/components/promotions/SpinWheel'
 import { toast } from 'sonner'
+import { signOut } from 'next-auth/react'
 
-// Demo recent orders
-const recentOrders = [
-  {
-    id: 'o1',
-    orderNumber: 'DP000003',
-    storeName: 'Mercado do Zé',
-    status: 'Entregue',
-    statusColor: 'bg-emerald-100 text-emerald-700',
-    total: 67.80,
-    date: 'Ontem',
-    items: 4,
-  },
-  {
-    id: 'o2',
-    orderNumber: 'DP000001',
-    storeName: 'Açaí da Boa',
-    status: 'Entregue',
-    statusColor: 'bg-emerald-100 text-emerald-700',
-    total: 45.00,
-    date: '08/04/2025',
-    items: 3,
-  },
-]
+// Types
+interface ProfileData {
+  id: string
+  email: string
+  name: string | null
+  phone: string | null
+  avatar: string | null
+  role: string
+  status: string
+  createdAt: string
+  cpf: string | null
+  bio: string | null
+  dateOfBirth: string | null
+  loyaltyBalance: number
+  totalSpent: number
+  orderCount: number
+  addressCount: number
+  favoriteCount: number
+}
 
-// Demo favorite stores
-const favoriteStores = [
-  { id: 's1', name: 'Açaí da Boa', category: 'Alimentação', rating: 4.9, initials: 'AB' },
-  { id: 's2', name: 'Padaria Pão Quente', category: 'Alimentação', rating: 4.8, initials: 'PP' },
-]
+interface OrderItem {
+  id: string
+  orderNumber: string
+  storeId: string
+  storeName: string
+  storeLogo: string | null
+  status: string
+  total: number
+  items: { productName: string; quantity: number; price: number; total: number }[]
+  createdAt: string
+}
 
-// Saved addresses
-const savedAddresses = [
-  { id: 'a1', label: 'Casa', address: 'Rua Principal, 123', neighborhood: 'Centro', city: 'Dom Eliseu - PA', zip: '68555-000', isPrimary: true },
-  { id: 'a2', label: 'Trabalho', address: 'Av. Brasil, 456', neighborhood: 'Centro', city: 'Dom Eliseu - PA', zip: '68555-000', isPrimary: false },
-]
+interface LoyaltyData {
+  currentBalance: number
+  totalEarned: number
+  totalRedeemed: number
+}
 
-// Coupons
+interface FavoriteStore {
+  id: string
+  name: string
+  logo: string | null
+  category: string
+  rating: number
+}
+
+// Status mapping
+const statusMap: Record<string, { label: string; color: string }> = {
+  DELIVERED: { label: 'Entregue', color: 'bg-emerald-100 text-emerald-700' },
+  DELIVERING: { label: 'Em Entrega', color: 'bg-purple-100 text-purple-700' },
+  CONFIRMED: { label: 'Confirmado', color: 'bg-blue-100 text-blue-700' },
+  PREPARING: { label: 'Preparando', color: 'bg-amber-100 text-amber-700' },
+  PENDING: { label: 'Pendente', color: 'bg-gray-100 text-gray-700' },
+  CANCELLED: { label: 'Cancelado', color: 'bg-red-100 text-red-700' },
+}
+
+function formatStatus(status: string) {
+  return statusMap[status] || { label: status, color: 'bg-gray-100 text-gray-700' }
+}
+
+function timeAgo(dateStr: string): string {
+  const now = new Date()
+  const date = new Date(dateStr)
+  const diffMs = now.getTime() - date.getTime()
+  const diffMin = Math.floor(diffMs / 60000)
+  const diffHr = Math.floor(diffMs / 3600000)
+  const diffDay = Math.floor(diffMs / 86400000)
+
+  if (diffMin < 1) return 'Agora'
+  if (diffMin < 60) return `${diffMin}min atrás`
+  if (diffHr < 24) return `${diffHr}h atrás`
+  if (diffDay === 1) return 'Ontem'
+  if (diffDay < 7) return `${diffDay} dias atrás`
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' })
+}
+
+// Coupons (promo UI - kept as-is)
 const coupons = [
   { code: 'ACAI10', desc: '10% de desconto em pedidos acima de R$30', discount: '10%', validUntil: '30/06/2025', used: false },
   { code: 'FRETE5', desc: 'R$5 de desconto no frete', discount: 'R$5', validUntil: '15/05/2025', used: false },
@@ -87,13 +129,107 @@ const menuItems = [
 ]
 
 export function ProfileView() {
-  const { navigate } = useAppStore()
+  const { navigate, currentUser } = useAppStore()
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [darkModeEnabled, setDarkModeEnabled] = useState(false)
   const [locationEnabled, setLocationEnabled] = useState(true)
   const [copiedReferral, setCopiedReferral] = useState(false)
-  
+
+  // API data
+  const [profile, setProfile] = useState<ProfileData | null>(null)
+  const [recentOrders, setRecentOrders] = useState<OrderItem[]>([])
+  const [loyaltyData, setLoyaltyData] = useState<LoyaltyData | null>(null)
+  const [favoriteStores, setFavoriteStores] = useState<FavoriteStore[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Edit dialog
+  const [editOpen, setEditOpen] = useState(false)
+  const [editName, setEditName] = useState('')
+  const [editPhone, setEditPhone] = useState('')
+  const [editBio, setEditBio] = useState('')
+  const [editSaving, setEditSaving] = useState(false)
+
+  // Fetch data on mount
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true)
+      try {
+        const [profileRes, ordersRes, loyaltyRes, favsRes] = await Promise.allSettled([
+          fetch('/api/profile').then(r => r.json()),
+          currentUser?.id ? fetch(`/api/orders?accountId=${currentUser.id}&limit=3`).then(r => r.json()) : Promise.resolve({ orders: [] }),
+          fetch('/api/loyalty').then(r => r.json()),
+          currentUser?.id ? fetch(`/api/favorites?accountId=${currentUser.id}&type=store&limit=5`).then(r => r.json()) : Promise.resolve({ favorites: [] }),
+        ])
+
+        if (profileRes.status === 'fulfilled' && profileRes.value.success) {
+          setProfile(profileRes.value.profile)
+          setEditName(profileRes.value.profile.name || '')
+          setEditPhone(profileRes.value.profile.phone || '')
+          setEditBio(profileRes.value.profile.bio || '')
+        }
+
+        if (ordersRes.status === 'fulfilled' && ordersRes.value.orders) {
+          setRecentOrders(ordersRes.value.orders)
+        }
+
+        if (loyaltyRes.status === 'fulfilled' && loyaltyRes.value.success) {
+          setLoyaltyData(loyaltyRes.value.data)
+        }
+
+        if (favsRes.status === 'fulfilled' && favsRes.value.favorites) {
+          setFavoriteStores(
+            favsRes.value.favorites
+              .filter((f: { store: FavoriteStore | null }) => f.store !== null)
+              .map((f: { store: FavoriteStore }) => f.store)
+          )
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados do perfil:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [currentUser?.id])
+
+  // Save profile
+  async function handleSaveProfile() {
+    setEditSaving(true)
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: editName, phone: editPhone, bio: editBio }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setProfile(data.profile)
+        setEditOpen(false)
+        toast.success('Perfil atualizado com sucesso!')
+      } else {
+        toast.error(data.error || 'Erro ao atualizar perfil')
+      }
+    } catch {
+      toast.error('Erro ao atualizar perfil. Tente novamente.')
+    } finally {
+      setEditSaving(false)
+    }
+  }
+
+  // Handle logout
+  function handleLogout() {
+    signOut({ callbackUrl: '/' })
+  }
+
+  // Derived values
+  const displayName = profile?.name || 'Usuário'
+  const displayEmail = profile?.email || ''
+  const avatarInitial = displayName.charAt(0).toUpperCase()
+  const orderCount = profile?.orderCount ?? 0
+  const favoriteCount = profile?.favoriteCount ?? 0
+  const loyaltyPoints = loyaltyData?.currentBalance ?? profile?.loyaltyBalance ?? 0
+
   if (activeSection === 'loyalty') {
     return (
       <div className="min-h-screen p-4 pb-24">
@@ -183,7 +319,7 @@ export function ProfileView() {
   }
 
   if (activeSection === 'referral') {
-    const referralLink = 'https://domplace.com/invite/maria-silva'
+    const referralLink = `https://domplace.com/invite/${displayName.toLowerCase().replace(/\s+/g, '-')}`
     return (
       <div className="min-h-screen p-4 pb-24">
         <div className="flex items-center gap-3 mb-6">
@@ -307,6 +443,51 @@ export function ProfileView() {
       </div>
     )
   }
+
+  // Loading skeleton
+  if (loading) {
+    return (
+      <div className="min-h-screen p-4 pb-24">
+        {/* Cover skeleton */}
+        <div className="relative overflow-hidden rounded-2xl mb-5">
+          <Skeleton className="h-44 w-full rounded-2xl" />
+        </div>
+
+        {/* Stats skeleton */}
+        <div className="grid grid-cols-3 gap-2.5 mb-6">
+          {[0, 1, 2].map(i => (
+            <Card key={i} className="border-border">
+              <CardContent className="p-3 text-center">
+                <Skeleton className="h-8 w-8 rounded-lg mx-auto mb-2" />
+                <Skeleton className="h-5 w-10 mx-auto mb-1" />
+                <Skeleton className="h-3 w-12 mx-auto" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Loyalty skeleton */}
+        <Skeleton className="h-20 w-full rounded-xl mb-4" />
+
+        {/* Orders skeleton */}
+        <div className="mb-6">
+          <Skeleton className="h-4 w-28 mb-3" />
+          <div className="space-y-2">
+            {[0, 1].map(i => (
+              <Skeleton key={i} className="h-16 w-full rounded-xl" />
+            ))}
+          </div>
+        </div>
+
+        {/* Menu skeleton */}
+        <div className="space-y-1.5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-14 w-full rounded-xl" />
+          ))}
+        </div>
+      </div>
+    )
+  }
   
   return (
     <div className="min-h-screen p-4 pb-24">
@@ -337,20 +518,33 @@ export function ProfileView() {
                 transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
                 className="relative"
               >
-                <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg avatar-gradient-ring">
-                  M
-                </div>
+                {profile?.avatar ? (
+                  <img
+                    src={profile.avatar}
+                    alt={displayName}
+                    className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl object-cover border-2 border-white/30 shadow-lg avatar-gradient-ring"
+                  />
+                ) : (
+                  <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg avatar-gradient-ring">
+                    {avatarInitial}
+                  </div>
+                )}
                 {/* Online indicator */}
                 <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-400 border-[3px] border-emerald-600" />
               </motion.div>
               <div className="flex-1 pb-1">
-                <h1 className="text-xl sm:text-2xl font-bold text-shadow-lg">Maria Silva</h1>
-                <p className="text-sm text-white/70 mt-0.5">maria@email.com</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-shadow-lg">{displayName}</h1>
+                <p className="text-sm text-white/70 mt-0.5">{displayEmail}</p>
               </div>
               <Button 
                 size="sm" 
                 className="bg-white/15 hover:bg-white/25 text-white border border-white/20 text-sm backdrop-blur-sm shrink-0"
-                onClick={() => useAppStore.getState().openAuthModal()}
+                onClick={() => {
+                  setEditName(profile?.name || '')
+                  setEditPhone(profile?.phone || '')
+                  setEditBio(profile?.bio || '')
+                  setEditOpen(true)
+                }}
               >
                 <Edit3 className="h-3 w-3 mr-1" />
                 Editar
@@ -377,7 +571,7 @@ export function ProfileView() {
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
                 <ShoppingBag className="h-4 w-4 text-primary" />
               </div>
-              <p className="text-lg font-bold text-primary animate-count-up text-glow-emerald">3</p>
+              <p className="text-lg font-bold text-primary animate-count-up text-glow-emerald">{orderCount}</p>
               <p className="text-[10px] text-muted-foreground">Pedidos</p>
             </motion.div>
             <motion.div
@@ -389,7 +583,7 @@ export function ProfileView() {
               <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Heart className="h-4 w-4 text-red-500" />
               </div>
-              <p className="text-lg font-bold text-red-500 animate-count-up" style={{ animationDelay: '0.1s' }}>12</p>
+              <p className="text-lg font-bold text-red-500 animate-count-up" style={{ animationDelay: '0.1s' }}>{favoriteCount}</p>
               <p className="text-[10px] text-muted-foreground">Favoritos</p>
             </motion.div>
             <motion.div
@@ -401,7 +595,7 @@ export function ProfileView() {
               <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Award className="h-4 w-4 text-amber-500" />
               </div>
-              <p className="text-lg font-bold text-amber-500 animate-count-up text-glow-emerald" style={{ animationDelay: '0.2s' }}>1.250</p>
+              <p className="text-lg font-bold text-amber-500 animate-count-up text-glow-emerald" style={{ animationDelay: '0.2s' }}>{loyaltyPoints.toLocaleString('pt-BR')}</p>
               <p className="text-[10px] text-muted-foreground">Pontos</p>
             </motion.div>
           </div>
@@ -427,8 +621,8 @@ export function ProfileView() {
                 <Award className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="font-bold text-sm">1.250 pontos</p>
-                <p className="text-xs text-muted-foreground">Nível Bronze · Faltam 750 p/ próximo</p>
+                <p className="font-bold text-sm">{loyaltyPoints.toLocaleString('pt-BR')} pontos</p>
+                <p className="text-xs text-muted-foreground">Nível Bronze · Faltam {Math.max(0, 500 - loyaltyPoints)} p/ próximo</p>
               </div>
             </div>
             <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -452,31 +646,45 @@ export function ProfileView() {
             Ver todos
           </button>
         </div>
-        <div className="space-y-2">
-          {recentOrders.map((order) => (
-            <Card key={order.id} className="cursor-pointer hover:shadow-sm transition-shadow" onClick={() => navigate('orders')}>
-              <CardContent className="p-3 flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <Package className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold text-sm truncate">{order.storeName}</p>
-                    <span className="font-semibold text-sm text-primary">{formatBRL(order.total)}</span>
-                  </div>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-muted-foreground">#{order.orderNumber} · {order.items} itens</span>
-                    <Badge className={`${order.statusColor} text-[10px] px-1.5 py-0 border-0`}>{order.status}</Badge>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1">
-                    <Clock className="h-2.5 w-2.5" />
-                    {order.date}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {recentOrders.length > 0 ? (
+          <div className="space-y-2">
+            {recentOrders.map((order) => {
+              const statusInfo = formatStatus(order.status)
+              const itemCount = order.items?.length ?? 0
+              return (
+                <Card key={order.id} className="cursor-pointer hover:shadow-sm transition-shadow" onClick={() => navigate('orders')}>
+                  <CardContent className="p-3 flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                      <Package className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="font-semibold text-sm truncate">{order.storeName}</p>
+                        <span className="font-semibold text-sm text-primary">{formatBRL(order.total)}</span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs text-muted-foreground">#{order.orderNumber} · {itemCount} {itemCount === 1 ? 'item' : 'itens'}</span>
+                        <Badge className={`${statusInfo.color} text-[10px] px-1.5 py-0 border-0`}>{statusInfo.label}</Badge>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1">
+                        <Clock className="h-2.5 w-2.5" />
+                        {timeAgo(order.createdAt)}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        ) : (
+          <Card className="border-dashed">
+            <CardContent className="p-6 text-center">
+              <Package className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
+              <p className="text-sm text-muted-foreground">Nenhum pedido ainda</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">Faça sua primeira compra!</p>
+            </CardContent>
+          </Card>
+        )}
       </motion.div>
 
       {/* Coupons */}
@@ -533,23 +741,37 @@ export function ProfileView() {
             Ver todos
           </button>
         </div>
-        <div className="flex gap-3 overflow-x-auto hide-scrollbar">
-          {favoriteStores.map((store) => (
-            <Card key={store.id} className="min-w-[160px] shrink-0 cursor-pointer hover:shadow-sm transition-shadow">
-              <CardContent className="p-3 text-center">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2 text-sm font-bold text-primary">
-                  {store.initials}
-                </div>
-                <p className="font-semibold text-sm truncate">{store.name}</p>
-                <p className="text-[10px] text-muted-foreground">{store.category}</p>
-                <div className="flex items-center justify-center gap-1 mt-1">
-                  <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                  <span className="text-xs">{store.rating}</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {favoriteStores.length > 0 ? (
+          <div className="flex gap-3 overflow-x-auto hide-scrollbar">
+            {favoriteStores.map((store) => (
+              <Card key={store.id} className="min-w-[160px] shrink-0 cursor-pointer hover:shadow-sm transition-shadow">
+                <CardContent className="p-3 text-center">
+                  {store.logo ? (
+                    <img src={store.logo} alt={store.name} className="h-12 w-12 rounded-full object-cover mx-auto mb-2" />
+                  ) : (
+                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2 text-sm font-bold text-primary">
+                      {store.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                  <p className="font-semibold text-sm truncate">{store.name}</p>
+                  <p className="text-[10px] text-muted-foreground">{store.category}</p>
+                  <div className="flex items-center justify-center gap-1 mt-1">
+                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                    <span className="text-xs">{store.rating.toFixed(1)}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <Card className="border-dashed">
+            <CardContent className="p-6 text-center">
+              <Heart className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
+              <p className="text-sm text-muted-foreground">Nenhuma loja favorita</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">Explore lojas e adicione aos favoritos!</p>
+            </CardContent>
+          </Card>
+        )}
       </motion.div>
 
       {/* Spin Wheel Promo Card */}
@@ -642,10 +864,61 @@ export function ProfileView() {
       <Separator className="my-3 section-divider" />
       
       {/* Logout */}
-      <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 h-12">
+      <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 h-12" onClick={handleLogout}>
         <LogOut className="h-5 w-5 mr-2" />
         Sair da conta
       </Button>
+
+      {/* Edit Profile Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Editar Perfil</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="edit-name">Nome</Label>
+              <Input
+                id="edit-name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Seu nome completo"
+                maxLength={100}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-phone">Telefone</Label>
+              <Input
+                id="edit-phone"
+                value={editPhone}
+                onChange={(e) => setEditPhone(e.target.value)}
+                placeholder="(99) 99999-9999"
+                maxLength={20}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-bio">Bio</Label>
+              <Input
+                id="edit-bio"
+                value={editBio}
+                onChange={(e) => setEditBio(e.target.value)}
+                placeholder="Conte um pouco sobre você..."
+                maxLength={500}
+              />
+              <p className="text-[10px] text-muted-foreground text-right">{editBio.length}/500</p>
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setEditOpen(false)} disabled={editSaving}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSaveProfile} disabled={editSaving || !editName.trim()}>
+              {editSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              Salvar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

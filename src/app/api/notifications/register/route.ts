@@ -1,12 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// Armazenamento em memória: accountId → array de FCM tokens
-const fcmTokens = new Map<string, string[]>()
-
-// Função auxiliar para acessar tokens (exportada para uso no /send)
-export function getFCMTokensForAccount(accountId: string): string[] {
-  return fcmTokens.get(accountId) ?? []
-}
+import { registerFCMTokenForAccount } from '@/lib/fcm-tokens'
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,13 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Registrar token para a conta
-    const existing = fcmTokens.get(accountId) ?? []
-
-    // Evitar duplicatas
-    if (!existing.includes(token)) {
-      existing.push(token)
-      fcmTokens.set(accountId, existing)
-    }
+    const existing = registerFCMTokenForAccount(token, accountId)
 
     const FIREBASE_SERVER_KEY = process.env.FIREBASE_SERVER_KEY
     if (!FIREBASE_SERVER_KEY) {

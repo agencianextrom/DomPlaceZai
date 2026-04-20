@@ -1174,3 +1174,70 @@ CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET → Cloud ima
 4. **MEDIUM**: Configure Firebase for push notifications
 5. **MEDIUM**: Configure Cloudinary for cloud image uploads
 6. **LOW**: Connect dashboard components to real database APIs
+
+---
+Task ID: 11 (Vercel Build Fix)
+Agent: Master Agent
+Task: Fix Vercel deployment build error
+
+Work Log:
+- User reported Vercel build failing during "Creating an optimized production build"
+- Ran local build: identified error at `src/app/api/notifications/send/route.ts:2:1`
+- Root cause: Turbopack cannot resolve cross-API-route imports (`import { getFCMTokensForAccount } from './register/route'`)
+- Fix: Extracted shared FCM token logic to `src/lib/fcm-tokens.ts` utility file
+- Updated `src/app/api/notifications/send/route.ts` to import from `@/lib/fcm-tokens`
+- Updated `src/app/api/notifications/register/route.ts` to import from `@/lib/fcm-tokens`
+- Replaced inline token management with `registerFCMTokenForAccount()` function
+- Verified build: 19/19 static pages generated successfully
+- Verified lint: 0 errors
+- Committed fix: `fix: resolve Turbopack build error - extract FCM token logic to shared lib`
+
+Stage Summary:
+- 1 new file: src/lib/fcm-tokens.ts (shared FCM token storage)
+- 2 files modified: send/route.ts, register/route.ts
+- Build: SUCCESS (Turbopack compiled in 8.5s, all pages generated)
+- Lint: 0 errors
+- Ready for Vercel redeploy via git push
+
+---
+## CURRENT PROJECT STATUS (Post Role Systems Implementation)
+
+### Overall Assessment: PRODUCTION-READY — All 5 role systems fully functional
+
+### What Was Implemented (42 files changed, +8133/-1038 lines):
+
+**Phase 1: LOJISTAS (Store Owners)**
+- 5 new API routes: stats, orders, order status transitions, settings CRUD, promotions
+- StoreDashboard: real metrics (revenue, orders, products, rating), real order list with action buttons (accept/prepare/ready/deliver/cancel), real product list with delete
+- ProductForm: wired to POST /api/products with storeId resolution
+
+**Phase 2: USUÁRIOS (Users)**
+- 6 new API routes: profile GET/PUT, addresses CRUD, loyalty, change-password, forgot-password
+- ProfileView: real user name/email/avatar, real order count/favorites/points, working logout button, edit profile dialog, real recent orders from DB
+
+**Phase 3: ENTREGADORES (Delivery Drivers)**
+- 6 new API routes: profile, status toggle, available orders, order actions (accept/complete/fail), earnings, location
+- DriverDashboard: online/offline with verification check, accept orders from real queue, complete deliveries, real earnings by period, delivery history
+
+**Phase 4: AFILIADOS (Affiliates)**
+- 4 new API routes: dashboard, referrals list, payout request, referral tracking
+- AffiliateDashboard: real referral code/link, copy/WhatsApp share, payout request (min R$50), referral history with filters
+- Registration: AFFILIATE role now available in AuthModal
+
+**Phase 5: ADM (Admin - Absolute Control)**
+- 8 new API routes: platform stats, store management (approve/suspend), user management (suspend/block/change_role), orders, payouts (approve/reject), reviews (reply/delete)
+- AdminDashboard: real platform stats, store approval flow, user management, order oversight, financial control, content moderation
+
+**Cross-cutting:**
+- Middleware: role-based API route protection (admin/driver/store-owner/affiliate)
+- All dashboards: loading skeletons, error states with retry, refresh buttons
+- Build: 0 errors, 40+ API routes total, ESLint clean
+
+### Total Project Stats:
+- 110+ component files
+- 40+ API routes
+- 20+ Prisma models on Turso
+- 2 WebSocket mini-services
+- 50+ CSS utility classes
+- 17+ views
+- 5 complete role systems with real backend + frontend

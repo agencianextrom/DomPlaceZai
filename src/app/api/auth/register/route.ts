@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Valid roles for registration
-    const validRoles: AccountRole[] = ['USER', 'STORE_OWNER', 'DELIVERY_DRIVER']
+    const validRoles: AccountRole[] = ['USER', 'STORE_OWNER', 'DELIVERY_DRIVER', 'AFFILIATE']
     const accountRole: AccountRole = validRoles.includes(role) ? role : 'USER'
 
     // Check if email already exists
@@ -91,6 +91,17 @@ export async function POST(request: NextRequest) {
           accountId: account.id,
           status: 'OFFLINE',
           verification: 'PENDING',
+        },
+      })
+    } else if (accountRole === 'AFFILIATE') {
+      // Generate unique referral code from name
+      const baseCode = name.trim().toUpperCase().replace(/\s+/g, '').slice(0, 6)
+      const referralCode = `${baseCode}${Math.random().toString(36).slice(2, 6).toUpperCase()}`
+      await db.affiliate.create({
+        data: {
+          accountId: account.id,
+          referralCode,
+          commissionRate: 0.03, // 3% default
         },
       })
     }

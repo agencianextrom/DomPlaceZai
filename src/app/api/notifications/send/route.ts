@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getFCMTokensForAccount } from './register/route'
+import { getFCMTokensForAccount } from '@/lib/fcm-tokens'
 
 const FIREBASE_SERVER_KEY = process.env.FIREBASE_SERVER_KEY
 const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
