@@ -10,6 +10,7 @@ import { ProductDetail } from '@/components/product/ProductDetail'
 import { StoreProfile } from '@/components/store/StoreProfile'
 import { SearchView } from '@/components/search/SearchView'
 import { CartView } from '@/components/cart/CartView'
+import { CartRecoveryBanner } from '@/components/cart/CartRecoveryBanner'
 import { CheckoutView } from '@/components/checkout/CheckoutView'
 import { OrdersView, OrderDetail } from '@/components/orders/OrdersView'
 import { ProfileView } from '@/components/profile/ProfileView'
@@ -42,6 +43,7 @@ import { DailyDeals } from '@/components/home/DailyDeals'
 import { DeliveryFeeCalculator } from '@/components/home/DeliveryFeeCalculator'
 import { NeighborhoodSelector } from '@/components/home/NeighborhoodSelector'
 import { ProductQuickAdd } from '@/components/product/ProductQuickAdd'
+import { UrgencyStrip } from '@/components/home/UrgencyStrip'
 import { DriverDashboard } from '@/components/driver/DriverDashboard'
 import { AffiliateDashboard } from '@/components/affiliate/AffiliateDashboard'
 import { Share2 } from 'lucide-react'
@@ -59,32 +61,32 @@ import type { ProductData, StoreData } from '@/store/useAppStore'
 
 // Fallback data in case API fails
 const fallbackBanners = [
-  { id: 'b1', title: 'Ofertas da Semana', subtitle: 'Até 40% de desconto em produtos locais', image: '', gradient: 'bg-gradient-to-r from-primary via-emerald-500 to-teal-500' },
-  { id: 'b2', title: 'Entrega Grátis', subtitle: 'Compras acima de R$ 50 em lojas selecionadas', image: '', gradient: 'bg-gradient-to-r from-amber-500 via-orange-500 to-red-500' },
-  { id: 'b3', title: 'Novidades no App', subtitle: 'Descubra novas lojas e produtos da região', image: '', gradient: 'bg-gradient-to-r from-rose-500 via-pink-500 to-fuchsia-500' },
-  { id: 'b4', title: 'Programa de Fidelidade', subtitle: 'Ganhe pontos a cada compra e troque por descontos', image: '', gradient: 'bg-gradient-to-r from-lime-500 via-green-500 to-emerald-600' },
+  { id: 'b1', title: 'Ofertas da Semana', subtitle: 'Até 40% de desconto em produtos locais', image: '/images/grocery.jpg', gradient: 'bg-gradient-to-r from-primary via-emerald-500 to-teal-500' },
+  { id: 'b2', title: 'Entrega Grátis', subtitle: 'Compras acima de R$ 50 em lojas selecionadas', image: '/images/bakery.jpg', gradient: 'bg-gradient-to-r from-amber-500 via-orange-500 to-red-500' },
+  { id: 'b3', title: 'Novidades no App', subtitle: 'Descubra novas lojas e produtos da região', image: '/images/acai.jpg', gradient: 'bg-gradient-to-r from-rose-500 via-pink-500 to-fuchsia-500' },
+  { id: 'b4', title: 'Programa de Fidelidade', subtitle: 'Ganhe pontos a cada compra e troque por descontos', image: '/images/beauty.jpg', gradient: 'bg-gradient-to-r from-lime-500 via-green-500 to-emerald-600' },
 ]
 
 const fallbackStores: StoreData[] = [
-  { id: 's1', name: 'Mercado do Zé', slug: 'mercado-do-ze', description: 'O melhor mercado de Dom Eliseu com produtos frescos e preços justos.', category: 'FOOD', logo: null, coverImage: null, phone: '(91) 99999-0001', whatsapp: '(91) 99999-0001', address: 'Rua Principal, 123', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 5.00, freeDeliveryAbove: 50, rating: 4.7, totalReviews: 128, opensAt: '07:00', closesAt: '21:00', openDays: '1,2,3,4,5,6,7' },
-  { id: 's2', name: 'Açaí da Boa', slug: 'acai-da-boa', description: 'O mais autêntico açaí paraense, feito com frutas selecionadas da região.', category: 'FOOD', logo: null, coverImage: null, phone: '(91) 99999-0002', whatsapp: '(91) 99999-0002', address: 'Av. Brasil, 456', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 3.00, freeDeliveryAbove: 30, rating: 4.9, totalReviews: 256, opensAt: '08:00', closesAt: '22:00', openDays: '1,2,3,4,5,6' },
-  { id: 's3', name: 'Agropecuária São Paulo', slug: 'agropecuaria-sao-paulo', description: 'Tudo para o campo e para a cidade. Ferramentas, sementes e muito mais.', category: 'AGRICULTURE', logo: null, coverImage: null, phone: '(91) 99999-0003', whatsapp: '(91) 99999-0003', address: 'Rod. PA-279, Km 5', neighborhood: 'Zona Rural', city: 'Dom Eliseu', state: 'PA', deliveryFee: 8.00, freeDeliveryAbove: 200, rating: 4.5, totalReviews: 67, opensAt: '06:00', closesAt: '18:00', openDays: '1,2,3,4,5,6' },
-  { id: 's4', name: 'Farmácia Vida', slug: 'farmacia-vida', description: 'Sua saúde em primeiro lugar. Medicamentos, suplementos e atendimento farmacêutico.', category: 'HEALTH', logo: null, coverImage: null, phone: '(91) 99999-0004', whatsapp: '(91) 99999-0004', address: 'Rua Pará, 789', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 0, freeDeliveryAbove: null, rating: 4.6, totalReviews: 89, opensAt: '07:00', closesAt: '22:00', openDays: '1,2,3,4,5,6,7' },
-  { id: 's5', name: 'Padaria Pão Quente', slug: 'padaria-pao-quente', description: 'Pão fresquinho todo dia! Doces, salgados e muito mais.', category: 'FOOD', logo: null, coverImage: null, phone: '(91) 99999-0005', whatsapp: '(91) 99999-0005', address: 'Rua Amazonas, 321', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 3.00, freeDeliveryAbove: 25, rating: 4.8, totalReviews: 198, opensAt: '05:00', closesAt: '20:00', openDays: '1,2,3,4,5,6,7' },
-  { id: 's6', name: 'Loja do Eletrônico', slug: 'loja-do-eletronico', description: 'Celulares, acessórios e eletrônicos com as melhores ofertas.', category: 'ELECTRONICS', logo: null, coverImage: null, phone: '(91) 99999-0006', whatsapp: '(91) 99999-0006', address: 'Rua Tocantins, 654', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 5.00, freeDeliveryAbove: 100, rating: 4.3, totalReviews: 45, opensAt: '08:00', closesAt: '20:00', openDays: '1,2,3,4,5,6' },
-  { id: 's7', name: 'Pet Shop Amigo Fiel', slug: 'pet-shop-amigo-fiel', description: 'Tudo para seu melhor amigo. Rações, banho, tosa e acessórios.', category: 'ANIMALS', logo: null, coverImage: null, phone: '(91) 99999-0007', whatsapp: '(91) 99999-0007', address: 'Rua Maranhão, 987', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 4.00, freeDeliveryAbove: 80, rating: 4.7, totalReviews: 112, opensAt: '08:00', closesAt: '19:00', openDays: '1,2,3,4,5,6' },
-  { id: 's8', name: 'Salão da Bella', slug: 'salao-da-bella', description: 'Beleza e bem-estar para mulheres e homens. Cortes, coloração e tratamentos.', category: 'BEAUTY', logo: null, coverImage: null, phone: '(91) 99999-0008', whatsapp: '(91) 99999-0008', address: 'Rua Ceará, 147', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 0, freeDeliveryAbove: null, rating: 4.9, totalReviews: 210, opensAt: '09:00', closesAt: '20:00', openDays: '1,2,3,4,5,6' },
+  { id: 's1', name: 'Mercado do Zé', slug: 'mercado-do-ze', description: 'O melhor mercado de Dom Eliseu com produtos frescos e preços justos.', category: 'FOOD', logo: '/images/grocery.jpg', coverImage: '/images/grocery.jpg', phone: '(91) 99999-0001', whatsapp: '(91) 99999-0001', address: 'Rua Principal, 123', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 5.00, freeDeliveryAbove: 50, rating: 4.7, totalReviews: 128, opensAt: '07:00', closesAt: '21:00', openDays: '1,2,3,4,5,6,7' },
+  { id: 's2', name: 'Açaí da Boa', slug: 'acai-da-boa', description: 'O mais autêntico açaí paraense, feito com frutas selecionadas da região.', category: 'FOOD', logo: '/images/acai.jpg', coverImage: '/images/acai.jpg', phone: '(91) 99999-0002', whatsapp: '(91) 99999-0002', address: 'Av. Brasil, 456', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 3.00, freeDeliveryAbove: 30, rating: 4.9, totalReviews: 256, opensAt: '08:00', closesAt: '22:00', openDays: '1,2,3,4,5,6' },
+  { id: 's3', name: 'Agropecuária São Paulo', slug: 'agropecuaria-sao-paulo', description: 'Tudo para o campo e para a cidade. Ferramentas, sementes e muito mais.', category: 'AGRICULTURE', logo: '/images/agriculture.jpg', coverImage: '/images/agriculture.jpg', phone: '(91) 99999-0003', whatsapp: '(91) 99999-0003', address: 'Rod. PA-279, Km 5', neighborhood: 'Zona Rural', city: 'Dom Eliseu', state: 'PA', deliveryFee: 8.00, freeDeliveryAbove: 200, rating: 4.5, totalReviews: 67, opensAt: '06:00', closesAt: '18:00', openDays: '1,2,3,4,5,6' },
+  { id: 's4', name: 'Farmácia Vida', slug: 'farmacia-vida', description: 'Sua saúde em primeiro lugar. Medicamentos, suplementos e atendimento farmacêutico.', category: 'HEALTH', logo: '/images/pharmacy.jpg', coverImage: '/images/pharmacy.jpg', phone: '(91) 99999-0004', whatsapp: '(91) 99999-0004', address: 'Rua Pará, 789', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 0, freeDeliveryAbove: null, rating: 4.6, totalReviews: 89, opensAt: '07:00', closesAt: '22:00', openDays: '1,2,3,4,5,6,7' },
+  { id: 's5', name: 'Padaria Pão Quente', slug: 'padaria-pao-quente', description: 'Pão fresquinho todo dia! Doces, salgados e muito mais.', category: 'FOOD', logo: '/images/bakery.jpg', coverImage: '/images/bakery.jpg', phone: '(91) 99999-0005', whatsapp: '(91) 99999-0005', address: 'Rua Amazonas, 321', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 3.00, freeDeliveryAbove: 25, rating: 4.8, totalReviews: 198, opensAt: '05:00', closesAt: '20:00', openDays: '1,2,3,4,5,6,7' },
+  { id: 's6', name: 'Loja do Eletrônico', slug: 'loja-do-eletronico', description: 'Celulares, acessórios e eletrônicos com as melhores ofertas.', category: 'ELECTRONICS', logo: '/images/electronics.jpg', coverImage: '/images/electronics.jpg', phone: '(91) 99999-0006', whatsapp: '(91) 99999-0006', address: 'Rua Tocantins, 654', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 5.00, freeDeliveryAbove: 100, rating: 4.3, totalReviews: 45, opensAt: '08:00', closesAt: '20:00', openDays: '1,2,3,4,5,6' },
+  { id: 's7', name: 'Pet Shop Amigo Fiel', slug: 'pet-shop-amigo-fiel', description: 'Tudo para seu melhor amigo. Rações, banho, tosa e acessórios.', category: 'ANIMALS', logo: '/images/pets.jpg', coverImage: '/images/pets.jpg', phone: '(91) 99999-0007', whatsapp: '(91) 99999-0007', address: 'Rua Maranhão, 987', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 4.00, freeDeliveryAbove: 80, rating: 4.7, totalReviews: 112, opensAt: '08:00', closesAt: '19:00', openDays: '1,2,3,4,5,6' },
+  { id: 's8', name: 'Salão da Bella', slug: 'salao-da-bella', description: 'Beleza e bem-estar para mulheres e homens. Cortes, coloração e tratamentos.', category: 'BEAUTY', logo: '/images/beauty.jpg', coverImage: '/images/beauty.jpg', phone: '(91) 99999-0008', whatsapp: '(91) 99999-0008', address: 'Rua Ceará, 147', neighborhood: 'Centro', city: 'Dom Eliseu', state: 'PA', deliveryFee: 0, freeDeliveryAbove: null, rating: 4.9, totalReviews: 210, opensAt: '09:00', closesAt: '20:00', openDays: '1,2,3,4,5,6' },
 ]
 
 const fallbackProducts: ProductData[] = [
-  { id: 'p1', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Arroz Tio João 5kg', slug: 'arroz-tio-joao', description: 'Arroz tipo 1 premium, ideal para o dia a dia da sua família.', price: 24.90, comparePrice: 29.90, images: '[]', stock: 50, rating: 4.5, totalReviews: 23, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["5kg","1kg"]', category: 'FOOD' },
-  { id: 'p2', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Feijão Carioca 1kg', slug: 'feijao-carioca', description: 'Feijão carioca selecionado de alta qualidade.', price: 8.90, comparePrice: null, images: '[]', stock: 80, rating: 4.3, totalReviews: 15, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: '["1kg","500g"]', category: 'FOOD' },
-  { id: 'p3', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Óleo de Soja 900ml', slug: 'oleo-soja', description: 'Óleo de soja puro para cozinhar.', price: 7.49, comparePrice: 8.99, images: '[]', stock: 40, rating: 4.1, totalReviews: 8, isFeatured: false, isNew: false, isOffer: true, tags: '[]', variations: null, category: 'FOOD' },
-  { id: 'p5', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Açaí 500ml', slug: 'acai-500ml', description: 'Açaí cremoso feito com frutas frescas do Pará. Acompanha granola e banana.', price: 15.00, comparePrice: 18.00, images: '[]', stock: 100, rating: 4.9, totalReviews: 89, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["300ml","500ml","700ml"]', category: 'FOOD' },
-  { id: 'p6', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Açaí Premium 700ml', slug: 'acai-premium-700ml', description: 'Açaí premium com frutas da estação, leite condensado e granola artesanal.', price: 22.00, comparePrice: null, images: '[]', stock: 50, rating: 4.8, totalReviews: 45, isFeatured: true, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-  { id: 'p9', storeId: 's3', storeName: 'Agropecuária São Paulo', storeLogo: null, name: 'Adubo NPK 20kg', slug: 'adubo-npk', description: 'Adubo NPK para culturas diversas. Alta eficiência.', price: 89.90, comparePrice: null, images: '[]', stock: 25, rating: 4.4, totalReviews: 12, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'AGRICULTURE' },
-  { id: 'p13', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: null, name: 'Vitamina C 500mg', slug: 'vitamina-c', description: 'Suplemento de vitamina C 500mg. Pote com 60 cápsulas.', price: 35.00, comparePrice: 42.00, images: '[]', stock: 100, rating: 4.7, totalReviews: 34, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["500mg","1000mg"]', category: 'HEALTH' },
-  { id: 'p17', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: null, name: 'Pão Francês (6 un)', slug: 'pao-frances', description: 'Pão francês fresquinho saindo do forno. Pacote com 6 unidades.', price: 6.00, comparePrice: null, images: '[]', stock: 200, rating: 4.9, totalReviews: 120, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+  { id: 'p1', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: '/images/grocery.jpg', name: 'Arroz Tio João 5kg', slug: 'arroz-tio-joao', description: 'Arroz tipo 1 premium, ideal para o dia a dia da sua família.', price: 24.90, comparePrice: 29.90, images: '["/images/grocery.jpg"]', stock: 50, rating: 4.5, totalReviews: 23, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["5kg","1kg"]', category: 'FOOD' },
+  { id: 'p2', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: '/images/grocery.jpg', name: 'Feijão Carioca 1kg', slug: 'feijao-carioca', description: 'Feijão carioca selecionado de alta qualidade.', price: 8.90, comparePrice: null, images: '["/images/grocery.jpg"]', stock: 80, rating: 4.3, totalReviews: 15, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: '["1kg","500g"]', category: 'FOOD' },
+  { id: 'p3', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: '/images/grocery.jpg', name: 'Óleo de Soja 900ml', slug: 'oleo-soja', description: 'Óleo de soja puro para cozinhar.', price: 7.49, comparePrice: 8.99, images: '["/images/grocery.jpg"]', stock: 40, rating: 4.1, totalReviews: 8, isFeatured: false, isNew: false, isOffer: true, tags: '[]', variations: null, category: 'FOOD' },
+  { id: 'p5', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: '/images/acai.jpg', name: 'Açaí 500ml', slug: 'acai-500ml', description: 'Açaí cremoso feito com frutas frescas do Pará. Acompanha granola e banana.', price: 15.00, comparePrice: 18.00, images: '["/images/acai.jpg"]', stock: 100, rating: 4.9, totalReviews: 89, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["300ml","500ml","700ml"]', category: 'FOOD' },
+  { id: 'p6', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: '/images/acai.jpg', name: 'Açaí Premium 700ml', slug: 'acai-premium-700ml', description: 'Açaí premium com frutas da estação, leite condensado e granola artesanal.', price: 22.00, comparePrice: null, images: '["/images/acai.jpg"]', stock: 50, rating: 4.8, totalReviews: 45, isFeatured: true, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+  { id: 'p9', storeId: 's3', storeName: 'Agropecuária São Paulo', storeLogo: '/images/agriculture.jpg', name: 'Adubo NPK 20kg', slug: 'adubo-npk', description: 'Adubo NPK para culturas diversas. Alta eficiência.', price: 89.90, comparePrice: null, images: '["/images/agriculture.jpg"]', stock: 25, rating: 4.4, totalReviews: 12, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'AGRICULTURE' },
+  { id: 'p13', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: '/images/pharmacy.jpg', name: 'Vitamina C 500mg', slug: 'vitamina-c', description: 'Suplemento de vitamina C 500mg. Pote com 60 cápsulas.', price: 35.00, comparePrice: 42.00, images: '["/images/pharmacy.jpg"]', stock: 100, rating: 4.7, totalReviews: 34, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["500mg","1000mg"]', category: 'HEALTH' },
+  { id: 'p17', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: '/images/bakery.jpg', name: 'Pão Francês (6 un)', slug: 'pao-frances', description: 'Pão francês fresquinho saindo do forno. Pacote com 6 unidades.', price: 6.00, comparePrice: null, images: '["/images/bakery.jpg"]', stock: 200, rating: 4.9, totalReviews: 120, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
 ]
 
 // Skeleton loading components
@@ -432,7 +434,16 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
 }
 
 export default function Home() {
-  const { currentView, isSearchOpen, activeCategory } = useAppStore()
+  const { currentView, isSearchOpen, activeCategory, getCartItemCount } = useAppStore()
+  const cartItemCount = getCartItemCount()
+
+  // Dynamic page title based on cart count
+  useEffect(() => {
+    const baseTitle = 'DomPlace'
+    document.title = cartItemCount > 0
+      ? `${baseTitle} (${cartItemCount} ${cartItemCount === 1 ? 'item' : 'itens'})`
+      : baseTitle
+  }, [cartItemCount])
   const [quickViewProduct, setQuickViewProduct] = useQVState<ProductData | null>(null)
   const [quickViewOpen, setQuickViewOpen] = useQVState(false)
   const [wishlistShareOpen, setWishlistShareOpen] = useQVState(false)
@@ -492,6 +503,9 @@ export default function Home() {
   
   return (
     <div className="min-h-screen pb-20 md:pb-4">
+      {/* Cart Recovery Banner - shows above main content */}
+      <CartRecoveryBanner />
+
       <AnimatePresence mode="wait">
         {isSearchOpen ? (
           <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -506,6 +520,11 @@ export default function Home() {
                   <HomeSkeleton />
                 ) : (
                   <>
+                    {/* Urgency Strip — social proof ticker */}
+                    <section className="-mx-3 sm:-mx-4 lg:-mx-6">
+                      <UrgencyStrip />
+                    </section>
+
                     {/* Promo Banner Ticker */}
                     <section className="mt-2">
                       <PromoBanner />

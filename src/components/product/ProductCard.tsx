@@ -5,6 +5,8 @@ import {
   Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows, Eye, Plus
 } from 'lucide-react'
 import { PriceDropAlert } from './PriceDropAlert'
+import { SocialProofBadges } from './SocialProofBadges'
+import { StockUrgency } from './StockUrgency'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -285,6 +287,17 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
         </div>
+        
+        {/* Social Proof — cycling badge */}
+        <SocialProofBadges
+          productId={product.id}
+          productName={product.name}
+          variant="card"
+          totalReviews={product.totalReviews}
+        />
+        
+        {/* Stock Urgency Bar */}
+        <StockUrgency product={product} variant="card" />
       </div>
 
       {/* Quick View Dialog */}

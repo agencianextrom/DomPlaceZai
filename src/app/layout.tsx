@@ -18,12 +18,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DomPlace - Marketplace de Dom Eliseu",
-  description: "Seu marketplace local em Dom Eliseu, Pará. Encontre produtos, serviços e muito mais!",
-  keywords: ["DomPlace", "Dom Eliseu", "marketplace", "Pará", "comércio local"],
+  title: "DomPlace - Marketplace de Dom Eliseu, PA",
+  description: "DomPlace - O marketplace de Dom Eliseu, PA. Encontre produtos, lojas e serviços locais com entrega rápida.",
+  keywords: ["DomPlace", "Dom Eliseu", "marketplace", "Pará", "comércio local", "entrega rápida", "produtos locais"],
   authors: [{ name: "DomPlace" }],
   icons: {
     icon: "/domplace-logo.png",
+  },
+  other: {
+    'theme-color': '#059669',
   },
 };
 

@@ -2,11 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MessageCircle, X, Send, Bot, User } from 'lucide-react'
+import { MessageCircle, Send, Bot, User } from 'lucide-react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { useAppStore } from '@/store/useAppStore'
 
 interface ChatMessage {
@@ -14,42 +13,6 @@ interface ChatMessage {
   role: 'user' | 'bot'
   content: string
   timestamp: Date
-}
-
-const mockResponses: { keywords: string[]; response: string }[] = [
-  {
-    keywords: ['entrega', 'frete', 'entreg', 'taxa de entrega'],
-    response:
-      'A entrega funciona de forma simples! Cobrimos toda a área urbana de Dom Eliseu. A taxa de entrega varia de R$ 0 a R$ 8,00 dependendo da loja. Muitas lojas oferecem frete grátis acima de R$ 30-50 em compras. O tempo médio de entrega é de 20 a 45 minutos! 🛵',
-  },
-  {
-    keywords: ['pagamento', 'pix', 'cartão', 'cartao', 'dinheiro', 'pagar'],
-    response:
-      'Aceitamos diversos métodos de pagamento:\n\n• PIX (confirmado na hora)\n• Cartão de crédito/débito na entrega\n• Dinheiro (com troco se precisar)\n• Boleto bancário\n\nO PIX é o mais rápido e já garantimos seu pedido! 💳',
-  },
-  {
-    keywords: ['devolução', 'troca', 'reclamação', 'reclam', 'problema', 'defeito'],
-    response:
-      'Política de devolução e troca:\n\n• Produtos com defeito: troca garantida em até 7 dias\n• Arrependimento: devolução em até 3 dias (produto lacrado)\n• Alimentos perecíveis: não aceitamos devolução por questões de segurança\n\nPara abrir uma reclamação, entre em contato pelo WhatsApp da loja ou pela nossa central de ajuda! 📋',
-  },
-  {
-    keywords: ['horário', 'funcionamento', 'aberto', 'fecha', 'abre', 'hora'],
-    response:
-      'Nosso marketplace funciona 24h para você fazer pedidos, mas cada loja tem seu horário:\n\n• Padarias: 05h às 20h\n• Mercados: 07h às 21h\n• Farmácias: 07h às 22h\n• Salões: 09h às 20h\n• Demais lojas: 08h às 20h\n\nVocê pode verificar o horário de cada loja no perfil dela! 🕐',
-  },
-]
-
-const defaultResponse =
-  'Posso ajudar com mais alguma coisa? Estou aqui para você! Se precisar, posso te informar sobre entregas, pagamentos, trocas e horários de funcionamento. 😊'
-
-function getMockResponse(userMessage: string): string {
-  const lower = userMessage.toLowerCase()
-  for (const item of mockResponses) {
-    if (item.keywords.some((kw) => lower.includes(kw))) {
-      return item.response
-    }
-  }
-  return defaultResponse
 }
 
 function TypingIndicator() {
@@ -167,19 +130,40 @@ export function AIChatBot() {
     setInputValue('')
     setIsTyping(true)
 
-    // Simulate AI thinking delay
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      // Send message with conversation history to the API
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: trimmed, history: messages }),
+      })
 
-    const response = getMockResponse(trimmed)
-    const botMessage: ChatMessage = {
-      id: `bot-${Date.now()}`,
-      role: 'bot',
-      content: response,
-      timestamp: new Date(),
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status}`)
+      }
+
+      const data = await res.json()
+      const reply = data.reply || 'Estou com dificuldades técnicas, tente novamente em instantes...'
+
+      const botMessage: ChatMessage = {
+        id: `bot-${Date.now()}`,
+        role: 'bot',
+        content: reply,
+        timestamp: new Date(),
+      }
+
+      setIsTyping(false)
+      setMessages((prev) => [...prev, botMessage])
+    } catch {
+      setIsTyping(false)
+      const errorMessage: ChatMessage = {
+        id: `bot-error-${Date.now()}`,
+        role: 'bot',
+        content: 'Estou com dificuldades técnicas, tente novamente em instantes... 😔',
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, errorMessage])
     }
-
-    setIsTyping(false)
-    setMessages((prev) => [...prev, botMessage])
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

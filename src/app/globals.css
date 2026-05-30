@@ -3657,3 +3657,105 @@
   0% { transform: scale(1); opacity: 0.6; }
   70%, 100% { transform: scale(2.2); opacity: 0; }
 }
+
+/* ==============================
+   URGENCY PULSE (for low stock items)
+   ============================== */
+@keyframes urgency-pulse-keyframes {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+.urgency-pulse {
+  animation: urgency-pulse-keyframes 1.5s ease-in-out infinite;
+}
+
+/* ==============================
+   BADGE SHINE (sweeping gleam on social proof badges)
+   ============================== */
+@keyframes badge-shine-keyframes {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+.badge-shine {
+  position: relative;
+  overflow: hidden;
+}
+.badge-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.25) 40%,
+    oklch(1 0 0 / 0.4) 50%,
+    oklch(1 0 0 / 0.25) 60%,
+    transparent 100%
+  );
+  transform: skewX(-15deg);
+  pointer-events: none;
+  z-index: 1;
+  animation: badge-shine-keyframes 4s ease-in-out infinite;
+  animation-delay: 2s;
+}
+.dark .badge-shine::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.08) 40%,
+    oklch(1 0 0 / 0.15) 50%,
+    oklch(1 0 0 / 0.08) 60%,
+    transparent 100%
+  );
+}
+.badge-shine:hover::after {
+  animation-duration: 0.6s;
+  animation-delay: 0s;
+}
+
+
+/* ==============================
+   TICKER SLIDE (urgency strip animation)
+   ============================== */
+@keyframes ticker-slide {
+  0% { transform: translateX(100%); opacity: 0; }
+  10% { transform: translateX(0); opacity: 1; }
+  90% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(-100%); opacity: 0; }
+}
+.ticker-slide {
+  animation: ticker-slide 4s ease-in-out infinite;
+}
+
+/* ==============================
+   URGENCY ANIMATIONS (social proof + scarcity)
+   ============================== */
+@keyframes urgency-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+
+/* ==============================
+   ACCESSIBILITY (keyboard + selection)
+   ============================== */
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: hsl(var(--primary) / 0.2);
+}

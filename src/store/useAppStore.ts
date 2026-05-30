@@ -105,6 +105,9 @@ function saveToStorage<T>(key: string, value: T): void {
   }
 }
 
+// Cart persistence helpers
+import { saveCartToStorage, loadCartFromStorage, clearCartStorage } from '@/lib/cart-persistence'
+
 export interface CurrentUser {
   id?: string
   email?: string | null
@@ -269,8 +272,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   selectedOrder: null,
   selectedOrderTab: 'ongoing',
   
-  // Cart
-  cartItems: [],
+  // Cart (persisted to localStorage)
+  cartItems: typeof window !== 'undefined' ? (loadCartFromStorage() ?? []) : [],
   
   // Search
   searchQuery: '',
@@ -329,43 +332,50 @@ export const useAppStore = create<AppState>((set, get) => ({
   selectOrder: (order) => set({ selectedOrder: order }),
   setSelectedOrderTab: (tab) => set({ selectedOrderTab: tab }),
   
-  // Cart actions
+  // Cart actions (all mutations persist to localStorage)
   addToCart: (product, storeName, quantity = 1) => set((state) => {
     const existingItem = state.cartItems.find(item => item.productId === product.id)
+    let newItems: typeof state.cartItems
     if (existingItem) {
-      return {
-        cartItems: state.cartItems.map(item =>
-          item.productId === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        ),
-      }
-    }
-    return {
-      cartItems: [...state.cartItems, {
+      newItems = state.cartItems.map(item =>
+        item.productId === product.id
+          ? { ...item, quantity: item.quantity + quantity }
+          : item
+      )
+    } else {
+      newItems = [...state.cartItems, {
         id: `cart-${Date.now()}`,
         productId: product.id,
         product,
         storeId: product.storeId,
         storeName,
         quantity,
-      }],
+      }]
     }
+    saveCartToStorage(newItems)
+    return { cartItems: newItems }
   }),
   
-  removeFromCart: (productId) => set((state) => ({
-    cartItems: state.cartItems.filter(item => item.productId !== productId),
-  })),
+  removeFromCart: (productId) => set((state) => {
+    const newItems = state.cartItems.filter(item => item.productId !== productId)
+    saveCartToStorage(newItems)
+    return { cartItems: newItems }
+  }),
   
-  updateCartQuantity: (productId, quantity) => set((state) => ({
-    cartItems: quantity <= 0
+  updateCartQuantity: (productId, quantity) => set((state) => {
+    const newItems = quantity <= 0
       ? state.cartItems.filter(item => item.productId !== productId)
       : state.cartItems.map(item =>
           item.productId === productId ? { ...item, quantity } : item
-        ),
-  })),
+        )
+    saveCartToStorage(newItems)
+    return { cartItems: newItems }
+  }),
   
-  clearCart: () => set({ cartItems: [] }),
+  clearCart: () => {
+    clearCartStorage()
+    set({ cartItems: [] })
+  },
   
   getCartTotal: () => {
     return get().cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0)

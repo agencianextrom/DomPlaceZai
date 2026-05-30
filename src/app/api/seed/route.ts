@@ -3,7 +3,15 @@ import { NextResponse } from 'next/server'
 import { hashPassword } from '@/lib/crypto'
 import { getErrorMessage } from '@/lib/api-response'
 
+export async function POST() {
+  return seedDatabase()
+}
+
 export async function GET() {
+  return seedDatabase()
+}
+
+async function seedDatabase() {
   try {
     // Clean existing data
     await db.orderItem.deleteMany()
@@ -85,16 +93,28 @@ export async function GET() {
       },
     })
 
+    // Image map for store categories
+    const storeImageMap: Record<string, string> = {
+      'mercado-do-ze': '/images/grocery.jpg',
+      'acai-da-boa': '/images/acai.jpg',
+      'agropecuaria-sp': '/images/agriculture.jpg',
+      'farmacia-vida': '/images/pharmacy.jpg',
+      'padaria-pao-quente': '/images/bakery.jpg',
+      'loja-eletronico': '/images/electronics.jpg',
+      'pet-shop-amigo-fiel': '/images/pets.jpg',
+      'salao-da-bella': '/images/beauty.jpg',
+    }
+
     // Create store accounts and stores
     const storesData = [
-      { name: 'Mercado do Zé', slug: 'mercado-do-ze', category: 'FOOD', description: 'O melhor mercado de Dom Eliseu com produtos frescos e preços justos.', address: 'Rua Principal, 123', neighborhood: 'Centro', phone: '(91) 99999-0001', whatsapp: '(91) 99999-0001', deliveryFee: 5.00, freeDeliveryAbove: 50, opensAt: '07:00', closesAt: '21:00', weeklyScore: 92, rating: 4.7, totalReviews: 128, totalSales: 850 },
-      { name: 'Açaí da Boa', slug: 'acai-da-boa', category: 'FOOD', description: 'O mais autêntico açaí paraense, feito com frutas selecionadas.', address: 'Av. Brasil, 456', neighborhood: 'Centro', phone: '(91) 99999-0002', whatsapp: '(91) 99999-0002', deliveryFee: 3.00, freeDeliveryAbove: 30, opensAt: '08:00', closesAt: '22:00', weeklyScore: 98, rating: 4.9, totalReviews: 256, totalSales: 1200 },
-      { name: 'Agropecuária São Paulo', slug: 'agropecuaria-sp', category: 'AGRICULTURE', description: 'Tudo para o campo e para a cidade. Ferramentas, sementes e muito mais.', address: 'Rod. PA-279, Km 5', neighborhood: 'Zona Rural', phone: '(91) 99999-0003', whatsapp: '(91) 99999-0003', deliveryFee: 8.00, freeDeliveryAbove: 200, opensAt: '06:00', closesAt: '18:00', weeklyScore: 75, rating: 4.5, totalReviews: 67, totalSales: 320 },
-      { name: 'Farmácia Vida', slug: 'farmacia-vida', category: 'HEALTH', description: 'Sua saúde em primeiro lugar. Medicamentos, suplementos e atendimento farmacêutico.', address: 'Rua Pará, 789', neighborhood: 'Centro', phone: '(91) 99999-0004', whatsapp: '(91) 99999-0004', deliveryFee: 0, freeDeliveryAbove: null, opensAt: '07:00', closesAt: '22:00', weeklyScore: 88, rating: 4.6, totalReviews: 89, totalSales: 620 },
-      { name: 'Padaria Pão Quente', slug: 'padaria-pao-quente', category: 'FOOD', description: 'Pão fresquinho todo dia! Doces, salgados e muito mais.', address: 'Rua Amazonas, 321', neighborhood: 'Centro', phone: '(91) 99999-0005', whatsapp: '(91) 99999-0005', deliveryFee: 3.00, freeDeliveryAbove: 25, opensAt: '05:00', closesAt: '20:00', weeklyScore: 95, rating: 4.8, totalReviews: 198, totalSales: 2100 },
-      { name: 'Loja do Eletrônico', slug: 'loja-eletronico', category: 'ELECTRONICS', description: 'Celulares, acessórios e eletrônicos com as melhores ofertas.', address: 'Rua Tocantins, 654', neighborhood: 'Centro', phone: '(91) 99999-0006', whatsapp: '(91) 99999-0006', deliveryFee: 5.00, freeDeliveryAbove: 100, opensAt: '08:00', closesAt: '20:00', weeklyScore: 70, rating: 4.3, totalReviews: 45, totalSales: 180 },
-      { name: 'Pet Shop Amigo Fiel', slug: 'pet-shop-amigo-fiel', category: 'ANIMALS', description: 'Tudo para seu melhor amigo. Rações, banho, tosa e acessórios.', address: 'Rua Maranhão, 987', neighborhood: 'Centro', phone: '(91) 99999-0007', whatsapp: '(91) 99999-0007', deliveryFee: 4.00, freeDeliveryAbove: 80, opensAt: '08:00', closesAt: '19:00', weeklyScore: 82, rating: 4.7, totalReviews: 112, totalSales: 490 },
-      { name: 'Salão da Bella', slug: 'salao-da-bella', category: 'BEAUTY', description: 'Beleza e bem-estar. Cortes, coloração e tratamentos capilares.', address: 'Rua Ceará, 147', neighborhood: 'Centro', phone: '(91) 99999-0008', whatsapp: '(91) 99999-0008', deliveryFee: 0, freeDeliveryAbove: null, opensAt: '09:00', closesAt: '20:00', weeklyScore: 90, rating: 4.9, totalReviews: 210, totalSales: 1500 },
+      { name: 'Mercado do Zé', slug: 'mercado-do-ze', category: 'FOOD', coverImage: '/images/grocery.jpg', logo: '/images/grocery.jpg', description: 'O melhor mercado de Dom Eliseu com produtos frescos e preços justos.', address: 'Rua Principal, 123', neighborhood: 'Centro', phone: '(91) 99999-0001', whatsapp: '(91) 99999-0001', deliveryFee: 5.00, freeDeliveryAbove: 50, opensAt: '07:00', closesAt: '21:00', weeklyScore: 92, rating: 4.7, totalReviews: 128, totalSales: 850 },
+      { name: 'Açaí da Boa', slug: 'acai-da-boa', category: 'FOOD', coverImage: '/images/acai.jpg', logo: '/images/acai.jpg', description: 'O mais autêntico açaí paraense, feito com frutas selecionadas.', address: 'Av. Brasil, 456', neighborhood: 'Centro', phone: '(91) 99999-0002', whatsapp: '(91) 99999-0002', deliveryFee: 3.00, freeDeliveryAbove: 30, opensAt: '08:00', closesAt: '22:00', weeklyScore: 98, rating: 4.9, totalReviews: 256, totalSales: 1200 },
+      { name: 'Agropecuária São Paulo', slug: 'agropecuaria-sp', category: 'AGRICULTURE', coverImage: '/images/agriculture.jpg', logo: '/images/agriculture.jpg', description: 'Tudo para o campo e para a cidade. Ferramentas, sementes e muito mais.', address: 'Rod. PA-279, Km 5', neighborhood: 'Zona Rural', phone: '(91) 99999-0003', whatsapp: '(91) 99999-0003', deliveryFee: 8.00, freeDeliveryAbove: 200, opensAt: '06:00', closesAt: '18:00', weeklyScore: 75, rating: 4.5, totalReviews: 67, totalSales: 320 },
+      { name: 'Farmácia Vida', slug: 'farmacia-vida', category: 'HEALTH', coverImage: '/images/pharmacy.jpg', logo: '/images/pharmacy.jpg', description: 'Sua saúde em primeiro lugar. Medicamentos, suplementos e atendimento farmacêutico.', address: 'Rua Pará, 789', neighborhood: 'Centro', phone: '(91) 99999-0004', whatsapp: '(91) 99999-0004', deliveryFee: 0, freeDeliveryAbove: null, opensAt: '07:00', closesAt: '22:00', weeklyScore: 88, rating: 4.6, totalReviews: 89, totalSales: 620 },
+      { name: 'Padaria Pão Quente', slug: 'padaria-pao-quente', category: 'FOOD', coverImage: '/images/bakery.jpg', logo: '/images/bakery.jpg', description: 'Pão fresquinho todo dia! Doces, salgados e muito mais.', address: 'Rua Amazonas, 321', neighborhood: 'Centro', phone: '(91) 99999-0005', whatsapp: '(91) 99999-0005', deliveryFee: 3.00, freeDeliveryAbove: 25, opensAt: '05:00', closesAt: '20:00', weeklyScore: 95, rating: 4.8, totalReviews: 198, totalSales: 2100 },
+      { name: 'Loja do Eletrônico', slug: 'loja-eletronico', category: 'ELECTRONICS', coverImage: '/images/electronics.jpg', logo: '/images/electronics.jpg', description: 'Celulares, acessórios e eletrônicos com as melhores ofertas.', address: 'Rua Tocantins, 654', neighborhood: 'Centro', phone: '(91) 99999-0006', whatsapp: '(91) 99999-0006', deliveryFee: 5.00, freeDeliveryAbove: 100, opensAt: '08:00', closesAt: '20:00', weeklyScore: 70, rating: 4.3, totalReviews: 45, totalSales: 180 },
+      { name: 'Pet Shop Amigo Fiel', slug: 'pet-shop-amigo-fiel', category: 'ANIMALS', coverImage: '/images/pets.jpg', logo: '/images/pets.jpg', description: 'Tudo para seu melhor amigo. Rações, banho, tosa e acessórios.', address: 'Rua Maranhão, 987', neighborhood: 'Centro', phone: '(91) 99999-0007', whatsapp: '(91) 99999-0007', deliveryFee: 4.00, freeDeliveryAbove: 80, opensAt: '08:00', closesAt: '19:00', weeklyScore: 82, rating: 4.7, totalReviews: 112, totalSales: 490 },
+      { name: 'Salão da Bella', slug: 'salao-da-bella', category: 'BEAUTY', coverImage: '/images/beauty.jpg', logo: '/images/beauty.jpg', description: 'Beleza e bem-estar. Cortes, coloração e tratamentos capilares.', address: 'Rua Ceará, 147', neighborhood: 'Centro', phone: '(91) 99999-0008', whatsapp: '(91) 99999-0008', deliveryFee: 0, freeDeliveryAbove: null, opensAt: '09:00', closesAt: '20:00', weeklyScore: 90, rating: 4.9, totalReviews: 210, totalSales: 1500 },
     ]
 
     const stores: any[] = []
@@ -121,6 +141,12 @@ export async function GET() {
       })
       stores.push(store)
     }
+
+    // Build storeId to image map for products
+    const storeIdToImage = new Map<string, string>()
+    storesData.forEach((sd, i) => {
+      storeIdToImage.set(stores[i].id, storeImageMap[sd.slug] || '')
+    })
 
     // Create products
     const productsData = [
@@ -192,7 +218,7 @@ export async function GET() {
           tags: pd.tags,
           variations: pd.variations || null,
           soldCount: Math.floor(Math.random() * 100),
-          images: '[]',
+          images: JSON.stringify([storeIdToImage.get(pd.storeId) || '']),
           status: 'ACTIVE',
         },
       })
@@ -201,14 +227,14 @@ export async function GET() {
 
     // Create banners
     const bannersData = [
-      { storeId: stores[1].id, title: 'Ofertas da Semana', subtitle: 'Até 40% de desconto em produtos locais', level: 'DAILY_OFFERS' as const, order: 0, image: 'banner-offers' },
-      { storeId: stores[4].id, title: 'Entrega Grátis Pão Quente', subtitle: 'Compras acima de R$ 25 na padaria', level: 'DAILY_OFFERS' as const, order: 1, image: 'banner-pao' },
-      { storeId: stores[2].id, title: 'Novidades Agropecuária', subtitle: 'Novas sementes e ferramentas chegaram!', level: 'NEW_IN_CITY' as const, order: 0, image: 'banner-agro' },
-      { storeId: stores[7].id, title: 'Salão da Bella - Novos Serviços', subtitle: 'Escova progressiva e botox capilar', level: 'NEW_IN_CITY' as const, order: 1, image: 'banner-bella' },
-      { storeId: stores[0].id, title: 'Feira do Produtor', subtitle: 'Toda sexta-feira com produtos fresquinhos!', level: 'LOCAL_PARTNERSHIPS' as const, order: 0, image: 'banner-feira' },
-      { storeId: stores[6].id, title: 'Dia do Pet', subtitle: '20% de desconto em rações todo sábado', level: 'SEASONAL' as const, order: 0, image: 'banner-pet' },
-      { storeId: stores[3].id, title: 'Farmácia Vida - Saúde em primeiro lugar', subtitle: 'Entrega grátis em todos os medicamentos', level: 'FEATURED' as const, order: 0, image: 'banner-farmacia' },
-      { storeId: stores[5].id, title: 'Loja do Eletrônico - Ofertas Imperdíveis', subtitle: 'Fones e acessórios com até 50% OFF', level: 'FEATURED' as const, order: 1, image: 'banner-eletronico' },
+      { storeId: stores[1].id, title: 'Ofertas da Semana', subtitle: 'Até 40% de desconto em produtos locais', level: 'DAILY_OFFERS' as const, order: 0, image: '/images/acai.jpg' },
+      { storeId: stores[4].id, title: 'Entrega Grátis Pão Quente', subtitle: 'Compras acima de R$ 25 na padaria', level: 'DAILY_OFFERS' as const, order: 1, image: '/images/bakery.jpg' },
+      { storeId: stores[2].id, title: 'Novidades Agropecuária', subtitle: 'Novas sementes e ferramentas chegaram!', level: 'NEW_IN_CITY' as const, order: 0, image: '/images/agriculture.jpg' },
+      { storeId: stores[7].id, title: 'Salão da Bella - Novos Serviços', subtitle: 'Escova progressiva e botox capilar', level: 'NEW_IN_CITY' as const, order: 1, image: '/images/beauty.jpg' },
+      { storeId: stores[0].id, title: 'Feira do Produtor', subtitle: 'Toda sexta-feira com produtos fresquinhos!', level: 'LOCAL_PARTNERSHIPS' as const, order: 0, image: '/images/grocery.jpg' },
+      { storeId: stores[6].id, title: 'Dia do Pet', subtitle: '20% de desconto em rações todo sábado', level: 'SEASONAL' as const, order: 0, image: '/images/pets.jpg' },
+      { storeId: stores[3].id, title: 'Farmácia Vida - Saúde em primeiro lugar', subtitle: 'Entrega grátis em todos os medicamentos', level: 'FEATURED' as const, order: 0, image: '/images/pharmacy.jpg' },
+      { storeId: stores[5].id, title: 'Loja do Eletrônico - Ofertas Imperdíveis', subtitle: 'Fones e acessórios com até 50% OFF', level: 'FEATURED' as const, order: 1, image: '/images/electronics.jpg' },
     ]
 
     for (const bd of bannersData) {

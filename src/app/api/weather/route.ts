@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Coordenadas padrão de Dom Eliseu, PA
-const DEFAULT_LAT = -3.44
-const DEFAULT_LON = -47.36
+// Coordenadas de Dom Eliseu, PA
+const LAT = -3.3728
+const LON = -47.3556
 
 // Códigos WMO → descrições em português e ícones
 const WMO_CODES: Record<number, { condition: string; icon: string }> = {
@@ -53,8 +53,8 @@ interface OpenMeteoResponse {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const lat = parseFloat(searchParams.get('lat') || String(DEFAULT_LAT))
-    const lon = parseFloat(searchParams.get('lon') || String(DEFAULT_LON))
+    const lat = parseFloat(searchParams.get('lat') || String(LAT))
+    const lon = parseFloat(searchParams.get('lon') || String(LON))
 
     // Validar coordenadas
     if (isNaN(lat) || isNaN(lon)) {
@@ -69,6 +69,7 @@ export async function GET(request: NextRequest) {
     url.searchParams.set('latitude', String(lat))
     url.searchParams.set('longitude', String(lon))
     url.searchParams.set('current', 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day')
+    url.searchParams.set('timezone', 'America/Belem')
 
     const response = await fetch(url.toString(), {
       headers: { 'Accept': 'application/json' },

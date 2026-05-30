@@ -1356,3 +1356,232 @@ Stage Summary:
 5. **MEDIUM**: Implement real-time order tracking with WebSocket
 6. **LOW**: LGPD data export tools
 7. **LOW**: Delivery driver matching algorithm
+
+---
+Task ID: 5
+Agent: Full-Stack Developer
+Task: Cart persistence + smart recovery
+
+Work Log:
+- Created `/src/lib/cart-persistence.ts` with localStorage utilities:
+  - `saveCartToStorage(items)` - saves cart items with timestamp
+  - `loadCartFromStorage()` - loads and validates cart items from localStorage
+  - `clearCartStorage()` - removes cart data from localStorage
+  - `getCartTimestamp()` / `isCartStale()` - timestamp management helpers
+  - Full type safety with CartItemData interface, error handling for corrupted data
+- Updated `/src/store/useAppStore.ts`:
+  - Cart items now load from localStorage on store initialization
+  - All cart mutations (addToCart, removeFromCart, updateCartQuantity, clearCart) persist to localStorage
+  - `clearCart()` clears both store state and localStorage
+  - Uses `saveCartToStorage()` after computing new items array
+- Created `/src/components/cart/CartRecoveryBanner.tsx`:
+  - Shows emerald gradient banner when user has saved cart items on home view
+  - Message: "🎯 Você tem X itens no carrinho!" with item count badge
+  - "Ver carrinho" and "Limpar" action buttons
+  - 600ms delayed entrance animation, auto-dismiss after 8 seconds
+  - Close button (X) for manual dismiss
+  - Uses useRef for timers (no synchronous setState in effects)
+  - Only shows once per session (hasBeenDismissed flag)
+  - Responsive design with sm:hidden subtitle
+- Updated `/src/app/page.tsx`:
+  - Imported and rendered CartRecoveryBanner above main content (after div wrapper, before AnimatePresence)
+  - Added dynamic page title: "DomPlace" when empty, "DomPlace (X itens)" when cart has items
+  - Uses useEffect to sync document.title with getCartItemCount()
+
+Stage Summary:
+- 1 new file created (cart-persistence.ts utility)
+- 1 new component created (CartRecoveryBanner.tsx)
+- 2 existing files modified (useAppStore.ts, page.tsx)
+- Cart persists across page refreshes and browser sessions
+- Smart recovery banner with emerald gradient, auto-dismiss, and action buttons
+- Dynamic page title shows cart item count
+- ESLint: 0 new errors (1 pre-existing error in ProductDetail.tsx unrelated to this task)
+- Dev server: compiling successfully, GET / 200
+---
+Task ID: 2
+Agent: Image Generation Agent
+Task: Generate real product images with AI
+
+Work Log:
+- Created /public/images/ directory for storing generated images
+- Invoked image-generation skill to understand z-ai CLI tool usage
+- Generated 8 AI product images (1024x1024, professional photography style) using z-ai CLI:
+  1. /images/acai.jpg — Açaí bowl with granola and banana, tropical Amazon style (169KB)
+  2. /images/bakery.jpg — Fresh bread and pastries in woven basket, Brazilian bakery (180KB)
+  3. /images/grocery.jpg — Fresh tropical fruits and vegetables at Brazilian market (182KB)
+  4. /images/pets.jpg — Pet supplies, dog food and accessories on clean shelf (70KB)
+  5. /images/beauty.jpg — Beauty salon products, shampoo and hair care, elegant display (80KB)
+  6. /images/pharmacy.jpg — Pharmacy products, vitamins, supplements, first aid (84KB)
+  7. /images/electronics.jpg — Electronics store, smartphone, earbuds, power bank (173KB)
+  8. /images/agriculture.jpg — Agriculture tools, seeds, fertilizer, seedlings (242KB)
+- Updated seed API route (/src/app/api/seed/route.ts):
+  - Added storeImageMap for slug-to-image-path mapping
+  - Added coverImage and logo fields to all 8 stores in storesData
+  - Added storeIdToImage map for product-to-image mapping
+  - Changed product images from '[]' to JSON array with store-specific image path
+  - Updated all 8 banners to use real image paths instead of placeholder strings
+- Updated page.tsx fallback data (/src/app/page.tsx):
+  - Updated fallbackBanners with real image paths (grocery, bakery, acai, beauty)
+  - Updated fallbackStores with logo and coverImage for all 8 stores
+  - Updated fallbackProducts with images array and storeLogo for all 8 products
+- Verified ESLint passes with 0 errors on both modified files
+
+Stage Summary:
+- 8 AI-generated product images created in /public/images/ (total ~1.2MB)
+- Seed route updated: stores now have coverImage + logo, products now have images array, banners have real images
+- Page.tsx fallback data updated: all stores and products now reference local image paths
+- All images use consistent professional photography style with clean/product backgrounds
+- ESLint: 0 errors on both modified files
+- To activate: re-run seed API (GET /api/seed) to populate database with image paths
+
+---
+Task ID: 6
+Agent: Full-Stack Developer
+Task: LLM chat backend integration
+
+Work Log:
+- Created /src/app/api/chat/route.ts — backend API route using z-ai-web-dev-sdk (ZAI.create() + chat.completions.create)
+- System prompt with full DomPlace context (stores, payment methods, delivery zones, coupons, policies)
+- Conversation history sent with each request (last 6 messages for context window)
+- Robust fallback to keyword-based responses when SDK is unavailable (7 topic categories + greeting)
+- Updated /src/components/chat/AIChatBot.tsx — replaced mock getMockResponse() with fetch('/api/chat') POST
+- Sends { message, history } to API; handles errors with friendly Portuguese message
+- Removed unused imports (X, ScrollArea) and mock data arrays
+- All UI/animations preserved (typing indicator, chat bubbles, quick chips, sheet panel)
+- ESLint: 0 errors; Dev server: compiling successfully
+
+Stage Summary:
+- Real LLM responses via backend API using z-ai-web-dev-sdk
+- Fallback keyword system covers: delivery, payment, returns, hours, promos, stores, greetings
+- Graceful error handling with user-friendly message in Portuguese
+
+---
+Task ID: 3+4
+Agent: Styling Expert
+Task: Social proof + urgency/scarcity conversion triggers
+
+Work Log:
+- Updated SocialProofBadges.tsx with task-spec props (rating, soldCount, productName) + backward compat
+- Updated StockUrgency.tsx with task-spec props (stock, maxStock) + backward compat, emoji indicators
+- Updated UrgencyStrip.tsx with exact task-specified messages and emerald gradient h-8 strip
+- Verified ProductCard.tsx and ProductDetail.tsx integrations (already wired, props compatible)
+- Verified page.tsx UrgencyStrip placement (already integrated at top of home view)
+- Appended ticker-slide CSS animation to globals.css (urgency-pulse already existed)
+- Ran bun run lint — 0 errors
+
+Stage Summary:
+- 3 updated component files (SocialProofBadges, StockUrgency, UrgencyStrip)
+- All 3 already integrated in ProductCard, ProductDetail, and page.tsx
+- Social proof badges: random 1-15 min last purchase, sold count (min 5), 🔥 viewing count, 98% recommend
+- Stock urgency: ≤5 red pulsing 🔥, ≤15 amber ⚡, >15 green ✓, progress bar (maxStock default 50)
+- Urgency strip: 6 rotating messages, 4s interval, emerald gradient, smooth slide transitions
+- CSS animations: urgency-pulse + ticker-slide appended to globals.css
+
+---
+Task ID: 7+8
+Agent: Full-Stack Developer
+Task: Weather API, seed, performance + accessibility
+
+Work Log:
+- Created /api/weather route with Open-Meteo (already existed, updated coordinates to -3.3728, -47.3556 and added timezone=America/Belem)
+- Verified QuickInfo.tsx already fetches real weather data from /api/weather with useEffect, 30-minute refresh, and fallback
+- Added POST handler to /api/seed route (seedDatabase helper for DRY)
+- Updated layout.tsx metadata: title to "DomPlace - Marketplace de Dom Eliseu, PA", enhanced description, added theme-color meta (#059669), added keywords
+- Appended accessibility CSS to globals.css: focus-visible styles for keyboard navigation, smooth scrolling, selection color
+- ESLint: 0 errors
+
+Stage Summary:
+- Real weather for Dom Eliseu via Open-Meteo (free, no API key) with correct coordinates
+- SEO meta tags added (title, description, theme-color, keywords)
+- Focus-visible styles for keyboard navigation
+- Smooth scrolling and selection color improvements
+
+---
+Task ID: R8 (Round 8 - Conversion UX/UI + Turso + AI Features)
+Agent: Master Agent + Multiple Specialized Agents
+Task: Turso database configuration, AI product images, social proof, urgency triggers, cart persistence, LLM chat, weather API, accessibility
+
+Work Log:
+
+**1. Turso Database Configuration (Master Agent):**
+- Updated .env to include Turso credentials (TURSO_URL, TURSO_AUTH_TOKEN)
+- Kept Prisma provider as sqlite (for CLI schema management)
+- Created /scripts/sync-turso.ts - schema sync script using @libsql/client
+- Successfully synced all 26 tables to Turso remote database
+- Verified connection with test query
+
+**2. AI Product Image Generation (Image Generation Agent):**
+- Generated 8 professional product images using AI (1024x1024)
+- Saved to /public/images/: acai.jpg, bakery.jpg, grocery.jpg, agriculture.jpg, pharmacy.jpg, electronics.jpg, pets.jpg, beauty.jpg
+- Updated /api/seed/route.ts with storeImageMap for real image paths
+- Updated page.tsx fallback data with image paths
+- Total: ~1.2MB of optimized images
+
+**3. Social Proof + Urgency Triggers (Styling Expert):**
+- Created SocialProofBadges.tsx - randomized "X pessoas compraram", "Y visualizando", "Última compra: há Z min"
+- Created StockUrgency.tsx - low stock warnings with pulsing animations
+- Created UrgencyStrip.tsx - rotating ticker strip with real-time messages
+- Integrated into ProductCard and ProductDetail
+- Added urgency-pulse and ticker-slide CSS animations
+
+**4. Cart Persistence (Full-Stack Developer):**
+- Created /lib/cart-persistence.ts - localStorage save/load/clear with validation
+- Updated useAppStore.ts - all cart mutations now persist to localStorage
+- Created CartRecoveryBanner.tsx - "🎯 Você tem X itens!" recovery banner
+- Added dynamic page title based on cart count
+
+**5. LLM Chat Backend (Full-Stack Developer):**
+- Created /api/chat/route.ts - real LLM responses via z-ai-web-dev-sdk
+- Updated AIChatBot.tsx - replaced mock responses with API fetch
+- Added comprehensive fallback keyword responses (7 topic categories)
+- System prompt with full DomPlace context
+
+**6. Weather API + Accessibility (Full-Stack Developer):**
+- Created /api/weather/route.ts - Open-Meteo API (free, no API key)
+- Updated QuickInfo.tsx with real weather data for Dom Eliseu
+- Added SEO meta tags (title, description, theme-color)
+- Added accessibility CSS (focus-visible, smooth scrolling, selection color)
+
+**7. Cron Job:**
+- Created 15-minute webDevReview cron job for continuous development
+
+Stage Summary:
+- Turso: 26 tables synced to remote database
+- 8 AI-generated product images (~1.2MB)
+- 3 new conversion components (SocialProofBadges, StockUrgency, UrgencyStrip)
+- Cart persistence with localStorage + recovery banner
+- Real LLM chat backend with fallback
+- Real weather API integration
+- SEO meta tags + accessibility improvements
+- ESLint: 0 errors; Dev server: compiling; GET / 200
+
+---
+## CURRENT PROJECT STATUS (Post Round 8)
+
+### Overall Assessment: STABLE — Major conversion-focused improvements
+
+### What's New This Round:
+1. **Turso Database**: All 26 tables synced to remote Turso
+2. **8 AI Product Images**: Professional photos replacing gradient placeholders
+3. **Social Proof Badges**: "X compraram", "Y visualizando", "Última compra: há Z min"
+4. **Stock Urgency**: Pulsing low-stock warnings, progress bars
+5. **Urgency Ticker**: Auto-rotating real-time activity strip
+6. **Cart Persistence**: Cart survives page refresh, recovery banner
+7. **Real LLM Chat**: AI responses via z-ai-web-dev-sdk with fallback
+8. **Weather API**: Real Dom Eliseu weather via Open-Meteo (free)
+9. **SEO Meta Tags**: Proper title, description, theme-color
+10. **Accessibility**: focus-visible, smooth scroll, selection colors
+
+### Total Project Stats:
+- 130+ component files
+- 10+ API routes (seed, stores, products, banners, cart, orders, weather, chat, auth)
+- 26 Prisma models in Turso
+- 50+ CSS utility classes and animations
+- 18+ views
+- 8 AI-generated product images
+
+### Unresolved Issues:
+1. No actual auth backend (NextAuth needed)
+2. No real payment processing (Mercado Pago needed)
+3. Dashboard uses mock data
+4. Cron job active for continuous improvement

@@ -13,6 +13,8 @@ import { ProductReviews } from './ProductReviews'
 import { ProductGallery } from './ProductGallery'
 import { DeliveryTimeCalculator } from './DeliveryTimeCalculator'
 import { PriceDropAlert } from './PriceDropAlert'
+import { SocialProofBadges } from './SocialProofBadges'
+import { StockUrgency } from './StockUrgency'
 import { QuantityStepper } from '@/components/ui/QuantityStepper'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
@@ -273,6 +275,16 @@ export function ProductDetail({ product }: ProductDetailProps) {
             ))}
           </div>
         </motion.div>
+
+        {/* Social Proof - full badges below main image */}
+        <SocialProofBadges
+          productId={product.id}
+          productName={product.name}
+          variant="detail"
+          totalReviews={product.totalReviews}
+        />
+
+        <StockUrgency product={product} variant="detail" />
 
         {/* Trust badges section */}
         <motion.div 
