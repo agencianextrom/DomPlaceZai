@@ -7,7 +7,7 @@ import { authOptions } from '@/lib/auth'
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
-    const accountId = (session?.user as any)?.id
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     if (!accountId) {
       return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
@@ -76,7 +76,7 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    const accountId = (session?.user as any)?.id
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     if (!accountId) {
       return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })

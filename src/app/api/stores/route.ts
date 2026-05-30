@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = parseInt(searchParams.get('offset') || '0')
     
-    const where: any = {
+    const where: Record<string, unknown> = {
       status: 'ACTIVE',
     }
     
@@ -65,8 +65,8 @@ export async function GET(request: Request) {
       limit,
       offset,
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -154,7 +154,7 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ success: true, store }, { status: 201 })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

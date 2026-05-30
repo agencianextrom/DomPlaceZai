@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = parseInt(searchParams.get('offset') || '0')
     
-    const where: any = {
+    const where: Record<string, unknown> = {
       status: 'ACTIVE',
     }
     
@@ -40,10 +40,18 @@ export async function GET(request: Request) {
     if (isOffer === 'true') where.isOffer = true
     if (isNew === 'true') where.isNew = true
     if (isFeatured === 'true') where.isFeatured = true
-    if (minPrice) where.price = { ...(where.price || {}), gte: parseFloat(minPrice) }
-    if (maxPrice) where.price = { ...(where.price || {}), lte: parseFloat(maxPrice) }
+    if (minPrice) {
+      const priceFilter = (where.price as Record<string, number>) || {}
+      priceFilter.gte = parseFloat(minPrice)
+      where.price = priceFilter
+    }
+    if (maxPrice) {
+      const priceFilter = (where.price as Record<string, number>) || {}
+      priceFilter.lte = parseFloat(maxPrice)
+      where.price = priceFilter
+    }
     
-    const orderBy: any = {}
+    const orderBy: Record<string, string> = {}
     switch (sort) {
       case 'price-asc': orderBy.price = 'asc'; break
       case 'price-desc': orderBy.price = 'desc'; break
@@ -92,8 +100,8 @@ export async function GET(request: Request) {
       limit,
       offset,
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -177,7 +185,7 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ success: true, product }, { status: 201 })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

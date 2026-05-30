@@ -18,11 +18,11 @@ export async function GET(request: Request) {
       )
     }
 
-    const where: any = {}
+    const where: Record<string, unknown> = {}
     if (productId) where.productId = productId
     if (storeId) where.storeId = storeId
 
-    const orderBy: any = {}
+    const orderBy: Record<string, string> = {}
     switch (sort) {
       case 'newest': orderBy.createdAt = 'desc'; break
       case 'oldest': orderBy.createdAt = 'asc'; break
@@ -76,8 +76,8 @@ export async function GET(request: Request) {
       average: avgResult._avg.rating ? Math.round(avgResult._avg.rating * 10) / 10 : 0,
       count: avgResult._count.rating,
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -115,7 +115,7 @@ export async function POST(request: Request) {
     }
 
     // Verificar se já avaliou este item
-    const existingWhere: any = { accountId }
+    const existingWhere: Record<string, unknown> = { accountId }
     if (productId) existingWhere.productId = productId
     if (storeId) existingWhere.storeId = storeId
 
@@ -182,7 +182,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true, review }, { status: 201 })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

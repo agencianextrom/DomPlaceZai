@@ -14,7 +14,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'ID da conta é obrigatório' }, { status: 400 })
     }
 
-    const where: any = { accountId }
+    const where: Record<string, unknown> = { accountId }
     if (type === 'product') where.productId = { not: null }
     if (type === 'store') where.storeId = { not: null }
 
@@ -83,8 +83,8 @@ export async function GET(request: Request) {
       limit,
       offset,
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
     }
 
     // Verificar se já é favorito
-    const where: any = { accountId }
+    const where: Record<string, unknown> = { accountId }
     if (productId) where.productId = productId
     if (storeId) where.storeId = storeId
 
@@ -139,8 +139,8 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ success: true, favorite, message: 'Adicionado aos favoritos' }, { status: 201 })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -160,7 +160,7 @@ export async function DELETE(request: Request) {
 
     // Remover por combinação accountId + productId/storeId
     if (accountId && (productId || storeId)) {
-      const where: any = { accountId }
+      const where: Record<string, unknown> = { accountId }
       if (productId) where.productId = productId
       if (storeId) where.storeId = storeId
 
@@ -183,7 +183,7 @@ export async function DELETE(request: Request) {
       { error: 'ID do favorito ou combinação de filtros é obrigatória' },
       { status: 400 }
     )
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

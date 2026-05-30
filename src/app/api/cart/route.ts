@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
-    const accountId = searchParams.get('accountId') || (session?.user as any)?.id
+    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string | undefined
 
     if (!accountId) {
       return NextResponse.json({ items: [] })
@@ -59,8 +59,8 @@ export async function GET(request: Request) {
         freeDeliveryAbove: items.length > 0 ? items[0].product.store.freeDeliveryAbove : null,
       },
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const body = await request.json()
-    const accountId = body.accountId || (session?.user as any)?.id
+    const accountId = body.accountId || (session?.user as Record<string, unknown>)?.id as string | undefined
     const { productId, quantity = 1 } = body
 
     if (!accountId || !productId) {
@@ -148,8 +148,8 @@ export async function POST(request: Request) {
       },
       message: 'Produto adicionado ao carrinho',
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -172,7 +172,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Quantidade deve ser pelo menos 1' }, { status: 400 })
     }
 
-    const accountId = bodyAccountId || (session?.user as any)?.id
+    const accountId = bodyAccountId || (session?.user as Record<string, unknown>)?.id as string | undefined
 
     // Find cart item by cartItemId or by accountId + productId
     let cartItem
@@ -210,8 +210,8 @@ export async function PATCH(request: Request) {
     })
 
     return NextResponse.json({ success: true, cartItem: { id: updated.id, quantity: updated.quantity } })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -221,7 +221,7 @@ export async function DELETE(request: Request) {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
     const cartItemId = searchParams.get('id')
-    const accountId = searchParams.get('accountId') || (session?.user as any)?.id
+    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string | undefined
     const productId = searchParams.get('productId')
 
     // Remove specific item by cartItemId
@@ -248,7 +248,7 @@ export async function DELETE(request: Request) {
     }
 
     return NextResponse.json({ error: 'ID do item, ID da conta ou ID do produto é obrigatório' }, { status: 400 })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

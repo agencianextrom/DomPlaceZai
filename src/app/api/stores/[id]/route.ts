@@ -104,8 +104,8 @@ export async function GET(
         reviewCount: reviews,
       },
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -124,7 +124,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Loja não encontrada' }, { status: 404 })
     }
 
-    const data: any = { updatedAt: new Date() }
+    const data: Record<string, unknown> = { updatedAt: new Date() }
 
     if (body.name !== undefined) {
       data.name = body.name
@@ -164,7 +164,7 @@ export async function PUT(
     })
 
     return NextResponse.json({ success: true, store })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

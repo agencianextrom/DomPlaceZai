@@ -43,8 +43,8 @@ export async function GET(
       status: product.status,
       createdAt: product.createdAt,
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -64,7 +64,7 @@ export async function PUT(
     }
 
     // Construir dados de atualização
-    const data: any = { updatedAt: new Date() }
+    const data: Record<string, unknown> = { updatedAt: new Date() }
 
     if (body.name !== undefined) {
       data.name = body.name
@@ -111,8 +111,8 @@ export async function PUT(
     })
 
     return NextResponse.json({ success: true, product })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -135,7 +135,7 @@ export async function DELETE(
     })
 
     return NextResponse.json({ success: true, message: 'Produto removido com sucesso' })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

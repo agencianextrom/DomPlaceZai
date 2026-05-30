@@ -97,8 +97,8 @@ export async function GET(
       cancelledAt: order.cancelledAt,
       cancelReason: order.cancelReason,
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -136,7 +136,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Pedido não encontrado' }, { status: 404 })
     }
 
-    const updateData: any = {}
+    const updateData: Record<string, unknown> = {}
 
     updateData.status = status
 
@@ -191,8 +191,8 @@ export async function PATCH(
         status: updatedOrder.status,
       },
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -303,7 +303,7 @@ export async function POST(
     })
 
     return NextResponse.json({ success: true, message: 'Avaliação registrada com sucesso' })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { createHash } from 'crypto'
+import { hashPassword } from '@/lib/crypto'
+import { apiError, getErrorMessage } from '@/lib/api-response'
 import type { AccountRole } from '@prisma/client'
-
-function hashPassword(password: string): string {
-  return createHash('sha256').update(password).digest('hex')
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,7 +47,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Hash password
+    // Hash password with PBKDF2
     const hashedPassword = hashPassword(password)
 
     // Create account
@@ -125,11 +122,8 @@ export async function POST(request: NextRequest) {
         role: account.role,
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erro no cadastro:', error)
-    return NextResponse.json(
-      { success: false, error: 'Erro interno do servidor. Tente novamente.' },
-      { status: 500 }
-    )
+    return apiError(getErrorMessage(error), 500, 'REGISTER_ERROR')
   }
 }

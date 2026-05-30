@@ -8,7 +8,7 @@ import { authOptions } from '@/lib/auth'
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    const accountId = (session?.user as any)?.id
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     if (!accountId) {
       return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    let orders: any[] = []
+    let orders: Record<string, unknown>[] = []
     let total = 0
 
     if (type === 'available') {
@@ -157,16 +157,16 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      orders: orders.map((o: any) => ({
+      orders: orders.map((o: Record<string, unknown>) => ({
         id: o.id,
         orderNumber: o.orderNumber,
         status: o.status,
-        storeName: o.store?.name,
-        storeLogo: o.store?.logo,
-        storeAddress: o.store?.address,
-        storeNeighborhood: o.store?.neighborhood,
-        customerName: o.account?.name,
-        customerPhone: o.account?.phone,
+        storeName: (o.store as Record<string, unknown>)?.name,
+        storeLogo: (o.store as Record<string, unknown>)?.logo,
+        storeAddress: (o.store as Record<string, unknown>)?.address,
+        storeNeighborhood: (o.store as Record<string, unknown>)?.neighborhood,
+        customerName: (o.account as Record<string, unknown>)?.name,
+        customerPhone: (o.account as Record<string, unknown>)?.phone,
         deliveryAddress: o.deliveryAddress,
         items: o.items,
         total: o.total,

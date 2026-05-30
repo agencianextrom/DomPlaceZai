@@ -24,12 +24,12 @@ export async function GET(
       return NextResponse.json({ error: 'Loja não encontrada' }, { status: 404 })
     }
 
-    const where: any = { storeId: id }
+    const where: Record<string, unknown> = { storeId: id }
     if (status !== 'ALL') {
       where.status = status
     }
 
-    const orderBy: any = {}
+    const orderBy: Record<string, string> = {}
     switch (sort) {
       case 'price-asc': orderBy.price = 'asc'; break
       case 'price-desc': orderBy.price = 'desc'; break
@@ -77,7 +77,7 @@ export async function GET(
       limit,
       offset,
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

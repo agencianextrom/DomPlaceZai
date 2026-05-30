@@ -1,10 +1,7 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
-import { createHash } from 'crypto'
-
-function hashPassword(password: string): string {
-  return createHash('sha256').update(password).digest('hex')
-}
+import { hashPassword } from '@/lib/crypto'
+import { getErrorMessage } from '@/lib/api-response'
 
 export async function GET() {
   try {
@@ -277,8 +274,8 @@ export async function GET() {
         promotions: 2,
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Seed error:', error)
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return NextResponse.json({ success: false, error: getErrorMessage(error) }, { status: 500 })
   }
 }

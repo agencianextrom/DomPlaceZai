@@ -3,11 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import FacebookProvider from 'next-auth/providers/facebook'
 import { db } from '@/lib/db'
-import { createHash } from 'crypto'
-
-function hashPassword(password: string): string {
-  return createHash('sha256').update(password).digest('hex')
-}
+import { hashPassword, verifyPassword } from '@/lib/crypto'
 
 // Criar account no banco se não existe (para OAuth)
 async function ensureAccountExists(
@@ -98,9 +94,8 @@ const providers: NextAuthOptions['providers'] = [
           return null
         }
 
-        // Hash the provided password and compare
-        const hashedPassword = hashPassword(credentials.password)
-        if (hashedPassword !== account.password) {
+        // Verify password (supports both PBKDF2 and legacy SHA-256)
+        if (!verifyPassword(credentials.password, account.password)) {
           return null
         }
 

@@ -1,12 +1,8 @@
+import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { createHash } from 'crypto'
-
-function hashPassword(password: string): string {
-  return createHash('sha256').update(password).digest('hex')
-}
+import { hashPassword, verifyPassword } from '@/lib/crypto'
 
 // POST: Alterar senha do usuário autenticado
 export async function POST(request: NextRequest) {
@@ -60,8 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se a senha atual está correta
-    const hashedCurrentPassword = hashPassword(currentPassword)
-    if (hashedCurrentPassword !== account.password) {
+    if (!verifyPassword(currentPassword, account.password || '')) {
       return NextResponse.json(
         { success: false, error: 'Senha atual incorreta.' },
         { status: 401 }
@@ -70,7 +65,8 @@ export async function POST(request: NextRequest) {
 
     // Verificar se a nova senha é diferente da atual
     const hashedNewPassword = hashPassword(newPassword)
-    if (hashedNewPassword === account.password) {
+    // compare with new hash (account.password could be legacy SHA-256, so we verify the new hash is different)
+    if (account.password === hashedNewPassword) {
       return NextResponse.json(
         { success: false, error: 'A nova senha deve ser diferente da senha atual.' },
         { status: 400 }

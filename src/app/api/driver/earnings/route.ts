@@ -8,7 +8,7 @@ import { authOptions } from '@/lib/auth'
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    const accountId = (session?.user as any)?.id
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     if (!accountId) {
       return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
 
     // Calcular métricas do período
     const periodEarnings = completedOrders.reduce(
-      (sum: number, order: any) => sum + order.commission,
+      (sum: number, order: { commission: number }) => sum + order.commission,
       0
     )
     const deliveryCount = completedOrders.length
@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
       periodEarnings,
       deliveryCount,
       averagePerDelivery: Math.round(averagePerDelivery * 100) / 100,
-      recentDeliveries: recentDeliveries.map((d: any) => ({
+      recentDeliveries: recentDeliveries.map((d) => ({
         orderNumber: d.orderNumber,
         storeName: d.store?.name,
         commission: d.commission,

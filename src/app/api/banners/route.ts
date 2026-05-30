@@ -12,7 +12,10 @@ export async function GET() {
     })
     
     // Group by level
-    const grouped: Record<string, any[]> = {}
+    interface BannerItem {
+      id: string; storeId: string; storeName: string; title: string; subtitle: string | null; image: string | null; link: string | null; level: string; order: number
+    }
+    const grouped: Record<string, BannerItem[]> = {}
     banners.forEach(b => {
       if (!grouped[b.level]) grouped[b.level] = []
       grouped[b.level].push({
@@ -29,7 +32,7 @@ export async function GET() {
     })
     
     return NextResponse.json({ banners: grouped, total: banners.length })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

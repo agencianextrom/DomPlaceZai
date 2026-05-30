@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
-    const accountId = searchParams.get('accountId') || (session?.user as any)?.id
+    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string | undefined
     const storeId = searchParams.get('storeId')
     const status = searchParams.get('status')
     const limit = parseInt(searchParams.get('limit') || '20')
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ orders: [], total: 0, limit, offset })
     }
 
-    const where: any = { accountId }
+    const where: Record<string, unknown> = { accountId }
     if (storeId) where.storeId = storeId
     if (status) where.status = status
 
@@ -87,8 +87,8 @@ export async function GET(request: Request) {
       limit,
       offset,
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const body = await request.json()
-    const accountId = body.accountId || (session?.user as any)?.id
+    const accountId = body.accountId || (session?.user as Record<string, unknown>)?.id as string | undefined
 
     const {
       storeId,
@@ -182,7 +182,7 @@ export async function POST(request: Request) {
     }
 
     // Calculate totals
-    const subtotal = items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0)
+    const subtotal = items.reduce((sum: number, item: { price: number; quantity: number }) => sum + item.price * item.quantity, 0)
 
     // Calculate delivery fee based on store settings
     let deliveryFee = 0
@@ -242,7 +242,7 @@ export async function POST(request: Request) {
           commissionRate: store.commissionRate,
           estimatedTime: deliveryType === 'PICKUP' ? '30-60 min' : '30-60 min',
           items: {
-            create: items.map((item: any) => ({
+            create: items.map((item: { productId: string; productName?: string; productImage?: string; price: number; quantity: number }) => ({
               productId: item.productId,
               productName: item.productName || item.name,
               productImage: item.productImage || null,
@@ -304,8 +304,8 @@ export async function POST(request: Request) {
         createdAt: order.createdAt,
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erro ao criar pedido:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

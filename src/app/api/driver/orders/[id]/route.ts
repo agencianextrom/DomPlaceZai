@@ -12,7 +12,7 @@ export async function PATCH(
   try {
     const { id } = await params
     const session = await getServerSession(authOptions)
-    const accountId = (session?.user as any)?.id
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     if (!accountId) {
       return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
@@ -70,7 +70,7 @@ export async function PATCH(
     }
 
     // Executar ação
-    let updatedOrder: any = null
+    let updatedOrder: Record<string, unknown> | null = null
 
     if (action === 'accept') {
       // Aceitar pedido: atribuir entregador, status = DELIVERING, status do entregador = BUSY
