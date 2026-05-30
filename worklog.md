@@ -1241,3 +1241,27 @@ Stage Summary:
 - 50+ CSS utility classes
 - 17+ views
 - 5 complete role systems with real backend + frontend
+
+---
+Task ID: turso-config
+Agent: Master Agent
+Task: Configurar Turso como banco de dados ABSOLUTO + Cloudinary credentials
+
+Work Log:
+- Atualizado .env com credenciais Turso (DATABASE_URL, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN)
+- Configurado credenciais Cloudinary (NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET)
+- Prisma schema mantido com provider=sqlite para compatibilidade com adapter pattern
+- Corrigido CRITICAL bug em src/lib/db.ts: PrismaLibSql é uma FACTORY, não aceita client instance
+  - Antes (ERRADO): createClient() → new PrismaLibSql(clientInstance)
+  - Depois (CORRETO): new PrismaLibSql({ url, authToken }) — factory cria seu próprio client
+- Confirmado que todas as 26 tabelas já existiam no Turso (schema push anterior)
+- Testado com sucesso: GET /api/stores → 200, GET /api/products → 200, GET / → 200
+- Middleware restaurado e funcionando
+- Seed necessário para popular dados no Turso
+
+Stage Summary:
+- Turso é agora o banco de dados ABSOLUTO do projeto
+- Conexão via @prisma/adapter-libsql com factory pattern
+- Cloudinary configurado para uploads futuros
+- Arquivos alterados: .env, src/lib/db.ts, prisma/schema.prisma
+- Banco vazio — precisa de seed para popular dados
