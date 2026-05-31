@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Package, MapPin, Clock, DollarSign, Star, Phone, MessageCircle,
   ChevronRight, TrendingUp, Trophy, Navigation, CheckCircle2,
   Truck, Bike, Car, Power, PowerOff, History, Wallet,
   BarChart3, AlertCircle, RefreshCw, ShieldCheck, ShieldAlert,
-  ShieldX, Loader2, XCircle
+  ShieldX, Loader2, XCircle, Send, Ban, PackageCheck, MapPinned,
+  Lock
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -19,6 +20,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { useAppStore } from '@/store/useAppStore'
+import { useAuth } from '@/hooks/useAuth'
 
 // Types
 interface DriverAccount {
@@ -82,11 +84,23 @@ interface EarningsData {
   }[]
 }
 
+interface GpsLocation {
+  lat: number
+  lng: number
+  heading: number
+  speed: number
+  accuracy: number
+}
+
 const vehicleIcons: Record<string, typeof Bike> = {
   motorcycle: Bike,
   bicycle: Bike,
   car: Truck,
 }
+
+// Mock GPS coordinates (São Paulo area)
+const MOCK_BASE_LAT = -23.5505
+const MOCK_BASE_LNG = -46.6333
 
 function formatCurrency(value: number): string {
   return `R$ ${value.toFixed(2).replace('.', ',')}`
@@ -104,19 +118,50 @@ function getInitials(name: string): string {
 function getStatusLabel(status: string): string {
   switch (status) {
     case 'DELIVERING': return 'Em entrega'
+    case 'PICKED_UP': return 'Retirado'
     case 'READY': return 'Pronto para retirar'
     case 'CONFIRMED': return 'Confirmado'
     case 'DELIVERED': return 'Entregue'
     case 'CANCELLED': return 'Cancelado'
+    case 'PENDING': return 'Pendente'
     default: return status
   }
 }
 
-function getActionButton(status: string): string {
+function getStatusBadgeVariant(status: string): string {
   switch (status) {
-    case 'DELIVERING': return 'Confirmar Entrega'
-    case 'CONFIRMED': return 'Iniciar Entrega'
-    default: return 'Aceitar Corrida'
+    case 'CONFIRMED': return 'bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700'
+    case 'READY': return 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-700'
+    case 'PICKED_UP': return 'bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700'
+    case 'DELIVERING': return 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'
+    case 'DELIVERED': return 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-300 dark:border-green-700'
+    case 'CANCELLED': return 'bg-red-500/20 text-red-700 dark:text-red-400 border-red-300 dark:border-red-700'
+    default: return 'bg-gray-500/20 text-gray-700 dark:text-gray-400 border-gray-300 dark:border-gray-700'
+  }
+}
+
+function getDeliveryProgress(status: string): number {
+  switch (status) {
+    case 'CONFIRMED': return 10
+    case 'READY': return 25
+    case 'PICKED_UP': return 50
+    case 'DELIVERING': return 75
+    case 'DELIVERED': return 100
+    default: return 0
+  }
+}
+
+function getNextAction(status: string): { label: string; action: string; icon: typeof CheckCircle2 } | null {
+  switch (status) {
+    case 'CONFIRMED':
+    case 'READY':
+      return { label: 'Confirmar Retirada', action: 'pick_up', icon: PackageCheck }
+    case 'PICKED_UP':
+      return { label: 'Iniciar Entrega', action: 'delivering', icon: Navigation }
+    case 'DELIVERING':
+      return { label: 'Confirmar Entrega', action: 'delivered', icon: CheckCircle2 }
+    default:
+      return null
   }
 }
 
@@ -187,7 +232,7 @@ function LoadingSkeleton() {
   )
 }
 
-function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+function ErrorState({ message, onRetry, retryCount }: { message: string; onRetry: () => void; retryCount: number }) {
   return (
     <div className="min-h-screen pb-24 flex flex-col items-center justify-center px-4">
       <motion.div
@@ -199,7 +244,12 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
           <XCircle className="h-10 w-10 text-red-400" />
         </div>
         <h3 className="font-bold text-sm mb-1">Erro ao carregar dados</h3>
-        <p className="text-xs text-muted-foreground mb-4">{message}</p>
+        <p className="text-xs text-muted-foreground mb-1">{message}</p>
+        {retryCount > 0 && (
+          <p className="text-[10px] text-muted-foreground mb-4">
+            Tentativas realizadas: {retryCount}
+          </p>
+        )}
         <Button
           className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
           onClick={onRetry}
@@ -212,8 +262,52 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
   )
 }
 
+function AccessDenied() {
+  const { navigate } = useAppStore()
+  return (
+    <div className="min-h-screen pb-24 flex flex-col items-center justify-center px-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center max-w-sm"
+      >
+        <div className="h-20 w-20 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-4">
+          <Lock className="h-10 w-10 text-amber-500" />
+        </div>
+        <h3 className="font-bold text-sm mb-1">Acesso Restrito</h3>
+        <p className="text-xs text-muted-foreground mb-4 max-w-xs">
+          Apenas entregadores verificados podem acessar o painel de entregas. Faca login com uma conta de entregador.
+        </p>
+        <Button
+          className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+          onClick={() => navigate('home')}
+        >
+          <ChevronRight className="h-4 w-4 rotate-180" />
+          Voltar ao inicio
+        </Button>
+      </motion.div>
+    </div>
+  )
+}
+
+// ── Order detail skeleton for when fetching detail ──
+function OrderDetailSkeleton() {
+  return (
+    <div className="p-4 space-y-3">
+      <Skeleton className="h-5 w-48" />
+      <Skeleton className="h-4 w-32" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+      </div>
+      <Skeleton className="h-10 w-full rounded-xl" />
+    </div>
+  )
+}
+
 export function DriverDashboard() {
   const { navigate } = useAppStore()
+  const { isAuthenticated, isLoading: authLoading, isDeliveryDriver, user } = useAuth()
   const [driverProfile, setDriverProfile] = useState<DriverProfile | null>(null)
   const [availableOrders, setAvailableOrders] = useState<OrderItem[]>([])
   const [activeOrders, setActiveOrders] = useState<OrderItem[]>([])
@@ -224,6 +318,13 @@ export function DriverDashboard() {
   const [earningsPeriod, setEarningsPeriod] = useState<'today' | 'week' | 'month'>('today')
   const [statusChanging, setStatusChanging] = useState(false)
   const [actionInProgress, setActionInProgress] = useState<string | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
+  const [gpsSimulating, setGpsSimulating] = useState(false)
+  const [lastGpsUpdate, setLastGpsUpdate] = useState<string | null>(null)
+  const gpsIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null)
+  const [orderDetail, setOrderDetail] = useState<OrderItem | null>(null)
+  const [orderDetailLoading, setOrderDetailLoading] = useState(false)
 
   const isOnline = driverProfile?.driver.status === 'ONLINE'
   const isBusy = driverProfile?.driver.status === 'BUSY'
@@ -236,7 +337,7 @@ export function DriverDashboard() {
   const initials = driverProfile ? getInitials(driverProfile.account.name) : ''
   const verification = driverProfile?.driver.verification || 'PENDING'
 
-  // Fetch driver profile
+  // ── Fetch driver profile ──
   const fetchProfile = useCallback(async () => {
     try {
       const res = await fetch('/api/driver/profile')
@@ -254,7 +355,7 @@ export function DriverDashboard() {
     }
   }, [])
 
-  // Fetch orders by type
+  // ── Fetch orders by type ──
   const fetchOrders = useCallback(async (type: string) => {
     try {
       const res = await fetch(`/api/driver/orders?type=${type}&limit=50`)
@@ -266,7 +367,26 @@ export function DriverDashboard() {
     }
   }, [])
 
-  // Fetch earnings
+  // ── Fetch order detail ──
+  const fetchOrderDetail = useCallback(async (orderId: string) => {
+    setOrderDetailLoading(true)
+    setExpandedOrderId(orderId)
+    try {
+      const res = await fetch(`/api/driver/orders/${orderId}`)
+      if (!res.ok) {
+        setOrderDetail(null)
+        return
+      }
+      const data = await res.json()
+      setOrderDetail(data.order || data)
+    } catch {
+      setOrderDetail(null)
+    } finally {
+      setOrderDetailLoading(false)
+    }
+  }, [])
+
+  // ── Fetch earnings ──
   const fetchEarnings = useCallback(async (period: string) => {
     try {
       const res = await fetch(`/api/driver/earnings?period=${period}`)
@@ -278,10 +398,11 @@ export function DriverDashboard() {
     }
   }, [])
 
-  // Fetch all data
+  // ── Fetch all data ──
   const fetchAll = useCallback(async () => {
     setLoading(true)
     setError(null)
+    setRetryCount((c) => c + 1)
     const success = await fetchProfile()
     if (success) {
       const [available, active, completed, earningsData] = await Promise.all([
@@ -298,12 +419,14 @@ export function DriverDashboard() {
     setLoading(false)
   }, [fetchProfile, fetchOrders, fetchEarnings, earningsPeriod])
 
-  // Initial load
+  // ── Initial load ──
   useEffect(() => {
-    fetchAll()
-  }, [])
+    if (!authLoading && isAuthenticated && isDeliveryDriver) {
+      fetchAll()
+    }
+  }, [isAuthenticated, isDeliveryDriver, authLoading])
 
-  // Refresh orders when profile status changes
+  // ── Refresh orders when profile status changes ──
   useEffect(() => {
     if (!loading && driverProfile) {
       Promise.all([
@@ -318,20 +441,29 @@ export function DriverDashboard() {
     }
   }, [driverProfile?.driver.status])
 
-  // Fetch earnings when period changes
+  // ── Fetch earnings when period changes ──
   useEffect(() => {
     if (!loading) {
       fetchEarnings(earningsPeriod).then(setEarnings)
     }
   }, [earningsPeriod, fetchEarnings, loading])
 
-  // Handle status toggle
+  // ── Cleanup GPS interval on unmount ──
+  useEffect(() => {
+    return () => {
+      if (gpsIntervalRef.current) {
+        clearInterval(gpsIntervalRef.current)
+      }
+    }
+  }, [])
+
+  // ── Handle status toggle (POST /api/driver/status) ──
   const handleStatusToggle = async (checked: boolean) => {
     setStatusChanging(true)
     try {
       const newStatus = checked ? 'ONLINE' : 'OFFLINE'
       const res = await fetch('/api/driver/status', {
-        method: 'PATCH',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
       })
@@ -340,7 +472,6 @@ export function DriverDashboard() {
         toast.error(data.error || 'Erro ao alterar status')
         return
       }
-      // Update local profile state
       setDriverProfile((prev) =>
         prev
           ? { ...prev, driver: { ...prev.driver, status: newStatus } }
@@ -354,7 +485,7 @@ export function DriverDashboard() {
     }
   }
 
-  // Handle accept order
+  // ── Handle accept order ──
   const handleAcceptOrder = async (orderId: string) => {
     setActionInProgress(orderId)
     try {
@@ -369,19 +500,19 @@ export function DriverDashboard() {
         return
       }
       toast.success('Pedido aceito! Dirija-se a loja para retirada.')
-      // Refresh orders
       const [available, active] = await Promise.all([
         fetchOrders('available'),
         fetchOrders('active'),
       ])
       setAvailableOrders(available)
       setActiveOrders(active)
-      // Update status to BUSY (server does this but let's sync)
       setDriverProfile((prev) =>
         prev
           ? { ...prev, driver: { ...prev.driver, status: 'BUSY' } }
           : prev
       )
+      setExpandedOrderId(null)
+      setOrderDetail(null)
     } catch {
       toast.error('Erro de conexao. Tente novamente.')
     } finally {
@@ -389,34 +520,25 @@ export function DriverDashboard() {
     }
   }
 
-  // Handle complete delivery
-  const handleCompleteDelivery = async (orderId: string) => {
+  // ── Handle decline order ──
+  const handleDeclineOrder = async (orderId: string) => {
     setActionInProgress(orderId)
     try {
       const res = await fetch(`/api/driver/orders/${orderId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'complete' }),
+        body: JSON.stringify({ action: 'decline' }),
       })
       const data = await res.json()
       if (!res.ok) {
-        toast.error(data.error || 'Erro ao confirmar entrega')
+        toast.error(data.error || 'Erro ao recusar pedido')
         return
       }
-      toast.success('Entrega confirmada com sucesso!')
-      // Refresh all data
-      const [profileOk, available, active, completed, earningsData] = await Promise.all([
-        fetchProfile(),
-        fetchOrders('available'),
-        fetchOrders('active'),
-        fetchOrders('completed'),
-        fetchEarnings(earningsPeriod),
-      ])
-      if (!profileOk) return
+      toast.success('Pedido recusado.')
+      const available = await fetchOrders('available')
       setAvailableOrders(available)
-      setActiveOrders(active)
-      setCompletedOrders(completed)
-      setEarnings(earningsData)
+      setExpandedOrderId(null)
+      setOrderDetail(null)
     } catch {
       toast.error('Erro de conexao. Tente novamente.')
     } finally {
@@ -424,29 +546,137 @@ export function DriverDashboard() {
     }
   }
 
-  // Handle refresh
+  // ── Handle order status update (pick_up / delivering / delivered) ──
+  const handleUpdateOrderStatus = async (orderId: string, action: string) => {
+    setActionInProgress(orderId)
+    try {
+      const res = await fetch(`/api/driver/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error(data.error || 'Erro ao atualizar pedido')
+        return
+      }
+      const messages: Record<string, string> = {
+        pick_up: 'Pedido retirado! Inicie a entrega.',
+        delivering: 'Entrega iniciada! Dirija-se ao cliente.',
+        delivered: 'Entrega confirmada com sucesso!',
+      }
+      toast.success(messages[action] || 'Pedido atualizado!')
+
+      // Refresh all data after delivered
+      if (action === 'delivered') {
+        const [profileOk, available, active, completed, earningsData] = await Promise.all([
+          fetchProfile(),
+          fetchOrders('available'),
+          fetchOrders('active'),
+          fetchOrders('completed'),
+          fetchEarnings(earningsPeriod),
+        ])
+        if (!profileOk) return
+        setAvailableOrders(available)
+        setActiveOrders(active)
+        setCompletedOrders(completed)
+        setEarnings(earningsData)
+      } else {
+        const [active, available] = await Promise.all([
+          fetchOrders('active'),
+          fetchOrders('available'),
+        ])
+        setActiveOrders(active)
+        setAvailableOrders(available)
+      }
+    } catch {
+      toast.error('Erro de conexao. Tente novamente.')
+    } finally {
+      setActionInProgress(null)
+    }
+  }
+
+  // ── Simulate GPS location update ──
+  const toggleGpsSimulation = async () => {
+    if (gpsSimulating) {
+      // Stop simulation
+      if (gpsIntervalRef.current) {
+        clearInterval(gpsIntervalRef.current)
+        gpsIntervalRef.current = null
+      }
+      setGpsSimulating(false)
+      toast.info('Simulacao GPS desativada.')
+      return
+    }
+
+    // Start simulation
+    setGpsSimulating(true)
+    toast.success('Simulacao GPS ativada. Enviando localizacao...')
+
+    // Send initial position
+    const sendLocation = async () => {
+      try {
+        const location: GpsLocation = {
+          lat: MOCK_BASE_LAT + (Math.random() - 0.5) * 0.01,
+          lng: MOCK_BASE_LNG + (Math.random() - 0.5) * 0.01,
+          heading: Math.floor(Math.random() * 360),
+          speed: 20 + Math.random() * 40,
+          accuracy: 5 + Math.random() * 15,
+        }
+        const res = await fetch('/api/driver/location', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(location),
+        })
+        if (res.ok) {
+          setLastGpsUpdate(new Date().toLocaleTimeString('pt-BR'))
+        }
+      } catch {
+        // Silently ignore GPS errors
+      }
+    }
+
+    await sendLocation()
+
+    gpsIntervalRef.current = setInterval(async () => {
+      await sendLocation()
+    }, 10000) // Every 10 seconds
+  }
+
+  // ── Handle refresh ──
   const handleRefresh = () => {
+    setRetryCount(0)
     fetchAll()
   }
 
-  // Loading state
+  // ── Auth loading ──
+  if (authLoading) {
+    return <LoadingSkeleton />
+  }
+
+  // ── Access denied: not authenticated or not a delivery driver ──
+  if (!isAuthenticated || !isDeliveryDriver) {
+    return <AccessDenied />
+  }
+
+  // ── Loading state ──
   if (loading) {
     return <LoadingSkeleton />
   }
 
-  // Error state
+  // ── Error state ──
   if (error) {
-    return <ErrorState message={error} onRetry={handleRefresh} />
+    return <ErrorState message={error} onRetry={handleRefresh} retryCount={retryCount} />
   }
 
   if (!driverProfile) {
-    return <ErrorState message="Perfil do entregador nao encontrado" onRetry={handleRefresh} />
+    return <ErrorState message="Perfil do entregador nao encontrado" onRetry={handleRefresh} retryCount={retryCount} />
   }
 
   const profile = driverProfile
   const driver = driverProfile.driver
 
-  // Build weekly chart data from earnings
+  // ── Build weekly chart data ──
   const weeklyChartData = [
     { day: 'Seg', amount: 0 },
     { day: 'Ter', amount: 0 },
@@ -457,7 +687,6 @@ export function DriverDashboard() {
     { day: 'Dom', amount: 0 },
   ]
   if (earnings && earningsPeriod === 'week' && earnings.deliveryCount > 0) {
-    // Distribute period earnings evenly across 7 days with slight variation
     const dailyAvg = earnings.periodEarnings / 7
     weeklyChartData.forEach((d, i) => {
       const variance = 1 + (Math.sin(i * 1.5) * 0.25)
@@ -465,7 +694,7 @@ export function DriverDashboard() {
     })
   }
 
-  // History items from recentDeliveries or completedOrders
+  // ── History items ──
   const historyItems: {
     id: string
     orderNumber: string
@@ -498,14 +727,14 @@ export function DriverDashboard() {
         storeName: d.storeName || 'Loja',
         value: d.commission,
         date: dateStr,
-        rating: 5, // API doesn't return per-delivery rating
+        rating: 5,
       })
     })
   }
 
   return (
     <div className="min-h-screen pb-24">
-      {/* Header */}
+      {/* ── Header ── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -517,7 +746,7 @@ export function DriverDashboard() {
             backgroundSize: '20px 20px',
           }} />
           <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
-          
+
           <div className="relative flex items-center justify-between mb-5">
             <Button variant="ghost" size="icon" onClick={() => navigate('home')} className="text-white hover:bg-white/15 h-10 w-10">
               <ChevronRight className="h-5 w-5 rotate-180" />
@@ -528,14 +757,15 @@ export function DriverDashboard() {
                 variant="ghost"
                 size="icon"
                 onClick={handleRefresh}
+                disabled={loading}
                 className="text-white hover:bg-white/15 h-10 w-10"
               >
-                <RefreshCw className="h-4 w-4" />
+                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               </Button>
             </motion.div>
           </div>
 
-          {/* Driver info */}
+          {/* ── Driver info ── */}
           <div className="relative flex items-center gap-4">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -562,7 +792,7 @@ export function DriverDashboard() {
                 <VerificationBadge verification={verification} />
               </div>
             </div>
-            {/* Online/Offline Toggle */}
+            {/* ── Online/Offline Toggle ── */}
             <motion.div
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-xl px-3 py-2"
@@ -587,7 +817,7 @@ export function DriverDashboard() {
             </motion.div>
           </div>
 
-          {/* Today stats */}
+          {/* ── Today stats ── */}
           <div className="relative grid grid-cols-3 gap-3 mt-5">
             {[
               { icon: Package, label: 'Entregas Hoje', value: earnings?.deliveryCount ?? 0, color: 'from-white/20 to-white/10' },
@@ -616,7 +846,49 @@ export function DriverDashboard() {
       </motion.div>
 
       <div className="px-4 mt-2">
-        {/* Active Delivery Card */}
+        {/* ── GPS Simulation Button ── */}
+        <AnimatePresence>
+          {(isOnline || isBusy) && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mb-4"
+            >
+              <Card className="border-primary/20 overflow-hidden">
+                <CardContent className="p-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <MapPinned className="h-4 w-4 text-primary" />
+                    <div>
+                      <p className="text-xs font-semibold">Simulacao GPS</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {gpsSimulating
+                          ? `Ativa - Ultima atualizacao: ${lastGpsUpdate || 'enviando...'}`
+                          : 'Envie localizacoes simuladas ao servidor'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant={gpsSimulating ? 'destructive' : 'default'}
+                    className={`h-8 text-[10px] font-semibold gap-1 rounded-lg ${!gpsSimulating ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : ''}`}
+                    onClick={toggleGpsSimulation}
+                  >
+                    {gpsSimulating ? (
+                      <XCircle className="h-3.5 w-3.5" />
+                    ) : (
+                      <Send className="h-3.5 w-3.5" />
+                    )}
+                    {gpsSimulating ? 'Parar' : 'Simular'}
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Active Delivery Card ── */}
         <AnimatePresence>
           {(isOnline || isBusy) && activeDelivery && (
             <motion.div
@@ -631,7 +903,7 @@ export function DriverDashboard() {
                     <Navigation className="h-4 w-4" />
                     <span className="text-sm font-semibold">Entrega em andamento</span>
                   </div>
-                  <Badge className="bg-white/20 text-white border-0 text-[10px]">
+                  <Badge className={`${getStatusBadgeVariant(activeDelivery.status)} border text-[10px]`}>
                     {getStatusLabel(activeDelivery.status)}
                   </Badge>
                 </div>
@@ -641,7 +913,7 @@ export function DriverDashboard() {
                     <span className="text-xs text-muted-foreground">ETA: {activeDelivery.estimatedTime || '--'}</span>
                   </div>
 
-                  {/* Route visualization */}
+                  {/* ── Route visualization ── */}
                   <div className="space-y-3 mb-4">
                     <div className="flex items-start gap-3">
                       <div className="flex flex-col items-center mt-1">
@@ -666,16 +938,16 @@ export function DriverDashboard() {
                     </div>
                   </div>
 
-                  {/* Progress */}
+                  {/* ── Progress ── */}
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[10px] text-muted-foreground">Progresso da entrega</span>
-                      <span className="text-xs font-semibold text-primary">65%</span>
+                      <span className="text-xs font-semibold text-primary">{getDeliveryProgress(activeDelivery.status)}%</span>
                     </div>
-                    <Progress value={65} className="h-2" />
+                    <Progress value={getDeliveryProgress(activeDelivery.status)} className="h-2" />
                   </div>
 
-                  {/* Map placeholder */}
+                  {/* ── Map placeholder ── */}
                   <div className="h-32 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center mb-4 border border-border/50">
                     <div className="text-center">
                       <MapPin className="h-8 w-8 text-primary mx-auto mb-1" />
@@ -684,7 +956,7 @@ export function DriverDashboard() {
                     </div>
                   </div>
 
-                  {/* Value info */}
+                  {/* ── Value info ── */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
                       <div className="text-center">
@@ -698,7 +970,7 @@ export function DriverDashboard() {
                     </div>
                   </div>
 
-                  {/* Customer contact + Action */}
+                  {/* ── Customer contact + Status action ── */}
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-primary/30 hover:bg-primary/5">
                       <Phone className="h-4 w-4 text-primary" />
@@ -706,18 +978,25 @@ export function DriverDashboard() {
                     <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-primary/30 hover:bg-primary/5">
                       <MessageCircle className="h-4 w-4 text-primary" />
                     </Button>
-                    <Button
-                      disabled={actionInProgress === activeDelivery.id}
-                      className="flex-1 bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-white rounded-xl h-10 font-semibold gap-2"
-                      onClick={() => handleCompleteDelivery(activeDelivery.id)}
-                    >
-                      {actionInProgress === activeDelivery.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <CheckCircle2 className="h-4 w-4" />
-                      )}
-                      {getActionButton(activeDelivery.status)}
-                    </Button>
+                    {(() => {
+                      const nextAction = getNextAction(activeDelivery.status)
+                      if (!nextAction) return null
+                      const ActionIcon = nextAction.icon
+                      return (
+                        <Button
+                          disabled={actionInProgress === activeDelivery.id}
+                          className="flex-1 bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-white rounded-xl h-10 font-semibold gap-2"
+                          onClick={() => handleUpdateOrderStatus(activeDelivery.id, nextAction.action)}
+                        >
+                          {actionInProgress === activeDelivery.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <ActionIcon className="h-4 w-4" />
+                          )}
+                          {nextAction.label}
+                        </Button>
+                      )
+                    })()}
                   </div>
                 </CardContent>
               </Card>
@@ -725,7 +1004,7 @@ export function DriverDashboard() {
           )}
         </AnimatePresence>
 
-        {/* Tabs content */}
+        {/* ── Tabs content ── */}
         <Tabs defaultValue="orders" className="w-full">
           <TabsList className="w-full grid grid-cols-3 mb-4">
             <TabsTrigger value="orders" className="text-xs gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
@@ -742,7 +1021,7 @@ export function DriverDashboard() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Available Orders Tab */}
+          {/* ── Available Orders Tab ── */}
           <TabsContent value="orders" className="mt-0">
             {isOnline || isBusy ? (
               availableOrders.length > 0 ? (
@@ -790,16 +1069,111 @@ export function DriverDashboard() {
                             </div>
                           </div>
 
-                          <Button
-                            disabled={actionInProgress === order.id}
-                            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-9 rounded-xl font-semibold text-sm gap-2"
-                            onClick={() => handleAcceptOrder(order.id)}
-                          >
-                            {actionInProgress === order.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : null}
-                            Aceitar Pedido
-                          </Button>
+                          {/* ── Expanded order detail ── */}
+                          <AnimatePresence>
+                            {expandedOrderId === order.id && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="overflow-hidden"
+                              >
+                                {orderDetailLoading ? (
+                                  <OrderDetailSkeleton />
+                                ) : orderDetail ? (
+                                  <div className="border-t border-border/50 pt-3 mb-3 space-y-2">
+                                    <div className="flex items-center gap-2">
+                                      <Badge variant="outline" className="text-[10px] font-mono">{orderDetail.orderNumber}</Badge>
+                                      <Badge className={`${getStatusBadgeVariant(orderDetail.status)} border text-[10px]`}>
+                                        {getStatusLabel(orderDetail.status)}
+                                      </Badge>
+                                    </div>
+                                    {orderDetail.items && orderDetail.items.length > 0 && (
+                                      <div className="space-y-1">
+                                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Itens do pedido</p>
+                                        {orderDetail.items.map((item: any, idx: number) => (
+                                          <p key={idx} className="text-xs text-muted-foreground">
+                                            {item.productName || item.name || `Item ${idx + 1}`}
+                                            {item.quantity ? ` x${item.quantity}` : ''}
+                                            {item.total ? ` - ${formatCurrency(item.total)}` : item.price ? ` - ${formatCurrency(item.price)}` : ''}
+                                          </p>
+                                        ))}
+                                      </div>
+                                    )}
+                                    {orderDetail.customerName && (
+                                      <p className="text-xs text-muted-foreground">
+                                        Cliente: {orderDetail.customerName}
+                                      </p>
+                                    )}
+                                    <div className="flex items-center gap-3">
+                                      <p className="text-xs text-muted-foreground">
+                                        Total: {formatCurrency(orderDetail.total)}
+                                      </p>
+                                      <p className="text-xs font-semibold text-primary">
+                                        Taxa: {formatCurrency(orderDetail.commission)}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <p className="text-xs text-muted-foreground border-t border-border/50 pt-3 mb-3">
+                                    Detalhes nao disponiveis
+                                  </p>
+                                )}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                          <div className="flex items-center gap-2">
+                            <Button
+                              disabled={actionInProgress === order.id}
+                              className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground h-9 rounded-xl font-semibold text-sm gap-2"
+                              onClick={() => handleAcceptOrder(order.id)}
+                            >
+                              {actionInProgress === order.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <CheckCircle2 className="h-4 w-4" />
+                              )}
+                              Aceitar Pedido
+                            </Button>
+                            {expandedOrderId === order.id ? (
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-9 w-9 rounded-xl border-border/50 shrink-0"
+                                onClick={() => {
+                                  setExpandedOrderId(null)
+                                  setOrderDetail(null)
+                                }}
+                              >
+                                <ChevronRight className="h-4 w-4 rotate-90" />
+                              </Button>
+                            ) : (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-9 w-9 rounded-xl border-border/50 shrink-0"
+                                  onClick={() => fetchOrderDetail(order.id)}
+                                >
+                                  <ChevronRight className="h-4 w-4 rotate-90" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-9 w-9 rounded-xl border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 shrink-0"
+                                  onClick={() => handleDeclineOrder(order.id)}
+                                  disabled={actionInProgress === order.id}
+                                >
+                                  {actionInProgress === order.id ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <Ban className="h-4 w-4 text-red-500" />
+                                  )}
+                                </Button>
+                              </>
+                            )}
+                          </div>
                         </CardContent>
                       </Card>
                     </motion.div>
@@ -855,7 +1229,7 @@ export function DriverDashboard() {
             )}
           </TabsContent>
 
-          {/* Earnings Tab */}
+          {/* ── Earnings Tab ── */}
           <TabsContent value="earnings" className="mt-0">
             {/* Period selector */}
             <div className="flex bg-secondary/50 rounded-xl p-1 mb-4">
@@ -937,7 +1311,7 @@ export function DriverDashboard() {
                     {weeklyChartData.map((day, i) => {
                       const maxAmount = Math.max(...weeklyChartData.map(d => d.amount), 1)
                       const height = (day.amount / maxAmount) * 100
-                      const isToday = i === 6
+                      const isToday = i === new Date().getDay() - 1
                       return (
                         <motion.div
                           key={day.day}
@@ -1001,7 +1375,7 @@ export function DriverDashboard() {
             </div>
           </TabsContent>
 
-          {/* History Tab */}
+          {/* ── History Tab ── */}
           <TabsContent value="history" className="mt-0">
             {historyItems.length > 0 ? (
               <div className="space-y-2">

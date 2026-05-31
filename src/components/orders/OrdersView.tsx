@@ -666,6 +666,7 @@ export function OrderDetail() {
           <OrderMap
             storeName={order.storeName || 'Loja'}
             estimatedMinutes={25}
+            orderId={order.id}
           />
         )}
 
@@ -676,6 +677,7 @@ export function OrderDetail() {
             storeName={order.storeName || 'Loja'}
             status={order.status}
             estimatedTime="30-45 min"
+            orderId={order.id}
           />
         )}
 

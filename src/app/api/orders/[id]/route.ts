@@ -102,7 +102,9 @@ export async function GET(
   }
 }
 
-// PATCH: Atualizar status do pedido (dono da loja / entregador)
+// PATCH: Atualizar status do pedido usando a máquina de estados aprimorada
+import { applyStatusTransition, getStatusLabel } from '@/lib/orderFlow'
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -122,76 +124,62 @@ export async function PATCH(
     const validStatuses = [
       'PENDING', 'CONFIRMED', 'PREPARING', 'READY',
       'DELIVERING', 'DELIVERED', 'CANCELLED', 'REFUNDED',
-    ]
+    ] as const
 
     if (!validStatuses.includes(status)) {
       return NextResponse.json(
-        { error: `Status inválido. Valores permitidos: ${validStatuses.join(', ')}` },
+        { error: `Status inválido. Valores permitidos: ${validStatuses.map(s => getStatusLabel(s)).join(', ')}` },
         { status: 400 }
       )
     }
 
-    const order = await db.order.findUnique({ where: { id } })
-    if (!order) {
-      return NextResponse.json({ error: 'Pedido não encontrado' }, { status: 404 })
+    // Use the enhanced state machine for all transitions
+    const result = await applyStatusTransition({
+      orderId: id,
+      newStatus: status,
+      note,
+      cancelReason,
+      driverId,
+      trackingCode,
+    })
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error },
+        { status: 400 }
+      )
     }
 
-    const updateData: Record<string, unknown> = {}
-
-    updateData.status = status
-
-    if (driverId) updateData.driverId = driverId
-    if (trackingCode) updateData.trackingCode = trackingCode
-
-    if (status === 'DELIVERED') {
-      updateData.deliveredAt = new Date()
-      // Restaurar estoque se cancelado antes (não aplicável para DELIVERED)
-    }
-
-    if (status === 'CANCELLED') {
-      updateData.cancelledAt = new Date()
-      updateData.cancelReason = cancelReason || null
-
-      // Restaurar estoque dos produtos
-      const items = await db.orderItem.findMany({
-        where: { orderId: id },
-        select: { productId: true, quantity: true },
-      })
-
-      for (const item of items) {
-        await db.product.update({
-          where: { id: item.productId },
-          data: {
-            stock: { increment: item.quantity },
-            soldCount: { decrement: item.quantity },
-          },
+    // Optionally send push notification via FCM (fire-and-forget)
+    if (result.notification) {
+      try {
+        await fetch('/api/notifications/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            accountId: result.notification.accountId,
+            title: result.notification.title,
+            body: result.notification.message,
+            data: result.notification.data,
+          }),
+        }).catch(() => {
+          // Non-critical: push notification failed, in-app notification was already created
         })
+      } catch {
+        // Ignore FCM errors
       }
     }
 
-    const updatedOrder = await db.order.update({
-      where: { id },
-      data: updateData,
-    })
-
-    // Registrar no histórico de status
-    await db.orderStatusHistory.create({
-      data: {
-        orderId: id,
-        status,
-        note: note || null,
-      },
-    })
-
     return NextResponse.json({
       success: true,
-      order: {
-        id: updatedOrder.id,
-        orderNumber: updatedOrder.orderNumber,
-        status: updatedOrder.status,
-      },
+      loyaltyPoints: result.loyaltyPoints,
+      commission: result.commission,
+      notification: result.notification
+        ? { title: result.notification.title, message: result.notification.message }
+        : undefined,
     })
   } catch (error: unknown) {
+    console.error('Erro ao atualizar pedido:', error)
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

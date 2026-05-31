@@ -1,72 +1,57 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import {
   ArrowLeft, Bell, Package, Tag, Info, CheckCheck, Trash2, X,
-  ChevronRight, ShoppingBag, Star, Clock, AlertCircle, Gift
+  ChevronRight, ShoppingBag, Star, Clock, AlertCircle, Gift, RefreshCw
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
+import { useAuth } from '@/hooks/useAuth'
+import { useAppStore } from '@/store/useAppStore'
 
 interface Notification {
   id: string
-  type: 'order' | 'promotion' | 'system'
+  type: 'ORDER_UPDATE' | 'PROMOTION' | 'SYSTEM' | 'DELIVERY' | 'REVIEW' | 'CHAT'
   title: string
   message: string
   isRead: boolean
   createdAt: string
-  icon: 'package' | 'tag' | 'info' | 'gift' | 'star' | 'alert'
-  actionLabel?: string
-  actionColor?: string
+  data?: Record<string, string> | null
 }
 
-const initialNotifications: Notification[] = [
-  {
-    id: 'n1', type: 'order', title: 'Pedido entregue!', message: 'Seu pedido #DP000002 do Mercado do Zé foi entregue. Avalie sua experiência!',
-    isRead: false, createdAt: new Date(Date.now() - 15 * 60000).toISOString(), icon: 'package', actionLabel: 'Avaliar', actionColor: 'bg-amber-500 hover:bg-amber-600 text-white',
-  },
-  {
-    id: 'n2', type: 'order', title: 'Pedido em preparo', message: 'Açaí da Boa está preparando seu pedido #DP000003. Previsão: 30-45 min.',
-    isRead: false, createdAt: new Date(Date.now() - 45 * 60000).toISOString(), icon: 'package',
-  },
-  {
-    id: 'n3', type: 'promotion', title: '🔥 Oferta relâmpago!', message: 'Até 40% de desconto em produtos selecionados. Oferta válida até o fim do dia!',
-    isRead: false, createdAt: new Date(Date.now() - 2 * 3600000).toISOString(), icon: 'tag', actionLabel: 'Ver ofertas', actionColor: 'bg-red-500 hover:bg-red-600 text-white',
-  },
-  {
-    id: 'n4', type: 'system', title: '50 pontos de fidelidade!', message: 'Você ganhou 50 pontos pelo pedido #DP000002. Seu saldo: 1.250 pontos.',
-    isRead: false, createdAt: new Date(Date.now() - 3 * 3600000).toISOString(), icon: 'gift', actionLabel: 'Ver pontos', actionColor: 'bg-amber-500 hover:bg-amber-600 text-white',
-  },
-  {
-    id: 'n5', type: 'order', title: 'Pedido confirmado', message: 'Seu pedido #DP000005 do Salão da Bella foi confirmado. Aguardando preparo.',
-    isRead: true, createdAt: new Date(Date.now() - 5 * 3600000).toISOString(), icon: 'package',
-  },
-  {
-    id: 'n6', type: 'promotion', title: 'Cupom exclusivo ACAI10', message: 'Use o cupom ACAI10 e ganhe 10% de desconto em pedidos acima de R$30.',
-    isRead: true, createdAt: new Date(Date.now() - 8 * 3600000).toISOString(), icon: 'tag',
-  },
-  {
-    id: 'n7', type: 'system', title: 'Novas lojas no DomPlace', message: '3 novas lojas se juntaram ao DomPlace esta semana. Confira!',
-    isRead: true, createdAt: new Date(Date.now() - 12 * 3600000).toISOString(), icon: 'info', actionLabel: 'Explorar', actionColor: 'bg-primary hover:bg-primary/90 text-primary-foreground',
-  },
-  {
-    id: 'n8', type: 'system', title: 'Programa de fidelidade', message: 'Você está a apenas 750 pontos do próximo nível! Continue comprando.',
-    isRead: true, createdAt: new Date(Date.now() - 24 * 3600000).toISOString(), icon: 'star',
-  },
-  {
-    id: 'n9', type: 'order', title: 'Entrega cancelada', message: 'O pedido #DP000004 foi cancelado. Entre em contato para mais informações.',
-    isRead: true, createdAt: new Date(Date.now() - 48 * 3600000).toISOString(), icon: 'alert',
-  },
-  {
-    id: 'n10', type: 'promotion', title: 'Frete grátis esta semana!', message: 'Compras acima de R$30 com frete grátis em lojas selecionadas.',
-    isRead: true, createdAt: new Date(Date.now() - 72 * 3600000).toISOString(), icon: 'gift',
-  },
-]
+// Map API types to display icon
+function getNotifIcon(type: string): { component: typeof Package; bg: string; color: string } {
+  const config: Record<string, { component: typeof Package; bg: string; color: string }> = {
+    ORDER_UPDATE: { component: Package, bg: 'bg-emerald-100 dark:bg-emerald-900/30', color: 'text-emerald-600 dark:text-emerald-400' },
+    DELIVERY: { component: ShoppingBag, bg: 'bg-emerald-100 dark:bg-emerald-900/30', color: 'text-emerald-600 dark:text-emerald-400' },
+    PROMOTION: { component: Tag, bg: 'bg-amber-100 dark:bg-amber-900/30', color: 'text-amber-600 dark:text-amber-400' },
+    SYSTEM: { component: Info, bg: 'bg-teal-100 dark:bg-teal-900/30', color: 'text-teal-600 dark:text-teal-400' },
+    REVIEW: { component: Star, bg: 'bg-yellow-100 dark:bg-yellow-900/30', color: 'text-yellow-600 dark:text-yellow-400' },
+    CHAT: { component: ShoppingBag, bg: 'bg-emerald-100 dark:bg-emerald-900/30', color: 'text-emerald-600 dark:text-emerald-400' },
+  }
+  return config[type] || config.SYSTEM
+}
+
+// Map API type to display category tab
+function getTabForType(type: string): string {
+  switch (type) {
+    case 'ORDER_UPDATE':
+    case 'DELIVERY':
+    case 'REVIEW':
+      return 'order'
+    case 'PROMOTION':
+      return 'promotion'
+    case 'SYSTEM':
+    case 'CHAT':
+    default:
+      return 'system'
+  }
+}
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime()
@@ -79,16 +64,8 @@ function timeAgo(dateStr: string): string {
   return `Há ${days} dia${days > 1 ? 's' : ''}`
 }
 
-function NotificationIcon({ icon, isRead }: { icon: string; isRead: boolean }) {
-  const config: Record<string, { component: typeof Package; bg: string; color: string }> = {
-    package: { component: Package, bg: 'bg-emerald-100 dark:bg-emerald-900/30', color: 'text-emerald-600 dark:text-emerald-400' },
-    tag: { component: Tag, bg: 'bg-red-100 dark:bg-red-900/30', color: 'text-red-600 dark:text-red-400' },
-    info: { component: Info, bg: 'bg-teal-100 dark:bg-teal-900/30', color: 'text-teal-600 dark:text-teal-400' },
-    gift: { component: Gift, bg: 'bg-amber-100 dark:bg-amber-900/30', color: 'text-amber-600 dark:text-amber-400' },
-    star: { component: Star, bg: 'bg-yellow-100 dark:bg-yellow-900/30', color: 'text-yellow-600 dark:text-yellow-400' },
-    alert: { component: AlertCircle, bg: 'bg-rose-100 dark:bg-rose-900/30', color: 'text-rose-600 dark:text-rose-400' },
-  }
-  const cfg = config[icon] || config.info
+function NotificationIcon({ type, isRead }: { type: string; isRead: boolean }) {
+  const cfg = getNotifIcon(type)
   const IconComp = cfg.component
   return (
     <div className={`h-10 w-10 rounded-xl ${cfg.bg} flex items-center justify-center shrink-0 ${isRead ? 'opacity-60' : ''}`}>
@@ -98,19 +75,73 @@ function NotificationIcon({ icon, isRead }: { icon: string; isRead: boolean }) {
 }
 
 export function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notification[]>(initialNotifications)
+  const { user } = useAuth()
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const [readFilter, setReadFilter] = useState<'all' | 'unread' | 'read'>('all')
   const [displayCount, setDisplayCount] = useState(6)
   const [categoryTab, setCategoryTab] = useState('all')
+  const [isLoading, setIsLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [total, setTotal] = useState(0)
+
+  // Fetch notifications from API
+  const fetchNotifications = useCallback(async (offset = 0, append = false) => {
+    if (!user?.id) {
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const params = new URLSearchParams({
+        limit: '50',
+        offset: String(offset),
+      })
+
+      const res = await fetch(`/api/notifications?${params}`)
+      if (res.ok) {
+        const data = await res.json()
+        const mapped: Notification[] = (data.notifications || []).map((n: {
+          id: string
+          title: string
+          message: string
+          type: string
+          isRead: boolean
+          createdAt: string
+          data: string | null
+        }) => ({
+          id: n.id,
+          type: n.type as Notification['type'],
+          title: n.title,
+          message: n.message,
+          isRead: n.isRead,
+          createdAt: n.createdAt,
+          data: n.data ? (typeof n.data === 'string' ? JSON.parse(n.data) : n.data) : null,
+        }))
+
+        setNotifications(prev => append ? [...prev, ...mapped] : mapped)
+        setTotal(data.total || mapped.length)
+      }
+    } catch {
+      // Graceful degradation
+    } finally {
+      setIsLoading(false)
+      setIsRefreshing(false)
+    }
+  }, [user?.id])
+
+  // Initial load
+  useEffect(() => {
+    fetchNotifications()
+  }, [fetchNotifications])
 
   const unreadCount = notifications.filter(n => !n.isRead).length
 
   const filteredNotifications = useMemo(() => {
     let filtered = notifications
 
-    // Category filter
+    // Category filter (map display tabs to API types)
     if (categoryTab !== 'all') {
-      filtered = filtered.filter(n => n.type === categoryTab)
+      filtered = filtered.filter(n => getTabForType(n.type) === categoryTab)
     }
 
     // Read/unread filter
@@ -126,22 +157,66 @@ export function NotificationsPage() {
   const visibleNotifications = filteredNotifications.slice(0, displayCount)
   const hasMore = displayCount < filteredNotifications.length
 
-  const handleMarkAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })))
-    toast.success('Todas as notificações marcadas como lidas')
+  const handleMarkAllRead = async () => {
+    try {
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ markAll: true }),
+      })
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })))
+      toast.success('Todas as notificações marcadas como lidas')
+    } catch {
+      toast.error('Erro ao marcar notificações')
+    }
   }
 
-  const handleDismiss = (id: string) => {
+  const handleDismiss = async (id: string) => {
+    const notif = notifications.find(n => n.id === id)
     setNotifications(prev => prev.filter(n => n.id !== id))
-    toast.success('Notificação removida')
+
+    try {
+      await fetch(`/api/notifications?id=${id}`, { method: 'DELETE' })
+      toast.success('Notificação removida')
+    } catch {
+      toast.error('Erro ao remover notificação')
+    }
   }
 
-  const handleMarkRead = (id: string) => {
+  const handleMarkRead = async (id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n))
+
+    try {
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notificationId: id }),
+      })
+    } catch {
+      // Local state already updated
+    }
   }
 
   const handleLoadMore = () => {
     setDisplayCount(prev => prev + 6)
+  }
+
+  const handleRefresh = () => {
+    if (!isRefreshing) {
+      setIsRefreshing(true)
+      fetchNotifications()
+    }
+  }
+
+  // Action from notification data
+  const handleNotifAction = (notif: Notification) => {
+    if (notif.data?.orderNumber) {
+      useAppStore.getState().navigate('orders')
+      toast.info(`Abrindo pedido ${notif.data.orderNumber}...`)
+    } else if (notif.type === 'PROMOTION') {
+      useAppStore.getState().navigate('home')
+      toast.info('Navegando para promoções...')
+    }
   }
 
   return (
@@ -160,22 +235,34 @@ export function NotificationsPage() {
                   key={unreadCount}
                   initial={{ scale: 0.5 }}
                   animate={{ scale: 1 }}
-                  className="h-6 min-w-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center px-1.5"
+                  className="h-6 min-w-6 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center px-1.5"
                 >
                   {unreadCount}
                 </motion.div>
               )}
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 text-xs gap-1 text-primary"
-            onClick={handleMarkAllRead}
-          >
-            <CheckCheck className="h-3.5 w-3.5" />
-            Marcar todas
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 text-xs gap-1 text-primary"
+              onClick={handleMarkAllRead}
+              disabled={unreadCount === 0}
+            >
+              <CheckCheck className="h-3.5 w-3.5" />
+              Marcar todas
+            </Button>
+          </div>
         </div>
 
         {/* Read/Unread filter pills */}
@@ -226,7 +313,11 @@ export function NotificationsPage() {
 
           {['all', 'order', 'promotion', 'system'].map(tab => (
             <TabsContent key={tab} value={tab}>
-              {visibleNotifications.length === 0 ? (
+              {isLoading ? (
+                <div className="flex items-center justify-center py-16">
+                  <RefreshCw className="h-6 w-6 text-muted-foreground/40 animate-spin" />
+                </div>
+              ) : visibleNotifications.length === 0 ? (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -261,7 +352,7 @@ export function NotificationsPage() {
                         transition={{ delay: idx * 0.03, type: 'spring', stiffness: 300, damping: 25 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => !notification.isRead && handleMarkRead(notification.id)}
-                        className={`cursor-pointer ${!notification.isRead ? '' : ''}`}
+                        className="cursor-pointer"
                       >
                         <Card className={`border-border/50 transition-all hover:shadow-sm ${!notification.isRead ? 'bg-primary/[0.03] border-primary/15' : ''}`}>
                           <CardContent className="p-3 flex items-start gap-3 relative">
@@ -270,11 +361,11 @@ export function NotificationsPage() {
                               <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-primary"
+                                className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-emerald-500"
                               />
                             )}
 
-                            <NotificationIcon icon={notification.icon} isRead={notification.isRead} />
+                            <NotificationIcon type={notification.type} isRead={notification.isRead} />
 
                             <div className="flex-1 min-w-0 pr-4">
                               <div className="flex items-start justify-between gap-2">
@@ -290,17 +381,34 @@ export function NotificationsPage() {
                                 {timeAgo(notification.createdAt)}
                               </p>
 
-                              {/* Action button */}
-                              {notification.actionLabel && (
+                              {/* Action button for order notifications */}
+                              {notification.data?.orderNumber && (
                                 <Button
                                   size="sm"
-                                  className={`h-7 text-[10px] mt-2 px-3 gap-1 ${notification.actionColor}`}
+                                  variant="ghost"
+                                  className="h-7 text-[10px] mt-2 px-3 gap-1 text-primary hover:text-primary hover:bg-primary/10"
                                   onClick={(e) => {
                                     e.stopPropagation()
-                                    toast.success(`Ação: ${notification.actionLabel}`)
+                                    handleNotifAction(notification)
                                   }}
                                 >
-                                  {notification.actionLabel}
+                                  Ver pedido
+                                  <ChevronRight className="h-2.5 w-2.5" />
+                                </Button>
+                              )}
+
+                              {/* Action for promotions */}
+                              {notification.type === 'PROMOTION' && !notification.data?.orderNumber && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-7 text-[10px] mt-2 px-3 gap-1 text-primary hover:text-primary hover:bg-primary/10"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleNotifAction(notification)
+                                  }}
+                                >
+                                  Explorar
                                   <ChevronRight className="h-2.5 w-2.5" />
                                 </Button>
                               )}

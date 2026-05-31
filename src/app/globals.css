@@ -1328,6 +1328,76 @@
 }
 
 /* ==============================
+   NPROGRESS LOADER (emerald gradient)
+   ============================== */
+/* Make clicks pass-through */
+#nprogress .bar {
+  position: fixed;
+  z-index: 1031;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Fancy emerald-to-amber gradient bar */
+#nprogress .bar .peg {
+  display: block;
+  position: absolute;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 10px oklch(0.45 0.1 155 / 0.5), 0 0 5px oklch(0.45 0.1 155 / 0.3);
+  transform: rotate(3deg) translate(0px, -4px);
+}
+
+#nprogress .bar {
+  background: linear-gradient(
+    90deg,
+    oklch(0.45 0.1 155),
+    oklch(0.55 0.12 155),
+    oklch(0.60 0.08 140),
+    oklch(0.78 0.16 70)
+  );
+  transition: width 300ms ease-out, opacity 150ms ease-in;
+}
+
+#nprogress .bar:last-child {
+  /* Fallback for old browsers */
+  background: linear-gradient(
+    90deg,
+    #059669,
+    #10b981,
+    #14b8a6,
+    #f59e0b
+  );
+}
+
+/* Remove spinner */
+#nprogress .spinner {
+  display: none !important;
+}
+
+/* Subtle glow effect */
+#nprogress .bar {
+  filter: saturate(1.3) brightness(1.05);
+}
+
+.dark #nprogress .bar {
+  background: linear-gradient(
+    90deg,
+    oklch(0.55 0.12 155),
+    oklch(0.60 0.10 140),
+    oklch(0.65 0.10 160),
+    oklch(0.72 0.16 70)
+  );
+  filter: saturate(1.4) brightness(1.1);
+  box-shadow: 0 0 12px oklch(0.55 0.12 155 / 0.4);
+}
+
+/* ==============================
    TAG CHIP (gradient border pill)
    ============================== */
 .tag-chip {

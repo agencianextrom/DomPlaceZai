@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import {
   Bell,
   Package,
@@ -13,6 +13,7 @@ import {
   ShoppingCart,
   Percent,
   Info,
+  RefreshCw,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -32,6 +33,7 @@ import {
 } from '@/components/ui/sheet'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
+import { useAuth } from '@/hooks/useAuth'
 
 type NotificationCategory = 'all' | 'orders' | 'promos' | 'system'
 
@@ -45,98 +47,55 @@ interface Notification {
   description: string
   time: string
   unread: boolean
+  data?: Record<string, string> | null
 }
 
-const initialNotifications: Notification[] = [
-  {
-    id: '1',
-    category: 'orders',
-    icon: Truck,
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-    title: 'Pedido a caminho!',
-    description: 'Seu pedido #DP000005 da Padaria Pão Quente saiu para entrega.',
-    time: 'Há 5 min',
-    unread: true,
-  },
-  {
-    id: '2',
-    category: 'promos',
-    icon: Percent,
-    iconColor: 'text-amber-600 dark:text-amber-400',
-    iconBg: 'bg-amber-100 dark:bg-amber-900/40',
-    title: '30% de desconto',
-    description: 'Suco naturais no Mercado do Zé. Válido até amanhã!',
-    time: 'Há 15 min',
-    unread: true,
-  },
-  {
-    id: '3',
-    category: 'system',
-    icon: CheckCircle2,
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-    title: 'Conta verificada com sucesso',
-    description: 'Seu e-mail foi confirmado. Agora você pode aproveitar todos os recursos.',
-    time: 'Há 1h',
-    unread: true,
-  },
-  {
-    id: '4',
-    category: 'orders',
-    icon: Star,
-    iconColor: 'text-amber-600 dark:text-amber-400',
-    iconBg: 'bg-amber-100 dark:bg-amber-900/40',
-    title: 'Avalie seu pedido',
-    description: 'Como foi sua experiência com Açaí da Boa? Deixe sua avaliação.',
-    time: 'Há 3h',
-    unread: false,
-  },
-  {
-    id: '5',
-    category: 'orders',
-    icon: Package,
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-    title: 'Pedido confirmado',
-    description: 'Seu pedido #DP000003 foi confirmado pela Farmácia Vida.',
-    time: 'Ontem',
-    unread: false,
-  },
-  {
-    id: '6',
-    category: 'promos',
-    icon: Tag,
-    iconColor: 'text-amber-600 dark:text-amber-400',
-    iconBg: 'bg-amber-100 dark:bg-amber-900/40',
-    title: 'Cupom BEMVINDO10',
-    description: 'Use o cupom e ganhe 10% de desconto na primeira compra.',
-    time: 'Ontem',
-    unread: true,
-  },
-  {
-    id: '7',
-    category: 'system',
-    icon: Info,
-    iconColor: 'text-teal-600 dark:text-teal-400',
-    iconBg: 'bg-teal-100 dark:bg-teal-900/40',
-    title: 'Atualização do app',
-    description: 'Novos recursos disponíveis: listas de compras e rastreamento de pedidos.',
-    time: 'Há 2 dias',
-    unread: false,
-  },
-  {
-    id: '8',
-    category: 'orders',
-    icon: ShoppingCart,
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-    title: 'Entrega finalizada',
-    description: 'Pedido #DP000001 de Mercado do Zé entregue com sucesso.',
-    time: 'Há 3 dias',
-    unread: false,
-  },
-]
+// Map API notification types to display categories
+function mapApiCategory(type: string): NotificationCategory {
+  switch (type) {
+    case 'ORDER_UPDATE':
+    case 'DELIVERY':
+    case 'REVIEW':
+      return 'orders'
+    case 'PROMOTION':
+      return 'promos'
+    case 'SYSTEM':
+    case 'CHAT':
+    default:
+      return 'system'
+  }
+}
+
+// Map API notification types to icons
+function mapApiIcon(type: string): { icon: LucideIcon; iconColor: string; iconBg: string } {
+  switch (type) {
+    case 'ORDER_UPDATE':
+      return { icon: Package, iconColor: 'text-emerald-600 dark:text-emerald-400', iconBg: 'bg-emerald-100 dark:bg-emerald-900/40' }
+    case 'DELIVERY':
+      return { icon: Truck, iconColor: 'text-emerald-600 dark:text-emerald-400', iconBg: 'bg-emerald-100 dark:bg-emerald-900/40' }
+    case 'PROMOTION':
+      return { icon: Percent, iconColor: 'text-amber-600 dark:text-amber-400', iconBg: 'bg-amber-100 dark:bg-amber-900/40' }
+    case 'REVIEW':
+      return { icon: Star, iconColor: 'text-amber-600 dark:text-amber-400', iconBg: 'bg-amber-100 dark:bg-amber-900/40' }
+    case 'SYSTEM':
+      return { icon: Info, iconColor: 'text-teal-600 dark:text-teal-400', iconBg: 'bg-teal-100 dark:bg-teal-900/40' }
+    case 'CHAT':
+      return { icon: ShoppingCart, iconColor: 'text-emerald-600 dark:text-emerald-400', iconBg: 'bg-emerald-100 dark:bg-emerald-900/40' }
+    default:
+      return { icon: Bell, iconColor: 'text-teal-600 dark:text-teal-400', iconBg: 'bg-teal-100 dark:bg-teal-900/40' }
+  }
+}
+
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return 'Agora'
+  if (mins < 60) return `Há ${mins} min`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `Há ${hours}h`
+  const days = Math.floor(hours / 24)
+  return `Há ${days} dia${days > 1 ? 's' : ''}`
+}
 
 const categoryLabels: Record<NotificationCategory, string> = {
   all: 'Todas',
@@ -163,9 +122,11 @@ const itemVariants = {
 function NotificationList({
   notifications,
   onToggleRead,
+  onDismiss,
 }: {
   notifications: Notification[]
   onToggleRead: (id: string) => void
+  onDismiss: (id: string) => void
 }) {
   if (notifications.length === 0) {
     return (
@@ -186,43 +147,58 @@ function NotificationList({
       {notifications.map((notification) => {
         const Icon = notification.icon
         return (
-          <motion.button
+          <motion.div
             key={notification.id}
             variants={itemVariants}
-            onClick={() => onToggleRead(notification.id)}
-            className={`w-full flex gap-3 px-4 py-3 hover:bg-secondary/50 transition-colors text-left relative group ${
-              notification.unread
-                ? 'bg-primary/[0.03] border-l-[3px] border-l-primary'
-                : 'border-l-[3px] border-l-transparent'
-            }`}
+            className="relative group"
           >
-            {notification.unread && (
-              <motion.div
-                layoutId={`unread-dot-${notification.id}`}
-                className="absolute right-3 top-3 h-2 w-2 rounded-full bg-emerald-500"
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              />
-            )}
-            <div
-              className={`h-9 w-9 rounded-full ${notification.iconBg} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110`}
+            <button
+              onClick={() => onToggleRead(notification.id)}
+              className={`w-full flex gap-3 px-4 py-3 hover:bg-secondary/50 transition-colors text-left relative ${
+                notification.unread
+                  ? 'bg-primary/[0.03] border-l-[3px] border-l-primary'
+                  : 'border-l-[3px] border-l-transparent'
+              }`}
             >
-              <Icon className={`h-4 w-4 ${notification.iconColor}`} />
-            </div>
-            <div className="flex-1 min-w-0 pr-4">
-              <div className="flex items-center gap-2">
-                <p className={`text-sm leading-tight ${notification.unread ? 'font-semibold' : 'font-medium text-muted-foreground'}`}>
-                  {notification.title}
-                </p>
+              {notification.unread && (
+                <motion.div
+                  layoutId={`unread-dot-${notification.id}`}
+                  className="absolute right-7 top-3 h-2 w-2 rounded-full bg-emerald-500"
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                />
+              )}
+              <div
+                className={`h-9 w-9 rounded-full ${notification.iconBg} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110`}
+              >
+                <Icon className={`h-4 w-4 ${notification.iconColor}`} />
               </div>
-              <p className={`text-xs mt-0.5 line-clamp-2 ${notification.unread ? 'text-foreground/80' : 'text-muted-foreground'}`}>
-                {notification.description}
-              </p>
-              <p className="text-[10px] text-muted-foreground/60 mt-1">{notification.time}</p>
-            </div>
-            {!notification.unread && (
-              <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground/20 self-center shrink-0" />
-            )}
-          </motion.button>
+              <div className="flex-1 min-w-0 pr-4">
+                <div className="flex items-center gap-2">
+                  <p className={`text-sm leading-tight ${notification.unread ? 'font-semibold' : 'font-medium text-muted-foreground'}`}>
+                    {notification.title}
+                  </p>
+                </div>
+                <p className={`text-xs mt-0.5 line-clamp-2 ${notification.unread ? 'text-foreground/80' : 'text-muted-foreground'}`}>
+                  {notification.description}
+                </p>
+                <p className="text-[10px] text-muted-foreground/60 mt-1">{notification.time}</p>
+              </div>
+              {!notification.unread && (
+                <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground/20 self-center shrink-0" />
+              )}
+            </button>
+            {/* Dismiss button (visible on hover) */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                onDismiss(notification.id)
+              }}
+              className="absolute top-2 right-1 h-5 w-5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-muted transition-opacity"
+              aria-label="Remover notificação"
+            >
+              <span className="text-[10px] text-muted-foreground">✕</span>
+            </button>
+          </motion.div>
         )
       })}
     </motion.div>
@@ -230,32 +206,169 @@ function NotificationList({
 }
 
 export function NotificationPanel() {
-  const [notifications, setNotifications] = useState<Notification[]>(initialNotifications)
+  const { user } = useAuth()
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const [activeTab, setActiveTab] = useState<NotificationCategory>('all')
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const fetchedRef = useRef(false)
+  const refreshIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const unreadCount = notifications.filter((n) => n.unread).length
+  // Fetch notifications from API
+  const fetchNotifications = useCallback(async (showLoading = false) => {
+    if (!user?.id) return
+
+    try {
+      if (showLoading) setIsLoading(true)
+      const res = await fetch('/api/notifications?limit=15')
+      if (res.ok) {
+        const data = await res.json()
+
+        // Also fetch unread count
+        const countRes = await fetch('/api/notifications?count=true')
+        let unread = 0
+        if (countRes.ok) {
+          const countData = await countRes.json()
+          unread = countData.unreadCount || 0
+        }
+
+        const mapped: Notification[] = (data.notifications || []).map((n: {
+          id: string
+          title: string
+          message: string
+          type: string
+          data: string | null
+          isRead: boolean
+          createdAt: string
+        }) => {
+          const iconInfo = mapApiIcon(n.type)
+          return {
+            id: n.id,
+            category: mapApiCategory(n.type),
+            icon: iconInfo.icon,
+            iconColor: iconInfo.iconColor,
+            iconBg: iconInfo.iconBg,
+            title: n.title,
+            description: n.message,
+            time: timeAgo(n.createdAt),
+            unread: !n.isRead,
+            data: n.data ? (typeof n.data === 'string' ? JSON.parse(n.data) : n.data) : null,
+          }
+        })
+
+        setNotifications(mapped)
+        setUnreadCount(unread)
+      }
+    } catch {
+      // If API fails, show empty state (graceful degradation)
+    } finally {
+      setIsLoading(false)
+      setIsRefreshing(false)
+    }
+  }, [user?.id])
+
+  // Initial fetch + polling
+  useEffect(() => {
+    if (user?.id && !fetchedRef.current) {
+      fetchedRef.current = true
+      fetchNotifications(true)
+    }
+  }, [user?.id, fetchNotifications])
+
+  // Poll for new notifications every 30 seconds
+  useEffect(() => {
+    if (!user?.id) return
+
+    refreshIntervalRef.current = setInterval(() => {
+      // Only fetch unread count (lightweight)
+      fetch('/api/notifications?count=true')
+        .then(res => res.ok ? res.json() : { unreadCount: 0 })
+        .then(data => setUnreadCount(data.unreadCount || 0))
+        .catch(() => {})
+    }, 30000)
+
+    return () => {
+      if (refreshIntervalRef.current) clearInterval(refreshIntervalRef.current)
+    }
+  }, [user?.id])
+
+  // Reset fetched flag when user changes
+  useEffect(() => {
+    if (!user?.id) {
+      fetchedRef.current = false
+      setNotifications([])
+      setUnreadCount(0)
+    }
+  }, [user?.id])
 
   const filteredNotifications = notifications.filter((n) => {
     if (activeTab === 'all') return true
     return n.category === activeTab
   })
 
-  const unreadFilteredCount = filteredNotifications.filter((n) => n.unread).length
-
-  const markAllAsRead = useCallback(() => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })))
+  const markAllAsRead = useCallback(async () => {
+    try {
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ markAll: true }),
+      })
+      setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })))
+      setUnreadCount(0)
+    } catch {
+      // Fallback: update locally
+      setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })))
+      setUnreadCount(0)
+    }
   }, [])
 
-  const toggleRead = useCallback((id: string) => {
+  const toggleRead = useCallback(async (id: string) => {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, unread: !n.unread } : n))
+      prev.map((n) => (n.id === id ? { ...n, unread: false } : n))
     )
+    // Update unread count optimistically
+    setUnreadCount((prev) => Math.max(0, prev - 1))
+
+    try {
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notificationId: id }),
+      })
+    } catch {
+      // Local state already updated
+    }
   }, [])
+
+  const dismissNotification = useCallback(async (id: string) => {
+    const notif = notifications.find(n => n.id === id)
+    setNotifications((prev) => prev.filter((n) => n.id !== id))
+    if (notif?.unread) {
+      setUnreadCount((prev) => Math.max(0, prev - 1))
+    }
+
+    try {
+      await fetch(`/api/notifications?id=${id}`, {
+        method: 'DELETE',
+      })
+    } catch {
+      // Local state already updated
+    }
+  }, [notifications])
+
+  const handleRefresh = useCallback(() => {
+    if (!isRefreshing) {
+      setIsRefreshing(true)
+      fetchNotifications(false)
+    }
+  }, [isRefreshing, fetchNotifications])
 
   const handleOpenMobile = useCallback(() => {
     setMobileOpen(true)
-  }, [])
+    if (user?.id) fetchNotifications(false)
+  }, [user?.id, fetchNotifications])
 
   const handleCloseMobile = useCallback(() => {
     setMobileOpen(false)
@@ -275,23 +388,41 @@ export function NotificationPanel() {
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-sm">Notificações</h3>
           {unreadCount > 0 && (
-            <Badge
-              variant="secondary"
-              className="text-[10px] px-1.5 py-0 h-5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+            <motion.div
+              key={unreadCount}
+              initial={{ scale: 0.5 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
             >
-              {unreadCount} nova{unreadCount > 1 ? 's' : ''}
-            </Badge>
+              <Badge
+                variant="secondary"
+                className="text-[10px] px-1.5 py-0 h-5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+              >
+                {unreadCount} nova{unreadCount > 1 ? 's' : ''}
+              </Badge>
+            </motion.div>
           )}
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-xs text-primary h-7 px-2 hover:bg-primary/10"
-          onClick={markAllAsRead}
-          disabled={unreadCount === 0}
-        >
-          Marcar todas como lidas
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs text-primary h-7 px-2 hover:bg-primary/10"
+            onClick={markAllAsRead}
+            disabled={unreadCount === 0}
+          >
+            Marcar todas como lidas
+          </Button>
+        </div>
       </div>
 
       {/* Category Tabs */}
@@ -318,20 +449,27 @@ export function NotificationPanel() {
         </div>
 
         <TabsContent value={activeTab} className="flex-1 min-h-0 mt-0">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.15 }}
-            >
-              <NotificationList
-                notifications={filteredNotifications}
-                onToggleRead={toggleRead}
-              />
-            </motion.div>
-          </AnimatePresence>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-10">
+              <RefreshCw className="h-5 w-5 text-muted-foreground/40 animate-spin" />
+            </div>
+          ) : (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15 }}
+              >
+                <NotificationList
+                  notifications={filteredNotifications}
+                  onToggleRead={toggleRead}
+                  onDismiss={dismissNotification}
+                />
+              </motion.div>
+            </AnimatePresence>
+          )}
         </TabsContent>
       </Tabs>
 
@@ -354,9 +492,17 @@ export function NotificationPanel() {
             <Button variant="ghost" size="icon" className="relative h-10 w-10">
               <Bell className="h-5 w-5" />
               {unreadCount > 0 && (
-                <Badge className="absolute -top-0.5 -right-0.5 h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-accent text-accent-foreground border-0">
-                  {unreadCount}
-                </Badge>
+                <motion.div
+                  key={unreadCount}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                  className="absolute -top-0.5 -right-0.5"
+                >
+                  <Badge className="h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-emerald-500 text-white border-0 badge-ping">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </Badge>
+                </motion.div>
               )}
             </Button>
           </PopoverTrigger>
@@ -376,9 +522,17 @@ export function NotificationPanel() {
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
-            <Badge className="absolute -top-0.5 -right-0.5 h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-accent text-accent-foreground border-0">
-              {unreadCount}
-            </Badge>
+            <motion.div
+              key={unreadCount}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+              className="absolute -top-0.5 -right-0.5"
+            >
+              <Badge className="h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-emerald-500 text-white border-0 badge-ping">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Badge>
+            </motion.div>
           )}
         </Button>
 
@@ -389,7 +543,6 @@ export function NotificationPanel() {
               <SheetDescription>Suas notificações recentes</SheetDescription>
             </SheetHeader>
             <div className="flex flex-col h-full pt-0">
-              {/* Mobile header with close integrated by Sheet */}
               <div className="pt-8">
                 {sharedContent}
               </div>

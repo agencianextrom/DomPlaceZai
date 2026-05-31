@@ -8,7 +8,7 @@ import {
   ChevronRight, Search, BarChart3, CreditCard, Calendar,
   ArrowUpRight, ArrowDownRight, Activity, Package, Star,
   Phone, Mail, MoreHorizontal, RefreshCw, Loader2, Ban, Shield,
-  Trash2, MessageSquare, UserCog,
+  Trash2, MessageSquare, UserCog, AlertOctagon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/select'
 import { toast } from 'sonner'
 import { useAppStore } from '@/store/useAppStore'
+import { useAuth } from '@/hooks/useAuth'
 
 // ── Types ──
 interface AdminStats {
@@ -78,6 +79,12 @@ interface ReviewItem {
   id: string; rating: number; comment: string | null; reply: string | null;
   isVerified: boolean; createdAt: string; reviewerName: string; reviewerEmail: string;
   storeName: string | null; productName: string | null; needsReply: boolean; lowRating: boolean;
+}
+
+type FetchState<T> = {
+  data: T | null
+  loading: boolean
+  error: string | null
 }
 
 function formatBRL(value: number): string {
@@ -142,28 +149,63 @@ const tabVariants = {
   exit: { opacity: 0, y: -8 },
 }
 
+// ── Reusable Error State ──
+function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="flex flex-col items-center justify-center py-16 px-4"
+    >
+      <div className="h-16 w-16 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center mb-4">
+        <AlertOctagon className="h-8 w-8 text-red-500" />
+      </div>
+      <p className="text-sm font-medium text-foreground mb-1">Erro ao carregar dados</p>
+      <p className="text-xs text-muted-foreground text-center mb-4 max-w-xs">{message}</p>
+      <Button variant="outline" size="sm" className="gap-2" onClick={onRetry}>
+        <RefreshCw className="h-3.5 w-3.5" />
+        Tentar novamente
+      </Button>
+    </motion.div>
+  )
+}
+
+// ── Reusable Empty State ──
+function EmptyState({ icon: Icon, message }: { icon: React.ComponentType<{ className?: string }>; message: string }) {
+  return (
+    <Card className="border-border/50">
+      <CardContent className="p-8 flex flex-col items-center justify-center">
+        <div className="h-12 w-12 rounded-xl bg-secondary/50 flex items-center justify-center mb-3">
+          <Icon className="h-6 w-6 text-muted-foreground" />
+        </div>
+        <p className="text-sm text-muted-foreground">{message}</p>
+      </CardContent>
+    </Card>
+  )
+}
+
 // ── Visão Geral Tab ──
 function OverviewTab() {
-  const [stats, setStats] = useState<AdminStats | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [state, setState] = useState<FetchState<AdminStats>>({ data: null, loading: true, error: null })
 
   const fetchStats = useCallback(async () => {
     try {
-      setLoading(true)
+      setState({ data: null, loading: true, error: null })
       const res = await fetch('/api/admin/stats')
-      if (!res.ok) throw new Error('Erro ao carregar estatisticas')
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || 'Erro ao carregar estatisticas')
+      }
       const data = await res.json()
-      setStats(data)
+      setState({ data, loading: false, error: null })
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erro ao carregar estatisticas')
-    } finally {
-      setLoading(false)
+      setState({ data: null, loading: false, error: err instanceof Error ? err.message : 'Erro ao carregar estatisticas' })
     }
   }, [])
 
   useEffect(() => { fetchStats() }, [fetchStats])
 
-  if (loading || !stats) {
+  if (state.loading) {
     return (
       <div className="space-y-5">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -172,10 +214,16 @@ function OverviewTab() {
           ))}
         </div>
         <Skeleton className="h-64 w-full rounded-xl" />
+        <Skeleton className="h-48 w-full rounded-xl" />
       </div>
     )
   }
 
+  if (state.error || !state.data) {
+    return <ErrorState message={state.error || 'Dados indisponiveis'} onRetry={fetchStats} />
+  }
+
+  const stats = state.data
   const totalUsers = stats.totalAccounts.total
   const totalStores = stats.totalStores.total
   const totalOrders = stats.totalOrders.total
@@ -228,6 +276,39 @@ function OverviewTab() {
         </CardContent>
       </Card>
 
+      {/* Top Stores */}
+      {stats.topStores && stats.topStores.length > 0 && (
+        <Card className="border-border/50 overflow-hidden">
+          <CardContent className="p-4 relative">
+            <div className="absolute top-0 left-0 w-8 h-[2px] bg-gradient-to-r from-amber-500/60 to-transparent rounded-full" />
+            <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-amber-500" />
+              Top lojas por vendas
+            </h3>
+            <div className="space-y-2">
+              {stats.topStores.map((store, i) => (
+                <motion.div key={store.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-secondary/50 transition-colors">
+                  <div className={`h-7 w-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${i === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : i === 1 ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' : i === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' : 'bg-secondary text-muted-foreground'}`}>
+                    {i + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{store.name}</p>
+                    <p className="text-[11px] text-muted-foreground">{store.category} · {store.totalReviews} avaliacoes</p>
+                  </div>
+                  <div className="flex items-center gap-3 text-right">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                      <span className="text-xs">{store.rating > 0 ? store.rating.toFixed(1) : '-'}</span>
+                    </div>
+                    <span className="text-xs font-semibold">{formatNumber(store.totalSales)} vendas</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Recent Registrations */}
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-4 relative">
@@ -237,16 +318,20 @@ function OverviewTab() {
             Cadastros recentes
           </h3>
           <div className="space-y-2">
-            {stats.recentRegistrations.map((item, i) => (
-              <motion.div key={item.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-secondary/50 transition-colors">
-                <div className="h-2.5 w-2.5 rounded-full bg-primary mt-1.5 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm">{item.name} <span className="text-muted-foreground">({roleLabels[item.role] || item.role})</span></p>
-                  <p className="text-[11px] text-muted-foreground">{item.email}</p>
-                </div>
-                <span className="text-[10px] text-muted-foreground">{formatDate(item.createdAt)}</span>
-              </motion.div>
-            ))}
+            {stats.recentRegistrations.length === 0 ? (
+              <p className="text-xs text-muted-foreground text-center py-4">Nenhum cadastro recente</p>
+            ) : (
+              stats.recentRegistrations.map((item, i) => (
+                <motion.div key={item.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-secondary/50 transition-colors">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm">{item.name} <span className="text-muted-foreground">({roleLabels[item.role] || item.role})</span></p>
+                    <p className="text-[11px] text-muted-foreground">{item.email}</p>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">{formatDate(item.createdAt)}</span>
+                </motion.div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
@@ -256,25 +341,27 @@ function OverviewTab() {
 
 // ── Lojas Tab ──
 function StoresTab() {
-  const [stores, setStores] = useState<StoreItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [state, setState] = useState<FetchState<StoreItem[]>>({ data: null, loading: true, error: null })
   const [search, setSearch] = useState('')
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [confirmDialog, setConfirmDialog] = useState<{ storeId: string; action: string; storeName: string } | null>(null)
 
   const fetchStores = useCallback(async () => {
     try {
-      setLoading(true)
-      const res = await fetch('/api/admin/stores?limit=20')
-      if (!res.ok) throw new Error('Erro ao carregar lojas')
+      setState(prev => ({ ...prev, loading: true, error: null }))
+      const params = new URLSearchParams({ limit: '50' })
+      if (search) params.set('search', search)
+      const res = await fetch(`/api/admin/stores?${params}`)
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || 'Erro ao carregar lojas')
+      }
       const data = await res.json()
-      setStores(data.stores || [])
+      setState({ data: data.stores || [], loading: false, error: null })
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erro ao carregar lojas')
-    } finally {
-      setLoading(false)
+      setState(prev => ({ ...prev, loading: false, error: err instanceof Error ? err.message : 'Erro ao carregar lojas' }))
     }
-  }, [])
+  }, [search])
 
   useEffect(() => { fetchStores() }, [fetchStores])
 
@@ -301,25 +388,27 @@ function StoresTab() {
     }
   }
 
-  const filtered = stores.filter(s =>
-    s.name.toLowerCase().includes(search.toLowerCase()) ||
-    s.ownerName.toLowerCase().includes(search.toLowerCase())
-  )
-
-  const getStoreStatusLabel = (status: string) => {
-    const map: Record<string, string> = {
-      ACTIVE: 'Aprovada', PENDING_APPROVAL: 'Pendente', SUSPENDED: 'Suspensa', INACTIVE: 'Inativa'
-    }
-    return map[status] || status
-  }
-
-  if (loading) {
+  if (state.loading) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-10 w-full" />
         {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 w-full rounded-xl" />)}
       </div>
     )
+  }
+
+  if (state.error) {
+    return <ErrorState message={state.error} onRetry={fetchStores} />
+  }
+
+  const stores = state.data || []
+  const filtered = stores
+
+  const getStoreStatusLabel = (status: string) => {
+    const map: Record<string, string> = {
+      ACTIVE: 'Aprovada', PENDING_APPROVAL: 'Pendente', SUSPENDED: 'Suspensa', INACTIVE: 'Inativa'
+    }
+    return map[status] || status
   }
 
   return (
@@ -329,108 +418,114 @@ function StoresTab() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Buscar lojas..." className="pl-9 h-10" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <Button variant="outline" size="icon" className="h-10 w-10" onClick={fetchStores}>
+        <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => fetchStores()}>
           <RefreshCw className="h-4 w-4" />
         </Button>
       </div>
 
-      {/* Desktop Table */}
-      <Card className="border-border/50 hidden md:block">
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead>Loja</TableHead>
-                <TableHead>Categoria</TableHead>
-                <TableHead className="text-center">Avaliacao</TableHead>
-                <TableHead className="text-center">Vendas</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Acoes</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((store) => (
-                <TableRow key={store.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-semibold text-sm">{store.name}</p>
-                      <p className="text-xs text-muted-foreground">{store.ownerName}</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm">{store.category}</TableCell>
-                  <TableCell className="text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                      <span className="text-sm">{store.rating > 0 ? store.rating.toFixed(1) : '-'}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-center text-sm">{formatNumber(store.totalSales)}</TableCell>
-                  <TableCell>
-                    <Badge className={`text-[11px] ${getStatusColor(store.status)}`}>{getStoreStatusLabel(store.status)}</Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      {store.status !== 'ACTIVE' && (
-                        <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'approve', storeName: store.name })}>
-                          {actionLoading === store.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle className="h-3 w-3 mr-1" /> Aprovar</>}
-                        </Button>
-                      )}
-                      {store.status !== 'SUSPENDED' && (
-                        <Button size="sm" variant="ghost" className="h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'suspend', storeName: store.name })}>
-                          <XCircle className="h-3 w-3 mr-1" /> Suspender
-                        </Button>
-                      )}
-                      <Button size="sm" variant="ghost" className="h-7 text-xs"><Eye className="h-3 w-3" /></Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      {filtered.length === 0 ? (
+        <EmptyState icon={Store} message="Nenhuma loja encontrada" />
+      ) : (
+        <>
+          {/* Desktop Table */}
+          <Card className="border-border/50 hidden md:block">
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Loja</TableHead>
+                    <TableHead>Categoria</TableHead>
+                    <TableHead className="text-center">Avaliacao</TableHead>
+                    <TableHead className="text-center">Vendas</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Acoes</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((store) => (
+                    <TableRow key={store.id}>
+                      <TableCell>
+                        <div>
+                          <p className="font-semibold text-sm">{store.name}</p>
+                          <p className="text-xs text-muted-foreground">{store.ownerName}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm">{store.category}</TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                          <span className="text-sm">{store.rating > 0 ? store.rating.toFixed(1) : '-'}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center text-sm">{formatNumber(store.totalSales)}</TableCell>
+                      <TableCell>
+                        <Badge className={`text-[11px] ${getStatusColor(store.status)}`}>{getStoreStatusLabel(store.status)}</Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          {store.status !== 'ACTIVE' && (
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'approve', storeName: store.name })}>
+                              {actionLoading === store.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle className="h-3 w-3 mr-1" /> Aprovar</>}
+                            </Button>
+                          )}
+                          {store.status !== 'SUSPENDED' && (
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'suspend', storeName: store.name })}>
+                              <XCircle className="h-3 w-3 mr-1" /> Suspender
+                            </Button>
+                          )}
+                          <Button size="sm" variant="ghost" className="h-7 text-xs"><Eye className="h-3 w-3" /></Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
 
-      {/* Mobile Cards */}
-      <div className="md:hidden space-y-2">
-        {filtered.map((store, i) => (
-          <motion.div key={store.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-            <Card className="border-border/50">
-              <CardContent className="p-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                      {store.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-2">
+            {filtered.map((store, i) => (
+              <motion.div key={store.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+                <Card className="border-border/50">
+                  <CardContent className="p-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                          {store.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm">{store.name}</p>
+                          <p className="text-xs text-muted-foreground">{store.category} · {store.ownerName}</p>
+                        </div>
+                      </div>
+                      <Badge className={`text-[10px] ${getStatusColor(store.status)}`}>{getStoreStatusLabel(store.status)}</Badge>
                     </div>
-                    <div>
-                      <p className="font-semibold text-sm">{store.name}</p>
-                      <p className="text-xs text-muted-foreground">{store.category} · {store.ownerName}</p>
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1"><Star className="h-3 w-3 text-amber-500 fill-amber-500" />{store.rating > 0 ? store.rating.toFixed(1) : '-'}</span>
+                        <span>{formatNumber(store.totalSales)} vendas</span>
+                      </div>
+                      <div className="flex gap-1">
+                        {store.status !== 'ACTIVE' && (
+                          <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-emerald-600" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'approve', storeName: store.name })}>
+                            Aprovar
+                          </Button>
+                        )}
+                        {store.status !== 'SUSPENDED' && (
+                          <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-red-600" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'suspend', storeName: store.name })}>
+                            Suspender
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <Badge className={`text-[10px] ${getStatusColor(store.status)}`}>{getStoreStatusLabel(store.status)}</Badge>
-                </div>
-                <div className="flex items-center justify-between mt-3">
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1"><Star className="h-3 w-3 text-amber-500 fill-amber-500" />{store.rating > 0 ? store.rating.toFixed(1) : '-'}</span>
-                    <span>{formatNumber(store.totalSales)} vendas</span>
-                  </div>
-                  <div className="flex gap-1">
-                    {store.status !== 'ACTIVE' && (
-                      <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-emerald-600" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'approve', storeName: store.name })}>
-                        Aprovar
-                      </Button>
-                    )}
-                    {store.status !== 'SUSPENDED' && (
-                      <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-red-600" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'suspend', storeName: store.name })}>
-                        Suspender
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* Confirm Dialog */}
       <AlertDialog open={!!confirmDialog} onOpenChange={() => setConfirmDialog(null)}>
@@ -459,8 +554,7 @@ function StoresTab() {
 
 // ── Usuarios Tab ──
 function UsersTab() {
-  const [users, setUsers] = useState<UserItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [state, setState] = useState<FetchState<UserItem[]>>({ data: null, loading: true, error: null })
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -470,18 +564,19 @@ function UsersTab() {
 
   const fetchUsers = useCallback(async () => {
     try {
-      setLoading(true)
-      const params = new URLSearchParams({ limit: '20' })
+      setState(prev => ({ ...prev, loading: true, error: null }))
+      const params = new URLSearchParams({ limit: '50' })
       if (roleFilter && roleFilter !== 'Todos') params.set('role', roleFilter)
       if (search) params.set('search', search)
       const res = await fetch(`/api/admin/users?${params}`)
-      if (!res.ok) throw new Error('Erro ao carregar usuarios')
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || 'Erro ao carregar usuarios')
+      }
       const data = await res.json()
-      setUsers(data.accounts || [])
+      setState({ data: data.accounts || [], loading: false, error: null })
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erro ao carregar usuarios')
-    } finally {
-      setLoading(false)
+      setState(prev => ({ ...prev, loading: false, error: err instanceof Error ? err.message : 'Erro ao carregar usuarios' }))
     }
   }, [search, roleFilter])
 
@@ -515,9 +610,7 @@ function UsersTab() {
 
   const roles = ['Todos', 'USER', 'STORE_OWNER', 'AFFILIATE', 'DELIVERY_DRIVER', 'ADMIN']
 
-  const filtered = users
-
-  if (loading) {
+  if (state.loading) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-10 w-full" />
@@ -526,6 +619,12 @@ function UsersTab() {
       </div>
     )
   }
+
+  if (state.error) {
+    return <ErrorState message={state.error} onRetry={fetchUsers} />
+  }
+
+  const users = state.data || []
 
   return (
     <motion.div variants={tabVariants} initial="enter" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="space-y-4">
@@ -548,94 +647,100 @@ function UsersTab() {
         ))}
       </div>
 
-      {/* Desktop Table */}
-      <Card className="border-border/50 hidden md:block">
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead>Usuario</TableHead>
-                <TableHead>Funcao</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Cadastro</TableHead>
-                <TableHead className="text-center">Pedidos</TableHead>
-                <TableHead className="text-right">Gasto</TableHead>
-                <TableHead className="text-right">Acoes</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map(user => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-semibold text-sm">{user.name}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
+      {users.length === 0 ? (
+        <EmptyState icon={Users} message="Nenhum usuario encontrado" />
+      ) : (
+        <>
+          {/* Desktop Table */}
+          <Card className="border-border/50 hidden md:block">
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Usuario</TableHead>
+                    <TableHead>Funcao</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Cadastro</TableHead>
+                    <TableHead className="text-center">Pedidos</TableHead>
+                    <TableHead className="text-right">Gasto</TableHead>
+                    <TableHead className="text-right">Acoes</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map(user => (
+                    <TableRow key={user.id}>
+                      <TableCell>
+                        <div>
+                          <p className="font-semibold text-sm">{user.name}</p>
+                          <p className="text-xs text-muted-foreground">{user.email}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell><Badge className={`text-[11px] ${roleColors[user.role] || roleColors[user.role.replace('_', '')]}`}>{roleLabels[user.role] || user.role}</Badge></TableCell>
+                      <TableCell><Badge className={`text-[11px] ${getStatusColor(user.status)}`}>{user.status === 'ACTIVE' ? 'Ativo' : user.status === 'SUSPENDED' ? 'Suspenso' : 'Inativo'}</Badge></TableCell>
+                      <TableCell className="text-sm">{formatDate(user.createdAt)}</TableCell>
+                      <TableCell className="text-center text-sm">{user.roleInfo.user?.orderCount || 0}</TableCell>
+                      <TableCell className="text-right text-sm font-medium">{user.roleInfo.user?.totalSpent > 0 ? formatBRL(user.roleInfo.user.totalSpent) : '-'}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          {user.status !== 'ACTIVE' && (
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'activate', userName: user.name })}>
+                              <CheckCircle className="h-3 w-3 mr-1" /> Ativar
+                            </Button>
+                          )}
+                          {user.status === 'ACTIVE' && user.role !== 'ADMIN' && (
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-red-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'suspend', userName: user.name })}>
+                              <Ban className="h-3 w-3 mr-1" /> Suspender
+                            </Button>
+                          )}
+                          <Button size="sm" variant="ghost" className="h-7 text-xs" disabled={actionLoading === user.id} onClick={() => { setNewRole(user.role); setRoleDialog({ userId: user.id, userName: user.name }) }}>
+                            <UserCog className="h-3 w-3 mr-1" /> Role
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-2">
+            {users.map((user, i) => (
+              <motion.div key={user.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+                <Card className="border-border/50">
+                  <CardContent className="p-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-semibold text-sm">{user.name}</p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                      </div>
+                      <Badge className={`text-[10px] ${roleColors[user.role] || ''}`}>{roleLabels[user.role] || user.role}</Badge>
                     </div>
-                  </TableCell>
-                  <TableCell><Badge className={`text-[11px] ${roleColors[user.role] || roleColors[user.role.replace('_', '')]}`}>{roleLabels[user.role] || user.role}</Badge></TableCell>
-                  <TableCell><Badge className={`text-[11px] ${getStatusColor(user.status)}`}>{user.status === 'ACTIVE' ? 'Ativo' : user.status === 'SUSPENDED' ? 'Suspenso' : 'Inativo'}</Badge></TableCell>
-                  <TableCell className="text-sm">{formatDate(user.createdAt)}</TableCell>
-                  <TableCell className="text-center text-sm">{user.roleInfo.user?.orderCount || 0}</TableCell>
-                  <TableCell className="text-right text-sm font-medium">{user.roleInfo.user?.totalSpent > 0 ? formatBRL(user.roleInfo.user.totalSpent) : '-'}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
+                    <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <span>{formatDate(user.createdAt)}</span>
+                        <span>{user.roleInfo.user?.orderCount || 0} pedidos</span>
+                        {user.roleInfo.user?.totalSpent > 0 && <span>{formatBRL(user.roleInfo.user.totalSpent)}</span>}
+                      </div>
+                      <Badge className={`text-[10px] ${getStatusColor(user.status)}`}>{user.status === 'ACTIVE' ? 'Ativo' : user.status === 'SUSPENDED' ? 'Suspenso' : 'Inativo'}</Badge>
+                    </div>
+                    <div className="flex gap-1 mt-2">
                       {user.status !== 'ACTIVE' && (
-                        <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'activate', userName: user.name })}>
-                          <CheckCircle className="h-3 w-3 mr-1" /> Ativar
-                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-emerald-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'activate', userName: user.name })}>Ativar</Button>
                       )}
                       {user.status === 'ACTIVE' && user.role !== 'ADMIN' && (
-                        <Button size="sm" variant="ghost" className="h-7 text-xs text-red-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'suspend', userName: user.name })}>
-                          <Ban className="h-3 w-3 mr-1" /> Suspender
-                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-red-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'suspend', userName: user.name })}>Suspender</Button>
                       )}
-                      <Button size="sm" variant="ghost" className="h-7 text-xs" disabled={actionLoading === user.id} onClick={() => { setNewRole(user.role); setRoleDialog({ userId: user.id, userName: user.name }) }}>
-                        <UserCog className="h-3 w-3 mr-1" /> Role
-                      </Button>
+                      <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2" disabled={actionLoading === user.id} onClick={() => { setNewRole(user.role); setRoleDialog({ userId: user.id, userName: user.name }) }}>Role</Button>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Mobile Cards */}
-      <div className="md:hidden space-y-2">
-        {filtered.map((user, i) => (
-          <motion.div key={user.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-            <Card className="border-border/50">
-              <CardContent className="p-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-semibold text-sm">{user.name}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
-                  </div>
-                  <Badge className={`text-[10px] ${roleColors[user.role] || ''}`}>{roleLabels[user.role] || user.role}</Badge>
-                </div>
-                <div className="flex items-center justify-between mt-2">
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span>{formatDate(user.createdAt)}</span>
-                    <span>{user.roleInfo.user?.orderCount || 0} pedidos</span>
-                    {user.roleInfo.user?.totalSpent > 0 && <span>{formatBRL(user.roleInfo.user.totalSpent)}</span>}
-                  </div>
-                  <Badge className={`text-[10px] ${getStatusColor(user.status)}`}>{user.status === 'ACTIVE' ? 'Ativo' : user.status === 'SUSPENDED' ? 'Suspenso' : 'Inativo'}</Badge>
-                </div>
-                <div className="flex gap-1 mt-2">
-                  {user.status !== 'ACTIVE' && (
-                    <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-emerald-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'activate', userName: user.name })}>Ativar</Button>
-                  )}
-                  {user.status === 'ACTIVE' && user.role !== 'ADMIN' && (
-                    <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-red-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'suspend', userName: user.name })}>Suspender</Button>
-                  )}
-                  <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2" disabled={actionLoading === user.id} onClick={() => { setNewRole(user.role); setRoleDialog({ userId: user.id, userName: user.name }) }}>Role</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* Action Confirm Dialog */}
       <AlertDialog open={!!confirmDialog} onOpenChange={() => setConfirmDialog(null)}>
@@ -686,99 +791,135 @@ function UsersTab() {
 
 // ── Pedidos Tab ──
 function OrdersTab() {
-  const [orders, setOrders] = useState<OrderItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [state, setState] = useState<FetchState<OrderItem[]>>({ data: null, loading: true, error: null })
+  const [statusFilter, setStatusFilter] = useState<string | null>(null)
 
   const fetchOrders = useCallback(async () => {
     try {
-      setLoading(true)
-      const res = await fetch('/api/admin/orders?limit=20')
-      if (!res.ok) throw new Error('Erro ao carregar pedidos')
+      setState(prev => ({ ...prev, loading: true, error: null }))
+      const params = new URLSearchParams({ limit: '50' })
+      if (statusFilter) params.set('status', statusFilter)
+      const res = await fetch(`/api/admin/orders?${params}`)
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || 'Erro ao carregar pedidos')
+      }
       const data = await res.json()
-      setOrders(data.orders || [])
+      setState({ data: data.orders || [], loading: false, error: null })
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erro ao carregar pedidos')
-    } finally {
-      setLoading(false)
+      setState(prev => ({ ...prev, loading: false, error: err instanceof Error ? err.message : 'Erro ao carregar pedidos' }))
     }
-  }, [])
+  }, [statusFilter])
 
   useEffect(() => { fetchOrders() }, [fetchOrders])
 
-  if (loading) {
+  if (state.loading) {
     return (
       <div className="space-y-4">
+        <Skeleton className="h-8 w-48" />
         {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 w-full rounded-xl" />)}
       </div>
     )
   }
 
+  if (state.error) {
+    return <ErrorState message={state.error} onRetry={fetchOrders} />
+  }
+
+  const orders = state.data || []
+
+  const orderStatuses = [
+    { value: 'Todos', label: 'Todos' },
+    { value: 'PENDING', label: 'Pendente' },
+    { value: 'CONFIRMED', label: 'Confirmado' },
+    { value: 'PREPARING', label: 'Preparando' },
+    { value: 'DELIVERING', label: 'Em entrega' },
+    { value: 'DELIVERED', label: 'Entregue' },
+    { value: 'CANCELLED', label: 'Cancelado' },
+  ]
+
   return (
     <motion.div variants={tabVariants} initial="enter" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="space-y-4">
-      <div className="flex justify-end">
-        <Button variant="outline" size="sm" className="gap-2" onClick={fetchOrders}><RefreshCw className="h-4 w-4" /> Atualizar</Button>
-      </div>
-
-      {/* Desktop Table */}
-      <Card className="border-border/50 hidden md:block">
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead>Pedido</TableHead>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Loja</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Data</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {orders.map(order => (
-                <TableRow key={order.id}>
-                  <TableCell className="font-mono text-sm font-semibold">#{order.orderNumber}</TableCell>
-                  <TableCell><p className="text-sm">{order.customerName}</p></TableCell>
-                  <TableCell className="text-sm">{order.storeName}</TableCell>
-                  <TableCell className="text-sm font-semibold">{formatBRL(order.total)}</TableCell>
-                  <TableCell><Badge className={`text-[11px] ${getStatusColor(order.status)}`}>{order.status}</Badge></TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{formatDate(order.createdAt)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Mobile Cards */}
-      <div className="md:hidden space-y-2">
-        {orders.map((order, i) => (
-          <motion.div key={order.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-            <Card className="border-border/50">
-              <CardContent className="p-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-mono font-semibold text-sm">#{order.orderNumber}</p>
-                    <p className="text-xs text-muted-foreground">{order.storeName}</p>
-                  </div>
-                  <Badge className={`text-[10px] ${getStatusColor(order.status)}`}>{order.status}</Badge>
-                </div>
-                <div className="flex items-center justify-between mt-2">
-                  <p className="text-xs text-muted-foreground">{order.customerName} · {formatDate(order.createdAt)}</p>
-                  <p className="text-sm font-bold">{formatBRL(order.total)}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+      <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar">
+        {orderStatuses.map(s => (
+          <button key={s.value} onClick={() => setStatusFilter(s.value === 'Todos' ? null : s.value)} className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${(s.value === 'Todos' && !statusFilter) || statusFilter === s.value ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'}`}>
+            {s.label}
+          </button>
         ))}
+        <div className="flex-1" />
+        <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" onClick={fetchOrders}>
+          <RefreshCw className="h-3.5 w-3.5" />
+        </Button>
       </div>
+
+      {orders.length === 0 ? (
+        <EmptyState icon={Package} message="Nenhum pedido encontrado" />
+      ) : (
+        <>
+          {/* Desktop Table */}
+          <Card className="border-border/50 hidden md:block">
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Pedido</TableHead>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>Loja</TableHead>
+                    <TableHead>Entregador</TableHead>
+                    <TableHead>Total</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Data</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orders.map(order => (
+                    <TableRow key={order.id}>
+                      <TableCell className="font-mono text-sm font-semibold">#{order.orderNumber}</TableCell>
+                      <TableCell><p className="text-sm">{order.customerName}</p></TableCell>
+                      <TableCell className="text-sm">{order.storeName}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{order.driverName || '-'}</TableCell>
+                      <TableCell className="text-sm font-semibold">{formatBRL(order.total)}</TableCell>
+                      <TableCell><Badge className={`text-[11px] ${getStatusColor(order.status)}`}>{order.status}</Badge></TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{formatDate(order.createdAt)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-2">
+            {orders.map((order, i) => (
+              <motion.div key={order.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+                <Card className="border-border/50">
+                  <CardContent className="p-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-mono font-semibold text-sm">#{order.orderNumber}</p>
+                        <p className="text-xs text-muted-foreground">{order.storeName}</p>
+                      </div>
+                      <Badge className={`text-[10px] ${getStatusColor(order.status)}`}>{order.status}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-xs text-muted-foreground">{order.customerName}{order.driverName ? ` · ${order.driverName}` : ''}</p>
+                      <p className="text-sm font-bold">{formatBRL(order.total)}</p>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">{formatDate(order.createdAt)} · {order.itemCount} {order.itemCount === 1 ? 'item' : 'itens'}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </>
+      )}
     </motion.div>
   )
 }
 
 // ── Moderacao Tab ──
 function ModerationTab() {
-  const [reviews, setReviews] = useState<ReviewItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [state, setState] = useState<FetchState<ReviewItem[]>>({ data: null, loading: true, error: null })
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [replyDialog, setReplyDialog] = useState<{ reviewId: string; reviewName: string } | null>(null)
   const [replyText, setReplyText] = useState('')
@@ -786,15 +927,16 @@ function ModerationTab() {
 
   const fetchReviews = useCallback(async () => {
     try {
-      setLoading(true)
-      const res = await fetch('/api/admin/reviews?limit=20')
-      if (!res.ok) throw new Error('Erro ao carregar avaliacoes')
+      setState(prev => ({ ...prev, loading: true, error: null }))
+      const res = await fetch('/api/admin/reviews?limit=50')
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || 'Erro ao carregar avaliacoes')
+      }
       const data = await res.json()
-      setReviews(data.reviews || [])
+      setState({ data: data.reviews || [], loading: false, error: null })
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erro ao carregar avaliacoes')
-    } finally {
-      setLoading(false)
+      setState(prev => ({ ...prev, loading: false, error: err instanceof Error ? err.message : 'Erro ao carregar avaliacoes' }))
     }
   }, [])
 
@@ -849,7 +991,7 @@ function ModerationTab() {
     }
   }
 
-  if (loading) {
+  if (state.loading) {
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-3 gap-2">{[...Array(3)].map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}</div>
@@ -857,6 +999,12 @@ function ModerationTab() {
       </div>
     )
   }
+
+  if (state.error) {
+    return <ErrorState message={state.error} onRetry={fetchReviews} />
+  }
+
+  const reviews = state.data || []
 
   return (
     <motion.div variants={tabVariants} initial="enter" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="space-y-4">
@@ -882,11 +1030,11 @@ function ModerationTab() {
       </div>
 
       {/* Reviews */}
-      <div className="space-y-2">
-        {reviews.length === 0 ? (
-          <Card className="border-border/50"><CardContent className="p-6 text-center"><p className="text-sm text-muted-foreground">Nenhuma avaliacao sinalizada</p></CardContent></Card>
-        ) : (
-          reviews.map((review, i) => (
+      {reviews.length === 0 ? (
+        <EmptyState icon={ShieldCheck} message="Nenhuma avaliacao sinalizada" />
+      ) : (
+        <div className="space-y-2">
+          {reviews.map((review, i) => (
             <motion.div key={review.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
               <Card className="border-border/50">
                 <CardContent className="p-3">
@@ -896,10 +1044,11 @@ function ModerationTab() {
                         <Star className={`h-4 w-4 ${review.lowRating ? 'text-red-500' : 'text-amber-500'}`} />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <p className="font-semibold text-sm">{review.reviewerName}</p>
                           <Badge className="text-[10px]">{review.rating}/5</Badge>
                           {review.needsReply && <Badge className="text-[10px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-0">Sem resposta</Badge>}
+                          {review.lowRating && !review.needsReply && <Badge className="text-[10px] bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-0">Nota baixa</Badge>}
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">{review.storeName || review.productName || 'Produto removido'}</p>
                         <p className="text-xs mt-1">{review.comment || 'Sem comentario'}</p>
@@ -923,19 +1072,20 @@ function ModerationTab() {
                 </CardContent>
               </Card>
             </motion.div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Reply Dialog */}
-      <AlertDialog open={!!replyDialog} onOpenChange={() => setReplyDialog(null)}>
+      <AlertDialog open={!!replyDialog} onOpenChange={() => { setReplyDialog(null); setReplyText('') }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Responder avaliacao</AlertDialogTitle>
             <AlertDialogDescription>Resposta para a avaliacao de {replyDialog?.reviewName}</AlertDialogDescription>
           </AlertDialogHeader>
           <div className="py-2">
-            <textarea className="w-full h-24 rounded-lg border border-input bg-background px-3 py-2 text-sm resize-none" placeholder="Escreva sua resposta..." value={replyText} onChange={(e) => setReplyText(e.target.value)} />
+            <textarea className="w-full h-24 rounded-lg border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Escreva sua resposta..." value={replyText} onChange={(e) => setReplyText(e.target.value)} maxLength={1000} />
+            <p className="text-[10px] text-muted-foreground mt-1 text-right">{replyText.length}/1000</p>
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={actionLoading === replyDialog?.reviewId}>Cancelar</AlertDialogCancel>
@@ -954,8 +1104,10 @@ function ModerationTab() {
             <AlertDialogDescription>Tem certeza que deseja remover a avaliacao de {confirmDelete?.reviewName}? Esta acao nao pode ser desfeita.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">Remover</AlertDialogAction>
+            <AlertDialogCancel disabled={actionLoading === confirmDelete?.reviewId}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700" disabled={actionLoading === confirmDelete?.reviewId}>
+              {actionLoading === confirmDelete?.reviewId ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Remover'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -965,22 +1117,25 @@ function ModerationTab() {
 
 // ── Financeiro Tab ──
 function FinanceTab() {
-  const [affiliates, setAffiliates] = useState<PayoutAffiliate[]>([])
-  const [totalPending, setTotalPending] = useState(0)
+  const [state, setState] = useState<{ affiliates: PayoutAffiliate[]; totalPending: number } | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [confirmDialog, setConfirmDialog] = useState<{ affiliateId: string; action: string; name: string; amount: number } | null>(null)
 
   const fetchPayouts = useCallback(async () => {
     try {
       setLoading(true)
+      setError(null)
       const res = await fetch('/api/admin/payouts')
-      if (!res.ok) throw new Error('Erro ao carregar pagamentos')
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || 'Erro ao carregar pagamentos')
+      }
       const data = await res.json()
-      setAffiliates(data.affiliates || [])
-      setTotalPending(data.totalPendingPayouts || 0)
+      setState({ affiliates: data.affiliates || [], totalPending: data.totalPendingPayouts || 0 })
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erro ao carregar pagamentos')
+      setError(err instanceof Error ? err.message : 'Erro ao carregar pagamentos')
     } finally {
       setLoading(false)
     }
@@ -1020,6 +1175,13 @@ function FinanceTab() {
     )
   }
 
+  if (error) {
+    return <ErrorState message={error} onRetry={fetchPayouts} />
+  }
+
+  const affiliates = state?.affiliates || []
+  const totalPending = state?.totalPending || 0
+
   return (
     <motion.div variants={tabVariants} initial="enter" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="space-y-5">
       {/* Summary */}
@@ -1049,11 +1211,11 @@ function FinanceTab() {
       </div>
 
       {/* Affiliate Payouts */}
-      <div className="space-y-2">
-        {affiliates.length === 0 ? (
-          <Card className="border-border/50"><CardContent className="p-6 text-center"><p className="text-sm text-muted-foreground">Nenhum pagamento pendente</p></CardContent></Card>
-        ) : (
-          affiliates.map((aff, i) => (
+      {affiliates.length === 0 ? (
+        <EmptyState icon={DollarSign} message="Nenhum pagamento pendente" />
+      ) : (
+        <div className="space-y-2">
+          {affiliates.map((aff, i) => (
             <motion.div key={aff.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
               <Card className="border-border/50">
                 <CardContent className="p-3">
@@ -1085,9 +1247,9 @@ function FinanceTab() {
                 </CardContent>
               </Card>
             </motion.div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Confirm Dialog */}
       <AlertDialog open={!!confirmDialog} onOpenChange={() => setConfirmDialog(null)}>
@@ -1115,6 +1277,7 @@ function FinanceTab() {
 // ── Main Component ──
 export function AdminDashboard() {
   const { goBack } = useAppStore()
+  const { isAdmin, isLoading: authLoading, isAuthenticated } = useAuth()
 
   const tabs = [
     { value: 'overview', label: 'Visao Geral', icon: LayoutDashboard },
@@ -1124,6 +1287,79 @@ export function AdminDashboard() {
     { value: 'moderation', label: 'Moderacao', icon: ShieldCheck },
     { value: 'finance', label: 'Financeiro', icon: DollarSign },
   ]
+
+  // Auth loading state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen pb-24 md:pb-8">
+        <div className="relative">
+          <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-strong border-b border-border/50 -mx-4 px-4">
+            <div className="flex items-center gap-3 py-3">
+              <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goBack}>
+                <ChevronRight className="h-5 w-5 rotate-180" />
+              </Button>
+              <div className="flex-1">
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-3 w-32 mt-1" />
+              </div>
+            </div>
+          </div>
+          <div className="max-w-6xl mx-auto px-4 pt-4 space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} className="h-28 w-full rounded-xl" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Access denied - not authenticated or not admin
+  if (!isAuthenticated || !isAdmin) {
+    return (
+      <div className="min-h-screen pb-24 md:pb-8">
+        <div className="relative">
+          <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-strong border-b border-border/50 -mx-4 px-4">
+            <div className="flex items-center gap-3 py-3">
+              <Button variant="ghost" size="icon" className="h-10 w-10" onClick={goBack}>
+                <ChevronRight className="h-5 w-5 rotate-180" />
+              </Button>
+              <div className="flex-1">
+                <h1 className="text-lg font-bold flex items-center gap-2">
+                  <ShieldCheck className="h-5 w-5 text-primary" />
+                  Painel de Administracao
+                </h1>
+              </div>
+            </div>
+          </div>
+          <div className="max-w-6xl mx-auto px-4 pt-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center py-20"
+            >
+              <div className="h-20 w-20 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center mb-5">
+                <Shield className="h-10 w-10 text-red-500" />
+              </div>
+              <h2 className="text-xl font-bold mb-2">Acesso restrito</h2>
+              <p className="text-sm text-muted-foreground text-center max-w-md mb-6">
+                {isAuthenticated
+                  ? 'Voce nao tem permissao para acessar esta area. Somente administradores podem visualizar o painel de administracao.'
+                  : 'Voce precisa estar autenticado como administrador para acessar esta area. Faca login com uma conta de administrador.'}
+              </p>
+              <Button onClick={goBack} className="gap-2">
+                <ChevronRight className="h-4 w-4 rotate-180" />
+                Voltar
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen pb-24 md:pb-8">

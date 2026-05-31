@@ -40,140 +40,267 @@ interface UseChatReturn {
 }
 
 // ============================================
-// Hook principal
+// Global singleton socket manager
+// ============================================
+
+let globalSocket: Socket | null = null
+let globalUserId: string | null = null
+let globalUserName: string | null = null
+let globalUserRole: string = 'customer'
+let connectionListeners: Set<() => void> = new Set()
+let messageListeners: Set<(msg: ChatMessage) => void> = new Set()
+let typingListeners: Set<(data: { orderId: string; senderId: string; senderName: string }) => void> = new Set()
+
+function getOrCreateSocket(
+  userId: string,
+  userName: string,
+  userRole: string,
+  onConnect?: () => void,
+  onDisconnect?: () => void,
+): Socket {
+  // If user session changed, disconnect old socket
+  if (globalSocket && globalUserId !== userId) {
+    console.log('[useChat] Sessão alterada, reconectando...')
+    globalSocket.disconnect()
+    globalSocket = null
+  }
+
+  if (globalSocket?.connected) {
+    onConnect?.()
+    return globalSocket
+  }
+
+  if (!globalSocket) {
+    globalSocket = io('/?XTransformPort=3003', {
+      transports: ['websocket', 'polling'],
+      forceNew: true,
+      reconnection: true,
+      reconnectionAttempts: 15,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 8000,
+      timeout: 15000,
+    })
+
+    globalSocket.on('connect', () => {
+      console.log('[useChat] Socket conectado:', globalSocket?.id)
+      // Re-authenticate
+      globalSocket!.emit('auth', {
+        userId: globalUserId || userId,
+        name: globalUserName || userName,
+        role: globalUserRole || userRole,
+      })
+      connectionListeners.forEach((fn) => fn())
+    })
+
+    globalSocket.on('disconnect', (reason) => {
+      console.log('[useChat] Socket desconectado:', reason)
+      connectionListeners.forEach((fn) => fn())
+    })
+
+    globalSocket.on('connect_error', (error) => {
+      console.error('[useChat] Erro de conexão:', error.message)
+    })
+
+    // Global message listener — broadcast to all subscribers
+    globalSocket.on('chat:message', (msg: ChatMessage) => {
+      messageListeners.forEach((fn) => fn(msg))
+    })
+
+    // Global typing listener
+    globalSocket.on('chat:typing', (data: { orderId: string; senderId: string; senderName: string }) => {
+      typingListeners.forEach((fn) => fn(data))
+    })
+  }
+
+  globalUserId = userId
+  globalUserName = userName
+  globalUserRole = userRole
+
+  return globalSocket
+}
+
+// ============================================
+// useChatConnection — manages the global socket lifecycle
+// Can be called from anywhere to keep the socket alive
+// ============================================
+
+export function useChatConnection(userId?: string, userName?: string, userRole: string = 'customer') {
+  const setIsChatConnected = useAppStore((s) => s.setIsChatConnected)
+  const isConnectedRef = useRef(false)
+
+  useEffect(() => {
+    if (!userId) return
+
+    const onConnectionChange = () => {
+      const connected = globalSocket?.connected ?? false
+      isConnectedRef.current = connected
+      setIsChatConnected(connected)
+    }
+
+    connectionListeners.add(onConnectionChange)
+    getOrCreateSocket(userId, userName || 'Usuário', userRole, onConnectionChange)
+
+    return () => {
+      connectionListeners.delete(onConnectionChange)
+      // Only disconnect when no more listeners remain
+      if (connectionListeners.size === 0) {
+        // Don't disconnect — keep alive for potential reconnect
+      }
+    }
+  }, [userId, userName, userRole, setIsChatConnected])
+}
+
+// ============================================
+// useChat — per-order chat hook
 // ============================================
 
 export function useChat(options: UseChatOptions): UseChatReturn {
   const { orderId, accountId, accountName = 'Usuário', autoConnect = true } = options
-  const socketRef = useRef<Socket | null>(null)
-  const orderIdRef = useRef(orderId)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [typingUsers, setTypingUsers] = useState<string[]>([])
   const [isConnected, setIsConnected] = useState(false)
+  const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const setIsChatConnected = useAppStore((s) => s.setIsChatConnected)
+  const addChatMessage = useAppStore((s) => s.addChatMessage)
 
-  // Keep orderIdRef in sync
+  const orderIdRef = useRef(orderId)
+  const accountIdRef = useRef(accountId || 'anonymous')
+  const accountNameRef = useRef(accountName)
+
+  // Keep refs in sync
   useEffect(() => {
     orderIdRef.current = orderId
   }, [orderId])
 
-  const disconnect = useCallback(() => {
-    if (socketRef.current) {
-      const accId = accountId || 'anonymous'
-      socketRef.current.emit('leave-order', orderIdRef.current)
-      socketRef.current.disconnect()
-      socketRef.current = null
+  useEffect(() => {
+    accountIdRef.current = accountId || 'anonymous'
+  }, [accountId])
+
+  useEffect(() => {
+    accountNameRef.current = accountName
+  }, [accountName])
+
+  // Disconnect from current order room
+  const leaveCurrentRoom = useCallback(() => {
+    if (globalSocket?.connected && orderIdRef.current) {
+      globalSocket.emit('leave-order', orderIdRef.current)
+      console.log(`[useChat] Saiu da sala: ${orderIdRef.current}`)
     }
-    setIsConnected(false)
-    setIsChatConnected(false)
-  }, [accountId, setIsChatConnected])
+  }, [])
 
-  const connect = useCallback(() => {
-    if (socketRef.current?.connected) return
-    const targetOrderId = orderIdRef.current
-    if (!targetOrderId) return
+  // Join a new order room
+  const joinRoom = useCallback((newOrderId: string) => {
+    if (globalSocket?.connected && newOrderId) {
+      globalSocket.emit('join-order', newOrderId)
+      console.log(`[useChat] Entrou na sala: ${newOrderId}`)
+    }
+  }, [])
 
-    const socket = io('/?XTransformPort=3004', {
-      transports: ['websocket', 'polling'],
-      forceNew: true,
-      reconnection: true,
-      reconnectionAttempts: 10,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      timeout: 15000,
-    })
-
-    socketRef.current = socket
-
-    socket.on('connect', () => {
-      setIsConnected(true)
-      setIsChatConnected(true)
-      console.log('[useChat] Conectado ao serviço de chat')
-
-      const accId = accountId || 'anonymous'
-
-      // Authenticate user
-      socket.emit('auth', {
-        userId: accId,
-        name: accountName,
-        role: 'customer',
-      })
-
-      // Join order room
-      socket.emit('join-order', targetOrderId)
-    })
-
-    socket.on('disconnect', () => {
-      setIsConnected(false)
-      setIsChatConnected(false)
-      console.log('[useChat] Desconectado do serviço de chat')
-    })
-
-    socket.on('connect_error', (error) => {
-      console.error('[useChat] Erro de conexão:', error.message)
-      setIsConnected(false)
-    })
-
-    // New message received from server
-    socket.on('chat:message', (msg: ChatMessage) => {
+  // Handle incoming message for this order
+  const handleMessage = useCallback(
+    (msg: ChatMessage) => {
       if (msg.orderId === orderIdRef.current) {
         setMessages((prev) => {
           if (prev.some((m) => m.id === msg.id)) return prev
           return [...prev, msg]
         })
+        // Also push to global store
+        addChatMessage(msg)
       }
-    })
+    },
+    [addChatMessage],
+  )
 
-    // Typing indicator from server
-    socket.on('chat:typing', (data: { orderId: string; senderId: string; senderName: string }) => {
+  // Handle typing for this order
+  const handleTyping = useCallback(
+    (data: { orderId: string; senderId: string; senderName: string }) => {
       if (data.orderId === orderIdRef.current) {
-        const accId = accountId || 'anonymous'
+        const accId = accountIdRef.current
         if (data.senderId !== accId) {
           setTypingUsers([data.senderName])
           setIsTyping(true)
+
+          // Clear previous timer
+          if (typingTimerRef.current) {
+            clearTimeout(typingTimerRef.current)
+          }
           // Auto-clear typing after 3 seconds
-          setTimeout(() => {
+          typingTimerRef.current = setTimeout(() => {
             setTypingUsers((prev) => prev.filter((n) => n !== data.senderName))
             setIsTyping(false)
           }, 3000)
         }
       }
-    })
-  }, [accountId, accountName, setIsChatConnected])
+    },
+    [],
+  )
 
-  // Auto-conectar quando orderId muda
+  // Listen for connection state changes
+  const handleConnectionChange = useCallback(() => {
+    const connected = globalSocket?.connected ?? false
+    setIsConnected(connected)
+    setIsChatConnected(connected)
+  }, [setIsChatConnected])
+
+  // Main effect: manage subscriptions and room membership
   useEffect(() => {
-    if (autoConnect && orderId) {
-      if (socketRef.current) {
-        socketRef.current.disconnect()
-        socketRef.current = null
-      }
-      // Use requestAnimationFrame to avoid synchronous setState in effect
-      requestAnimationFrame(() => {
-        connect()
+    if (!autoConnect || !orderId) return
+
+    const accId = accountId || 'anonymous'
+
+    // Subscribe to global events
+    connectionListeners.add(handleConnectionChange)
+    messageListeners.add(handleMessage)
+    typingListeners.add(handleTyping)
+
+    // Ensure socket exists
+    const socket = getOrCreateSocket(accId, accountName, 'customer', handleConnectionChange)
+
+    // Sync connection state via microtask to avoid direct setState in effect
+    queueMicrotask(() => {
+      setIsConnected(socket.connected)
+    })
+
+    // Join the order room once connected
+    if (socket.connected) {
+      joinRoom(orderId)
+    } else {
+      socket.on('connect', () => {
+        joinRoom(orderIdRef.current)
       })
     }
 
     return () => {
-      disconnect()
-    }
-  }, [orderId, autoConnect, connect, disconnect])
+      // Cleanup
+      connectionListeners.delete(handleConnectionChange)
+      messageListeners.delete(handleMessage)
+      typingListeners.delete(handleTyping)
 
-  // Enviar mensagem
+      leaveCurrentRoom()
+
+      // Clear typing timer
+      if (typingTimerRef.current) {
+        clearTimeout(typingTimerRef.current)
+        typingTimerRef.current = null
+      }
+    }
+  }, [orderId, autoConnect, accountId, accountName, handleConnectionChange, handleMessage, handleTyping, joinRoom, leaveCurrentRoom, setIsChatConnected])
+
+  // Send message
   const sendMessage = useCallback(
     (content: string, receiverId?: string, driverId?: string) => {
-      if (!socketRef.current?.connected || !content.trim()) return
+      if (!globalSocket?.connected || !content.trim()) return
 
-      const accId = accountId || 'anonymous'
+      const accId = accountIdRef.current
 
       // Emit via WebSocket for real-time delivery
-      socketRef.current.emit('chat:message', {
+      globalSocket.emit('chat:message', {
         orderId: orderIdRef.current,
         message: content.trim(),
         senderId: accId,
-        senderName: accountName,
+        senderName: accountNameRef.current,
         receiverId: receiverId || null,
         driverId: driverId || null,
       })
@@ -183,7 +310,7 @@ export function useChat(options: UseChatOptions): UseChatReturn {
         id: `msg-${Date.now()}`,
         orderId: orderIdRef.current,
         senderId: accId,
-        senderName: accountName,
+        senderName: accountNameRef.current,
         receiverId: receiverId || null,
         driverId: driverId || null,
         message: content.trim(),
@@ -192,43 +319,48 @@ export function useChat(options: UseChatOptions): UseChatReturn {
         createdAt: new Date().toISOString(),
       }
       setMessages((prev) => [...prev, optimisticMsg])
+      addChatMessage(optimisticMsg)
     },
-    [accountId, accountName]
+    [addChatMessage],
   )
 
-  // Indicador de digitação
+  // Send typing indicator (debounced internally)
   const sendTyping = useCallback(
     (typing: boolean) => {
-      if (!socketRef.current?.connected) return
-      const accId = accountId || 'anonymous'
+      if (!globalSocket?.connected) return
+      const accId = accountIdRef.current
       if (typing) {
-        socketRef.current.emit('chat:typing', {
+        globalSocket.emit('chat:typing', {
           orderId: orderIdRef.current,
           senderId: accId,
-          senderName: accountName,
+          senderName: accountNameRef.current,
         })
       }
     },
-    [accountId, accountName]
+    [],
   )
 
-  // Marcar mensagens como lidas (local state only — server persists in production)
+  // Mark messages as read (local state only)
   const markAsRead = useCallback(() => {
-    const accId = accountId || 'anonymous'
+    const accId = accountIdRef.current
     setMessages((prev) =>
       prev.map((m) => ({
         ...m,
         isRead: m.senderId !== accId ? true : m.isRead,
-      }))
+      })),
     )
-  }, [accountId])
+  }, [])
 
+  // Manual reconnect
   const reconnect = useCallback(() => {
-    disconnect()
-    setTimeout(() => {
-      connect()
-    }, 500)
-  }, [connect, disconnect])
+    if (globalSocket) {
+      globalSocket.disconnect()
+      globalSocket = null
+    }
+    connectionListeners.forEach((fn) => fn())
+    const accId = accountIdRef.current
+    getOrCreateSocket(accId, accountNameRef.current, 'customer', handleConnectionChange)
+  }, [handleConnectionChange])
 
   return {
     messages,

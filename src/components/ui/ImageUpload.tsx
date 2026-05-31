@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
-import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react'
-import { uploadImage, type UploadResult } from '@/lib/upload'
+import { useState, useRef } from 'react'
+import { Upload, X, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
+import { uploadImage, validateImageFile, createPreviewUrl, type UploadProgress } from '@/lib/upload'
 import { cn } from '@/lib/utils'
+import { Progress } from '@/components/ui/progress'
 
 interface ImageUploadProps {
   images: string[]
@@ -11,6 +12,16 @@ interface ImageUploadProps {
   maxFiles?: number
   className?: string
   label?: string
+}
+
+interface PendingUpload {
+  id: string
+  file: File
+  previewUrl: string
+  progress: number
+  status: 'uploading' | 'success' | 'error'
+  error?: string
+  url?: string
 }
 
 export function ImageUpload({
@@ -21,82 +32,123 @@ export function ImageUpload({
   label = 'Adicionar imagens',
 }: ImageUploadProps) {
   const [isDragging, setIsDragging] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState('')
+  const [pendingUploads, setPendingUploads] = useState<PendingUpload[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const addImage = useCallback(
-    async (file: File) => {
-      if (images.length >= maxFiles) {
-        setUploadProgress(`Máximo de ${maxFiles} imagens atingido`)
-        setTimeout(() => setUploadProgress(''), 2000)
-        return
+  const isUploading = pendingUploads.some((p) => p.status === 'uploading')
+
+  const addImage = async (file: File) => {
+    setPendingUploads((prevPending) => {
+      const totalImages = images.length + prevPending.filter((p) => p.status !== 'error').length
+      if (totalImages >= maxFiles) {
+        return prevPending
       }
+      return prevPending
+    })
 
-      setUploading(true)
-      setUploadProgress('Enviando...')
+    // Check total using current images + pending
+    // Use a snapshot approach to avoid stale state
+    const validationError = validateImageFile(file)
+    if (validationError) {
+      const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`
+      setPendingUploads((prev) => [
+        ...prev,
+        {
+          id,
+          file,
+          previewUrl: createPreviewUrl(file),
+          progress: 0,
+          status: 'error',
+          error: validationError,
+        },
+      ])
+      setTimeout(() => {
+        setPendingUploads((prev) => prev.filter((p) => p.id !== id))
+      }, 4000)
+      return
+    }
 
-      const result = await uploadImage(file)
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`
+    const previewUrl = createPreviewUrl(file)
 
-      if (result.success) {
-        onChange([...images, result.url])
-        setUploadProgress('')
-      } else {
-        setUploadProgress(result.error || 'Erro ao enviar')
-        setTimeout(() => setUploadProgress(''), 3000)
-      }
+    setPendingUploads((prev) => [
+      ...prev,
+      { id, file, previewUrl, progress: 0, status: 'uploading' },
+    ])
 
-      setUploading(false)
-    },
-    [images, maxFiles, onChange]
-  )
+    const result = await uploadImage(file, (progress: UploadProgress) => {
+      setPendingUploads((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, progress: progress.percent } : p))
+      )
+    })
 
-  const removeImage = useCallback(
-    (index: number) => {
-      const updated = images.filter((_, i) => i !== index)
-      onChange(updated)
-    },
-    [images, onChange]
-  )
+    if (result.success) {
+      setPendingUploads((prev) =>
+        prev.map((p) =>
+          p.id === id
+            ? { ...p, status: 'success' as const, progress: 100, url: result.url }
+            : p
+        )
+      )
+      onChange([...images, result.url])
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
+      setTimeout(() => {
+        setPendingUploads((prev) => prev.filter((p) => p.id !== id))
+      }, 1000)
+    } else {
+      setPendingUploads((prev) =>
+        prev.map((p) =>
+          p.id === id
+            ? { ...p, status: 'error' as const, error: result.error || 'Erro ao enviar' }
+            : p
+        )
+      )
+      setTimeout(() => {
+        setPendingUploads((prev) => prev.filter((p) => p.id !== id))
+      }, 4000)
+    }
+  }
+
+  const removeImage = (index: number) => {
+    const updated = images.filter((_, i) => i !== index)
+    onChange(updated)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(true)
-  }, [])
+  }
 
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(false)
-  }, [])
+  }
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault()
-      setIsDragging(false)
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
 
-      const files = Array.from(e.dataTransfer.files).filter((f) =>
-        f.type.startsWith('image/')
-      )
+    const files = Array.from(e.dataTransfer.files).filter((f) =>
+      f.type.startsWith('image/')
+    )
 
-      files.forEach((file) => addImage(file))
-    },
-    [addImage]
-  )
+    files.forEach((file) => addImage(file))
+  }
 
-  const handleFileSelect = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || [])
-      files.forEach((file) => addImage(file))
-      if (fileInputRef.current) fileInputRef.current.value = ''
-    },
-    [addImage]
-  )
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    files.forEach((file) => addImage(file))
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
 
-  const handleClick = useCallback(() => {
-    if (!uploading && images.length < maxFiles) {
+  const handleClick = () => {
+    if (!isUploading) {
       fileInputRef.current?.click()
     }
-  }, [uploading, images.length, maxFiles])
+  }
+
+  const totalImages = images.length + pendingUploads.filter((p) => p.status !== 'error').length
+  const canAddMore = totalImages < maxFiles
 
   return (
     <div className={cn('space-y-3', className)}>
@@ -111,10 +163,10 @@ export function ImageUpload({
           isDragging
             ? 'border-primary bg-primary/5 scale-[1.02]'
             : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50',
-          (uploading || images.length >= maxFiles) && 'pointer-events-none opacity-60'
+          !canAddMore && 'pointer-events-none opacity-60'
         )}
       >
-        {uploading ? (
+        {isUploading ? (
           <Loader2 className="h-8 w-8 text-primary animate-spin" />
         ) : (
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
@@ -128,13 +180,13 @@ export function ImageUpload({
             JPG, PNG, GIF ou WebP (máx. 5MB)
           </p>
           <p className="text-xs text-muted-foreground">
-            {images.length}/{maxFiles} imagens
+            {totalImages}/{maxFiles} imagens
           </p>
         </div>
 
-        {uploadProgress && (
+        {isUploading && (
           <p className="text-xs text-primary font-medium animate-pulse">
-            {uploadProgress}
+            Enviando imagens...
           </p>
         )}
 
@@ -148,12 +200,65 @@ export function ImageUpload({
         />
       </div>
 
-      {/* Pré-visualizações */}
+      {/* Pré-visualizações de uploads pendentes */}
+      {pendingUploads.length > 0 && (
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+          {pendingUploads.map((upload) => (
+            <div
+              key={upload.id}
+              className="relative aspect-square rounded-lg overflow-hidden border bg-muted"
+            >
+              {/* Imagem de pré-visualização */}
+              <img
+                src={upload.previewUrl}
+                alt={upload.file.name}
+                className="h-full w-full object-cover"
+              />
+
+              {/* Overlay de status */}
+              <div
+                className={cn(
+                  'absolute inset-0 flex flex-col items-center justify-center gap-1 transition-opacity',
+                  upload.status === 'uploading' && 'bg-black/40',
+                  upload.status === 'success' && 'bg-emerald-500/20',
+                  upload.status === 'error' && 'bg-destructive/20'
+                )}
+              >
+                {upload.status === 'uploading' && (
+                  <>
+                    <Loader2 className="h-6 w-6 text-white animate-spin" />
+                    <span className="text-[10px] text-white font-medium bg-black/60 px-1.5 py-0.5 rounded">
+                      {upload.progress}%
+                    </span>
+                    <Progress
+                      value={upload.progress}
+                      className="absolute bottom-0 left-0 right-0 h-1 rounded-none"
+                    />
+                  </>
+                )}
+                {upload.status === 'success' && (
+                  <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+                )}
+                {upload.status === 'error' && (
+                  <div className="flex flex-col items-center gap-1 px-1">
+                    <AlertCircle className="h-6 w-6 text-destructive" />
+                    <span className="text-[8px] text-center text-destructive font-medium leading-tight line-clamp-2">
+                      {upload.error}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Imagens já enviadas */}
       {images.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
           {images.map((url, index) => (
             <div
-              key={index}
+              key={url}
               className="group relative aspect-square rounded-lg overflow-hidden border bg-muted"
             >
               <img
@@ -180,11 +285,11 @@ export function ImageUpload({
           ))}
 
           {/* Botão adicionar mais */}
-          {images.length < maxFiles && (
+          {canAddMore && (
             <button
               type="button"
               onClick={handleClick}
-              disabled={uploading}
+              disabled={isUploading}
               className="flex aspect-square items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/30 hover:border-primary/50 hover:bg-muted/50 transition-colors"
             >
               <ImageIcon className="h-5 w-5 text-muted-foreground" />

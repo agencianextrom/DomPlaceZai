@@ -4,18 +4,20 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   Users, Copy, Check, Share2, QrCode, DollarSign, TrendingUp,
   Gift, ChevronRight, Star, Phone, Mail, Instagram, Facebook,
-  BarChart3, Wallet, ArrowUpRight, ArrowDownRight, ExternalLink,
-  UserPlus, ShoppingCart, Eye, Megaphone, Image as ImageIcon,
-  Sparkles, Trophy, Clock, Filter, AlertCircle, RefreshCw, Loader2,
+  BarChart3, Wallet, ExternalLink,
+  UserPlus, ShoppingCart, Megaphone, Image as ImageIcon,
+  Sparkles, Trophy, Clock, AlertCircle, RefreshCw, Loader2,
+  ShieldX, LogIn, ChevronDown, History,
 } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Label } from '@/components/ui/label'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -23,6 +25,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { useAppStore } from '@/store/useAppStore'
+import { useAuth } from '@/hooks/useAuth'
 
 // ── Types ──
 interface DashboardData {
@@ -52,8 +55,14 @@ interface ReferralItem {
 interface PayoutInfo {
   availableBalance: number
   pendingPayouts: number
-  recentPayoutHistory: { id: string; details: string; createdAt: string }[]
+  recentPayoutHistory: PayoutHistoryItem[]
   minPayoutAmount: number
+}
+
+interface PayoutHistoryItem {
+  id: string
+  details: string
+  createdAt: string
 }
 
 const mockBanners = [
@@ -66,15 +75,6 @@ const mockPostTemplates = [
   { id: 't1', platform: 'WhatsApp', text: 'Opa! Descobri o DomPlace, o app de entregas de Dom Eliseu! Tem de tudo: mercado, acai, farmacia, pet shop e mais. Baixe com meu link e ganhe R$10 de desconto: {link}', icon: 'MessageCircle', color: 'text-emerald-600' },
   { id: 't2', platform: 'Instagram', text: 'Dom Eliseu agora tem delivery de verdade! No DomPlace voce encontra de tudo com entrega rapida. Use meu codigo {code} e ganhe desconto na primeira compra! {link}', icon: 'Instagram', color: 'text-pink-600' },
   { id: 't3', platform: 'Facebook', text: 'Moradores de Dom Eliseu! O DomPlace facilitou minha vida. Encomendo de varias lojas sem sair de casa. Indico demais! {link}', icon: 'Facebook', color: 'text-sky-600' },
-]
-
-const mockMonthlyChart = [
-  { month: 'Jan', amount: 85.00 },
-  { month: 'Fev', amount: 120.00 },
-  { month: 'Mar', amount: 95.00 },
-  { month: 'Abr', amount: 180.00 },
-  { month: 'Mai', amount: 145.00 },
-  { month: 'Jun', amount: 215.00 },
 ]
 
 function formatBRL(value: number): string {
@@ -90,31 +90,73 @@ function formatDate(iso: string): string {
   return d.toLocaleDateString('pt-BR')
 }
 
+function formatDateTime(iso: string): string {
+  const d = new Date(iso)
+  return d.toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+// ── Framer animation helpers ──
+const fadeUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+}
+
+const staggerContainer = {
+  animate: { transition: { staggerChildren: 0.06 } },
+}
+
+const staggerChild = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+}
+
 export function AffiliateDashboard() {
-  const { navigate } = useAppStore()
+  const { navigate, openAuthModal } = useAppStore()
+  const { isAuthenticated, isAffiliate, isLoading: authLoading } = useAuth()
+
+  // UI state
   const [copiedCode, setCopiedCode] = useState(false)
   const [copiedLink, setCopiedLink] = useState(false)
   const [referralFilter, setReferralFilter] = useState<'all' | 'active' | 'converted' | 'pending'>('all')
+  const [activeTab, setActiveTab] = useState('referrals')
 
   // API state
   const [dashboard, setDashboard] = useState<DashboardData | null>(null)
   const [referrals, setReferrals] = useState<ReferralItem[]>([])
   const [referralsTotal, setReferralsTotal] = useState(0)
+  const [referralsHasMore, setReferralsHasMore] = useState(false)
   const [payoutInfo, setPayoutInfo] = useState<PayoutInfo | null>(null)
   const [loading, setLoading] = useState(true)
+  const [referralsLoading, setReferralsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
   const [payoutLoading, setPayoutLoading] = useState(false)
   const [payoutDialogOpen, setPayoutDialogOpen] = useState(false)
   const [payoutAmount, setPayoutAmount] = useState('')
   const [referralStatuses, setReferralStatuses] = useState<Record<string, string>>({})
+  const [referralOffset, setReferralOffset] = useState(0)
+  const [customLinkId, setCustomLinkId] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
 
   const referralLink = dashboard ? `https://domplace.com/convite/${dashboard.referralCode}` : ''
   const initials = dashboard?.referralCode?.slice(0, 2) || 'AF'
 
-  const fetchDashboard = useCallback(async () => {
+  // ── API fetchers ──
+  const fetchDashboard = useCallback(async (isRefresh = false) => {
     try {
-      setLoading(true)
+      if (isRefresh) {
+        setRefreshing(true)
+      } else {
+        setLoading(true)
+      }
       setError(null)
+      setRetryCount(0)
       const res = await fetch('/api/affiliate/dashboard')
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -130,26 +172,37 @@ export function AffiliateDashboard() {
       setError(err instanceof Error ? err.message : 'Erro inesperado')
     } finally {
       setLoading(false)
+      setRefreshing(false)
     }
   }, [])
 
-  const fetchReferrals = useCallback(async (status: string = 'all') => {
+  const fetchReferrals = useCallback(async (status: string = 'all', offset = 0, append = false) => {
     try {
-      const res = await fetch(`/api/affiliate/referrals?status=${status}&limit=20`)
+      setReferralsLoading(true)
+      const res = await fetch(`/api/affiliate/referrals?status=${status}&limit=20&offset=${offset}`)
       if (res.ok) {
         const json = await res.json()
         if (json.success) {
-          setReferrals(json.data.referrals)
+          const newReferrals = json.data.referrals as ReferralItem[]
+          if (append) {
+            setReferrals(prev => [...prev, ...newReferrals])
+          } else {
+            setReferrals(newReferrals)
+          }
           setReferralsTotal(json.data.pagination.total)
+          setReferralsHasMore(json.data.pagination.hasMore)
+          setReferralOffset(offset)
           const statusMap: Record<string, string> = {}
-          json.data.referrals.forEach((r: ReferralItem) => {
+          newReferrals.forEach((r: ReferralItem) => {
             statusMap[r.id] = r.status
           })
           setReferralStatuses(prev => ({ ...prev, ...statusMap }))
         }
       }
     } catch {
-      // Silently fail
+      // Silently fail for referrals
+    } finally {
+      setReferralsLoading(false)
     }
   }, [])
 
@@ -167,9 +220,19 @@ export function AffiliateDashboard() {
     }
   }, [])
 
+  // Retry handler with increasing delay
+  const handleRetry = useCallback(async () => {
+    const newCount = retryCount + 1
+    setRetryCount(newCount)
+    await fetchDashboard()
+  }, [fetchDashboard, retryCount])
+
+  // ── Effects ──
   useEffect(() => {
-    fetchDashboard()
-  }, [fetchDashboard])
+    if (isAuthenticated && isAffiliate) {
+      fetchDashboard()
+    }
+  }, [isAuthenticated, isAffiliate, fetchDashboard])
 
   useEffect(() => {
     if (dashboard) {
@@ -178,10 +241,15 @@ export function AffiliateDashboard() {
     }
   }, [dashboard, fetchReferrals, fetchPayoutInfo])
 
+  // Fetch referrals when filter changes
   useEffect(() => {
-    fetchReferrals(referralFilter === 'all' ? 'all' : referralFilter)
-  }, [referralFilter, fetchReferrals])
+    if (dashboard) {
+      const apiStatus = referralFilter === 'all' ? 'all' : referralFilter === 'converted' ? 'approved' : referralFilter === 'pending' ? 'pending' : referralFilter
+      fetchReferrals(apiStatus)
+    }
+  }, [referralFilter, dashboard, fetchReferrals])
 
+  // ── Actions ──
   const copyCode = () => {
     if (!dashboard) return
     navigator.clipboard.writeText(dashboard.referralCode)
@@ -197,9 +265,41 @@ export function AffiliateDashboard() {
     setTimeout(() => setCopiedLink(false), 2000)
   }
 
+  const shareReferralLink = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'DomPlace - Indique e ganhe!',
+          text: 'Opa! Descobri o DomPlace, o app de entregas de Dom Eliseu! Baixe com meu link e ganhe desconto!',
+          url: referralLink,
+        })
+      } catch {
+        copyLink()
+      }
+    } else {
+      copyLink()
+    }
+  }
+
   const shareWhatsApp = () => {
     const text = encodeURIComponent(`Opa! Descobri o DomPlace, o app de entregas de Dom Eliseu! Baixe com meu link e ganhe R$10 de desconto: ${referralLink}`)
     window.open(`https://wa.me/?text=${text}`, '_blank')
+  }
+
+  const shareInstagram = () => {
+    copyLink()
+    toast.success('Link copiado! Cole no seu Instagram Stories ou bio.')
+  }
+
+  const shareFacebook = () => {
+    const url = encodeURIComponent(referralLink)
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank')
+  }
+
+  const shareEmail = () => {
+    const subject = encodeURIComponent('Conheca o DomPlace - Entregas em Dom Eliseu!')
+    const body = encodeURIComponent(`Ola!\n\nDescobri o DomPlace, o app de entregas de Dom Eliseu. Tem de tudo: mercado, acai, farmacia, pet shop e muito mais, com entrega rapida na sua porta.\n\nUse meu link e ganhe desconto na primeira compra:\n${referralLink}\n\nAproveite!`)
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank')
   }
 
   const handlePayout = async () => {
@@ -231,7 +331,7 @@ export function AffiliateDashboard() {
         toast.success(json.message || 'Solicitacao de saque enviada! Voce recebera em ate 2 dias uteis.')
         setPayoutDialogOpen(false)
         setPayoutAmount('')
-        fetchDashboard()
+        fetchDashboard(true)
         fetchPayoutInfo()
       } else {
         toast.error(json.error || 'Erro ao solicitar saque')
@@ -241,6 +341,22 @@ export function AffiliateDashboard() {
     } finally {
       setPayoutLoading(false)
     }
+  }
+
+  const handleLoadMoreReferrals = () => {
+    const apiStatus = referralFilter === 'all' ? 'all' : referralFilter === 'converted' ? 'approved' : referralFilter === 'pending' ? 'pending' : referralFilter
+    fetchReferrals(apiStatus, referralOffset + 20, true)
+  }
+
+  const handleGenerateCustomLink = () => {
+    if (!customLinkId.trim()) {
+      toast.error('Insira um identificador para a campanha')
+      return
+    }
+    const link = `${referralLink}?utm_source=${encodeURIComponent(customLinkId.trim())}`
+    navigator.clipboard.writeText(link)
+    toast.success('Link personalizado gerado e copiado!')
+    setCustomLinkId('')
   }
 
   const getReferralStatus = (ref: ReferralItem): string => {
@@ -275,6 +391,62 @@ export function AffiliateDashboard() {
     pending: referrals.filter(r => getReferralStatus(r) === 'pending').length,
   }
 
+  // ── Auth checks (after all hooks) ──
+  if (!authLoading && !isAuthenticated) {
+    return (
+      <div className="min-h-screen pb-24 flex items-center justify-center px-4">
+        <motion.div
+          {...fadeUp}
+          className="max-w-sm w-full"
+        >
+          <Card className="border-border/50">
+            <CardContent className="p-6 text-center space-y-4">
+              <div className="h-16 w-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mx-auto">
+                <LogIn className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+              </div>
+              <h2 className="text-lg font-bold">Acesso restrito</h2>
+              <p className="text-sm text-muted-foreground">
+                Faca login para acessar o painel do afiliado e comecar a ganhar dinheiro indicando amigos.
+              </p>
+              <Button onClick={openAuthModal} className="w-full bg-primary hover:bg-primary/90">
+                Entrar na minha conta
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('home')} className="w-full text-muted-foreground">
+                Voltar ao inicio
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    )
+  }
+
+  if (!authLoading && isAuthenticated && !isAffiliate) {
+    return (
+      <div className="min-h-screen pb-24 flex items-center justify-center px-4">
+        <motion.div
+          {...fadeUp}
+          className="max-w-sm w-full"
+        >
+          <Card className="border-border/50">
+            <CardContent className="p-6 text-center space-y-4">
+              <div className="h-16 w-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto">
+                <ShieldX className="h-8 w-8 text-red-600 dark:text-red-400" />
+              </div>
+              <h2 className="text-lg font-bold">Acesso negado</h2>
+              <p className="text-sm text-muted-foreground">
+                O painel de afiliado esta disponivel apenas para usuarios com perfil de afiliado ativo.
+              </p>
+              <Button variant="outline" onClick={() => navigate('home')} className="w-full">
+                Voltar ao inicio
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    )
+  }
+
   // ── Loading State ──
   if (loading) {
     return (
@@ -295,14 +467,14 @@ export function AffiliateDashboard() {
           <div className="mt-4">
             <Skeleton className="h-16 w-full rounded-2xl bg-white/15" />
           </div>
-          <div className="grid grid-cols-4 gap-2 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4">
             {[...Array(4)].map((_, i) => (
               <Skeleton key={i} className="h-16 rounded-xl bg-white/15" />
             ))}
           </div>
         </div>
         <div className="px-4 mt-4 space-y-4">
-          <Skeleton className="h-48 w-full rounded-xl" />
+          <Skeleton className="h-52 w-full rounded-xl" />
           <Skeleton className="h-64 w-full rounded-xl" />
           <Skeleton className="h-48 w-full rounded-xl" />
         </div>
@@ -314,17 +486,46 @@ export function AffiliateDashboard() {
   if (error) {
     return (
       <div className="min-h-screen pb-24 flex items-center justify-center px-4">
-        <Card className="border-border/50 max-w-sm w-full">
-          <CardContent className="p-6 text-center space-y-4">
-            <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
-            <h2 className="text-lg font-bold">Erro ao carregar</h2>
-            <p className="text-sm text-muted-foreground">{error}</p>
-            <Button onClick={fetchDashboard} className="w-full" variant="outline">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Tentar novamente
-            </Button>
-          </CardContent>
-        </Card>
+        <motion.div
+          {...fadeUp}
+          className="max-w-sm w-full"
+        >
+          <Card className="border-border/50">
+            <CardContent className="p-6 text-center space-y-4">
+              <div className="h-16 w-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto">
+                <AlertCircle className="h-8 w-8 text-red-500" />
+              </div>
+              <h2 className="text-lg font-bold">Erro ao carregar</h2>
+              <p className="text-sm text-muted-foreground">{error}</p>
+              {retryCount > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Tentativa {retryCount} de 5
+                </p>
+              )}
+              <Button
+                onClick={handleRetry}
+                className="w-full"
+                variant="outline"
+                disabled={retryCount >= 5}
+              >
+                {retryCount >= 5 ? (
+                  <>
+                    <AlertCircle className="h-4 w-4 mr-2" />
+                    Limite de tentativas atingido
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Tentar novamente
+                  </>
+                )}
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('home')} className="w-full text-muted-foreground text-sm">
+                Voltar ao inicio
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     )
   }
@@ -335,8 +536,7 @@ export function AffiliateDashboard() {
     <div className="min-h-screen pb-24">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        {...fadeUp}
         className="relative overflow-hidden rounded-b-3xl"
       >
         <div className="relative bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 pt-6 pb-8 text-white px-4">
@@ -352,8 +552,14 @@ export function AffiliateDashboard() {
               <ChevronRight className="h-5 w-5 rotate-180" />
             </Button>
             <h1 className="text-lg font-bold">Painel do Afiliado</h1>
-            <Button variant="ghost" size="icon" onClick={fetchDashboard} className="text-white hover:bg-white/15 h-10 w-10">
-              <RefreshCw className="h-4 w-4" />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => fetchDashboard(true)}
+              className="text-white hover:bg-white/15 h-10 w-10"
+              disabled={refreshing}
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
             </Button>
           </div>
 
@@ -380,8 +586,7 @@ export function AffiliateDashboard() {
 
           {/* Referral code card */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...staggerChild}
             transition={{ delay: 0.2 }}
             className="relative mt-4 bg-white/15 backdrop-blur-sm rounded-2xl p-4"
           >
@@ -400,18 +605,21 @@ export function AffiliateDashboard() {
           </motion.div>
 
           {/* Stats row */}
-          <div className="relative grid grid-cols-4 gap-2 mt-4">
+          <motion.div
+            variants={staggerContainer}
+            initial="initial"
+            animate="animate"
+            className="relative grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4"
+          >
             {[
               { icon: Users, label: 'Indicacoes', value: dashboard.totalReferrals },
               { icon: ShoppingCart, label: 'Conversoes', value: dashboard.totalConversions },
               { icon: Clock, label: 'Pendente', value: formatBRLShort(dashboard.pendingEarnings) },
               { icon: Trophy, label: 'Total', value: formatBRLShort(dashboard.totalEarnings) },
-            ].map((stat, i) => (
+            ].map((stat) => (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 + i * 0.06 }}
+                variants={staggerChild}
                 className="bg-white/15 backdrop-blur-sm rounded-xl p-2.5 text-center"
               >
                 <stat.icon className="h-4 w-4 mx-auto mb-1 opacity-80" />
@@ -419,7 +627,7 @@ export function AffiliateDashboard() {
                 <p className="text-[9px] text-white/60">{stat.label}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         <svg className="absolute bottom-0 left-0 right-0 z-10" viewBox="0 0 1440 24" fill="none" preserveAspectRatio="none">
@@ -431,8 +639,7 @@ export function AffiliateDashboard() {
       <div className="px-4 mt-2">
         {/* Referral Link Section */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
+          {...fadeUp}
           transition={{ delay: 0.1 }}
           className="mb-4"
         >
@@ -470,27 +677,48 @@ export function AffiliateDashboard() {
                 <Button
                   variant="outline"
                   className="h-11 border-primary/30 hover:bg-primary/5 text-primary gap-2 rounded-xl font-semibold text-sm"
-                  onClick={copyLink}
+                  onClick={shareReferralLink}
                 >
                   <Share2 className="h-4 w-4" />
-                  Copiar Link
+                  Compartilhar
                 </Button>
               </div>
 
               {/* Social buttons row */}
               <div className="flex items-center gap-2">
                 <span className="text-[10px] text-muted-foreground">Compartilhar:</span>
-                {[Instagram, Facebook, Mail, ExternalLink].map((Icon, i) => (
-                  <motion.button
-                    key={i}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center hover:bg-muted transition-colors"
-                    onClick={() => toast.success('Link copiado para compartilhar!')}
-                  >
-                    <Icon className="h-4 w-4 text-muted-foreground" />
-                  </motion.button>
-                ))}
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center hover:bg-pink-100 dark:hover:bg-pink-900/20 transition-colors"
+                  onClick={shareInstagram}
+                >
+                  <Instagram className="h-4 w-4 text-muted-foreground" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center hover:bg-sky-100 dark:hover:bg-sky-900/20 transition-colors"
+                  onClick={shareFacebook}
+                >
+                  <Facebook className="h-4 w-4 text-muted-foreground" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center hover:bg-amber-100 dark:hover:bg-amber-900/20 transition-colors"
+                  onClick={shareEmail}
+                >
+                  <Mail className="h-4 w-4 text-muted-foreground" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center hover:bg-emerald-100 dark:hover:bg-emerald-900/20 transition-colors"
+                  onClick={copyLink}
+                >
+                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                </motion.button>
               </div>
 
               {/* QR Code placeholder */}
@@ -506,8 +734,7 @@ export function AffiliateDashboard() {
 
         {/* Earnings Section */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
+          {...fadeUp}
           transition={{ delay: 0.15 }}
           className="mb-4"
         >
@@ -515,7 +742,7 @@ export function AffiliateDashboard() {
             <Wallet className="h-4 w-4 text-primary" />
             Seus Ganhos
           </h3>
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             <Card className="border-amber-200/50 dark:border-amber-800/30 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10">
               <CardContent className="p-4 text-center">
                 <p className="text-[10px] text-muted-foreground mb-1">Disponivel para saque</p>
@@ -530,9 +757,10 @@ export function AffiliateDashboard() {
                   }}
                   disabled={dashboard.availableBalance < (payoutInfo?.minPayoutAmount || 50)}
                 >
+                  <Wallet className="h-3.5 w-3.5 mr-1.5" />
                   {dashboard.availableBalance < (payoutInfo?.minPayoutAmount || 50)
                     ? `Min. R$${payoutInfo?.minPayoutAmount || 50}`
-                    : 'Sacar'}
+                    : 'Solicitar saque'}
                 </Button>
               </CardContent>
             </Card>
@@ -570,48 +798,90 @@ export function AffiliateDashboard() {
             </CardContent>
           </Card>
 
-          {/* Monthly chart */}
-          <Card className="border-border/50">
-            <CardContent className="p-4">
-              <h4 className="text-xs font-bold mb-3 flex items-center gap-1.5">
-                <BarChart3 className="h-4 w-4 text-primary" />
-                Ganhos por mes
-              </h4>
-              <div className="flex items-end gap-2 h-28">
-                {mockMonthlyChart.map((m, i) => {
-                  const maxAmount = Math.max(...mockMonthlyChart.map(d => d.amount))
-                  const height = (m.amount / maxAmount) * 100
-                  const isCurrentMonth = i === mockMonthlyChart.length - 1
-                  return (
-                    <motion.div
-                      key={m.month}
-                      className="flex-1 flex flex-col items-center gap-1"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      transition={{ delay: i * 0.08 }}
-                    >
-                      <span className="text-[9px] font-medium text-muted-foreground">R${m.amount.toFixed(0)}</span>
-                      <div className="w-full flex items-end" style={{ height: '64px' }}>
+          {/* Payout History */}
+          {payoutInfo?.recentPayoutHistory && payoutInfo.recentPayoutHistory.length > 0 && (
+            <motion.div
+              {...fadeUp}
+              transition={{ delay: 0.2 }}
+              className="mb-4"
+            >
+              <Card className="border-border/50">
+                <CardHeader className="p-4 pb-0">
+                  <CardTitle className="text-xs font-bold flex items-center gap-1.5">
+                    <History className="h-4 w-4 text-amber-500" />
+                    Historico de saques
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <ScrollArea className="max-h-48">
+                    <div className="space-y-2">
+                      {payoutInfo.recentPayoutHistory.map((item) => (
                         <motion.div
-                          initial={{ height: 0 }}
-                          animate={{ height: `${height}%` }}
-                          transition={{ delay: i * 0.08, duration: 0.5 }}
-                          className={`w-full rounded-t-lg ${isCurrentMonth ? 'bg-gradient-to-t from-amber-500 to-orange-400' : 'bg-gradient-to-t from-primary/30 to-primary/50'}`}
-                        />
-                      </div>
-                      <span className={`text-[9px] ${isCurrentMonth ? 'font-bold text-amber-600' : 'text-muted-foreground'}`}>
-                        {m.month}
-                      </span>
-                    </motion.div>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
+                          key={item.id}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className="flex items-center justify-between py-2 border-b border-border/30 last:border-0"
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-lg bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center">
+                              <DollarSign className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium">{item.details}</p>
+                              <p className="text-[10px] text-muted-foreground">{formatDateTime(item.createdAt)}</p>
+                            </div>
+                          </div>
+                          <Badge variant="outline" className="text-[10px] border-amber-300 text-amber-600 dark:border-amber-700 dark:text-amber-400">
+                            Pendente
+                          </Badge>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                  {payoutInfo.pendingPayouts > 0 && (
+                    <p className="text-[10px] text-muted-foreground mt-2 text-center">
+                      {payoutInfo.pendingPayouts} saque{payoutInfo.pendingPayouts > 1 ? 's' : ''} pendente{payoutInfo.pendingPayouts > 1 ? 's' : ''}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* Summary stats cards */}
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            <motion.div {...fadeUp} transition={{ delay: 0.22 }}>
+              <Card className="border-border/50">
+                <CardContent className="p-3 text-center">
+                  <TrendingUp className="h-4 w-4 mx-auto mb-1 text-emerald-500" />
+                  <p className="text-sm font-bold">{formatBRLShort(dashboard.totalEarnings)}</p>
+                  <p className="text-[9px] text-muted-foreground">Total ganho</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div {...fadeUp} transition={{ delay: 0.24 }}>
+              <Card className="border-border/50">
+                <CardContent className="p-3 text-center">
+                  <Gift className="h-4 w-4 mx-auto mb-1 text-amber-500" />
+                  <p className="text-sm font-bold">{((dashboard.commissionRate || 0) * 100).toFixed(0)}%</p>
+                  <p className="text-[9px] text-muted-foreground">Comissao</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div {...fadeUp} transition={{ delay: 0.26 }}>
+              <Card className="border-border/50">
+                <CardContent className="p-3 text-center">
+                  <Star className="h-4 w-4 mx-auto mb-1 text-primary" />
+                  <p className="text-sm font-bold">{dashboard.totalConversions}</p>
+                  <p className="text-[9px] text-muted-foreground">Conversoes</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* Tabs for Referrals and Marketing */}
-        <Tabs defaultValue="referrals" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full grid grid-cols-2 mb-4">
             <TabsTrigger value="referrals" className="text-xs gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Users className="h-3.5 w-3.5" />
@@ -647,50 +917,114 @@ export function AffiliateDashboard() {
               ))}
             </div>
 
-            {/* Referrals list */}
-            <div className="space-y-2">
-              <AnimatePresence mode="popLayout">
-                {filteredReferrals.length === 0 ? (
-                  <Card className="border-border/50">
-                    <CardContent className="p-6 text-center">
-                      <Users className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">Nenhuma indicacao encontrada</p>
+            {/* Referrals loading skeleton */}
+            {referralsLoading && referrals.length === 0 ? (
+              <div className="space-y-2">
+                {[...Array(3)].map((_, i) => (
+                  <Card key={i} className="border-border/50">
+                    <CardContent className="p-3 flex items-center gap-3">
+                      <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                      <Skeleton className="h-4 w-16" />
                     </CardContent>
                   </Card>
-                ) : (
-                  filteredReferrals.map((referral, i) => (
+                ))}
+              </div>
+            ) : (
+              /* Referrals list */
+              <div className="space-y-2">
+                <AnimatePresence mode="popLayout">
+                  {filteredReferrals.length === 0 ? (
                     <motion.div
-                      key={referral.id}
-                      layout
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ delay: i * 0.04 }}
+                      key="empty"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
                     >
-                      <Card className="border-border/50 hover:border-primary/20 transition-all">
-                        <CardContent className="p-3 flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/10 to-emerald-100 dark:from-primary/20 dark:to-emerald-900/20 flex items-center justify-center shrink-0 text-sm font-bold text-primary">
-                            {referral.referredUserName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <p className="font-semibold text-sm truncate">{referral.referredUserName}</p>
-                              <p className="font-semibold text-sm text-primary shrink-0 ml-2">
-                                {referral.commission > 0 ? `+${formatBRLShort(referral.commission)}` : '--'}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-[10px] text-muted-foreground">{formatDate(referral.createdAt)}</span>
-                              {getStatusBadge(getReferralStatus(referral))}
-                            </div>
-                          </div>
+                      <Card className="border-border/50">
+                        <CardContent className="p-6 text-center">
+                          <Users className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                          <p className="text-sm text-muted-foreground">Nenhuma indicacao encontrada</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Compartilhe seu link e comece a indicar amigos!
+                          </p>
                         </CardContent>
                       </Card>
                     </motion.div>
-                  ))
+                  ) : (
+                    filteredReferrals.map((referral, i) => (
+                      <motion.div
+                        key={referral.id}
+                        layout
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ delay: i * 0.04 }}
+                      >
+                        <Card className="border-border/50 hover:border-primary/20 transition-all">
+                          <CardContent className="p-3 flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/10 to-emerald-100 dark:from-primary/20 dark:to-emerald-900/20 flex items-center justify-center shrink-0 text-sm font-bold text-primary">
+                              {referral.referredUserName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <p className="font-semibold text-sm truncate">{referral.referredUserName}</p>
+                                <p className="font-semibold text-sm text-primary shrink-0 ml-2">
+                                  {referral.commission > 0 ? `+${formatBRLShort(referral.commission)}` : '--'}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <span className="text-[10px] text-muted-foreground">{formatDate(referral.createdAt)}</span>
+                                {getStatusBadge(getReferralStatus(referral))}
+                              </div>
+                              {/* Show order info if available */}
+                              {referral.order && (
+                                <div className="flex items-center gap-1 mt-1">
+                                  <ShoppingCart className="h-3 w-3 text-muted-foreground" />
+                                  <span className="text-[10px] text-muted-foreground">
+                                    Pedido {referral.order.orderNumber} - {formatBRLShort(referral.order.total)}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))
+                  )}
+                </AnimatePresence>
+
+                {/* Load more button */}
+                {referralsHasMore && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="pt-2"
+                  >
+                    <Button
+                      variant="outline"
+                      className="w-full h-10 text-xs gap-2 border-primary/20 hover:bg-primary/5 text-primary"
+                      onClick={handleLoadMoreReferrals}
+                      disabled={referralsLoading}
+                    >
+                      {referralsLoading ? (
+                        <>
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          Carregando...
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-3.5 w-3.5" />
+                          Carregar mais indicacoes
+                        </>
+                      )}
+                    </Button>
+                  </motion.div>
                 )}
-              </AnimatePresence>
-            </div>
+              </div>
+            )}
           </TabsContent>
 
           {/* Marketing Tab */}
@@ -705,8 +1039,7 @@ export function AffiliateDashboard() {
                 {mockBanners.map((banner, i) => (
                   <motion.div
                     key={banner.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    {...fadeUp}
                     transition={{ delay: i * 0.06 }}
                   >
                     <Card className="overflow-hidden">
@@ -744,8 +1077,7 @@ export function AffiliateDashboard() {
                 {mockPostTemplates.map((template, i) => (
                   <motion.div
                     key={template.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    {...fadeUp}
                     transition={{ delay: i * 0.06 }}
                   >
                     <Card className="border-border/50">
@@ -794,11 +1126,14 @@ export function AffiliateDashboard() {
                   <Input
                     placeholder="Ex: instagram-story, grupo-whatsapp"
                     className="h-9 text-xs"
+                    value={customLinkId}
+                    onChange={(e) => setCustomLinkId(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleGenerateCustomLink()}
                   />
                   <Button
                     size="sm"
                     className="h-9 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-xs shrink-0"
-                    onClick={() => toast.success('Link personalizado gerado!')}
+                    onClick={handleGenerateCustomLink}
                   >
                     Gerar
                   </Button>
@@ -862,9 +1197,4 @@ function TargetIcon({ className }: { className?: string }) {
       <circle cx="12" cy="12" r="2" />
     </svg>
   )
-}
-
-// Need Label for the dialog
-function Label({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <label className={className}>{children}</label>
 }

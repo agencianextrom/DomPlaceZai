@@ -1,6 +1,6 @@
 import { Server } from 'socket.io'
 
-const PORT = 3004
+const PORT = 3003
 
 const io = new Server(PORT, {
   cors: {

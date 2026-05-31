@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import {
-  ImagePlus, Upload, X, Eye, Package, DollarSign, Tag, Hash,
-  Check, Sparkles, Camera, Layers
+  Eye, Package, Tag, Check, Sparkles, Camera, Layers
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,6 +14,7 @@ import { Separator } from '@/components/ui/separator'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { useAppStore } from '@/store/useAppStore'
+import { ImageUpload } from '@/components/ui/ImageUpload'
 
 interface ProductFormData {
   name: string
@@ -65,6 +65,7 @@ export function ProductForm() {
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState<Partial<Record<keyof ProductFormData, string>>>({})
   const [showPreview, setShowPreview] = useState(true)
+  const [productImages, setProductImages] = useState<string[]>([])
 
   const updateField = (field: keyof ProductFormData, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -119,6 +120,7 @@ export function ProductForm() {
         category: form.category,
         tags: JSON.stringify(tagsArray),
         variations: variationsArray.length > 0 ? JSON.stringify(variationsArray) : null,
+        images: productImages,
         storeId: store.id,
       }
 
@@ -139,6 +141,7 @@ export function ProductForm() {
       setTimeout(() => {
         setSubmitted(false)
         setForm(initialForm)
+        setProductImages([])
       }, 3000)
     } catch (error: unknown) {
       setIsSubmitting(false)
@@ -345,20 +348,18 @@ export function ProductForm() {
             )}
           </div>
 
-          {/* Image upload placeholder */}
+          {/* Image upload - real Cloudinary upload */}
           <div>
-            <Label className="text-xs text-muted-foreground mb-1.5 block">Imagens</Label>
-            <motion.div
-              whileHover={{ borderColor: 'oklch(0.45 0.1 155)' }}
-              className="border-2 border-dashed border-border rounded-xl p-6 text-center cursor-pointer hover:bg-muted/30 transition-colors"
-              onClick={() => toast.info('Upload de imagens em breve!')}
-            >
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2">
-                <Camera className="h-6 w-6 text-primary" />
-              </div>
-              <p className="text-sm font-medium">Clique ou arraste para enviar</p>
-              <p className="text-xs text-muted-foreground mt-0.5">PNG, JPG até 5MB</p>
-            </motion.div>
+            <Label className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1">
+              <Camera className="h-3 w-3" />
+              Imagens do produto
+            </Label>
+            <ImageUpload
+              images={productImages}
+              onChange={setProductImages}
+              maxFiles={5}
+              label="Clique ou arraste para enviar imagens"
+            />
           </div>
 
           <Separator />
@@ -397,15 +398,30 @@ export function ProductForm() {
           <Card className="overflow-hidden border-border/50">
             <CardContent className="p-0">
               {/* Image area */}
-              <div className="aspect-[4/3] bg-gradient-to-br from-primary/10 to-emerald-100 dark:from-primary/5 dark:to-emerald-900/20 flex items-center justify-center relative">
-                <div className="h-16 w-16 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm">
-                  <Package className="h-8 w-8 text-primary/60" />
-                </div>
+              <div className="aspect-[4/3] bg-gradient-to-br from-primary/10 to-emerald-100 dark:from-primary/5 dark:to-emerald-900/20 flex items-center justify-center relative overflow-hidden">
+                {productImages.length > 0 ? (
+                  <img
+                    src={productImages[0]}
+                    alt={form.name || 'Preview'}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="h-16 w-16 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm">
+                    <Package className="h-8 w-8 text-primary/60" />
+                  </div>
+                )}
 
                 {/* Discount badge */}
                 {discount > 0 && (
                   <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[10px] font-bold">
                     -{discount}%
+                  </Badge>
+                )}
+
+                {/* Image count indicator */}
+                {productImages.length > 1 && (
+                  <Badge className="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-medium border-0 backdrop-blur-sm">
+                    {productImages.length} fotos
                   </Badge>
                 )}
 

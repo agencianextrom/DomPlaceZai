@@ -1,5 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// In-memory cache: 1 hora
+const cepCache = new Map<string, {
+  data: Record<string, unknown>
+  timestamp: number
+}>()
+const CACHE_TTL = 60 * 60 * 1000 // 1 hora
+
+// Limpar cache expirado periodicamente (a cada 5 min)
+const CACHE_CLEANUP_INTERVAL = 5 * 60 * 1000
+let lastCacheCleanup = Date.now()
+
+function cleanExpiredCache() {
+  const now = Date.now()
+  if (now - lastCacheCleanup > CACHE_CLEANUP_INTERVAL) {
+    for (const [key, entry] of cepCache) {
+      if (now - entry.timestamp > CACHE_TTL) {
+        cepCache.delete(key)
+      }
+    }
+    lastCacheCleanup = now
+  }
+}
+
 interface ViaCEPResponse {
   cep: string
   logradouro: string
@@ -31,10 +54,10 @@ export async function GET(
       )
     }
 
-    // Strip only digits
+    // Manter apenas dígitos
     const digitsOnly = cep.replace(/\D/g, '')
 
-    // Validate CEP format (8 digits)
+    // Validar formato do CEP (8 dígitos)
     if (!/^\d{8}$/.test(digitsOnly)) {
       return NextResponse.json(
         { error: 'CEP inválido. O CEP deve conter 8 dígitos.' },
@@ -42,16 +65,39 @@ export async function GET(
       )
     }
 
+    // Verificar cache em memória
+    cleanExpiredCache()
+    const cached = cepCache.get(digitsOnly)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return NextResponse.json(cached.data)
+    }
+
     // Consulta ViaCEP (gratuito, sem API key)
-    const response = await fetch(
-      `https://viacep.com.br/ws/${digitsOnly}/json/`,
-      {
-        headers: {
-          'Accept': 'application/json',
-        },
-        next: { revalidate: 86400 }, // Cache por 24h
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 6000)
+
+    let response: Response
+    try {
+      response = await fetch(
+        `https://viacep.com.br/ws/${digitsOnly}/json/`,
+        {
+          signal: controller.signal,
+          headers: { 'Accept': 'application/json' },
+        }
+      )
+    } catch (fetchError) {
+      clearTimeout(timeout)
+      // Retornar cache expirado se a API estiver fora do ar
+      if (cached) {
+        return NextResponse.json(cached.data)
       }
-    )
+      return NextResponse.json(
+        { error: 'Serviço de consulta de CEP indisponível. Tente novamente.' },
+        { status: 502 }
+      )
+    }
+
+    clearTimeout(timeout)
 
     if (!response.ok) {
       return NextResponse.json(
@@ -70,14 +116,22 @@ export async function GET(
       )
     }
 
-    return NextResponse.json({
+    const result = {
       street: data.logradouro || '',
       complement: data.complemento || '',
       neighborhood: data.bairro || '',
       city: data.localidade || '',
       state: data.uf || '',
+      stateFull: data.estado || '',
       zip: data.cep || digitsOnly,
-    })
+      ddd: data.ddd || '',
+      ibge: data.ibge || '',
+    }
+
+    // Salvar no cache
+    cepCache.set(digitsOnly, { data: result, timestamp: Date.now() })
+
+    return NextResponse.json(result)
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Erro interno do servidor'
     console.error('Erro na consulta de CEP:', message)

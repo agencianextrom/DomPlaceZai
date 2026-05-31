@@ -45,22 +45,68 @@ export interface OrderTracking {
   startedAt: string
 }
 
-// Data shape from the WebSocket server's location:update event
-interface ServerLocationUpdate {
+// Data shape from the server's tracking:init event (full OrderTrackingData)
+interface ServerTrackingInit {
   orderId: string
-  driverLocation: DriverLocation
+  status: string
+  driverId: string
+  driverName: string
+  driverPhone: string
+  driverVehicle: string
+  driverPlate: string
+  driverAvatar: string
+  driverRating: number
+  location: DriverLocation
+  storeLocation: { lat: number; lng: number; name: string }
+  destinationLocation: { lat: number; lng: number; address: string }
   eta: number
   etaText: string
+  distanceRemaining: number
+  distanceTotal: number
   progress: number
-  status: string
-  statusLabel: string
+  statusHistory: { status: string; timestamp: string }[]
+  startedAt: string
 }
 
-// Data shape from the WebSocket server's order:status event
+// Data shape from the server's location:update event
+interface ServerLocationUpdate {
+  orderId: string
+  location: DriverLocation
+  eta: number
+  etaText: string
+  distanceRemaining: number
+  progress: number
+}
+
+// Data shape from the server's order:status event
 interface ServerOrderStatus {
   orderId: string
   status: string
-  note?: string
+  statusLabel: string
+  timestamp: string
+}
+
+// Data shape from the server's tracking:update event (response to update:request)
+interface ServerTrackingUpdate {
+  orderId: string
+  status: string
+  driverId: string
+  driverName: string
+  driverPhone: string
+  driverVehicle: string
+  driverPlate: string
+  driverAvatar: string
+  driverRating: number
+  location: DriverLocation
+  storeLocation: { lat: number; lng: number; name: string }
+  destinationLocation: { lat: number; lng: number; address: string }
+  eta: number
+  etaText: string
+  distanceRemaining: number
+  distanceTotal: number
+  progress: number
+  statusHistory: { status: string; timestamp: string }[]
+  startedAt: string
 }
 
 interface UseDeliveryTrackingOptions {
@@ -76,11 +122,58 @@ interface UseDeliveryTrackingReturn {
   eta: number
   etaText: string
   progress: number
+  distanceRemaining: number
+  distanceTotal: number
   isConnected: boolean
+  isConnecting: boolean
   isDelivered: boolean
+  connectionError: string | null
   startTracking: () => void
   stopTracking: () => void
   requestUpdate: () => void
+}
+
+// ============================================
+// Helpers
+// ============================================
+
+const STATUS_LABELS: Record<string, string> = {
+  CONFIRMED: 'Pedido confirmado',
+  PREPARING: 'Preparando seu pedido',
+  READY: 'Pronto para retirada',
+  DELIVERING: 'A caminho da entrega',
+  delivering: 'A caminho',
+  DELIVERED: 'Entregue',
+}
+
+function getStatusLabel(status: string): string {
+  return STATUS_LABELS[status] || status
+}
+
+// Map server data to our OrderTracking type
+function mapServerDataToTracking(data: ServerTrackingInit | ServerTrackingUpdate): OrderTracking {
+  return {
+    orderId: data.orderId,
+    status: data.status,
+    statusLabel: getStatusLabel(data.status),
+    driverId: data.driverId,
+    driverName: data.driverName,
+    driverPhone: data.driverPhone,
+    driverVehicle: data.driverVehicle,
+    driverPlate: data.driverPlate,
+    driverAvatar: data.driverAvatar || null,
+    driverRating: data.driverRating,
+    location: data.location,
+    storeLocation: data.storeLocation,
+    destinationLocation: data.destinationLocation,
+    eta: data.eta,
+    etaText: data.etaText,
+    distanceRemaining: data.distanceRemaining,
+    distanceTotal: data.distanceTotal,
+    progress: data.progress,
+    statusHistory: data.statusHistory || [],
+    startedAt: data.startedAt,
+  }
 }
 
 // ============================================
@@ -93,6 +186,8 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
   const orderIdRef = useRef(orderId)
   const [tracking, setTracking] = useState<OrderTracking | null>(null)
   const [isConnected, setIsConnected] = useState(false)
+  const [isConnecting, setIsConnecting] = useState(false)
+  const [connectionError, setConnectionError] = useState<string | null>(null)
 
   const setIsTrackingConnected = useAppStore((s) => s.setIsTrackingConnected)
   const setTrackingData = useAppStore((s) => s.setTrackingData)
@@ -104,11 +199,12 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
 
   const disconnect = useCallback(() => {
     if (socketRef.current) {
-      socketRef.current.emit('leave-order', orderIdRef.current)
       socketRef.current.disconnect()
       socketRef.current = null
     }
     setIsConnected(false)
+    setIsConnecting(false)
+    setConnectionError(null)
     setIsTrackingConnected(false)
   }, [setIsTrackingConnected])
 
@@ -116,6 +212,9 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
     if (socketRef.current?.connected) return
     const targetOrderId = orderIdRef.current
     if (!targetOrderId) return
+
+    setIsConnecting(true)
+    setConnectionError(null)
 
     const socket = io('/?XTransformPort=3004', {
       transports: ['websocket', 'polling'],
@@ -131,56 +230,66 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
 
     socket.on('connect', () => {
       setIsConnected(true)
+      setIsConnecting(false)
       setIsTrackingConnected(true)
+      setConnectionError(null)
       console.log('[useDeliveryTracking] Conectado ao serviço de rastreamento')
 
-      // Join order room to receive tracking updates
-      socket.emit('join-order', targetOrderId)
+      // Start tracking for this order (server creates session and emits tracking:init)
+      socket.emit('track', { orderId: targetOrderId })
     })
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', (reason) => {
       setIsConnected(false)
+      setIsConnecting(false)
       setIsTrackingConnected(false)
-      console.log('[useDeliveryTracking] Desconectado do serviço de rastreamento')
+      console.log('[useDeliveryTracking] Desconectado do serviço de rastreamento:', reason)
     })
 
     socket.on('connect_error', (error) => {
       console.error('[useDeliveryTracking] Erro de conexão:', error.message)
       setIsConnected(false)
+      setIsConnecting(false)
+      setConnectionError('Erro ao conectar ao rastreamento')
     })
 
-    // Location update from server (driver position, ETA, progress)
+    // ── tracking:init: full initial data load ──
+    socket.on('tracking:init', (data: ServerTrackingInit) => {
+      if (data.orderId === orderIdRef.current) {
+        const mapped = mapServerDataToTracking(data)
+        setTracking(mapped)
+
+        setTrackingData({
+          orderId: mapped.orderId,
+          driverLocation: mapped.location,
+          eta: mapped.eta,
+          etaText: mapped.etaText,
+          progress: mapped.progress,
+          status: mapped.status,
+          statusLabel: mapped.statusLabel,
+          driverName: mapped.driverName,
+          driverVehicle: mapped.driverVehicle,
+        })
+
+        console.log('[useDeliveryTracking] Dados iniciais recebidos:', mapped.status, '-', mapped.driverName)
+      }
+    })
+
+    // ── location:update: real-time GPS updates every 5s ──
     socket.on('location:update', (data: ServerLocationUpdate) => {
       if (data.orderId === orderIdRef.current) {
-        const loc = data.driverLocation
+        const loc = data.location
 
         setTracking((prev) => {
-          // Initialize tracking data on first location update if not yet set
-          const base = prev || {
-            orderId: data.orderId,
-            driverId: 'driver-1',
-            driverName: 'Carlos Entregas',
-            driverPhone: '(91) 99999-1234',
-            driverVehicle: 'Honda CG 160',
-            driverPlate: 'PAZ-1A23',
-            driverAvatar: null,
-            driverRating: 4.8,
-            storeLocation: { lat: -3.4025, lng: -49.8253, name: 'Dom Eliseu Centro' },
-            destinationLocation: { lat: -3.4058, lng: -49.8301, address: 'Rua Principal, 123' },
-            distanceRemaining: 2.5,
-            distanceTotal: 5.0,
-            statusHistory: [{ status: data.status, timestamp: new Date().toISOString() }],
-            startedAt: new Date().toISOString(),
-          }
+          if (!prev) return prev
 
           const updated: OrderTracking = {
-            ...base,
+            ...prev,
             location: loc,
             eta: data.eta,
             etaText: data.etaText,
+            distanceRemaining: data.distanceRemaining,
             progress: data.progress,
-            status: data.status || base.status,
-            statusLabel: data.statusLabel || base.statusLabel,
           }
 
           setTrackingData({
@@ -189,10 +298,10 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
             eta: data.eta,
             etaText: data.etaText,
             progress: data.progress,
-            status: data.status || base.status,
-            statusLabel: data.statusLabel || getStatusLabel(data.status || base.status),
-            driverName: base.driverName,
-            driverVehicle: base.driverVehicle,
+            status: prev.status,
+            statusLabel: prev.statusLabel,
+            driverName: prev.driverName,
+            driverVehicle: prev.driverVehicle,
           })
 
           return updated
@@ -200,20 +309,21 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
       }
     })
 
-    // Order status change from server
+    // ── order:status: status change events ──
     socket.on('order:status', (data: ServerOrderStatus) => {
       if (data.orderId === orderIdRef.current) {
         const statusLabel = getStatusLabel(data.status)
 
         setTracking((prev) => {
           if (!prev) return prev
+
           const updated: OrderTracking = {
             ...prev,
             status: data.status,
             statusLabel,
             statusHistory: [
               ...prev.statusHistory,
-              { status: data.status, timestamp: new Date().toISOString() },
+              { status: data.status, timestamp: data.timestamp || new Date().toISOString() },
             ],
           }
 
@@ -231,11 +341,35 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
 
           return updated
         })
+
+        console.log('[useDeliveryTracking] Status alterado:', data.status, '-', statusLabel)
+      }
+    })
+
+    // ── tracking:update: full data response from update:request ──
+    socket.on('tracking:update', (data: ServerTrackingUpdate) => {
+      if (data.orderId === orderIdRef.current) {
+        const mapped = mapServerDataToTracking(data)
+        setTracking(mapped)
+
+        setTrackingData({
+          orderId: mapped.orderId,
+          driverLocation: mapped.location,
+          eta: mapped.eta,
+          etaText: mapped.etaText,
+          progress: mapped.progress,
+          status: mapped.status,
+          statusLabel: mapped.statusLabel,
+          driverName: mapped.driverName,
+          driverVehicle: mapped.driverVehicle,
+        })
+
+        console.log('[useDeliveryTracking] Atualização completa recebida:', mapped.status)
       }
     })
   }, [setIsTrackingConnected, setTrackingData])
 
-  // Auto-start
+  // Auto-start tracking when orderId changes
   useEffect(() => {
     if (autoStart && orderId) {
       if (socketRef.current) {
@@ -257,7 +391,7 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
     disconnect()
     setTimeout(() => {
       connect()
-    }, 500)
+    }, 300)
   }, [connect, disconnect])
 
   const stopTracking = useCallback(() => {
@@ -265,9 +399,12 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
   }, [disconnect])
 
   const requestUpdate = useCallback(() => {
-    // Server doesn't have a manual update endpoint;
-    // location updates are broadcast in real-time by the driver
-    console.log('[useDeliveryTracking] Updates are broadcast in real-time; no manual request needed.')
+    if (socketRef.current?.connected && orderIdRef.current) {
+      socketRef.current.emit('update:request', { orderId: orderIdRef.current })
+      console.log('[useDeliveryTracking] Solicitação de atualização enviada')
+    } else {
+      console.warn('[useDeliveryTracking] Não é possível solicitar atualização: não conectado')
+    }
   }, [])
 
   const isDelivered = tracking?.status === 'DELIVERED'
@@ -280,27 +417,14 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
     eta: tracking?.eta || 0,
     etaText: tracking?.etaText || '--',
     progress: tracking?.progress || 0,
+    distanceRemaining: tracking?.distanceRemaining || 0,
+    distanceTotal: tracking?.distanceTotal || 0,
     isConnected,
+    isConnecting,
     isDelivered,
+    connectionError,
     startTracking,
     stopTracking,
     requestUpdate,
   }
-}
-
-// ============================================
-// Helpers
-// ============================================
-
-const STATUS_LABELS: Record<string, string> = {
-  CONFIRMED: 'Pedido confirmado',
-  PREPARING: 'Preparando seu pedido',
-  READY: 'Pronto para retirada',
-  DELIVERING: 'A caminho da entrega',
-  delivering: 'A caminho',
-  DELIVERED: 'Entregue',
-}
-
-function getStatusLabel(status: string): string {
-  return STATUS_LABELS[status] || status
 }

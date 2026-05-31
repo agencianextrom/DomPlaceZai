@@ -114,11 +114,13 @@ export function QuickInfo() {
         const res = await fetch('/api/weather')
         if (res.ok) {
           const data = await res.json()
+          const temp = data.temp != null ? data.temp : 30
+          const feelsLike = data.feelsLike != null ? data.feelsLike : temp + 4
           setWeather({
-            temp: `${Math.round(data.temperature)}°C`,
+            temp: `${Math.round(temp)}°C`,
             condition: data.condition || 'Nuvens dispersas',
-            humidity: `${data.humidity || 70}%`,
-            feelsLike: `${Math.round(data.feelsLike || data.temperature + 4)}°C`,
+            humidity: `${data.humidity ?? 70}%`,
+            feelsLike: `${Math.round(feelsLike)}°C`,
           })
         } else {
           setWeather(fallbackWeather)
@@ -130,8 +132,8 @@ export function QuickInfo() {
       }
     }
     fetchWeather()
-    // Refresh every 30 minutes
-    const interval = setInterval(fetchWeather, 30 * 60 * 1000)
+    // Refresh every 10 minutes (matches API cache TTL)
+    const interval = setInterval(fetchWeather, 10 * 60 * 1000)
     return () => clearInterval(interval)
   }, [])
 
