@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { hashPassword } from '@/lib/crypto'
 import { apiError, getErrorMessage } from '@/lib/api-response'
+import { rateLimit, getClientIP } from '@/lib/rate-limit'
 import type { AccountRole } from '@prisma/client'
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIP(request)
+    const rl = rateLimit(ip, { limit: 5, windowMs: 60000 })
+    if (!rl.success) {
+      return NextResponse.json({ success: false, error: 'Muitas tentativas. Tente novamente em 1 minuto.' }, { status: 429 })
+    }
+
     const body = await request.json()
     const { name, email, phone, password, role } = body
 

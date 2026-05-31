@@ -40,7 +40,6 @@ const storeDeliveryTimes: Record<string, string> = {
   s8: '20-35 min',
 }
 
-const FREE_DELIVERY_THRESHOLD = 50
 const LOW_STOCK_THRESHOLD = 5
 
 export function CartView() {
@@ -63,12 +62,32 @@ export function CartView() {
 
   const groups = getCartGroupedByStore()
   const subtotal = getCartTotal()
-  const deliveryFees = groups.length * 5.00
-  const total = subtotal + deliveryFees
 
-  const freeDeliveryProgress = Math.min((subtotal / FREE_DELIVERY_THRESHOLD) * 100, 100)
-  const hasFreeDelivery = subtotal >= FREE_DELIVERY_THRESHOLD
-  const remainingForFree = Math.max(FREE_DELIVERY_THRESHOLD - subtotal, 0)
+  // Per-store dynamic delivery fees
+  const storeDeliveryFees = groups.map(group => {
+    const firstItem = group.items[0]
+    const deliveryFee = firstItem?.product?.storeDeliveryFee ?? 5.00
+    const freeDeliveryAbove = firstItem?.product?.freeDeliveryAbove ?? null
+    const isFreeDelivery = freeDeliveryAbove !== null && freeDeliveryAbove > 0 && group.subtotal >= freeDeliveryAbove
+    return {
+      storeId: group.storeId,
+      storeName: group.storeName,
+      fee: isFreeDelivery ? 0 : deliveryFee,
+      freeDeliveryAbove,
+      subtotalForFree: freeDeliveryAbove,
+      isFree: isFreeDelivery,
+    }
+  })
+  const deliveryFees = storeDeliveryFees.reduce((sum, s) => sum + s.fee, 0)
+  const total = subtotal + deliveryFees
+  const hasFreeDelivery = deliveryFees === 0 && storeDeliveryFees.some(s => s.freeDeliveryAbove !== null)
+  // Find the lowest freeDeliveryAbove threshold among stores with delivery
+  const lowestFreeThreshold = Math.min(
+    ...storeDeliveryFees.filter(s => s.freeDeliveryAbove !== null && s.freeDeliveryAbove > 0 && !s.isFree).map(s => s.freeDeliveryAbove!)
+  )
+  const freeDeliveryThreshold = lowestFreeThreshold === Infinity ? 50 : lowestFreeThreshold
+  const freeDeliveryProgress = Math.min((subtotal / freeDeliveryThreshold) * 100, 100)
+  const remainingForFree = Math.max(freeDeliveryThreshold - subtotal, 0)
 
   // Fetch real stock from API
   const fetchStock = useCallback(async () => {
@@ -324,7 +343,7 @@ export function CartView() {
           >
             <div className="flex items-center gap-2 mb-2.5">
               <Truck className="h-4 w-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">Frete grátis a partir de <span className="tag-chip ml-1">{formatBRL(FREE_DELIVERY_THRESHOLD)}</span></span>
+              <span className="text-sm font-semibold text-primary">Frete grátis a partir de <span className="tag-chip ml-1">{formatBRL(freeDeliveryThreshold)}</span></span>
             </div>
             <div className="relative h-2 bg-muted rounded-full overflow-hidden">
               <motion.div
@@ -576,6 +595,17 @@ export function CartView() {
                 {hasFreeDelivery ? 'Grátis 🎉' : formatBRL(deliveryFees)}
               </motion.span>
             </div>
+            {/* Per-store delivery breakdown */}
+            {storeDeliveryFees.length > 1 && !hasFreeDelivery && (
+              <div className="text-[11px] text-muted-foreground">
+                {storeDeliveryFees.map(s => (
+                  <div key={s.storeId} className="flex justify-between">
+                    <span>• {s.storeName}</span>
+                    <span>{s.isFree ? 'Grátis' : formatBRL(s.fee)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
             <Separator className="my-2" />
             <div className="flex justify-between font-bold text-base">
               <span>Total</span>

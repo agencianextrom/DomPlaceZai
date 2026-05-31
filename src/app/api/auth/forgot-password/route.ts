@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { rateLimit, getClientIP } from '@/lib/rate-limit'
 
 // POST: Solicitar recuperação de senha
 // Em produção, enviaria um e-mail com link de redefinição via Resend
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIP(request)
+    const rl = rateLimit(ip, { limit: 3, windowMs: 60000 })
+    if (!rl.success) {
+      return NextResponse.json({ success: false, error: 'Muitas tentativas. Tente novamente em 1 minuto.' }, { status: 429 })
+    }
+
     const body = await request.json()
     const { email } = body
 

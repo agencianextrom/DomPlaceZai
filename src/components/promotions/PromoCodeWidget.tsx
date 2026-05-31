@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Tag, Check, X, Sparkles, Clock, Copy, Percent, Truck, PartyPopper } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -68,8 +68,6 @@ const availablePromos: PromoCode[] = [
   },
 ]
 
-const validCodes = ['ACAI10', 'FRETE5', 'GRATIS', 'DESCONTO20']
-
 interface AppliedPromo {
   code: string
   discountLabel: string
@@ -84,8 +82,46 @@ export function PromoCodeWidget() {
   const [applyingCode, setApplyingCode] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [successAnimation, setSuccessAnimation] = useState(false)
+  const [apiPromotions, setApiPromotions] = useState<PromoCode[]>([])
 
   const hasAppliedPromos = appliedPromos.length > 0
+
+  // Fetch promotions from API on mount
+  useEffect(() => {
+    const fetchPromotions = async () => {
+      try {
+        const res = await fetch('/api/promotions')
+        const data = await res.json()
+        if (data.promotions && data.promotions.length > 0) {
+          const mapped: PromoCode[] = data.promotions.map((p: any) => ({
+            code: p.code || '',
+            description: p.description || p.title || '',
+            discountLabel: p.type === 'PERCENTAGE' ? `${p.value}% OFF` : 
+                           p.type === 'FIXED_AMOUNT' ? `R$${p.value} OFF` : 'Frete Grátis',
+            discountValue: p.type === 'PERCENTAGE' ? `${p.value}%` : `R$ ${p.value}`,
+            validUntil: p.endsAt ? new Date(p.endsAt).toLocaleDateString('pt-BR') : '',
+            minOrder: p.minOrderValue ? `R$ ${p.minOrderValue.toFixed(2).replace('.', ',')}` : null,
+            type: p.type === 'PERCENTAGE' ? 'percentage' : 
+                  p.type === 'FIXED_AMOUNT' ? 'fixed' : 'free_delivery',
+            isActive: p.isActive,
+            color: p.type === 'PERCENTAGE' ? 'from-emerald-500 to-teal-600' :
+                    p.type === 'FIXED_AMOUNT' ? 'from-amber-500 to-orange-600' :
+                    'from-primary to-emerald-600',
+          }))
+          setApiPromotions(mapped)
+        }
+      } catch {
+        // Silently fail, use hardcoded promos
+      }
+    }
+    fetchPromotions()
+  }, [])
+
+  const activePromos = apiPromotions.length > 0 ? apiPromotions : availablePromos
+
+  const validCodesList = apiPromotions.length > 0 
+    ? apiPromotions.map(p => p.code) 
+    : ['ACAI10', 'FRETE5', 'GRATIS', 'DESCONTO20']
 
   const handleApplyCode = () => {
     const code = promoInput.trim().toUpperCase()
@@ -103,27 +139,55 @@ export function PromoCodeWidget() {
 
     setApplyingCode(code)
 
-    // Simulate API call
-    setTimeout(() => {
-      const promo = availablePromos.find(p => p.code === code)
-      if (promo && validCodes.includes(code)) {
-        setAppliedPromos(prev => [...prev, {
-          code: promo.code,
-          discountLabel: promo.discountLabel,
-          discountValue: promo.discountValue,
-          color: promo.color,
-          type: promo.type,
-        }])
-        setSuccessAnimation(true)
-        setTimeout(() => setSuccessAnimation(false), 1500)
-        toast.success(`Cupom ${code} aplicado com sucesso! 🎉`)
-        setPromoInput('')
-      } else {
-        setError('Código inválido. Verifique e tente novamente.')
-        toast.error('Código inválido')
-      }
-      setApplyingCode(null)
-    }, 800)
+    // Try API validation first
+    fetch(`/api/promotions?code=${code}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.valid) {
+          const promo = data.promotion
+          const discountLabel = promo.type === 'PERCENTAGE' ? `${promo.value}% OFF` :
+                                 promo.type === 'FIXED_AMOUNT' ? `R$${promo.value} OFF` : 'Frete Grátis'
+          const color = promo.type === 'PERCENTAGE' ? 'from-emerald-500 to-teal-600' :
+                        promo.type === 'FIXED_AMOUNT' ? 'from-amber-500 to-orange-600' :
+                        'from-primary to-emerald-600'
+          setAppliedPromos(prev => [...prev, {
+            code: promo.code,
+            discountLabel,
+            discountValue: `${promo.value}`,
+            color,
+            type: promo.type === 'PERCENTAGE' ? 'percentage' : promo.type === 'FIXED_AMOUNT' ? 'fixed' : 'free_delivery',
+          }])
+          setSuccessAnimation(true)
+          setTimeout(() => setSuccessAnimation(false), 1500)
+          toast.success(`Cupom ${code} aplicado com sucesso! 🎉`)
+          setPromoInput('')
+        } else {
+          setError('Código inválido ou expirado')
+          toast.error('Código inválido')
+        }
+        setApplyingCode(null)
+      })
+      .catch(() => {
+        // Fallback to hardcoded validation
+        const promo = activePromos.find(p => p.code === code)
+        if (promo && validCodesList.includes(code)) {
+          setAppliedPromos(prev => [...prev, {
+            code: promo.code,
+            discountLabel: promo.discountLabel,
+            discountValue: promo.discountValue,
+            color: promo.color,
+            type: promo.type,
+          }])
+          setSuccessAnimation(true)
+          setTimeout(() => setSuccessAnimation(false), 1500)
+          toast.success(`Cupom ${code} aplicado com sucesso! 🎉`)
+          setPromoInput('')
+        } else {
+          setError('Código inválido. Verifique e tente novamente.')
+          toast.error('Código inválido')
+        }
+        setApplyingCode(null)
+      })
   }
 
   const handleRemovePromo = (code: string) => {
@@ -301,7 +365,7 @@ export function PromoCodeWidget() {
         </div>
 
         <div className="space-y-2">
-          {availablePromos.filter(p => !appliedPromos.some(ap => ap.code === p.code)).map((promo) => (
+          {activePromos.filter(p => !appliedPromos.some(ap => ap.code === p.code)).map((promo) => (
             <motion.div
               key={promo.code}
               initial={{ opacity: 0 }}

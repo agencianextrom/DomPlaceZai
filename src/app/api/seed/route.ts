@@ -1,13 +1,24 @@
 import { db } from '@/lib/db'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { hashPassword } from '@/lib/crypto'
 import { getErrorMessage } from '@/lib/api-response'
+import { rateLimit, getClientIP } from '@/lib/rate-limit'
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const ip = getClientIP(request)
+  const rl = rateLimit(ip, { limit: 2, windowMs: 300000 })
+  if (!rl.success) {
+    return NextResponse.json({ success: false, error: 'Muitas tentativas. Tente novamente mais tarde.' }, { status: 429 })
+  }
   return seedDatabase()
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const ip = getClientIP(request)
+  const rl = rateLimit(ip, { limit: 2, windowMs: 300000 })
+  if (!rl.success) {
+    return NextResponse.json({ success: false, error: 'Muitas tentativas. Tente novamente mais tarde.' }, { status: 429 })
+  }
   return seedDatabase()
 }
 

@@ -65,7 +65,7 @@ export async function GET(request: Request) {
       db.product.findMany({
         where,
         include: {
-          store: { select: { name: true, logo: true, category: true } },
+          store: { select: { name: true, logo: true, category: true, freeDeliveryAbove: true, deliveryFee: true } },
         },
         orderBy,
         take: limit,
@@ -95,6 +95,8 @@ export async function GET(request: Request) {
         tags: p.tags,
         variations: p.variations,
         category: p.store.category,
+        freeDeliveryAbove: p.store.freeDeliveryAbove,
+        storeDeliveryFee: p.store.deliveryFee,
       })),
       total,
       limit,

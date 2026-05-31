@@ -25,6 +25,7 @@ export interface TrackingStatus {
 export interface OrderTracking {
   orderId: string
   status: string
+  statusLabel: string
   driverId: string
   driverName: string
   driverPhone: string
@@ -44,13 +45,22 @@ export interface OrderTracking {
   startedAt: string
 }
 
-interface LocationUpdate {
+// Data shape from the WebSocket server's location:update event
+interface ServerLocationUpdate {
   orderId: string
-  location: DriverLocation
+  driverLocation: DriverLocation
   eta: number
   etaText: string
-  distanceRemaining: number
   progress: number
+  status: string
+  statusLabel: string
+}
+
+// Data shape from the WebSocket server's order:status event
+interface ServerOrderStatus {
+  orderId: string
+  status: string
+  note?: string
 }
 
 interface UseDeliveryTrackingOptions {
@@ -94,6 +104,7 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
 
   const disconnect = useCallback(() => {
     if (socketRef.current) {
+      socketRef.current.emit('leave-order', orderIdRef.current)
       socketRef.current.disconnect()
       socketRef.current = null
     }
@@ -123,8 +134,8 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
       setIsTrackingConnected(true)
       console.log('[useDeliveryTracking] Conectado ao serviço de rastreamento')
 
-      // Iniciar rastreamento
-      socket.emit('track', { orderId: targetOrderId })
+      // Join order room to receive tracking updates
+      socket.emit('join-order', targetOrderId)
     })
 
     socket.on('disconnect', () => {
@@ -138,66 +149,74 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
       setIsConnected(false)
     })
 
-    // Dados iniciais — naturally replaces previous state via callback
-    socket.on('tracking:init', (data: OrderTracking) => {
+    // Location update from server (driver position, ETA, progress)
+    socket.on('location:update', (data: ServerLocationUpdate) => {
       if (data.orderId === orderIdRef.current) {
-        setTracking(data)
-        setTrackingData({
-          orderId: data.orderId,
-          driverLocation: data.location,
-          eta: data.eta,
-          etaText: data.etaText,
-          progress: data.progress,
-          status: data.status,
-          statusLabel: getStatusLabel(data.status),
-          driverName: data.driverName,
-          driverVehicle: data.driverVehicle,
-        })
-      }
-    })
+        const loc = data.driverLocation
 
-    // Atualização de localização
-    socket.on('location:update', (data: LocationUpdate) => {
-      if (data.orderId === orderIdRef.current) {
         setTracking((prev) => {
-          if (!prev) return prev
-          const updated = {
-            ...prev,
-            location: data.location,
-            eta: data.eta,
-            etaText: data.etaText,
-            distanceRemaining: data.distanceRemaining,
-            progress: data.progress,
+          // Initialize tracking data on first location update if not yet set
+          const base = prev || {
+            orderId: data.orderId,
+            driverId: 'driver-1',
+            driverName: 'Carlos Entregas',
+            driverPhone: '(91) 99999-1234',
+            driverVehicle: 'Honda CG 160',
+            driverPlate: 'PAZ-1A23',
+            driverAvatar: null,
+            driverRating: 4.8,
+            storeLocation: { lat: -3.4025, lng: -49.8253, name: 'Dom Eliseu Centro' },
+            destinationLocation: { lat: -3.4058, lng: -49.8301, address: 'Rua Principal, 123' },
+            distanceRemaining: 2.5,
+            distanceTotal: 5.0,
+            statusHistory: [{ status: data.status, timestamp: new Date().toISOString() }],
+            startedAt: new Date().toISOString(),
           }
-          setTrackingData({
-            orderId: prev.orderId,
-            driverLocation: data.location,
+
+          const updated: OrderTracking = {
+            ...base,
+            location: loc,
             eta: data.eta,
             etaText: data.etaText,
             progress: data.progress,
-            status: prev.status,
-            statusLabel: getStatusLabel(prev.status),
-            driverName: prev.driverName,
-            driverVehicle: prev.driverVehicle,
+            status: data.status || base.status,
+            statusLabel: data.statusLabel || base.statusLabel,
+          }
+
+          setTrackingData({
+            orderId: data.orderId,
+            driverLocation: loc,
+            eta: data.eta,
+            etaText: data.etaText,
+            progress: data.progress,
+            status: data.status || base.status,
+            statusLabel: data.statusLabel || getStatusLabel(data.status || base.status),
+            driverName: base.driverName,
+            driverVehicle: base.driverVehicle,
           })
+
           return updated
         })
       }
     })
 
-    // Mudança de status
-    socket.on('order:status', (data: TrackingStatus) => {
+    // Order status change from server
+    socket.on('order:status', (data: ServerOrderStatus) => {
       if (data.orderId === orderIdRef.current) {
+        const statusLabel = getStatusLabel(data.status)
+
         setTracking((prev) => {
           if (!prev) return prev
-          const updated = {
+          const updated: OrderTracking = {
             ...prev,
             status: data.status,
+            statusLabel,
             statusHistory: [
               ...prev.statusHistory,
-              { status: data.status, timestamp: data.timestamp },
+              { status: data.status, timestamp: new Date().toISOString() },
             ],
           }
+
           setTrackingData({
             orderId: prev.orderId,
             driverLocation: prev.location,
@@ -205,29 +224,12 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
             etaText: prev.etaText,
             progress: prev.progress,
             status: data.status,
-            statusLabel: data.statusLabel,
+            statusLabel,
             driverName: prev.driverName,
             driverVehicle: prev.driverVehicle,
           })
-          return updated
-        })
-      }
-    })
 
-    // Atualização manual
-    socket.on('tracking:update', (data: OrderTracking) => {
-      if (data.orderId === orderIdRef.current) {
-        setTracking(data)
-        setTrackingData({
-          orderId: data.orderId,
-          driverLocation: data.location,
-          eta: data.eta,
-          etaText: data.etaText,
-          progress: data.progress,
-          status: data.status,
-          statusLabel: getStatusLabel(data.status),
-          driverName: data.driverName,
-          driverVehicle: data.driverVehicle,
+          return updated
         })
       }
     })
@@ -263,9 +265,9 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
   }, [disconnect])
 
   const requestUpdate = useCallback(() => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('update:request', { orderId: orderIdRef.current })
-    }
+    // Server doesn't have a manual update endpoint;
+    // location updates are broadcast in real-time by the driver
+    console.log('[useDeliveryTracking] Updates are broadcast in real-time; no manual request needed.')
   }, [])
 
   const isDelivered = tracking?.status === 'DELIVERED'
@@ -295,6 +297,7 @@ const STATUS_LABELS: Record<string, string> = {
   PREPARING: 'Preparando seu pedido',
   READY: 'Pronto para retirada',
   DELIVERING: 'A caminho da entrega',
+  delivering: 'A caminho',
   DELIVERED: 'Entregue',
 }
 

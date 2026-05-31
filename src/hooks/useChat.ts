@@ -12,6 +12,7 @@ export interface ChatMessage {
   id: string
   orderId: string
   senderId: string
+  senderName: string
   receiverId: string | null
   driverId: string | null
   message: string
@@ -23,6 +24,7 @@ export interface ChatMessage {
 interface UseChatOptions {
   orderId: string
   accountId?: string
+  accountName?: string
   autoConnect?: boolean
 }
 
@@ -42,7 +44,7 @@ interface UseChatReturn {
 // ============================================
 
 export function useChat(options: UseChatOptions): UseChatReturn {
-  const { orderId, accountId, autoConnect = true } = options
+  const { orderId, accountId, accountName = 'Usuário', autoConnect = true } = options
   const socketRef = useRef<Socket | null>(null)
   const orderIdRef = useRef(orderId)
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -59,19 +61,21 @@ export function useChat(options: UseChatOptions): UseChatReturn {
 
   const disconnect = useCallback(() => {
     if (socketRef.current) {
+      const accId = accountId || 'anonymous'
+      socketRef.current.emit('leave-order', orderIdRef.current)
       socketRef.current.disconnect()
       socketRef.current = null
     }
     setIsConnected(false)
     setIsChatConnected(false)
-  }, [setIsChatConnected])
+  }, [accountId, setIsChatConnected])
 
   const connect = useCallback(() => {
     if (socketRef.current?.connected) return
     const targetOrderId = orderIdRef.current
     if (!targetOrderId) return
 
-    const socket = io('/?XTransformPort=3003', {
+    const socket = io('/?XTransformPort=3004', {
       transports: ['websocket', 'polling'],
       forceNew: true,
       reconnection: true,
@@ -88,9 +92,17 @@ export function useChat(options: UseChatOptions): UseChatReturn {
       setIsChatConnected(true)
       console.log('[useChat] Conectado ao serviço de chat')
 
-      // Entrar na sala do pedido
       const accId = accountId || 'anonymous'
-      socket.emit('join', { orderId: targetOrderId, accountId: accId })
+
+      // Authenticate user
+      socket.emit('auth', {
+        userId: accId,
+        name: accountName,
+        role: 'customer',
+      })
+
+      // Join order room
+      socket.emit('join-order', targetOrderId)
     })
 
     socket.on('disconnect', () => {
@@ -104,15 +116,8 @@ export function useChat(options: UseChatOptions): UseChatReturn {
       setIsConnected(false)
     })
 
-    // Histórico de mensagens — this callback replaces state naturally
-    socket.on('messages:history', (data: { messages: ChatMessage[]; orderId: string }) => {
-      if (data.orderId === orderIdRef.current) {
-        setMessages(data.messages)
-      }
-    })
-
-    // Nova mensagem recebida
-    socket.on('message', (msg: ChatMessage) => {
+    // New message received from server
+    socket.on('chat:message', (msg: ChatMessage) => {
       if (msg.orderId === orderIdRef.current) {
         setMessages((prev) => {
           if (prev.some((m) => m.id === msg.id)) return prev
@@ -121,28 +126,22 @@ export function useChat(options: UseChatOptions): UseChatReturn {
       }
     })
 
-    // Indicador de digitação
-    socket.on('typing', (data: { orderId: string; accountId: string; isTyping: boolean; typingUsers: string[] }) => {
+    // Typing indicator from server
+    socket.on('chat:typing', (data: { orderId: string; senderId: string; senderName: string }) => {
       if (data.orderId === orderIdRef.current) {
         const accId = accountId || 'anonymous'
-        const otherTyping = data.typingUsers.filter((id) => id !== accId)
-        setTypingUsers(otherTyping)
-        setIsTyping(otherTyping.length > 0)
+        if (data.senderId !== accId) {
+          setTypingUsers([data.senderName])
+          setIsTyping(true)
+          // Auto-clear typing after 3 seconds
+          setTimeout(() => {
+            setTypingUsers((prev) => prev.filter((n) => n !== data.senderName))
+            setIsTyping(false)
+          }, 3000)
+        }
       }
     })
-
-    // Mensagens lidas
-    socket.on('messages:read', (data: { orderId: string; readBy: string }) => {
-      if (data.orderId === orderIdRef.current) {
-        setMessages((prev) =>
-          prev.map((m) => ({
-            ...m,
-            isRead: m.senderId !== (accountId || 'anonymous') ? true : m.isRead,
-          }))
-        )
-      }
-    })
-  }, [accountId, setIsChatConnected])
+  }, [accountId, accountName, setIsChatConnected])
 
   // Auto-conectar quando orderId muda
   useEffect(() => {
@@ -169,15 +168,32 @@ export function useChat(options: UseChatOptions): UseChatReturn {
 
       const accId = accountId || 'anonymous'
 
-      socketRef.current.emit('message', {
+      // Emit via WebSocket for real-time delivery
+      socketRef.current.emit('chat:message', {
         orderId: orderIdRef.current,
         message: content.trim(),
         senderId: accId,
+        senderName: accountName,
         receiverId: receiverId || null,
         driverId: driverId || null,
       })
+
+      // Optimistically add message to local state
+      const optimisticMsg: ChatMessage = {
+        id: `msg-${Date.now()}`,
+        orderId: orderIdRef.current,
+        senderId: accId,
+        senderName: accountName,
+        receiverId: receiverId || null,
+        driverId: driverId || null,
+        message: content.trim(),
+        attachment: null,
+        isRead: false,
+        createdAt: new Date().toISOString(),
+      }
+      setMessages((prev) => [...prev, optimisticMsg])
     },
-    [accountId]
+    [accountId, accountName]
   )
 
   // Indicador de digitação
@@ -185,16 +201,26 @@ export function useChat(options: UseChatOptions): UseChatReturn {
     (typing: boolean) => {
       if (!socketRef.current?.connected) return
       const accId = accountId || 'anonymous'
-      socketRef.current.emit('typing', { orderId: orderIdRef.current, accountId: accId, isTyping: typing })
+      if (typing) {
+        socketRef.current.emit('chat:typing', {
+          orderId: orderIdRef.current,
+          senderId: accId,
+          senderName: accountName,
+        })
+      }
     },
-    [accountId]
+    [accountId, accountName]
   )
 
-  // Marcar mensagens como lidas
+  // Marcar mensagens como lidas (local state only — server persists in production)
   const markAsRead = useCallback(() => {
-    if (!socketRef.current?.connected) return
     const accId = accountId || 'anonymous'
-    socketRef.current.emit('read', { orderId: orderIdRef.current, accountId: accId })
+    setMessages((prev) =>
+      prev.map((m) => ({
+        ...m,
+        isRead: m.senderId !== accId ? true : m.isRead,
+      }))
+    )
   }, [accountId])
 
   const reconnect = useCallback(() => {

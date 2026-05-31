@@ -2,7 +2,7 @@
 
 import { 
   Heart, ShoppingCart, Star, Utensils, Sprout, HeartPulse, Smartphone, PawPrint, 
-  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows, Eye, Plus
+  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows
 } from 'lucide-react'
 import { PriceDropAlert } from './PriceDropAlert'
 import { SocialProofBadges } from './SocialProofBadges'
@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
 import { useState, useCallback } from 'react'
-import { ProductQuickView } from './ProductQuickView'
 
 interface ProductCardProps {
   product: ProductData
@@ -71,10 +70,9 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct, isComparing, toggleCompareProduct, openQuickAdd } = useAppStore()
+  const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct, isComparing, toggleCompareProduct } = useAppStore()
   const [showCartBtn, setShowCartBtn] = useState(false)
   const [cartAnimating, setCartAnimating] = useState(false)
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false)
 
   const isFav = isFavoriteProduct(product.id)
   const isCompared = isComparing(product.id)
@@ -87,10 +85,10 @@ export function ProductCard({ product }: ProductCardProps) {
   
   const isPopular = product.totalReviews > 20
 
-  // Check if the product has free shipping info (from store data)
-  // We use product.price as proxy check - if the store has freeDeliveryAbove
-  // and the product price meets it, we show the badge
-  const showFreeShipping = product.price >= 50 && discount > 0
+  // Check if the product qualifies for free shipping based on store settings
+  const showFreeShipping = product.freeDeliveryAbove !== null 
+    ? product.price >= (product.freeDeliveryAbove || 0) 
+    : product.storeDeliveryFee === 0
   
   const handleCardClick = useCallback(() => {
     selectProduct(product)
@@ -142,7 +140,9 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Free shipping badge */}
         {showFreeShipping && (
-          <div className="absolute top-0 right-2 z-10 bg-emerald-500 text-white text-[9px] font-semibold px-2 py-0.5 rounded-b-md flex items-center gap-0.5">
+          <div className={`absolute z-10 bg-emerald-500 text-white text-[9px] font-semibold px-2 py-0.5 rounded-b-md flex items-center gap-0.5 ${
+            discount > 0 ? 'top-10 right-2' : 'top-0 right-2'
+          }`}>
             <Truck className="h-2.5 w-2.5" />
             Frete Grátis
           </div>
@@ -166,7 +166,9 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Favorite */}
         <button
           onClick={handleFavoriteClick}
-          className="absolute top-2 right-2 z-10 h-7 w-7 rounded-full bg-white/80 dark:bg-black/40 flex items-center justify-center hover:bg-white dark:hover:bg-black/60 transition-colors"
+          className={`absolute z-10 h-7 w-7 rounded-full bg-white/80 dark:bg-black/40 flex items-center justify-center hover:bg-white dark:hover:bg-black/60 transition-colors ${
+            showFreeShipping ? 'top-12 left-2' : 'top-2 right-2'
+          }`}
           aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
         >
           <motion.div
@@ -177,45 +179,25 @@ export function ProductCard({ product }: ProductCardProps) {
           </motion.div>
         </button>
 
-        {/* Compare button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            toggleCompareProduct(product.id)
-          }}
-          className={`absolute bottom-2 right-2 z-10 h-6 w-6 rounded-md flex items-center justify-center transition-colors ${
-            isCompared
-              ? 'bg-primary text-primary-foreground shadow-sm'
-              : 'bg-white/80 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60'
-          }`}
-          aria-label={isCompared ? 'Remover da comparação' : 'Adicionar à comparação'}
-        >
-          <GitCompareArrows className={`h-3 w-3 ${isCompared ? '' : 'text-muted-foreground'}`} />
-        </button>
-
-        {/* Quick view button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            setIsQuickViewOpen(true)
-          }}
-          className="absolute bottom-2 right-10 z-10 h-6 w-6 rounded-md bg-white/80 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60 flex items-center justify-center transition-colors"
-          aria-label='Visualização rápida'
-        >
-          <Eye className="h-3 w-3 text-muted-foreground" />
-        </button>
-        
-        {/* Quick add button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            openQuickAdd(product)
-          }}
-          className="absolute bottom-2 right-[4.25rem] z-10 h-6 w-6 rounded-md bg-white/80 dark:bg-black/40 hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground flex items-center justify-center transition-colors group"
-          aria-label='Adicionar rápido'
-        >
-          <Plus className="h-3 w-3 text-muted-foreground group-hover:text-primary-foreground" />
-        </button>
+        {/* Compare button - only on hover */}
+        <AnimatePresence>
+          {showCartBtn && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                toggleCompareProduct(product.id)
+              }}
+              className={`absolute bottom-2 right-2 z-10 h-6 w-6 rounded-md flex items-center justify-center transition-colors ${
+                isCompared
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'bg-white/80 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60'
+              }`}
+              aria-label={isCompared ? 'Remover da comparação' : 'Adicionar à comparação'}
+            >
+              <GitCompareArrows className={`h-3 w-3 ${isCompared ? '' : 'text-muted-foreground'}`} />
+            </button>
+          )}
+        </AnimatePresence>
         
         {/* Quick add to cart (hover) */}
         <AnimatePresence>
@@ -300,12 +282,6 @@ export function ProductCard({ product }: ProductCardProps) {
         <StockUrgency product={product} variant="card" />
       </div>
 
-      {/* Quick View Dialog */}
-      <ProductQuickView
-        product={product}
-        isOpen={isQuickViewOpen}
-        onClose={() => setIsQuickViewOpen(false)}
-      />
     </motion.div>
   )
 }

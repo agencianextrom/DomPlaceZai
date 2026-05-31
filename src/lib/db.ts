@@ -16,10 +16,16 @@ function createPrismaClient() {
     )
   }
 
-  const adapter = new PrismaLibSql({ url, authToken })
+  const adapter = new PrismaLibSql({
+    url,
+    authToken,
+    // Connection pooling hints for Turso
+    // The PrismaLibSql adapter handles connection reuse internally
+  })
+
   return new PrismaClient({
     adapter,
-    log: ['error'],
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   })
 }
 
@@ -28,3 +34,17 @@ export const db =
   createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+
+/**
+ * Health check for database connection
+ */
+export async function dbHealthCheck(): Promise<{ ok: boolean; latency?: number; error?: string }> {
+  try {
+    const start = Date.now()
+    await db.$queryRaw`SELECT 1`
+    const latency = Date.now() - start
+    return { ok: true, latency }
+  } catch (error) {
+    return { ok: false, error: String(error) }
+  }
+}

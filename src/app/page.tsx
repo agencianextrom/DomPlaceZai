@@ -20,7 +20,6 @@ import { WelcomeModal } from '@/components/onboarding/WelcomeModal'
 import { AIChatBot } from '@/components/chat/AIChatBot'
 import { CookieConsent } from '@/components/layout/CookieConsent'
 import { QuickInfo } from '@/components/home/QuickInfo'
-import { PromoBanner } from '@/components/home/PromoBanner'
 import { FlashSale } from '@/components/home/FlashSale'
 import { WeekendSpecials } from '@/components/home/WeekendSpecials'
 import { StoreComparison } from '@/components/home/StoreComparison'
@@ -33,7 +32,6 @@ import { SupportCenter } from '@/components/support/SupportCenter'
 import { ProductQuickView } from '@/components/product/ProductQuickView'
 import { StoreSearch } from '@/components/home/StoreSearch'
 import { LoyaltyTier } from '@/components/profile/LoyaltyTier'
-import { RecentOrders } from '@/components/home/RecentOrders'
 import { WishlistShare } from '@/components/profile/WishlistShare'
 import { StoreFavorites } from '@/components/home/StoreFavorites'
 import { OrderTimeline } from '@/components/profile/OrderTimeline'
@@ -46,8 +44,9 @@ import { ProductQuickAdd } from '@/components/product/ProductQuickAdd'
 import { UrgencyStrip } from '@/components/home/UrgencyStrip'
 import { DriverDashboard } from '@/components/driver/DriverDashboard'
 import { AffiliateDashboard } from '@/components/affiliate/AffiliateDashboard'
+import { PWAInstallPrompt } from '@/components/pwa/PWAInstallPrompt'
 import { Share2 } from 'lucide-react'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
 import { ShoppingLists } from '@/components/profile/ShoppingLists'
@@ -58,6 +57,21 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { ProductData, StoreData } from '@/store/useAppStore'
+import { usePageViewTracking, trackEvent, AnalyticsEvents } from '@/lib/analytics'
+
+// Dynamic time-based greeting helpers
+function getGreeting(): { text: string; emoji: string; period: string } {
+  const hour = new Date().getHours()
+  if (hour >= 5 && hour < 12) return { text: 'Bom dia', emoji: '☀️', period: 'manhã' }
+  if (hour >= 12 && hour < 18) return { text: 'Boa tarde', emoji: '🌤️', period: 'tarde' }
+  return { text: 'Boa noite', emoji: '🌙', period: 'noite' }
+}
+
+function getGreetingTitle(currentUser: any): string {
+  const greeting = getGreeting()
+  const name = currentUser?.name || 'Visitante'
+  return `${greeting.text}, ${name}! ${greeting.emoji}`
+}
 
 // Fallback data in case API fails
 const fallbackBanners = [
@@ -79,14 +93,14 @@ const fallbackStores: StoreData[] = [
 ]
 
 const fallbackProducts: ProductData[] = [
-  { id: 'p1', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: '/images/grocery.jpg', name: 'Arroz Tio João 5kg', slug: 'arroz-tio-joao', description: 'Arroz tipo 1 premium, ideal para o dia a dia da sua família.', price: 24.90, comparePrice: 29.90, images: '["/images/grocery.jpg"]', stock: 50, rating: 4.5, totalReviews: 23, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["5kg","1kg"]', category: 'FOOD' },
-  { id: 'p2', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: '/images/grocery.jpg', name: 'Feijão Carioca 1kg', slug: 'feijao-carioca', description: 'Feijão carioca selecionado de alta qualidade.', price: 8.90, comparePrice: null, images: '["/images/grocery.jpg"]', stock: 80, rating: 4.3, totalReviews: 15, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: '["1kg","500g"]', category: 'FOOD' },
-  { id: 'p3', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: '/images/grocery.jpg', name: 'Óleo de Soja 900ml', slug: 'oleo-soja', description: 'Óleo de soja puro para cozinhar.', price: 7.49, comparePrice: 8.99, images: '["/images/grocery.jpg"]', stock: 40, rating: 4.1, totalReviews: 8, isFeatured: false, isNew: false, isOffer: true, tags: '[]', variations: null, category: 'FOOD' },
-  { id: 'p5', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: '/images/acai.jpg', name: 'Açaí 500ml', slug: 'acai-500ml', description: 'Açaí cremoso feito com frutas frescas do Pará. Acompanha granola e banana.', price: 15.00, comparePrice: 18.00, images: '["/images/acai.jpg"]', stock: 100, rating: 4.9, totalReviews: 89, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["300ml","500ml","700ml"]', category: 'FOOD' },
-  { id: 'p6', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: '/images/acai.jpg', name: 'Açaí Premium 700ml', slug: 'acai-premium-700ml', description: 'Açaí premium com frutas da estação, leite condensado e granola artesanal.', price: 22.00, comparePrice: null, images: '["/images/acai.jpg"]', stock: 50, rating: 4.8, totalReviews: 45, isFeatured: true, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-  { id: 'p9', storeId: 's3', storeName: 'Agropecuária São Paulo', storeLogo: '/images/agriculture.jpg', name: 'Adubo NPK 20kg', slug: 'adubo-npk', description: 'Adubo NPK para culturas diversas. Alta eficiência.', price: 89.90, comparePrice: null, images: '["/images/agriculture.jpg"]', stock: 25, rating: 4.4, totalReviews: 12, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'AGRICULTURE' },
-  { id: 'p13', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: '/images/pharmacy.jpg', name: 'Vitamina C 500mg', slug: 'vitamina-c', description: 'Suplemento de vitamina C 500mg. Pote com 60 cápsulas.', price: 35.00, comparePrice: 42.00, images: '["/images/pharmacy.jpg"]', stock: 100, rating: 4.7, totalReviews: 34, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["500mg","1000mg"]', category: 'HEALTH' },
-  { id: 'p17', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: '/images/bakery.jpg', name: 'Pão Francês (6 un)', slug: 'pao-frances', description: 'Pão francês fresquinho saindo do forno. Pacote com 6 unidades.', price: 6.00, comparePrice: null, images: '["/images/bakery.jpg"]', stock: 200, rating: 4.9, totalReviews: 120, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+  { id: 'p1', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: '/images/grocery.jpg', name: 'Arroz Tio João 5kg', slug: 'arroz-tio-joao', description: 'Arroz tipo 1 premium, ideal para o dia a dia da sua família.', price: 24.90, comparePrice: 29.90, images: '["/images/grocery.jpg"]', stock: 50, rating: 4.5, totalReviews: 23, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["5kg","1kg"]', category: 'FOOD', freeDeliveryAbove: 50, storeDeliveryFee: 5 },
+  { id: 'p2', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: '/images/grocery.jpg', name: 'Feijão Carioca 1kg', slug: 'feijao-carioca', description: 'Feijão carioca selecionado de alta qualidade.', price: 8.90, comparePrice: null, images: '["/images/grocery.jpg"]', stock: 80, rating: 4.3, totalReviews: 15, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: '["1kg","500g"]', category: 'FOOD', freeDeliveryAbove: 50, storeDeliveryFee: 5 },
+  { id: 'p3', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: '/images/grocery.jpg', name: 'Óleo de Soja 900ml', slug: 'oleo-soja', description: 'Óleo de soja puro para cozinhar.', price: 7.49, comparePrice: 8.99, images: '["/images/grocery.jpg"]', stock: 40, rating: 4.1, totalReviews: 8, isFeatured: false, isNew: false, isOffer: true, tags: '[]', variations: null, category: 'FOOD', freeDeliveryAbove: 50, storeDeliveryFee: 5 },
+  { id: 'p5', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: '/images/acai.jpg', name: 'Açaí 500ml', slug: 'acai-500ml', description: 'Açaí cremoso feito com frutas frescas do Pará. Acompanha granola e banana.', price: 15.00, comparePrice: 18.00, images: '["/images/acai.jpg"]', stock: 100, rating: 4.9, totalReviews: 89, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["300ml","500ml","700ml"]', category: 'FOOD', freeDeliveryAbove: 30, storeDeliveryFee: 3 },
+  { id: 'p6', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: '/images/acai.jpg', name: 'Açaí Premium 700ml', slug: 'acai-premium-700ml', description: 'Açaí premium com frutas da estação, leite condensado e granola artesanal.', price: 22.00, comparePrice: null, images: '["/images/acai.jpg"]', stock: 50, rating: 4.8, totalReviews: 45, isFeatured: true, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'FOOD', freeDeliveryAbove: 30, storeDeliveryFee: 3 },
+  { id: 'p9', storeId: 's3', storeName: 'Agropecuária São Paulo', storeLogo: '/images/agriculture.jpg', name: 'Adubo NPK 20kg', slug: 'adubo-npk', description: 'Adubo NPK para culturas diversas. Alta eficiência.', price: 89.90, comparePrice: null, images: '["/images/agriculture.jpg"]', stock: 25, rating: 4.4, totalReviews: 12, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'AGRICULTURE', freeDeliveryAbove: 200, storeDeliveryFee: 8 },
+  { id: 'p13', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: '/images/pharmacy.jpg', name: 'Vitamina C 500mg', slug: 'vitamina-c', description: 'Suplemento de vitamina C 500mg. Pote com 60 cápsulas.', price: 35.00, comparePrice: 42.00, images: '["/images/pharmacy.jpg"]', stock: 100, rating: 4.7, totalReviews: 34, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["500mg","1000mg"]', category: 'HEALTH', freeDeliveryAbove: null, storeDeliveryFee: 0 },
+  { id: 'p17', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: '/images/bakery.jpg', name: 'Pão Francês (6 un)', slug: 'pao-frances', description: 'Pão francês fresquinho saindo do forno. Pacote com 6 unidades.', price: 6.00, comparePrice: null, images: '["/images/bakery.jpg"]', stock: 200, rating: 4.9, totalReviews: 120, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD', freeDeliveryAbove: 25, storeDeliveryFee: 3 },
 ]
 
 // Skeleton loading components
@@ -433,9 +447,59 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
   )
 }
 
+// LazySection: Intersection observer component for progressive content loading
+function LazySection({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const [isVisible, setIsVisible] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '200px' }
+    )
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
+  
+  if (!isVisible) {
+    return (
+      <div ref={ref} className={className}>
+        <div className="flex items-center justify-center py-8">
+          <div className="h-8 w-8 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+        </div>
+      </div>
+    )
+  }
+  
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 export default function Home() {
-  const { currentView, isSearchOpen, activeCategory, getCartItemCount } = useAppStore()
+  const { currentView, isSearchOpen, activeCategory, getCartItemCount, currentUser } = useAppStore()
   const cartItemCount = getCartItemCount()
+
+  // Analytics page view tracking
+  usePageViewTracking()
+
+  // Track homepage view
+  useEffect(() => {
+    trackEvent(AnalyticsEvents.HOMEPAGE_VIEW)
+  }, [])
 
   // Dynamic page title based on cart count
   useEffect(() => {
@@ -520,14 +584,11 @@ export default function Home() {
                   <HomeSkeleton />
                 ) : (
                   <>
+                    {/* === PRIORITY 1: Always visible, no lazy loading === */}
+
                     {/* Urgency Strip — social proof ticker */}
                     <section className="-mx-3 sm:-mx-4 lg:-mx-6">
                       <UrgencyStrip />
-                    </section>
-
-                    {/* Promo Banner Ticker */}
-                    <section className="mt-2">
-                      <PromoBanner />
                     </section>
 
                     {/* Hero */}
@@ -540,19 +601,6 @@ export default function Home() {
                       <FlashSale />
                     </section>
 
-                    {/* Weekend Specials */}
-                    <section className="mt-4">
-                      <WeekendSpecials />
-                    </section>
-
-                    <Separator className="my-8 bg-border/50" />
-
-                    {/* Daily Deals */}
-                    <DailyDeals />
-                    
-                    {/* Recent Orders - after greeting */}
-                    <RecentOrders />
-
                     {/* Welcome greeting */}
                     <motion.section 
                       className="mt-6"
@@ -563,7 +611,7 @@ export default function Home() {
                       <div className="flex items-center justify-between">
                         <div>
                           <h2 className="text-lg sm:text-xl font-bold">
-                            Bem-vindo de volta, Maria! 👋
+                            {getGreetingTitle(currentUser)}
                           </h2>
                           <div className="flex items-center gap-1.5 mt-1 text-sm text-muted-foreground">
                             <MapPin className="h-3.5 w-3.5 text-primary" />
@@ -606,119 +654,160 @@ export default function Home() {
                       </motion.div>
                     )}
 
-                    <Separator className="my-8 bg-border/50" />
-                    
-                    {/* Store Favorites Carousel */}
-                    <StoreFavorites stores={allStores} />
+                    {/* === PRIORITY 2: Lazy loaded === */}
 
                     <Separator className="my-8 bg-border/50" />
-                    
+
                     {/* Offers of the Day */}
-                    {offerProducts.length > 0 && (
-                      <section>
-                        <ProductCarousel title="🔥 Ofertas do Dia" products={offerProducts} />
-                      </section>
-                    )}
+                    <LazySection>
+                      {offerProducts.length > 0 && (
+                        <section>
+                          <ProductCarousel title="🔥 Ofertas do Dia" products={offerProducts} />
+                        </section>
+                      )}
+                    </LazySection>
 
                     <Separator className="my-8 bg-border/50" />
-                    
-                    {/* New in City */}
-                    {newProducts.length > 0 && (
-                      <section>
-                        <ProductCarousel title="✨ Novidades na Cidade" products={newProducts} />
-                      </section>
-                    )}
 
-                    <Separator className="my-8 bg-border/50" />
-                    
                     {/* Featured Stores */}
-                    {filteredStores.length > 0 && (
-                      <section>
-                        <StoreCarousel title="🏪 Lojas em Destaque" stores={filteredStores} />
-                      </section>
-                    )}
+                    <LazySection>
+                      {filteredStores.length > 0 && (
+                        <section>
+                          <StoreCarousel title="🏪 Lojas em Destaque" stores={filteredStores} />
+                        </section>
+                      )}
+                    </LazySection>
+
+                    {/* === PRIORITY 3: Lazy loaded, below fold === */}
 
                     <Separator className="my-8 bg-border/50" />
 
-                    {/* Delivery Fee Calculator */}
-                    <DeliveryFeeCalculator />
+                    {/* Weekend Specials */}
+                    <LazySection>
+                      <section className="mt-4">
+                        <WeekendSpecials />
+                      </section>
+                    </LazySection>
+
+                    <Separator className="my-8 bg-border/50" />
+
+                    {/* Daily Deals */}
+                    <LazySection>
+                      <DailyDeals />
+                    </LazySection>
+
+                    <Separator className="my-8 bg-border/50" />
+
+                    {/* Store Favorites Carousel */}
+                    <LazySection>
+                      <StoreFavorites stores={allStores} />
+                    </LazySection>
+
+                    <Separator className="my-8 bg-border/50" />
+
+                    {/* New in City */}
+                    <LazySection>
+                      {newProducts.length > 0 && (
+                        <section>
+                          <ProductCarousel title="✨ Novidades na Cidade" products={newProducts} />
+                        </section>
+                      )}
+                    </LazySection>
+
+                    {/* === PRIORITY 4: Lazy loaded, bottom === */}
 
                     <Separator className="my-8 bg-border/50" />
 
                     {/* Store Search */}
-                    <section>
-                      <StoreSearch stores={filteredStores} />
-                    </section>
+                    <LazySection>
+                      <section>
+                        <StoreSearch stores={filteredStores} />
+                      </section>
+                    </LazySection>
 
                     <Separator className="my-8 bg-border/50" />
-                    
-                    {/* Suggestions */}
-                    {suggestedProducts.length > 0 && (
-                      <section>
-                        <ProductCarousel title="💡 Sugestões para Você" products={suggestedProducts} />
-                      </section>
-                    )}
+
+                    {/* Delivery Fee Calculator */}
+                    <LazySection>
+                      <DeliveryFeeCalculator />
+                    </LazySection>
 
                     <Separator className="my-8 bg-border/50" />
 
                     {/* Smart Suggestions (AI) */}
-                    <SmartSuggestions />
+                    <LazySection>
+                      <SmartSuggestions />
+                    </LazySection>
+
+                    <Separator className="my-8 bg-border/50" />
+
+                    {/* Suggestions */}
+                    <LazySection>
+                      {suggestedProducts.length > 0 && (
+                        <section>
+                          <ProductCarousel title="💡 Sugestões para Você" products={suggestedProducts} />
+                        </section>
+                      )}
+                    </LazySection>
 
                     <Separator className="my-8 bg-border/50" />
 
                     {/* Map Store Locator */}
-                    <MapStoreLocator stores={allStores} />
+                    <LazySection>
+                      <MapStoreLocator stores={allStores} />
+                    </LazySection>
 
                     <Separator className="my-8 bg-border/50" />
 
                     {/* Partners */}
-                    <section>
-                      <PartnersBanner />
-                    </section>
+                    <LazySection>
+                      <section>
+                        <PartnersBanner />
+                      </section>
+                    </LazySection>
 
                     <Separator className="my-8 bg-border/50" />
                     
                     {/* Segmented Ads */}
-                    {filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5').length > 0 && (
-                      <section>
-                        <ProductCarousel 
-                          title="📢 Anúncios Segmentados" 
-                          products={filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5')} 
-                        />
-                      </section>
-                    )}
+                    <LazySection>
+                      {filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5').length > 0 && (
+                        <section>
+                          <ProductCarousel 
+                            title="📢 Anúncios Segmentados" 
+                            products={filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5')} 
+                          />
+                        </section>
+                      )}
+                    </LazySection>
 
                     <Separator className="my-8 bg-border/50" />
 
                     {/* Store Comparison CTA */}
-                    <section>
-                      <motion.div
-                        initial={{ opacity: 0, y: 15 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="bg-gradient-to-r from-primary/5 to-emerald-50 dark:from-primary/10 dark:to-emerald-900/10 rounded-2xl p-4 border border-primary/10"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm">
-                              <GitCompareArrows className="h-5 w-5 text-white" />
+                    <LazySection>
+                      <section>
+                        <div className="bg-gradient-to-r from-primary/5 to-emerald-50 dark:from-primary/10 dark:to-emerald-900/10 rounded-2xl p-4 border border-primary/10">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm">
+                                <GitCompareArrows className="h-5 w-5 text-white" />
+                              </div>
+                              <div>
+                                <h3 className="text-sm font-bold">Comparar Lojas</h3>
+                                <p className="text-xs text-muted-foreground">Compare precos e avaliacoes lado a lado</p>
+                              </div>
                             </div>
-                            <div>
-                              <h3 className="text-sm font-bold">Comparar Lojas</h3>
-                              <p className="text-xs text-muted-foreground">Compare precos e avaliacoes lado a lado</p>
-                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="border-primary/30 hover:bg-primary/5 text-primary h-9"
+                              onClick={() => useAppStore.getState().navigate('store-comparison')}
+                            >
+                              Comparar
+                            </Button>
                           </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="border-primary/30 hover:bg-primary/5 text-primary h-9"
-                            onClick={() => useAppStore.getState().navigate('store-comparison')}
-                          >
-                            Comparar
-                          </Button>
                         </div>
-                      </motion.div>
-                    </section>
+                      </section>
+                    </LazySection>
                   </>
                 )}
                 
@@ -836,6 +925,9 @@ export default function Home() {
         open={wishlistShareOpen}
         onOpenChange={setWishlistShareOpen}
       />
+
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
     </div>
   )
 }

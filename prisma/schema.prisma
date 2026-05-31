@@ -42,6 +42,7 @@ model Account {
   twoFactorEnabled  Boolean       @default(false)
   twoFactorSecret   String?
   locationConsent   Boolean       @default(false)
+  referrer          String?
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
@@ -301,6 +302,8 @@ model Order {
   deliveredAt     DateTime?
   cancelledAt     DateTime?
   cancelReason    String?
+  couponCode      String?
+  source          String        @default("app")
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -643,6 +646,7 @@ model Notification {
   type      NotificationType
   data      String?
   isRead    Boolean          @default(false)
+  readAt    DateTime?
   createdAt DateTime         @default(now())
 
   account   Account          @relation(fields: [accountId], references: [id], onDelete: Cascade)
@@ -665,6 +669,7 @@ model ChatMessage {
   attachment  String?
   isRead      Boolean  @default(false)
   createdAt   DateTime @default(now())
+  expiresAt   DateTime?
 
   order       Order?           @relation(fields: [orderId], references: [id])
   sender      Account          @relation("ChatSender", fields: [senderId], references: [id])
@@ -740,10 +745,47 @@ model ActivityLog {
   action    String
   details   String?
   ipAddress String?
+  deviceInfo      String?
   createdAt DateTime @default(now())
 
   account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
   @@index([accountId])
   @@index([createdAt])
+}
+
+// ============================================
+// ZONAS DE ENTREGA
+// ============================================
+
+model DeliveryZone {
+  id          String   @id @default(cuid())
+  name        String
+  neighborhood String
+  city        String   @default("Dom Eliseu")
+  state       String   @default("PA")
+  deliveryFee Float
+  estimatedMinutes Int @default(30)
+  isActive    Boolean  @default(true)
+  polygon     String?  // GeoJSON polygon for the zone (stored as JSON string)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([city])
+  @@index([isActive])
+}
+
+// ============================================
+// CONFIGURAÇÕES DO APP
+// ============================================
+
+model AppSettings {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  type        String   @default("string") // string, number, boolean, json
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
 }
