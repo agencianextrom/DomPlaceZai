@@ -7,7 +7,7 @@ import {
   BarChart3, Wallet, ExternalLink,
   UserPlus, ShoppingCart, Megaphone, Image as ImageIcon,
   Sparkles, Trophy, Clock, AlertCircle, RefreshCw, Loader2,
-  ShieldX, LogIn, ChevronDown, History,
+  ShieldX, LogIn, ChevronDown, History, User,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -834,6 +834,141 @@ export function AffiliateDashboard() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Bônus por Meta - Progress Bars */}
+          <motion.div {...fadeUp} transition={{ delay: 0.18 }} className="mb-4">
+            <Card className="border-amber-200/50 dark:border-amber-800/30 overflow-hidden">
+              <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5">
+                <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Trophy className="h-4 w-4" />
+                  Bônus por Meta
+                </h4>
+              </div>
+              <CardContent className="p-4 space-y-4">
+                {[
+                  { target: 10, bonus: 50, label: '10 indicacoes', color: 'from-emerald-400 to-primary' },
+                  { target: 25, bonus: 150, label: '25 indicacoes', color: 'from-amber-400 to-orange-500' },
+                  { target: 50, bonus: 400, label: '50 indicacoes', color: 'from-purple-400 to-pink-500' },
+                ].map((milestone, idx) => {
+                  const progress = Math.min(100, ((dashboard.totalReferrals || 0) / milestone.target) * 100)
+                  const isComplete = dashboard.totalReferrals >= milestone.target
+                  return (
+                    <div key={idx}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium">{milestone.label}</span>
+                          {isComplete && <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-[9px] border-0 gap-1"><Check className="h-2.5 w-2.5" /> Concluido</Badge>}
+                        </div>
+                        <span className="text-xs font-bold text-amber-600 dark:text-amber-400">+R$ {milestone.bonus}</span>
+                      </div>
+                      <div className="h-2.5 bg-secondary/50 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${progress}%` }}
+                          transition={{ delay: 0.5 + idx * 0.15, duration: 0.6 }}
+                          className={`h-full rounded-full bg-gradient-to-r ${milestone.color}`}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between mt-1">
+                        <span className="text-[10px] text-muted-foreground">{dashboard.totalReferrals || 0}/{milestone.target}</span>
+                        <span className="text-[10px] text-muted-foreground">{progress.toFixed(0)}%</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Ranking de Afiliados - Leaderboard */}
+          <motion.div {...fadeUp} transition={{ delay: 0.20 }} className="mb-4">
+            <Card className="border-border/50">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-xs font-bold flex items-center gap-1.5">
+                  <Trophy className="h-4 w-4 text-amber-500" />
+                  Ranking de Afiliados
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="space-y-2">
+                  {[
+                    { name: 'Maria Silva', referrals: 47, earnings: 890, initials: 'MS' },
+                    { name: 'Joao Santos', referrals: 35, earnings: 620, initials: 'JS' },
+                    { name: 'Ana Oliveira', referrals: 28, earnings: 480, initials: 'AO' },
+                    { name: 'Carlos Lima', referrals: 19, earnings: 310, initials: 'CL' },
+                    { name: 'Voce', referrals: dashboard.totalReferrals, earnings: dashboard.totalEarnings, initials: 'EU', isYou: true },
+                  ].map((affiliate, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.25 + idx * 0.05 }}
+                      className={`flex items-center gap-3 p-2 rounded-lg ${affiliate.isYou ? 'bg-primary/5 border border-primary/20' : 'hover:bg-secondary/50'} transition-colors`}
+                    >
+                      <div className={`h-7 w-7 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 ${idx === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : idx === 1 ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' : idx === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' : 'bg-secondary text-muted-foreground'}`}>
+                        {idx + 1}
+                      </div>
+                      <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${affiliate.isYou ? 'from-primary to-emerald-600' : idx === 0 ? 'from-amber-400 to-yellow-500' : 'from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-800/30'} flex items-center justify-center text-[10px] font-bold shrink-0`}>
+                        {affiliate.initials}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-xs font-medium truncate ${affiliate.isYou ? 'text-primary' : ''}`}>{affiliate.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{affiliate.referrals} indicacoes</p>
+                      </div>
+                      <span className={`text-xs font-bold shrink-0 ${affiliate.isYou ? 'text-primary' : ''}`}>{formatBRLShort(affiliate.earnings)}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Comissões Recentes */}
+          <motion.div {...fadeUp} transition={{ delay: 0.22 }} className="mb-4">
+            <Card className="border-border/50">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-xs font-bold flex items-center gap-1.5">
+                  <DollarSign className="h-4 w-4 text-emerald-500" />
+                  Comissoes Recentes
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <ScrollArea className="max-h-48">
+                  <div className="space-y-2">
+                    {dashboard.recentReferrals && dashboard.recentReferrals.length > 0 ? dashboard.recentReferrals.slice(0, 5).map((ref, idx) => (
+                      <motion.div
+                        key={ref.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.25 + idx * 0.04 }}
+                        className="flex items-center justify-between py-2 border-b border-border/30 last:border-0"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                            <User className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium truncate">{ref.referredUserName}</p>
+                            <p className="text-[10px] text-muted-foreground">{formatDate(ref.createdAt)}</p>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400">+{formatBRLShort(ref.commission)}</p>
+                          <Badge className={`text-[9px] border-0 ${ref.status === 'paid' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'}`}>
+                            {ref.status === 'paid' ? 'Pago' : ref.status === 'pending' ? 'Pendente' : 'Ativo'}
+                          </Badge>
+                        </div>
+                      </motion.div>
+                    )) : (
+                      <div className="text-center py-4">
+                        <p className="text-xs text-muted-foreground">Nenhuma comissao ainda</p>
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Monthly target progress */}
           <Card className="border-border/50 mb-4">

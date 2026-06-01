@@ -38,6 +38,7 @@ import { WishlistShare } from '@/components/profile/WishlistShare'
 import { StoreFavorites } from '@/components/home/StoreFavorites'
 import { OrderTimeline } from '@/components/profile/OrderTimeline'
 import { SpinWheel } from '@/components/promotions/SpinWheel'
+import { DailyRewards } from '@/components/promotions/DailyRewards'
 import { MapStoreLocator } from '@/components/home/MapStoreLocator'
 import { DailyDeals } from '@/components/home/DailyDeals'
 import { DeliveryFeeCalculator } from '@/components/home/DeliveryFeeCalculator'
@@ -609,6 +610,11 @@ export default function Home() {
                     {/* Flash Sale */}
                     <section className="mt-4">
                       <FlashSale />
+                    </section>
+
+                    {/* Daily Rewards - Gamification */}
+                    <section className="mt-4">
+                      <DailyRewards />
                     </section>
 
                     {/* City News */}

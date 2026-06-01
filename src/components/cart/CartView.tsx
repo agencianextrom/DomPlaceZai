@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper, Heart, Edit3, Share2, Clock, AlertTriangle, Loader2 } from 'lucide-react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper, Heart, Edit3, Share2, Clock, AlertTriangle, Loader2, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
 import { PromoCodeWidget } from '@/components/promotions/PromoCodeWidget'
 import { toast } from 'sonner'
-import type { ProductData } from '@/store/useAppStore'
+import type { ProductData, CartItemData } from '@/store/useAppStore'
 
 const gradients = [
   'from-emerald-100 to-green-200 dark:from-emerald-900/30 dark:to-green-800/30',
@@ -41,6 +41,173 @@ const storeDeliveryTimes: Record<string, string> = {
 }
 
 const LOW_STOCK_THRESHOLD = 5
+
+// Cross-sell complementary products based on cart items
+const crossSellMap: Record<string, ProductData[]> = {
+  s1: [
+    { id: 'xs-açucar', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Açúcar Cristal 1kg', slug: 'acucar', description: 'Açúcar premium.', price: 5.49, comparePrice: null, images: '[]', stock: 120, rating: 4.2, totalReviews: 18, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+    { id: 'xs-cafe', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Café Torrado 500g', slug: 'cafe', description: 'Café premium.', price: 18.90, comparePrice: 22.00, images: '[]', stock: 60, rating: 4.6, totalReviews: 32, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["250g","500g"]', category: 'FOOD' },
+    { id: 'xs-leite', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Leite Integral 1L', slug: 'leite', description: 'Leite pasteurizado.', price: 6.90, comparePrice: 7.50, images: '[]', stock: 150, rating: 4.3, totalReviews: 41, isFeatured: false, isNew: false, isOffer: true, tags: '[]', variations: null, category: 'FOOD' },
+  ],
+  s2: [
+    { id: 'xs-granola', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Granola Artesanal 200g', slug: 'granola', description: 'Granola crocante com frutas.', price: 12.00, comparePrice: null, images: '[]', stock: 80, rating: 4.7, totalReviews: 22, isFeatured: false, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+    { id: 'xs-smoothie', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Smoothie de Açaí', slug: 'smoothie', description: 'Smoothie refrescante.', price: 18.00, comparePrice: null, images: '[]', stock: 40, rating: 4.8, totalReviews: 28, isFeatured: true, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+  ],
+  s5: [
+    { id: 'xs-bolo', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: null, name: 'Bolo de Chocolate', slug: 'bolo', description: 'Bolo fofinho de chocolate.', price: 22.00, comparePrice: null, images: '[]', stock: 30, rating: 4.6, totalReviews: 35, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+    { id: 'xs-suco', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: null, name: 'Suco Natural 500ml', slug: 'suco', description: 'Suco natural da fruta.', price: 10.00, comparePrice: null, images: '[]', stock: 50, rating: 4.5, totalReviews: 18, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
+  ],
+}
+
+const fallbackCrossSell: ProductData[] = [
+  { id: 'xs-guarana', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: null, name: 'Guaraná em Pó 500g', slug: 'guarana', description: 'Guaraná natural em pó.', price: 15.90, comparePrice: null, images: '[]', stock: 60, rating: 4.4, totalReviews: 15, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'HEALTH' },
+  { id: 'xs-maca', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: null, name: 'Maca Peruana 120 cáps', slug: 'maca', description: 'Suplemento natural.', price: 32.00, comparePrice: 38.00, images: '[]', stock: 45, rating: 4.5, totalReviews: 20, isFeatured: false, isNew: true, isOffer: true, tags: '[]', variations: null, category: 'HEALTH' },
+  { id: 'xs-shampoo', storeId: 's8', storeName: 'Salão da Bella', storeLogo: null, name: 'Shampoo Hidratante 400ml', slug: 'shampoo', description: 'Shampoo profissional.', price: 28.00, comparePrice: null, images: '[]', stock: 70, rating: 4.6, totalReviews: 25, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'BEAUTY' },
+]
+
+function CrossSellSection({ cartItems }: { cartItems: CartItemData[] }) {
+  const { addToCart } = useAppStore()
+  const [addedIds, setAddedIds] = useState<Set<string>>(new Set())
+  const [addedAll, setAddedAll] = useState(false)
+
+  // Get unique store IDs from cart
+  const cartStoreIds = useMemo(() => [...new Set(cartItems.map(item => item.product.storeId))], [cartItems])
+
+  // Find cross-sell products from the same stores or fallback
+  const crossSellProducts = useMemo(() => {
+    let suggestions: ProductData[] = []
+    for (const storeId of cartStoreIds) {
+      const storeSuggestions = crossSellMap[storeId]
+      if (storeSuggestions) {
+        // Filter out products already in cart
+        const cartProductIds = new Set(cartItems.map(item => item.productId))
+        const filtered = storeSuggestions.filter(s => !cartProductIds.has(s.id))
+        suggestions = [...suggestions, ...filtered]
+      }
+    }
+    // If not enough suggestions, add fallback
+    if (suggestions.length < 3) {
+      const cartProductIds = new Set(cartItems.map(item => item.productId))
+      const fallbackFiltered = fallbackCrossSell.filter(s => !cartProductIds.has(s.id) && !suggestions.some(x => x.id === s.id))
+      suggestions = [...suggestions, ...fallbackFiltered]
+    }
+    return suggestions.slice(0, 4)
+  }, [cartItems, cartStoreIds])
+
+  if (crossSellProducts.length === 0) return null
+
+  const handleQuickAdd = (product: ProductData) => {
+    addToCart(product, product.storeName || 'Loja', 1)
+    setAddedIds(prev => new Set([...prev, product.id]))
+    toast.success(`${product.name} adicionado!`)
+  }
+
+  const handleAddAll = () => {
+    let count = 0
+    crossSellProducts.forEach(p => {
+      if (!addedIds.has(p.id)) {
+        addToCart(p, p.storeName || 'Loja', 1)
+        count++
+      }
+    })
+    setAddedIds(new Set(crossSellProducts.map(p => p.id)))
+    setAddedAll(true)
+    toast.success(`${count} itens adicionados ao carrinho!`)
+  }
+
+  const allAdded = crossSellProducts.every(p => addedIds.has(p.id))
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="bg-gradient-to-br from-primary/5 via-card to-accent/5 rounded-xl border border-primary/15 p-4 card-shine elevated-card"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+          </div>
+          <div>
+            <span className="text-sm font-semibold">Complete seu pedido</span>
+            <p className="text-[10px] text-muted-foreground">Quem comprou itens do seu carrinho também comprou:</p>
+          </div>
+        </div>
+        {!allAdded && (
+          <Button
+            size="sm"
+            className="h-7 text-[10px] bg-primary hover:bg-primary/90 text-primary-foreground gap-1 rounded-full px-3"
+            onClick={handleAddAll}
+          >
+            <Plus className="h-3 w-3" />
+            Adicionar todos
+          </Button>
+        )}
+      </div>
+
+      <div className="flex gap-3 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1">
+        {crossSellProducts.map((product, index) => {
+          const isAdded = addedIds.has(product.id)
+          const gradient = gradients[Math.abs(product.name.charCodeAt(0)) % gradients.length]
+          const icon = icons[Math.abs(product.name.charCodeAt(0)) % icons.length]
+          return (
+            <motion.div
+              key={product.id}
+              className="shrink-0 w-[140px] bg-card rounded-xl border border-border/50 p-2.5 hover:border-primary/20 transition-colors relative overflow-hidden"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.08, duration: 0.3 }}
+            >
+              <div className={`h-16 w-full rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl mb-2 relative`}>
+                {icon}
+                {product.isOffer && (
+                  <Badge className="absolute top-1 right-1 bg-red-500 text-white border-0 text-[8px] px-1 py-0 font-bold">
+                    -{Math.round(((product.comparePrice! - product.price) / product.comparePrice!) * 100)}%
+                  </Badge>
+                )}
+              </div>
+              <p className="text-xs font-semibold line-clamp-2 leading-tight min-h-[2rem]">{product.name}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">{product.storeName}</p>
+              <div className="flex items-center justify-between mt-1.5">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-sm font-bold text-primary">{formatBRL(product.price)}</span>
+                  {product.comparePrice && product.comparePrice > product.price && (
+                    <span className="text-[9px] text-muted-foreground line-through">{formatBRL(product.comparePrice)}</span>
+                  )}
+                </div>
+                <motion.button
+                  whileTap={{ scale: 0.85 }}
+                  onClick={() => handleQuickAdd(product)}
+                  className={`h-7 w-7 rounded-lg flex items-center justify-center transition-colors ${
+                    isAdded
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-primary/10 text-primary hover:bg-primary/20'
+                  }`}
+                >
+                  {isAdded ? <Check className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                </motion.button>
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
+
+      {allAdded && (
+        <motion.div
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-3 text-center"
+        >
+          <p className="text-xs text-primary font-medium flex items-center justify-center gap-1">
+            <Check className="h-3 w-3" />
+            Todos os itens foram adicionados ao carrinho!
+          </p>
+        </motion.div>
+      )}
+    </motion.div>
+  )
+}
 
 export function CartView() {
   const {
@@ -567,6 +734,11 @@ export function CartView() {
 
         {/* Promo code widget */}
         <PromoCodeWidget />
+
+        {/* Smart Cross-Sell: "Complete seu pedido" */}
+        {cartItems.length > 0 && (
+          <CrossSellSection cartItems={cartItems} />
+        )}
 
         {/* Order bump - only show if not yet at free delivery */}
         {!hasFreeDelivery && (

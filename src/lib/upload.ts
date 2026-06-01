@@ -1,8 +1,13 @@
 /**
- * Utilitário de upload de imagens (lado do cliente)
- * Usa a API /api/upload para enviar arquivos ao Cloudinary
- * Suporta tracking de progresso via XMLHttpRequest
+ * Utilitários de upload de imagens — DomPlace
+ *
+ * Lado do cliente: usa a API /api/upload via fetch/XHR
+ * Lado do servidor: funções para uso direto em API routes
  */
+
+// ============================================
+// TIPOS
+// ============================================
 
 export interface UploadResult {
   success: boolean
@@ -10,6 +15,7 @@ export interface UploadResult {
   publicId?: string
   width?: number
   height?: number
+  format?: string
   error?: string
 }
 
@@ -19,8 +25,16 @@ export interface UploadProgress {
   percent: number
 }
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
-const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+// ============================================
+// CONSTANTES
+// ============================================
+
+export const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+export const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+
+// ============================================
+// VALIDAÇÃO (compartilhada cliente/servidor)
+// ============================================
 
 /**
  * Valida um arquivo de imagem antes do upload
@@ -41,6 +55,10 @@ export function validateImageFile(file: File): string | null {
 export function createPreviewUrl(file: File): string {
   return URL.createObjectURL(file)
 }
+
+// ============================================
+// CLIENTE — Upload via API
+// ============================================
 
 /**
  * Faz upload de uma única imagem com suporte a progresso
@@ -82,6 +100,7 @@ export function uploadImage(
             publicId: data.publicId,
             width: data.width,
             height: data.height,
+            format: data.format,
           })
         } else {
           resolve({
@@ -117,9 +136,6 @@ export function uploadImage(
 
     xhr.open('POST', '/api/upload')
     xhr.send(formData)
-
-    // Retornar função de cancelamento
-    return xhr.abort
   })
 }
 
@@ -164,5 +180,110 @@ export async function deleteImage(publicId: string): Promise<{ success: boolean;
     return { success: true }
   } catch {
     return { success: false, error: 'Erro de conexão ao remover imagem.' }
+  }
+}
+
+// ============================================
+// SERVIDOR — Funções diretas com Cloudinary SDK
+// ============================================
+
+/**
+ * Faz upload de um Buffer para o Cloudinary diretamente (lado do servidor).
+ * Retorna a URL segura e o publicId.
+ */
+export async function uploadImageToCloudinary(
+  buffer: Buffer,
+  folder: string = 'domplace',
+  publicId?: string
+): Promise<UploadResult> {
+  try {
+    // Importação dinâmica — só executa no servidor
+    const { v2: cloudinary } = await import('cloudinary')
+
+    cloudinary.config({
+      cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    })
+
+    const result = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            resource_type: 'image',
+            folder,
+            public_id: publicId || undefined,
+            transformation: [
+              { width: 1200, height: 1200, crop: 'limit', quality: 'auto:good' },
+              { fetch_format: 'auto' },
+            ],
+          },
+          (error, result) => {
+            if (error) reject(error)
+            else resolve(result)
+          }
+        )
+        .end(buffer)
+    })
+
+    return {
+      success: true,
+      url: result.secure_url,
+      publicId: result.public_id,
+      width: result.width,
+      height: result.height,
+      format: result.format,
+    }
+  } catch (error) {
+    console.error('[Cloudinary] Erro no upload:', error)
+    return {
+      success: false,
+      url: '',
+      error: error instanceof Error ? error.message : 'Erro ao enviar imagem para Cloudinary.',
+    }
+  }
+}
+
+/**
+ * Faz upload em lote de múltiplos Buffers para o Cloudinary
+ */
+export async function uploadImagesToCloudinary(
+  buffers: Buffer[],
+  folder: string = 'domplace'
+): Promise<UploadResult[]> {
+  const results = await Promise.all(
+    buffers.map((buffer) => uploadImageToCloudinary(buffer, folder))
+  )
+  return results
+}
+
+/**
+ * Remove uma imagem do Cloudinary diretamente (lado do servidor)
+ */
+export async function deleteImageFromCloudinary(
+  publicId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { v2: cloudinary } = await import('cloudinary')
+
+    cloudinary.config({
+      cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    })
+
+    const result = await cloudinary.uploader.destroy(publicId)
+
+    if (result.result === 'ok' || result.result === 'not found') {
+      return { success: true }
+    }
+
+    return { success: false, error: 'Erro ao remover imagem do Cloudinary.' }
+  } catch (error) {
+    console.error('[Cloudinary] Erro ao remover:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro ao remover imagem do Cloudinary.',
+    }
   }
 }

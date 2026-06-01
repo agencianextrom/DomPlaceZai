@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, Fragment } from 'react'
-import { ArrowLeft, Heart, ShoppingCart, Store, Package, Scale, CheckCircle, ChevronDown, ChevronUp, Truck, Tag, ShieldCheck, Zap, Plus } from 'lucide-react'
+import { ArrowLeft, Heart, ShoppingCart, Store, Package, Scale, CheckCircle, ChevronDown, ChevronUp, Truck, Tag, ShieldCheck, Zap, Plus, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -18,6 +18,7 @@ import { StockUrgency } from './StockUrgency'
 import { QuantityStepper } from '@/components/ui/QuantityStepper'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
+import { toast } from 'sonner'
 
 interface ProductDetailProps {
   product: ProductData
@@ -62,6 +63,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [similarProducts, setSimilarProducts] = useState<ProductData[]>(mockSimilarProducts)
   const [showStickyBar, setShowStickyBar] = useState(false)
+  const [bundleAdded, setBundleAdded] = useState(false)
   const buySectionRef = useRef<HTMLDivElement>(null)
   
   const isFav = isFavoriteProduct(product.id)
@@ -125,6 +127,23 @@ export function ProductDetail({ product }: ProductDetailProps) {
   // Calculate "frequently bought together" total
   const fbtTotal = product.price + frequentlyBoughtTogether.reduce((sum, p) => sum + p.price, 0)
   const fbtSavings = frequentlyBoughtTogether.reduce((sum, p) => sum + ((p.comparePrice || p.price) - p.price), 0)
+  // Bundle discount: 10% off the combined price
+  const bundleDiscount = Math.round(fbtTotal * 0.10 * 100) / 100
+  const bundleTotal = Math.round((fbtTotal - bundleDiscount) * 100) / 100
+
+  const handleAddBundle = () => {
+    // Add main product
+    addToCart(product, product.storeName || 'Loja', quantity)
+    // Add bundle items
+    frequentlyBoughtTogether.forEach(p => {
+      addToCart(p, p.storeName || 'Loja', 1)
+    })
+    setBundleAdded(true)
+    toast.success('Kit completo adicionado ao carrinho!', {
+      description: `Economize ${formatBRL(bundleDiscount)} comprando juntos`,
+    })
+    setTimeout(() => setBundleAdded(false), 3000)
+  }
   
   return (
     <div className="max-w-3xl mx-auto pb-28 md:pb-24">
@@ -447,23 +466,35 @@ export function ProductDetail({ product }: ProductDetailProps) {
           <h3 className="font-semibold mb-3 flex items-center gap-2">
             <ShoppingCart className="h-4 w-4 text-primary" />
             Compre junto
+            <Badge variant="secondary" className="text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-800/30">
+              Economize {formatBRL(bundleDiscount)}
+            </Badge>
           </h3>
           <Card className="border-primary/20 overflow-hidden">
             <CardContent className="p-4">
               <div className="flex flex-col sm:flex-row items-center gap-3">
                 {/* Main product */}
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className={`h-14 w-14 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-sm`}>
+                <motion.div
+                  className="flex items-center gap-3 flex-1 min-w-0"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <div className={`h-14 w-14 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-sm relative`}>
                     <CategoryIcon category={product.category} />
+                    <motion.div
+                      animate={bundleAdded ? { scale: [0, 1] } : {}}
+                      className={`absolute inset-0 rounded-xl bg-primary/80 flex items-center justify-center ${bundleAdded ? '' : 'hidden'}`}
+                    >
+                      <Check className="h-6 w-6 text-white" />
+                    </motion.div>
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs font-semibold line-clamp-2">{product.name}</p>
                     <p className="text-sm font-bold text-primary">{formatBRL(product.price)}</p>
                   </div>
-                </div>
+                </motion.div>
                 
                 {/* Plus signs */}
-                {frequentlyBoughtTogether.map((fbt) => (
+                {frequentlyBoughtTogether.map((fbt, fbtIdx) => (
                   <Fragment key={fbt.id}>
                     <div className="hidden sm:flex h-8 w-8 rounded-full bg-muted items-center justify-center shrink-0">
                       <Plus className="h-4 w-4 text-muted-foreground" />
@@ -471,31 +502,66 @@ export function ProductDetail({ product }: ProductDetailProps) {
                     <div className="sm:hidden flex h-6 w-6 rounded-full bg-muted items-center justify-center shrink-0">
                       <Plus className="h-3 w-3 text-muted-foreground" />
                     </div>
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-amber-100 to-orange-200 dark:from-amber-900/30 dark:to-orange-800/30 flex items-center justify-center shrink-0 shadow-sm">
+                    <motion.div
+                      className="flex items-center gap-3 flex-1 min-w-0"
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-amber-100 to-orange-200 dark:from-amber-900/30 dark:to-orange-800/30 flex items-center justify-center shrink-0 shadow-sm relative">
                         <CategoryIcon category={fbt.category} />
+                        <motion.div
+                          animate={bundleAdded ? { scale: [0, 1] } : {}}
+                          transition={{ delay: 0.1 + fbtIdx * 0.1 }}
+                          className={`absolute inset-0 rounded-xl bg-primary/80 flex items-center justify-center ${bundleAdded ? '' : 'hidden'}`}
+                        >
+                          <Check className="h-6 w-6 text-white" />
+                        </motion.div>
                       </div>
                       <div className="min-w-0">
                         <p className="text-xs font-semibold line-clamp-2">{fbt.name}</p>
                         <p className="text-sm font-bold text-primary">{formatBRL(fbt.price)}</p>
                       </div>
-                    </div>
+                    </motion.div>
                   </Fragment>
                 ))}
 
                 {/* Total */}
                 <div className="w-full sm:w-auto pt-3 sm:pt-0 sm:ml-2">
-                  <div className="bg-gradient-to-r from-primary/5 to-amber-500/5 rounded-xl p-3 border border-primary/10 text-center sm:text-left sm:min-w-[120px]">
-                    <p className="text-[10px] text-muted-foreground">Total juntos</p>
-                    <p className="text-lg font-bold text-primary">{formatBRL(fbtTotal)}</p>
-                    {fbtSavings > 0 && (
-                      <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
-                        Economize {formatBRL(fbtSavings)}
-                      </p>
-                    )}
-                    <Button size="sm" className="w-full mt-2 h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground">
-                      Comprar todos
-                    </Button>
+                  <div className="bg-gradient-to-r from-primary/5 to-amber-500/5 rounded-xl p-3 border border-primary/10 text-center sm:text-left sm:min-w-[130px]">
+                    <p className="text-[10px] text-muted-foreground">Kit completo</p>
+                    <div className="flex items-baseline gap-2">
+                      <p className="text-lg font-bold text-primary">{formatBRL(bundleTotal)}</p>
+                      <span className="text-xs text-muted-foreground line-through">{formatBRL(fbtTotal)}</span>
+                    </div>
+                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-0.5">
+                      <Tag className="h-3 w-3" />
+                      Economize {formatBRL(bundleDiscount)} comprando juntos
+                    </p>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={bundleAdded ? 'added' : 'add'}
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                      >
+                        {bundleAdded ? (
+                          <Button size="sm" className="w-full mt-2 h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg gap-1">
+                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
+                              <Check className="h-3.5 w-3.5" />
+                            </motion.div>
+                            Adicionados!
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={handleAddBundle}
+                            className="w-full mt-2 h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg btn-glow gap-1"
+                          >
+                            <ShoppingCart className="h-3.5 w-3.5" />
+                            Adicionar todos ao carrinho
+                          </Button>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>

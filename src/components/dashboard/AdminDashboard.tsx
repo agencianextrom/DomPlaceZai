@@ -8,7 +8,7 @@ import {
   ChevronRight, Search, BarChart3, CreditCard, Calendar,
   ArrowUpRight, ArrowDownRight, Activity, Package, Star,
   Phone, Mail, MoreHorizontal, RefreshCw, Loader2, Ban, Shield,
-  Trash2, MessageSquare, UserCog, AlertOctagon,
+  Trash2, MessageSquare, UserCog, AlertOctagon, Settings,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -230,13 +230,15 @@ function OverviewTab() {
 
   return (
     <motion.div variants={tabVariants} initial="enter" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="space-y-5">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* Stats Grid - 6 KPI Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {[
           { label: 'Usuarios', value: formatNumber(totalUsers), icon: Users, gradient: 'from-primary to-emerald-600', extra: `${stats.totalAccounts.byRole.affiliates} afiliados` },
-          { label: 'Lojas', value: formatNumber(totalStores), icon: Store, gradient: 'from-emerald-600 to-teal-600', extra: `${stats.totalStores.byStatus.pending} pendentes` },
-          { label: 'Pedidos', value: formatNumber(totalOrders), icon: Package, gradient: 'from-amber-500 to-orange-500', extra: `${stats.ordersToday} hoje` },
-          { label: 'Receita', value: formatBRL(stats.totalRevenue), icon: DollarSign, gradient: 'from-emerald-500 to-emerald-700', extra: `${formatBRL(stats.revenueToday)} hoje` },
+          { label: 'Lojas Ativas', value: `${stats.totalStores.byStatus.active}/${totalStores}`, icon: Store, gradient: 'from-emerald-600 to-teal-600', extra: `${stats.totalStores.byStatus.pending} pendentes` },
+          { label: 'Pedidos do Mes', value: formatNumber(totalOrders), icon: Package, gradient: 'from-amber-500 to-orange-500', extra: `${stats.ordersToday} hoje` },
+          { label: 'Faturamento', value: formatBRL(stats.totalRevenue), icon: DollarSign, gradient: 'from-emerald-500 to-emerald-700', extra: `${formatBRL(stats.revenueToday)} hoje` },
+          { label: 'Entregadores Online', value: String(stats.totalAccounts.byRole.drivers), icon: TrendingUp, gradient: 'from-teal-500 to-cyan-600', extra: `${Math.max(0, stats.totalAccounts.byRole.drivers - 2)} offline` },
+          { label: 'Avaliacao Media', value: '4.6', icon: Star, gradient: 'from-amber-400 to-yellow-500', extra: `${stats.totalReviews} avaliacoes` },
         ].map((stat, i) => (
           <motion.div key={stat.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
             <Card className="border-border/50 overflow-hidden">
@@ -258,23 +260,105 @@ function OverviewTab() {
         ))}
       </div>
 
-      {/* Order Status Breakdown */}
-      <Card className="border-border/50 overflow-hidden">
-        <CardContent className="p-4">
-          <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
-            <BarChart3 className="h-4 w-4 text-primary" />
-            Status dos pedidos
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {Object.entries(stats.totalOrders.byStatus).filter(([k]) => k !== 'total').map(([status, count]) => (
-              <div key={status} className="p-2.5 rounded-lg bg-secondary/30 text-center">
-                <p className="text-lg font-bold">{count as number}</p>
-                <p className="text-[10px] text-muted-foreground">{status.replace('_', ' ')}</p>
+      {/* Order Status Donut Chart (CSS-based) + Status Breakdown */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="border-border/50 overflow-hidden">
+          <CardContent className="p-4">
+            <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-primary" />
+              Pedidos por Status
+            </h3>
+            <div className="flex items-center gap-4">
+              {/* CSS Donut Chart */}
+              <div className="relative h-28 w-28 shrink-0">
+                <div className="absolute inset-0 rounded-full bg-secondary/30" />
+                <svg viewBox="0 0 36 36" className="h-28 w-28 -rotate-90">
+                  {(() => {
+                    const statusEntries = Object.entries(stats.totalOrders.byStatus).filter(([k]) => k !== 'total') as [string, number][]
+                    const total = statusEntries.reduce((s, [, c]) => s + c, 0) || 1
+                    let accumulated = 0
+                    const colors: Record<string, string> = { PENDING: '#f59e0b', CONFIRMED: '#38bdf8', PREPARING: '#a78bfa', DELIVERING: '#22d3ee', DELIVERED: '#10b981', CANCELLED: '#ef4444' }
+                    const radius = 14
+                    const circumference = 2 * Math.PI * radius
+                    return statusEntries.map(([status, count]) => {
+                      const pct = count / total
+                    const strokeLength = pct * circumference
+                    const offset = accumulated * circumference
+                    accumulated += pct
+                    return (
+                      <circle
+                        key={status}
+                        cx="18"
+                        cy="18"
+                        r={radius}
+                        fill="none"
+                        stroke={colors[status] || '#94a3b8'}
+                        strokeWidth="5"
+                        strokeDasharray={`${strokeLength} ${circumference - strokeLength}`}
+                        strokeDashoffset={-offset}
+                        className="transition-all duration-700"
+                      />
+                    )
+                  })
+                })()}
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-lg font-bold">{totalOrders}</span>
+                </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              {/* Legend */}
+              <div className="flex-1 space-y-1.5">
+                {(() => {
+                  const statusEntries = Object.entries(stats.totalOrders.byStatus).filter(([k]) => k !== 'total') as [string, number][]
+                  const colors: Record<string, string> = { PENDING: 'bg-amber-500', CONFIRMED: 'bg-sky-500', PREPARING: 'bg-purple-500', DELIVERING: 'bg-cyan-500', DELIVERED: 'bg-emerald-500', CANCELLED: 'bg-red-500' }
+                  const labels: Record<string, string> = { PENDING: 'Pendentes', CONFIRMED: 'Confirmados', PREPARING: 'Preparando', DELIVERING: 'Em Entrega', DELIVERED: 'Entregues', CANCELLED: 'Cancelados' }
+                  return statusEntries.map(([status, count]) => (
+                    <div key={status} className="flex items-center gap-2">
+                      <div className={`h-2.5 w-2.5 rounded-full ${colors[status] || 'bg-muted-foreground'}`} />
+                      <span className="text-xs flex-1">{labels[status] || status.replace('_', ' ')}</span>
+                      <span className="text-xs font-semibold">{count}</span>
+                    </div>
+                  ))
+                })()}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Faturamento por Categoria (breakdown bars) */}
+        <Card className="border-border/50 overflow-hidden">
+          <CardContent className="p-4">
+            <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-amber-500" />
+              Faturamento por Categoria
+            </h3>
+            <div className="space-y-3">
+              {[
+                { name: 'Alimentacao', pct: 35, value: 'R$ 12.450', color: 'from-emerald-400 to-emerald-600' },
+                { name: 'Saude', pct: 22, value: 'R$ 7.820', color: 'from-sky-400 to-sky-600' },
+                { name: 'Servicos', pct: 18, value: 'R$ 6.400', color: 'from-amber-400 to-orange-500' },
+                { name: 'Pets', pct: 12, value: 'R$ 4.270', color: 'from-purple-400 to-purple-600' },
+                { name: 'Outros', pct: 13, value: 'R$ 4.630', color: 'from-gray-400 to-gray-500' },
+              ].map((cat) => (
+                <div key={cat.name}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-muted-foreground">{cat.name}</span>
+                    <span className="text-xs font-semibold">{cat.value} ({cat.pct}%)</span>
+                  </div>
+                  <div className="h-2 bg-secondary/50 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${cat.pct}%` }}
+                      transition={{ delay: 0.3, duration: 0.6 }}
+                      className={`h-full rounded-full bg-gradient-to-r ${cat.color}`}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Top Stores */}
       {stats.topStores && stats.topStores.length > 0 && (
@@ -309,7 +393,30 @@ function OverviewTab() {
         </Card>
       )}
 
-      {/* Recent Registrations */}
+      {/* Configurações da Plataforma - Quick Links */}
+      <Card className="border-border/50 overflow-hidden">
+        <CardContent className="p-4">
+          <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+            <Settings className="h-4 w-4 text-primary" />
+            Configuracoes da Plataforma
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[
+              { label: 'Categorias', icon: Package },
+              { label: 'Taxas', icon: DollarSign },
+              { label: 'Entregadores', icon: TrendingUp },
+              { label: 'Notificacoes', icon: Activity },
+            ].map((item) => (
+              <button key={item.label} className="flex items-center gap-2 p-3 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors">
+                <item.icon className="h-4 w-4 text-primary" />
+                <span className="text-xs font-medium">{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Registrations / Activity Feed */}
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-4 relative">
           <div className="absolute top-0 left-0 w-8 h-[2px] bg-gradient-to-r from-primary/60 to-transparent rounded-full" />

@@ -5,14 +5,20 @@ import { authOptions } from '@/lib/auth'
 import { generateOrderNumber } from '@/lib/orderFlow'
 import { logger } from '@/lib/logger'
 
-// GET: Listar pedidos de um usuário
+// GET: Listar pedidos de um usuário com filtros e paginação
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
     const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
+
+    // Filtros
     const storeId = searchParams.get('storeId')
     const status = searchParams.get('status')
+    const dateFrom = searchParams.get('dateFrom')
+    const dateTo = searchParams.get('dateTo')
+
+    // Paginação
     const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100)
     const offset = parseInt(searchParams.get('offset') || '0')
 
@@ -21,8 +27,21 @@ export async function GET(request: Request) {
     }
 
     const where: Record<string, unknown> = { accountId }
+
     if (storeId) where.storeId = storeId
     if (status) where.status = status
+
+    // Filtro por faixa de data
+    if (dateFrom || dateTo) {
+      const createdAt: Record<string, Date> = {}
+      if (dateFrom) createdAt.gte = new Date(dateFrom)
+      if (dateTo) {
+        const endDate = new Date(dateTo)
+        endDate.setUTCHours(23, 59, 59, 999)
+        createdAt.lte = endDate
+      }
+      where.createdAt = createdAt
+    }
 
     const [orders, total] = await Promise.all([
       db.order.findMany({
@@ -34,11 +53,14 @@ export async function GET(request: Request) {
               name: true,
               logo: true,
               category: true,
+              phone: true,
+              whatsapp: true,
             },
           },
           items: {
             select: {
               id: true,
+              productId: true,
               productName: true,
               productImage: true,
               price: true,
@@ -63,12 +85,14 @@ export async function GET(request: Request) {
     ])
 
     return NextResponse.json({
-      orders: orders.map(o => ({
+      orders: orders.map((o) => ({
         id: o.id,
         orderNumber: o.orderNumber,
         storeId: o.storeId,
         storeName: o.store.name,
         storeLogo: o.store.logo,
+        storePhone: o.store.phone,
+        storeWhatsapp: o.store.whatsapp,
         status: o.status,
         subtotal: o.subtotal,
         deliveryFee: o.deliveryFee,
@@ -80,6 +104,7 @@ export async function GET(request: Request) {
         items: o.items,
         estimatedTime: o.estimatedTime,
         createdAt: o.createdAt,
+        paidAt: o.paidAt,
         deliveredAt: o.deliveredAt,
         cancelledAt: o.cancelledAt,
         statusHistory: o.statusHistory,
@@ -87,9 +112,18 @@ export async function GET(request: Request) {
       total,
       limit,
       offset,
+      pagination: {
+        totalPages: Math.ceil(total / limit),
+        currentPage: Math.floor(offset / limit) + 1,
+        hasMore: offset + limit < total,
+      },
     })
   } catch (error: unknown) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
+    console.error('Erro ao listar pedidos:', error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Erro interno do servidor' },
+      { status: 500 }
+    )
   }
 }
 
@@ -144,7 +178,8 @@ export async function POST(request: Request) {
     // Verify stock for all products (batch query to avoid N+1)
     const productIds = items.map((item: { productId: string }) => item.productId)
     const products = await db.product.findMany({ where: { id: { in: productIds } } })
-    const productMap = new Map(products.map(p => [p.id, p]))
+    const productMap = new Map(products.map((p) => [p.id, p]))
+
     for (const item of items) {
       const product = productMap.get(item.productId)
 
@@ -184,7 +219,10 @@ export async function POST(request: Request) {
     }
 
     // Calculate totals
-    const subtotal = items.reduce((sum: number, item: { price: number; quantity: number }) => sum + item.price * item.quantity, 0)
+    const subtotal = items.reduce(
+      (sum: number, item: { price: number; quantity: number }) => sum + item.price * item.quantity,
+      0
+    )
 
     // Calculate delivery fee based on store settings
     let deliveryFee = 0
@@ -244,14 +282,22 @@ export async function POST(request: Request) {
           commissionRate: store.commissionRate,
           estimatedTime: deliveryType === 'PICKUP' ? '30-60 min' : '30-60 min',
           items: {
-            create: items.map((item: { productId: string; productName?: string; productImage?: string; price: number; quantity: number }) => ({
-              productId: item.productId,
-              productName: item.productName || item.name,
-              productImage: item.productImage || null,
-              price: item.price,
-              quantity: item.quantity,
-              total: item.price * item.quantity,
-            })),
+            create: items.map(
+              (item: {
+                productId: string
+                productName?: string
+                productImage?: string
+                price: number
+                quantity: number
+              }) => ({
+                productId: item.productId,
+                productName: item.productName || item.name,
+                productImage: item.productImage || null,
+                price: item.price,
+                quantity: item.quantity,
+                total: item.price * item.quantity,
+              })
+            ),
           },
           statusHistory: {
             create: {
@@ -308,6 +354,9 @@ export async function POST(request: Request) {
     })
   } catch (error: unknown) {
     logger.error('Erro ao criar pedido:', error)
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Erro interno do servidor' },
+      { status: 500 }
+    )
   }
 }

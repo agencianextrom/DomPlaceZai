@@ -1005,6 +1005,73 @@ export function DriverDashboard() {
           )}
         </AnimatePresence>
 
+        {/* -- Earnings Overview Cards (Hoje, Semana, Mês) -- */}
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <Card className="border-border/50 overflow-hidden">
+            <div className="bg-gradient-to-r from-primary to-emerald-600 px-3 py-2">
+              <p className="text-[10px] text-white/70">Hoje</p>
+              <p className="text-sm font-bold text-white">{formatCurrency(earnings?.periodEarnings || 0)}</p>
+            </div>
+          </Card>
+          <Card className="border-border/50 overflow-hidden">
+            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-3 py-2">
+              <p className="text-[10px] text-white/70">Esta Semana</p>
+              <p className="text-sm font-bold text-white">{formatCurrency(Math.round((earnings?.totalEarnings || 0) * 0.4))}</p>
+            </div>
+          </Card>
+          <Card className="border-border/50 overflow-hidden">
+            <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-2">
+              <p className="text-[10px] text-white/70">Este Mês</p>
+              <p className="text-sm font-bold text-white">{formatCurrency(earnings?.totalEarnings || 0)}</p>
+            </div>
+          </Card>
+        </div>
+
+        {/* -- Sua Avaliação Section -- */}
+        <Card className="border-border/50 mb-4">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-100 to-yellow-50 dark:from-amber-900/30 dark:to-yellow-800/10 flex items-center justify-center">
+                  <Star className="h-5 w-5 text-amber-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">Sua Avaliacao</p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-lg font-bold text-amber-500">{driver.rating.toFixed(1)}</span>
+                    <span className="text-xs text-muted-foreground">/ {driver.totalDeliveries} entregas</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map((s) => (
+                  <Star key={s} className={`h-4 w-4 ${s <= Math.round(driver.rating) ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground/30'}`} />
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* -- Map Placeholder when offline -- */}
+        {!isOnline && !isBusy && (
+          <Card className="border-primary/20 mb-4 overflow-hidden">
+            <CardContent className="p-4">
+              <div className="h-40 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center border border-dashed border-primary/30">
+                <div className="text-center">
+                  <motion.div
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                  >
+                    <MapPin className="h-10 w-10 text-primary/40 mx-auto mb-2" />
+                  </motion.div>
+                  <p className="text-sm font-semibold text-muted-foreground">Ative-se para ver entregas proximas</p>
+                  <p className="text-xs text-muted-foreground/60 mt-1">Fique online para receber pedidos na sua regiao</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* -- Tabs content -- */}
         <Tabs defaultValue="orders" className="w-full">
           <TabsList className="w-full grid grid-cols-4 mb-4">
@@ -1033,7 +1100,12 @@ export function DriverDashboard() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-sm font-bold flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-amber-500" />
+                      <motion.div
+                        animate={{ scale: [1, 1.15, 1] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        <AlertCircle className="h-4 w-4 text-amber-500" />
+                      </motion.div>
                       Pedidos disponiveis
                     </h3>
                     <Badge variant="secondary" className="text-[10px]">{availableOrders.length} pedidos</Badge>

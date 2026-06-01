@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, Search, ChevronDown, ChevronUp, MessageCircle, Phone, Mail, Clock, HelpCircle, Package, Truck, CreditCard, User, Store, Star, ThumbsUp, ThumbsDown, Send, CheckCircle, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Search, ChevronDown, ChevronUp, MessageCircle, Phone, Mail, Clock, HelpCircle, Package, Truck, CreditCard, User, Store, Star, ThumbsUp, ThumbsDown, Send, CheckCircle, ExternalLink, ShoppingBag, Bike, Store as StoreIcon, Users, Sparkles, MapPin, Headphones, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -94,8 +94,32 @@ const popularArticles = [
   { title: 'Programa de Fidelidade', icon: '⭐', reads: 1234, category: 'Conta' },
 ]
 
+const helpTopics = [
+  {
+    id: 'lojistas',
+    label: 'Para Lojistas',
+    icon: StoreIcon,
+    color: 'from-emerald-500 to-emerald-600',
+    topics: ['Como cadastrar minha loja', 'Gerenciar produtos e estoque', 'Configurar horário e entrega', 'Ver analytics de vendas', 'Criar promoções e cupons']
+  },
+  {
+    id: 'entregadores',
+    label: 'Para Entregadores',
+    icon: Bike,
+    color: 'from-teal-500 to-cyan-600',
+    topics: ['Como me cadastrar como entregador', 'Ativar status online', 'Aceitar e entregar pedidos', 'Receber pagamentos', 'Avaliações e verificação']
+  },
+  {
+    id: 'clientes',
+    label: 'Para Clientes',
+    icon: Users,
+    color: 'from-amber-500 to-orange-500',
+    topics: ['Como fazer meu primeiro pedido', 'Formas de pagamento', 'Acompanhar minha entrega', 'Programa de fidelidade', 'Devolver ou trocar produtos']
+  },
+]
+
 export function SupportCenter() {
-  const { goBack } = useAppStore()
+  const { goBack, toggleChat } = useAppStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null)
   const [showContact, setShowContact] = useState(false)
@@ -158,6 +182,82 @@ export function SupportCenter() {
             </Badge>
           )}
         </motion.div>
+
+        {/* Como funciona o DomPlace - 3 steps */}
+        {!searchQuery && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+            <Card className="border-primary/20 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-emerald-50/50 dark:from-primary/10 dark:via-background dark:to-emerald-900/10">
+              <CardContent className="p-4">
+                <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  Como funciona o DomPlace?
+                </h3>
+                <div className="flex items-start gap-3">
+                  {[
+                    { step: 1, title: 'Escolha', desc: 'Navegue por lojas e produtos locais de Dom Eliseu', icon: ShoppingBag, color: 'from-primary to-emerald-600' },
+                    { step: 2, title: 'Peça', desc: 'Adicione ao carrinho, escolha pagamento e entrega', icon: Zap, color: 'from-emerald-500 to-teal-600' },
+                    { step: 3, title: 'Receba', desc: 'Acompanhe em tempo real e receba na sua porta', icon: Truck, color: 'from-amber-500 to-orange-500' },
+                  ].map((item) => (
+                    <div key={item.step} className="flex-1 text-center">
+                      <motion.div whileHover={{ y: -3 }} className="relative">
+                        <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto mb-2 shadow-lg`}>
+                          <item.icon className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-background border-2 border-primary flex items-center justify-center">
+                          <span className="text-[10px] font-bold text-primary">{item.step}</span>
+                        </div>
+                      </motion.div>
+                      <p className="text-xs font-bold mb-0.5">{item.title}</p>
+                      <p className="text-[10px] text-muted-foreground leading-relaxed">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+        <Separator className="bg-border/50" />
+
+        {/* Category Help Topics */}
+        {!searchQuery && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
+            <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5">
+              <Headphones className="h-4 w-4 text-primary" />
+              Ajuda por perfil
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {helpTopics.map((topic, i) => (
+                <motion.button
+                  key={topic.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.08 + i * 0.05 }}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="text-left p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 transition-all group"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${topic.color} flex items-center justify-center shrink-0`}>
+                      <topic.icon className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-xs font-bold">{topic.label}</span>
+                  </div>
+                  <ul className="space-y-1">
+                    {topic.topics.slice(0, 3).map((t, j) => (
+                      <li key={j} className="text-[10px] text-muted-foreground flex items-start gap-1">
+                        <span className="text-primary mt-0.5">·</span>
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        <Separator className="bg-border/50" />
 
         {/* Popular Articles */}
         {!searchQuery && (
@@ -391,6 +491,32 @@ export function SupportCenter() {
               </motion.div>
             )}
           </AnimatePresence>
+        </motion.div>
+
+        {/* Chat com Suporte Button */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+          <Card className="border-primary/20 overflow-hidden bg-gradient-to-r from-primary/5 to-emerald-50/50 dark:from-primary/10 dark:to-emerald-900/10">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center">
+                      <Headphones className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-background animate-pulse" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold">Precisa de mais ajuda?</p>
+                    <p className="text-[10px] text-muted-foreground">Converse com nosso assistente virtual</p>
+                  </div>
+                </div>
+                <Button onClick={toggleChat} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 rounded-xl text-xs font-semibold">
+                  <MessageCircle className="h-4 w-4" />
+                  Chat com Suporte
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
       </div>
     </div>

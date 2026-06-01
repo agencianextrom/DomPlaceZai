@@ -36,10 +36,7 @@ import { useAppStore } from '@/store/useAppStore'
 import { useAuth } from '@/hooks/useAuth'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
-  ResponsiveContainer, Area, AreaChart,
-} from 'recharts'
+// Recharts removed - div-based mini chart used instead
 import { ReviewsManagement } from './ReviewsManagement'
 import { ProductForm } from './ProductForm'
 
@@ -619,16 +616,7 @@ function AuthLoading() {
   )
 }
 
-// --- Custom Recharts Tooltip ---
-function RevenueChartTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
-  if (!active || !payload?.length) return null
-  return (
-    <div className="bg-background border border-border/80 rounded-lg px-3 py-2 shadow-lg">
-      <p className="text-[10px] text-muted-foreground mb-1">{label}</p>
-      <p className="text-sm font-bold text-primary">{formatBRL(payload[0].value)}</p>
-    </div>
-  )
-}
+// --- RevenueChartTooltip removed (div-based mini chart used) ---
 
 // --- Order Detail Dialog ---
 function OrderDetailDialog({
@@ -1438,7 +1426,95 @@ export function StoreDashboard() {
                     <StatCard icon={DollarSign} label="Vendas Hoje" value={`R$ ${todayRevenue}`} trend={{ value: '+15%', positive: true }} delay={0} gradient="bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/30 dark:to-emerald-800/10" />
                     <StatCard icon={ShoppingCart} label="Pedidos Hoje" value={String(todayOrders)} trend={{ value: '+8%', positive: true }} delay={0.06} gradient="bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/10" />
                     <StatCard icon={Star} label="Avaliação" value={`${ratingValue} ⭐`} suffix={`/ ${stats?.totalReviews || 0} avaliações`} trend={{ value: '+0.2', positive: true }} delay={0.12} gradient="bg-gradient-to-br from-yellow-100 to-yellow-50 dark:from-yellow-900/30 dark:to-yellow-800/10" />
-                    <StatCard icon={TrendingUp} label="Faturamento Mensal" value={`R$ ${monthlyRevenue}`} trend={{ value: '+12%', positive: true }} delay={0.18} gradient="bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/30 dark:to-teal-800/10" />
+                    <StatCard icon={Package} label="Produtos Ativos" value={`${stats?.activeProducts || 0}/${stats?.totalProducts || 0}`} suffix={inactiveProducts > 0 ? `${inactiveProducts} inativos` : undefined} trend={{ value: inactiveProducts > 0 ? `${inactiveProducts} inativos` : 'Todos ativos', positive: inactiveProducts === 0 }} delay={0.18} gradient="bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/30 dark:to-teal-800/10" />
+                  </div>
+
+                  {/* Revenue Mini Chart (div-based for mobile) */}
+                  <motion.div variants={itemVariants} transition={{ delay: 0.20 }}>
+                    <Card className="border-border/50">
+                      <CardHeader className="pb-2 pt-4 px-4">
+                        <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                          <TrendingUp className="h-4 w-4 text-primary" />
+                          Faturamento do Mês
+                        </CardTitle>
+                        <CardDescription className="text-xs text-muted-foreground">Últimos 7 dias</CardDescription>
+                      </CardHeader>
+                      <CardContent className="px-4 pb-4">
+                        <div className="flex items-end gap-1.5 h-24">
+                          {revenueChartData.map((d, i) => {
+                            const maxVal = Math.max(...revenueChartData.map(r => r.valor), 1)
+                            const height = Math.max(8, (d.valor / maxVal) * 100)
+                            const isToday = i === revenueChartData.length - 1
+                            return (
+                              <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                                <span className="text-[9px] text-muted-foreground">{d.valor > 0 ? `${(d.valor / 1000).toFixed(0)}k` : ''}</span>
+                                <motion.div
+                                  initial={{ height: 0 }}
+                                  animate={{ height: `${height}%` }}
+                                  transition={{ delay: 0.3 + i * 0.06, duration: 0.5, type: 'spring' }}
+                                  className={`w-full rounded-t-md ${isToday ? 'bg-gradient-to-t from-primary to-emerald-400' : 'bg-primary/20 hover:bg-primary/40'} transition-colors min-h-[4px]`}
+                                />
+                                <span className={`text-[9px] ${isToday ? 'font-bold text-primary' : 'text-muted-foreground'}`}>{d.name}</span>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <motion.div variants={itemVariants} transition={{ delay: 0.22 }}>
+                      <Card className="border-border/50">
+                        <CardHeader className="pb-2 pt-4 px-4">
+                          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                            <TrendingUp className="h-4 w-4 text-primary" />
+                            Faturamento Mensal
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="px-4 pb-4">
+                          <p className="text-3xl font-bold text-primary">R$ {monthlyRevenue}</p>
+                          <div className="flex items-center gap-1 mt-1">
+                            <TrendingUp className="h-3 w-3 text-emerald-500" />
+                            <span className="text-xs text-emerald-600 dark:text-emerald-400">+12% vs mês anterior</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                    <motion.div variants={itemVariants} transition={{ delay: 0.24 }}>
+                      <Card className="border-border/50">
+                        <CardHeader className="pb-2 pt-4 px-4">
+                          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                            <Package className="h-4 w-4 text-amber-500" />
+                            Alertas de Estoque
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="px-4 pb-4">
+                          <div className="space-y-2">
+                            {products.filter(p => (p.stock ?? 0) <= 5 && p.stock > 0).slice(0, 3).map(p => (
+                              <div key={p.id} className="flex items-center justify-between py-1.5">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                                  <span className="text-xs truncate">{p.name}</span>
+                                </div>
+                                <Badge className="text-[9px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-0">{p.stock} un</Badge>
+                              </div>
+                            ))}
+                            {products.filter(p => (p.stock ?? 0) <= 5 && p.stock > 0).length === 0 && (
+                              <div className="text-center py-3">
+                                <CheckCircle2 className="h-6 w-6 text-emerald-500 mx-auto mb-1" />
+                                <p className="text-xs text-muted-foreground">Todo o estoque está abastecido</p>
+                              </div>
+                            )}
+                            {products.filter(p => (p.stock ?? 0) === 0).length > 0 && (
+                              <div className="mt-2 pt-2 border-t border-border/30">
+                                <p className="text-[10px] text-red-500 font-medium">{products.filter(p => p.stock === 0).length} produto(s) sem estoque</p>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
                   </div>
 
                   {/* Quick Order Status Overview */}
@@ -1486,39 +1562,7 @@ export function StoreDashboard() {
                     </Card>
                   </motion.div>
 
-                  {/* Revenue Chart - Recharts Area Chart */}
-                  <motion.div variants={itemVariants} transition={{ delay: 0.26 }}>
-                    <Card className="border-border/50 overflow-hidden">
-                      <CardHeader className="pb-2 pt-4 px-4">
-                        <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                          <BarChart3 className="h-4 w-4 text-primary" />
-                          Receita dos Últimos 7 Dias
-                        </CardTitle>
-                        <CardDescription className="text-xs text-muted-foreground">Faturamento diário da loja</CardDescription>
-                      </CardHeader>
-                      <CardContent className="px-4 pb-4">
-                        <div className="h-[200px] w-full">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={revenueChartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                              <defs>
-                                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                                </linearGradient>
-                              </defs>
-                              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
-                              <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                              <YAxis tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} tickFormatter={(v) => v >= 1000 ? `${(v/1000).toFixed(0)}k` : String(v)} />
-                              <RechartsTooltip content={<RevenueChartTooltip />} />
-                              <Area type="monotone" dataKey="valor" stroke="#10b981" strokeWidth={2.5} fill="url(#colorRevenue)" dot={{ r: 4, fill: '#10b981', stroke: 'white', strokeWidth: 2 }} activeDot={{ r: 6, fill: '#059669', stroke: 'white', strokeWidth: 2 }} />
-                            </AreaChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-
-                  {/* Recent Orders Table + Top Products - 2 col on lg */}
+                  {/* Recent Orders + Top Products - 2 col on lg */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {/* Recent Orders */}
                     <motion.div variants={itemVariants} transition={{ delay: 0.28 }}>

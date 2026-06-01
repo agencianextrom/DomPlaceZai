@@ -1,30 +1,96 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
-// GET: Buscar produto por ID
+// GET: Buscar produto por ID com produtos relacionados e dados da loja
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
-    
+
     const product = await db.product.findUnique({
       where: { id },
       include: {
-        store: { select: { name: true, logo: true, category: true, id: true } },
+        store: {
+          select: {
+            id: true,
+            name: true,
+            logo: true,
+            coverImage: true,
+            category: true,
+            rating: true,
+            totalReviews: true,
+            phone: true,
+            whatsapp: true,
+            address: true,
+            neighborhood: true,
+            freeDeliveryAbove: true,
+            deliveryFee: true,
+            opensAt: true,
+            closesAt: true,
+            openDays: true,
+          },
+        },
       },
     })
-    
+
     if (!product) {
       return NextResponse.json({ error: 'Produto não encontrado' }, { status: 404 })
     }
-    
+
+    // Buscar produtos relacionados da mesma loja (até 6, excluindo o atual)
+    const relatedProducts = await db.product.findMany({
+      where: {
+        storeId: product.storeId,
+        status: 'ACTIVE',
+        id: { not: id },
+      },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        comparePrice: true,
+        images: true,
+        rating: true,
+        totalReviews: true,
+        isNew: true,
+        isOffer: true,
+        soldCount: true,
+      },
+      orderBy: { soldCount: 'desc' },
+      take: 6,
+    })
+
+    // Buscar sugestões "comprados juntos" (produtos mais vendidos na mesma loja)
+    const boughtTogether = await db.product.findMany({
+      where: {
+        storeId: product.storeId,
+        status: 'ACTIVE',
+        id: { not: id },
+        price: {
+          lte: product.price * 1.5, // Preço até 50% acima
+          gte: product.price * 0.3, // Preço até 70% abaixo
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        comparePrice: true,
+        images: true,
+        rating: true,
+        totalReviews: true,
+        soldCount: true,
+      },
+      orderBy: { soldCount: 'desc' },
+      take: 4,
+    })
+
     return NextResponse.json({
       id: product.id,
       storeId: product.storeId,
-      storeName: product.store.name,
-      storeLogo: product.store.logo,
+      store: product.store,
       name: product.name,
       slug: product.slug,
       description: product.description,
@@ -41,10 +107,37 @@ export async function GET(
       variations: product.variations,
       category: product.store.category,
       status: product.status,
+      soldCount: product.soldCount,
       createdAt: product.createdAt,
+      relatedProducts: relatedProducts.map((p) => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        comparePrice: p.comparePrice,
+        images: p.images,
+        rating: p.rating,
+        totalReviews: p.totalReviews,
+        isNew: p.isNew,
+        isOffer: p.isOffer,
+        soldCount: p.soldCount,
+      })),
+      boughtTogether: boughtTogether.map((p) => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        comparePrice: p.comparePrice,
+        images: p.images,
+        rating: p.rating,
+        totalReviews: p.totalReviews,
+        soldCount: p.soldCount,
+      })),
     })
   } catch (error: unknown) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
+    console.error('Erro ao buscar produto:', error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Erro interno do servidor' },
+      { status: 500 }
+    )
   }
 }
 
@@ -97,7 +190,9 @@ export async function PUT(
     }
     if (body.variations !== undefined) {
       data.variations = body.variations
-        ? (Array.isArray(body.variations) ? JSON.stringify(body.variations) : body.variations)
+        ? Array.isArray(body.variations)
+          ? JSON.stringify(body.variations)
+          : body.variations
         : null
     }
     if (body.isFeatured !== undefined) data.isFeatured = body.isFeatured === true
@@ -112,7 +207,11 @@ export async function PUT(
 
     return NextResponse.json({ success: true, product })
   } catch (error: unknown) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
+    console.error('Erro ao atualizar produto:', error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Erro interno do servidor' },
+      { status: 500 }
+    )
   }
 }
 
@@ -136,6 +235,10 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: 'Produto removido com sucesso' })
   } catch (error: unknown) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
+    console.error('Erro ao remover produto:', error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Erro interno do servidor' },
+      { status: 500 }
+    )
   }
 }

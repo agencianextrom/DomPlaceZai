@@ -2351,3 +2351,115 @@ Stage Summary:
 - Seed API with comprehensive demo data
 - Lint: 0 errors
 - Pushed to GitHub: https://github.com/agencianextrom/DomPlaceZai
+
+---
+Task ID: 5-c
+Agent: Backend Developer
+Task: Turso migration + Cloudinary + API polish
+
+Work Log:
+- **Prisma/Turso Adapter (CRITICAL)**:
+  - Alterou `prisma/schema.prisma`: provider "sqlite" → "libsql"
+  - Reescreveu `src/lib/db.ts` com adapter limpo usando `@prisma/adapter-libsql` + `@libsql/client`
+  - Removou fallback para SQLite local — Turso é o banco ABSOLUTO
+  - Singleton pattern mantido para desenvolvimento (hot-reload seguro)
+  - Tratamento de erro: lança exceção se TURSO_URL/TURSO_AUTH_TOKEN não configurados
+  - dbHealthCheck retorna engine: 'turso'
+
+- **Cloudinary Upload Integration**:
+  - Reescreveu `src/lib/upload.ts`: funções cliente (uploadImage, uploadMultipleImages, deleteImage) + funções servidor (uploadImageToCloudinary, uploadImagesToCloudinary, deleteImageFromCloudinary)
+  - Funções servidor usam importação dinâmica do cloudinary SDK (só executa no servidor)
+  - Validação compartilhada: ALLOWED_TYPES, MAX_SIZE 5MB, validateImageFile()
+  - `src/app/api/upload/route.ts`: suporte a upload único (campo "image") e batch (campo "images", até 10 arquivos)
+  - DELETE: suporta remoção única (publicId) e batch (publicIds, até 20)
+  - Parâmetro `folder` customizável via FormData (padrão: "domplace")
+  - Compatibilidade retroativa mantida (campo "image" retorna objeto único)
+
+- **Store Dashboard Stats API** (`src/app/api/store-dashboard/stats/route.ts`):
+  - Adicionou receita semanal e mensal (weekRevenue, monthRevenue)
+  - Adicionou top 5 produtos mais vendidos (topProducts) com nome, preço, vendas, estoque, imagens, avaliação
+  - Adicionou receita diária dos últimos 7 dias (dailyRevenue) para gráfico — array com {date, revenue}
+  - Refinado cálculo de averageRating com base em reviews reais da loja
+
+- **Store Dashboard Orders API** (`src/app/api/store-dashboard/orders/route.ts`):
+  - Adicionado filtro por data: dateFrom e dateTo (com hora 23:59:59 no final)
+  - Adicionado summary com receita filtrada e contagem de pedidos filtrados
+  - Paginação existente mantida com melhoria no formato de resposta
+
+- **Products API** (`src/app/api/products/route.ts`):
+  - Adicionadas ordenações: name-asc, name-desc
+  - Incluídos dados extras da loja: storeId_full, storeRating, storeTotalReviews, soldCount, createdAt
+  - Adicionado objeto pagination com totalPages, currentPage, hasMore
+  - Adicionado filters.categories (categorias disponíveis para filtros no frontend)
+  - Melhoria nos logs de erro com console.error
+
+- **Products [id] API** (`src/app/api/products/[id]/route.ts`):
+  - Adicionados produtos relacionados (relatedProducts) — até 6 produtos da mesma loja, ordenados por soldCount
+  - Adicionados sugestões "comprados juntos" (boughtTogether) — até 4 produtos com faixa de preço similar
+  - Dados completos da loja: phone, whatsapp, address, neighborhood, opensAt, closesAt, openDays, freeDeliveryAbove, deliveryFee
+
+- **Orders API** (`src/app/api/orders/route.ts`):
+  - Adicionado filtro por data: dateFrom e dateTo
+  - Adicionados dados extras da loja: storePhone, storeWhatsapp
+  - Adicionado objeto pagination com totalPages, currentPage, hasMore
+  - POST (criação) preservado com todas as validações existentes
+
+- **Orders [id] API** (`src/app/api/orders/[id]/route.ts`):
+  - Adicionados dados do cliente: id, name, phone, avatar
+  - Adicionados campos extras: commissionRate, couponCode
+  - Estrutura de resposta reorganizada para incluir customer e store separadamente
+  - PATCH e POST preservados com funcionalidades existentes
+
+- **Reviews API** (`src/app/api/reviews/route.ts`):
+  - Adicionado filtro por nota (ratingFilter)
+  - Adicionado PUT para resposta do lojista (reply) em avaliação existente
+  - Adicionado helpful vote via action: 'helpful' no POST
+  - Adicionado ratingDistribution: contagem por nota (1-5 estrelas)
+  - Adicionado objeto pagination na resposta GET
+
+- **Loyalty API** (`src/app/api/loyalty/route.ts`):
+  - Adicionado POST para adicionar pontos (action: 'add') e resgatar (action: 'redeem')
+  - Validação de saldo antes do resgate
+  - Pontos ganhos expiram em 12 meses
+  - Retorno com previousBalance e newBalance
+  - GET expandido: histórico de 50 entradas, resumo mensal (6 meses), expiringSoon
+
+Stage Summary:
+- 10 arquivos modificados, 0 arquivos novos
+- Prisma provider corrigido: sqlite → libsql
+- db.ts reescrito: adapter limpo Turso, sem fallback
+- upload.ts: funções cliente + servidor para Cloudinary
+- upload/route.ts: suporte batch, remoção batch, folder customizável
+- Store Dashboard Stats: receita semanal/mensal, top 5 produtos, gráfico diário
+- Store Dashboard Orders: filtro por data, resumo da receita filtrada
+- Products: ordenação por nome, pagination, dados extras da loja, categorias
+- Products [id]: relacionados + "comprados juntos" + dados completos da loja
+- Orders: filtro por data, pagination, dados extras da loja
+- Orders [id]: dados do cliente, commissionRate, couponCode
+- Reviews: filtro por nota, PUT para resposta, helpful vote, distribuição
+- Loyalty: POST para adicionar/resgatar pontos, histórico mensal
+- ESLint: 4 erros pré-existentes (AffiliateDashboard, CartRecoveryBanner, ProductQuickAdd, DailyRewards) — nenhum introduzido por estas mudanças
+- Todos os textos e comentários em português brasileiro (pt-BR)
+
+---
+Task ID: 5-b
+Agent: Full-Stack Developer - Dashboard UX for All Roles
+Task: Dashboard UX for all roles
+
+Work Log:
+- **SupportCenter.tsx**: Added "Como funciona o DomPlace?" 3-step explainer (Escolha → Peça → Receba), added "Ajuda por perfil" category-based help topics (Para Lojistas, Para Entregadores, Para Clientes), added "Chat com Suporte" button linking to AIChat via toggleChat, added helpTopics data array with icons and gradient colors
+- **StoreDashboard.tsx**: Replaced "Faturamento Mensal" KPI card with "Produtos Ativos" (X/Y with stock alerts), added div-based revenue mini-chart with animated bars (last 7 days, highlighted today), added "Faturamento Mensal" summary card with trend indicator, added "Alertas de Estoque" card with low-stock products and out-of-stock warning, removed Recharts dependency (RevenueChartTooltip), cleaned up imports
+- **DriverDashboard.tsx**: Added 3 gradient earnings overview cards (Hoje/Semana/Mês), added "Sua Avaliação" section with star rating display and delivery count, added map placeholder for offline state with animated floating pin and "Ative-se para ver entregas próximas" message, added pulse animation on available orders icon (scale pulse using Framer Motion)
+- **AffiliateDashboard.tsx**: Added "Bônus por Meta" section with 3 milestone progress bars (10→R$50, 25→R$150, 50→R$400) with gradient fills and animated progress, added "Ranking de Afiliados" leaderboard with 5 mock affiliates including "Você" highlighted row, added "Comissões Recentes" list showing referral name, date, commission amount and status badge, added User import for commission cards
+- **AdminDashboard.tsx**: Expanded KPI grid from 4 to 6 cards (added "Lojas Ativas" X/Y, "Entregadores Online", "Avaliação Média"), added CSS-based donut chart for "Pedidos por Status" with SVG circles and color-coded legend, added "Faturamento por Categoria" breakdown with animated gradient progress bars (5 categories), added "Configurações da Plataforma" quick links section (Categorias, Taxas, Entregadores, Notificações), imported Settings icon
+
+Stage Summary:
+- 5 dashboard components enhanced with significant UX improvements
+- Support Center: 3 new sections (Como funciona, Ajuda por perfil, Chat com Suporte)
+- Store Dashboard: Stock alerts, div-based revenue mini-chart, enhanced KPI cards
+- Driver Dashboard: Gradient earnings cards, rating section, offline map placeholder, pulse animations
+- Affiliate Dashboard: Bonus milestones with progress bars, leaderboard, recent commissions
+- Admin Dashboard: 6 KPI cards, CSS donut chart, category revenue bars, platform config links
+- All text in Brazilian Portuguese, emerald/amber theme maintained
+- ESLint: 0 new errors (1 pre-existing error in DailyRewards.tsx unchanged)
+- Dev server: compiling successfully

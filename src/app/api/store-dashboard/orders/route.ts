@@ -9,7 +9,13 @@ export async function GET(request: Request) {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
     const accountId = (session?.user as Record<string, unknown>)?.id as string
+
+    // Parâmetros de filtro
     const status = searchParams.get('status')
+    const dateFrom = searchParams.get('dateFrom')
+    const dateTo = searchParams.get('dateTo')
+
+    // Paginação
     const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100)
     const offset = parseInt(searchParams.get('offset') || '0')
 
@@ -37,8 +43,24 @@ export async function GET(request: Request) {
 
     // Construir filtro where
     const where: Record<string, unknown> = { storeId }
+
     if (status) {
       where.status = status as string
+    }
+
+    // Filtro por faixa de data
+    if (dateFrom || dateTo) {
+      const createdAt: Record<string, Date> = {}
+      if (dateFrom) {
+        createdAt.gte = new Date(dateFrom)
+      }
+      if (dateTo) {
+        // Incluir o dia inteiro (até 23:59:59)
+        const endDate = new Date(dateTo)
+        endDate.setUTCHours(23, 59, 59, 999)
+        createdAt.lte = endDate
+      }
+      where.createdAt = createdAt
     }
 
     // Buscar pedidos com paginação em paralelo
@@ -82,6 +104,17 @@ export async function GET(request: Request) {
       db.order.count({ where }),
     ])
 
+    // Calcular totais de receita para os pedidos filtrados
+    const revenueStatuses = ['CONFIRMED', 'PREPARING', 'READY', 'DELIVERING', 'DELIVERED']
+    const filteredRevenueResult = await db.order.aggregate({
+      where: {
+        ...where,
+        status: { in: revenueStatuses },
+      },
+      _sum: { total: true },
+      _count: true,
+    })
+
     return NextResponse.json({
       storeId,
       storeName: store.name,
@@ -117,6 +150,10 @@ export async function GET(request: Request) {
         hasMore: offset + limit < total,
         totalPages: Math.ceil(total / limit),
         currentPage: Math.floor(offset / limit) + 1,
+      },
+      summary: {
+        filteredRevenue: filteredRevenueResult._sum.total || 0,
+        filteredCount: filteredRevenueResult._count || 0,
       },
     })
   } catch (error) {

@@ -1,7 +1,8 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import { applyStatusTransition, getStatusLabel } from '@/lib/orderFlow'
 
-// GET: Detalhes do pedido com itens e informações da loja
+// GET: Detalhes completos do pedido com itens, loja, entregador e histórico
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -12,6 +13,14 @@ export async function GET(
     const order = await db.order.findUnique({
       where: { id },
       include: {
+        account: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+            avatar: true,
+          },
+        },
         store: {
           select: {
             id: true,
@@ -71,6 +80,13 @@ export async function GET(
     return NextResponse.json({
       id: order.id,
       orderNumber: order.orderNumber,
+      accountId: order.accountId,
+      customer: {
+        id: order.account.id,
+        name: order.account.name,
+        phone: order.account.phone,
+        avatar: order.account.avatar,
+      },
       storeId: order.storeId,
       store: order.store,
       status: order.status,
@@ -88,6 +104,8 @@ export async function GET(
       customerRating: order.customerRating,
       driverRating: order.driverRating,
       commission: order.commission,
+      commissionRate: order.commissionRate,
+      couponCode: order.couponCode,
       items: order.items,
       statusHistory: order.statusHistory,
       driver: order.driver,
@@ -98,13 +116,15 @@ export async function GET(
       cancelReason: order.cancelReason,
     })
   } catch (error: unknown) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
+    console.error('Erro ao buscar pedido:', error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Erro interno do servidor' },
+      { status: 500 }
+    )
   }
 }
 
 // PATCH: Atualizar status do pedido usando a máquina de estados aprimorada
-import { applyStatusTransition, getStatusLabel } from '@/lib/orderFlow'
-
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -122,13 +142,21 @@ export async function PATCH(
     }
 
     const validStatuses = [
-      'PENDING', 'CONFIRMED', 'PREPARING', 'READY',
-      'DELIVERING', 'DELIVERED', 'CANCELLED', 'REFUNDED',
+      'PENDING',
+      'CONFIRMED',
+      'PREPARING',
+      'READY',
+      'DELIVERING',
+      'DELIVERED',
+      'CANCELLED',
+      'REFUNDED',
     ] as const
 
     if (!validStatuses.includes(status)) {
       return NextResponse.json(
-        { error: `Status inválido. Valores permitidos: ${validStatuses.map(s => getStatusLabel(s)).join(', ')}` },
+        {
+          error: `Status inválido. Valores permitidos: ${validStatuses.map((s) => getStatusLabel(s)).join(', ')}`,
+        },
         { status: 400 }
       )
     }
@@ -163,7 +191,7 @@ export async function PATCH(
             data: result.notification.data,
           }),
         }).catch(() => {
-          // Non-critical: push notification failed, in-app notification was already created
+          // Non-critical: push notification failed
         })
       } catch {
         // Ignore FCM errors
@@ -180,7 +208,10 @@ export async function PATCH(
     })
   } catch (error: unknown) {
     console.error('Erro ao atualizar pedido:', error)
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Erro interno do servidor' },
+      { status: 500 }
+    )
   }
 }
 
@@ -278,9 +309,10 @@ export async function POST(
       select: { rating: true },
     })
 
-    const avgRating = storeReviews.length > 0
-      ? storeReviews.reduce((sum, r) => sum + r.rating, 0) / storeReviews.length
-      : 0
+    const avgRating =
+      storeReviews.length > 0
+        ? storeReviews.reduce((sum, r) => sum + r.rating, 0) / storeReviews.length
+        : 0
 
     await db.store.update({
       where: { id: order.storeId },
@@ -292,6 +324,10 @@ export async function POST(
 
     return NextResponse.json({ success: true, message: 'Avaliação registrada com sucesso' })
   } catch (error: unknown) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
+    console.error('Erro ao avaliar pedido:', error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Erro interno do servidor' },
+      { status: 500 }
+    )
   }
 }

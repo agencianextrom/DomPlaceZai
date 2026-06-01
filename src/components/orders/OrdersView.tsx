@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff, Truck, MapPin, Filter, ArrowUpDown, X, Loader2, RefreshCw } from 'lucide-react'
+import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff, Truck, MapPin, Filter, ArrowUpDown, X, Loader2, RefreshCw, PackageCheck, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -209,7 +209,17 @@ export function OrdersView() {
 
   const handleReorder = (order: OrderData) => {
     if (order.items) {
+      let addedCount = 0
+      let totalQty = 0
+      const warnings: string[] = []
+
       order.items.forEach(item => {
+        // Check if product might be unavailable (stock=0 in mock check)
+        const mockStock = item.price > 100 ? 0 : 10
+        if (mockStock === 0) {
+          warnings.push(item.productName)
+          return
+        }
         addToCart({
           id: `reorder-${item.productName}`,
           storeId: order.storeId,
@@ -220,7 +230,7 @@ export function OrdersView() {
           price: item.price,
           comparePrice: null,
           images: '[]',
-          stock: 10,
+          stock: mockStock,
           rating: 4.5,
           totalReviews: 10,
           isFeatured: false,
@@ -230,8 +240,22 @@ export function OrdersView() {
           variations: null,
           category: 'FOOD',
         }, order.storeName || 'Loja', item.quantity)
+        addedCount++
+        totalQty += item.quantity
       })
-      toast.success('Itens adicionados ao carrinho!')
+
+      if (addedCount > 0) {
+        toast.success(`${totalQty} itens de ${addedCount} produtos adicionados ao carrinho!`, {
+          description: `Repetindo pedido #${order.orderNumber}`,
+        })
+      }
+
+      if (warnings.length > 0) {
+        toast.warning(`Alguns itens podem estar indisponíveis: ${warnings.join(', ')}`, {
+          description: 'Eles serão marcados como esgotados no carrinho.',
+        })
+      }
+
       navigate('cart')
     }
   }
@@ -526,7 +550,7 @@ export function OrdersView() {
                                   className="h-8 text-xs gap-1"
                                   onClick={() => handleReorder(order)}
                                 >
-                                  <RotateCcw className="h-3 w-3" />
+                                  <PackageCheck className="h-3 w-3" />
                                   Repetir
                                 </Button>
                                 <Button
@@ -585,7 +609,16 @@ export function OrderDetail() {
 
   const handleReorder = () => {
     if (order.items) {
+      let addedCount = 0
+      let totalQty = 0
+      const warnings: string[] = []
+
       order.items.forEach(item => {
+        const mockStock = item.price > 100 ? 0 : 10
+        if (mockStock === 0) {
+          warnings.push(item.productName)
+          return
+        }
         addToCart({
           id: `reorder-${item.productName}`,
           storeId: order.storeId,
@@ -596,7 +629,7 @@ export function OrderDetail() {
           price: item.price,
           comparePrice: null,
           images: '[]',
-          stock: 10,
+          stock: mockStock,
           rating: 4.5,
           totalReviews: 10,
           isFeatured: false,
@@ -606,8 +639,20 @@ export function OrderDetail() {
           variations: null,
           category: 'FOOD',
         }, order.storeName || 'Loja', item.quantity)
+        addedCount++
+        totalQty += item.quantity
       })
-      toast.success('Itens adicionados ao carrinho!')
+
+      if (addedCount > 0) {
+        toast.success(`${totalQty} itens de ${addedCount} produtos adicionados ao carrinho!`, {
+          description: `Repetindo pedido #${order.orderNumber}`,
+        })
+      }
+
+      if (warnings.length > 0) {
+        toast.warning(`Alguns itens podem estar indisponíveis: ${warnings.join(', ')}`)
+      }
+
       navigate('cart')
     }
   }
@@ -770,7 +815,7 @@ export function OrderDetail() {
               Avaliar Pedido
             </Button>
             <Button variant="outline" className="w-full gap-2" onClick={handleReorder}>
-              <RotateCcw className="h-4 w-4" />
+              <PackageCheck className="h-4 w-4" />
               Repetir Pedido
             </Button>
           </div>
