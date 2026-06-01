@@ -2583,3 +2583,90 @@ Stage Summary:
 - Cloudinary: client/server split resolved
 - Turso DB: fully connected and operational
 - Files changed: 8 (2 new, 1 deleted, 5 modified)
+---
+Task ID: build-fix-v2
+Agent: Master Agent
+Task: Fix all Vercel build errors (30+ TypeScript errors + Suspense boundary) and push to GitHub
+
+Work Log:
+- Fixed tsconfig.json: excluded examples/, mini-services/, scripts/, skills/ from TypeScript compilation
+- Fixed src/app/api/admin/users/[id]/route.ts: Promise<unknown>[] → any[] for Prisma $transaction
+- Fixed src/app/api/driver/orders/route.ts: 3x destructuring assignment to Promise.all() (TS strict mode)
+- Fixed src/app/api/driver/orders/route.ts: 'readonly' array → mutable for Prisma enum filter
+- Fixed src/app/api/orders/route.ts: item.name → item.productId (nonexistent property)
+- Fixed src/app/api/payments/checkout/route.ts: mp.payments.create → Payment.create (SDK v2 API)
+- Fixed src/app/api/payments/checkout/route.ts: PaymentResponse → unknown double cast
+- Fixed src/app/api/payments/webhook/route.ts: mp.payments.findById → Payment.get (correct method)
+- Fixed src/app/api/store-dashboard/orders/route.ts: revenueStatuses string[] → enum tuple
+- Fixed src/app/api/store-dashboard/stats/route.ts: same revenueStatuses fix + shorthand properties
+- Fixed src/components/auth/AuthModal.tsx: added turnstileToken to RegisterData interface
+- Fixed src/store/useAppStore.ts: ProductData freeDeliveryAbove/storeDeliveryFee → optional
+- Fixed src/components/checkout/CheckoutView.tsx: step type narrowing for 'confirmation' check
+- Fixed src/components/dashboard/AdminDashboard.tsx: totalSpent optional chaining + forceMount removal
+- Fixed src/components/dashboard/ProductForm.tsx: zod v4 invalid_type_error → message + ZodError.issues
+- Fixed src/components/dashboard/ReviewsManagement.tsx: framer-motion spring type: 'spring' as const
+- Fixed src/components/dashboard/StoreDashboard.tsx: same spring as const + removed undefined prop + typed days array + removed accountId prop
+- Fixed src/components/driver/DriverDashboard.tsx: recharts Tooltip formatter type
+- Fixed src/components/home/FeedActivity.tsx: same spring as const
+- Fixed src/components/home/SmartSuggestions.tsx: void expression → block statement
+- Fixed src/components/navigation/NProgressLoader.tsx: removed trickleRate (invalid option) + wrapped in Suspense
+- Fixed src/components/orders/DeliveryTracker.tsx: added missing elapsed state + setElapsed
+- Fixed src/components/orders/OrdersView.tsx: deliveryAddress property + selectOrder method name
+- Fixed src/components/product/ProductDetail.tsx: product.storeName optional fallback
+- Fixed src/components/profile/LoyaltyHistory.tsx: isRead property check
+- Fixed src/components/profile/OrderTimeline.tsx: CookingTimer → Timer (correct Lucide icon)
+- Fixed src/components/profile/PromoCodeRedemption.tsx: spring as const
+- Fixed src/components/profile/ShoppingLists.tsx: spring as const
+- Fixed src/components/profile/AddressManager.tsx: spring as const
+- Fixed src/components/product/ProductReviews.tsx: spring as const
+- Fixed src/components/store/StoreComparison.tsx: spring as const
+- Fixed src/components/ui/chart.tsx: Recharts Legend/Tooltip type compatibility
+- Fixed src/lib/auth.ts: user/token casting with unknown intermediary
+- Fixed src/lib/cart-persistence.ts: unknown type comparison
+- Fixed src/lib/email.ts: default → named import for Resend
+- Fixed src/lib/analytics.ts: removed useSearchParams (not needed for page tracking)
+
+Stage Summary:
+- 30+ TypeScript errors fixed across 35 files
+- Build passes: TypeScript ✅ + Static generation ✅ + Turso DB connected ✅
+- Git email confirmed as agencianextrom@gmail.com (already correct)
+- 3 commits pushed to GitHub (d26bbc7)
+- Vercel should now deploy successfully
+- webDevReview cron job created (every 15 min)
+
+### Files Changed:
+- tsconfig.json (exclude non-app dirs)
+- src/app/api/admin/users/[id]/route.ts
+- src/app/api/driver/orders/route.ts
+- src/app/api/orders/route.ts
+- src/app/api/payments/checkout/route.ts
+- src/app/api/payments/webhook/route.ts
+- src/app/api/store-dashboard/orders/route.ts
+- src/app/api/store-dashboard/stats/route.ts
+- src/components/auth/AuthModal.tsx
+- src/components/checkout/CheckoutView.tsx
+- src/components/dashboard/AdminDashboard.tsx
+- src/components/dashboard/ProductForm.tsx
+- src/components/dashboard/ReviewsManagement.tsx
+- src/components/dashboard/StoreDashboard.tsx
+- src/components/driver/DriverDashboard.tsx
+- src/components/home/FeedActivity.tsx
+- src/components/home/SmartSuggestions.tsx
+- src/components/navigation/NProgressLoader.tsx
+- src/components/orders/DeliveryTracker.tsx
+- src/components/orders/OrdersView.tsx
+- src/components/product/ProductDetail.tsx
+- src/components/product/ProductReviews.tsx
+- src/components/profile/AddressManager.tsx
+- src/components/profile/LoyaltyHistory.tsx
+- src/components/profile/OrderTimeline.tsx
+- src/components/profile/PromoCodeRedemption.tsx
+- src/components/profile/ShoppingLists.tsx
+- src/components/store/StoreComparison.tsx
+- src/components/ui/chart.tsx
+- src/hooks/useAuth.ts
+- src/lib/auth.ts
+- src/lib/cart-persistence.ts
+- src/lib/email.ts
+- src/lib/analytics.ts
+- src/store/useAppStore.ts
