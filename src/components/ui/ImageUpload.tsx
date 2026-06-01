@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { Upload, X, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
-import { uploadImage, validateImageFile, createPreviewUrl, type UploadProgress } from '@/lib/upload'
+import { uploadImage, validateImageFile, createPreviewUrl, type UploadProgress } from '@/lib/upload-client'
 import { cn } from '@/lib/utils'
 import { Progress } from '@/components/ui/progress'
 

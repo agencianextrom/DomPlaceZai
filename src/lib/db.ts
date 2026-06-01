@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaLibSQL } from '@prisma/adapter-libsql'
-import { createClient, type Client } from '@libsql/client'
 
 /**
  * DomPlace - Conexão com banco de dados Turso (libSQL)
@@ -11,23 +10,22 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-function createTursoClient(): Client {
+function createPrismaClient(): PrismaClient {
   const url = process.env.TURSO_URL
   const authToken = process.env.TURSO_AUTH_TOKEN
 
-  if (!url || !authToken) {
-    throw new Error(
-      '[DB] Variáveis TURSO_URL e TURSO_AUTH_TOKEN são obrigatórias no .env'
-    )
+  if (!url) {
+    throw new Error('[DB] TURSO_URL é obrigatória no .env')
+  }
+  if (!authToken) {
+    throw new Error('[DB] TURSO_AUTH_TOKEN é obrigatório no .env')
   }
 
-  return createClient({ url, authToken })
-}
+  console.log(`[DB] Conectando ao Turso: ${url.substring(0, 40)}...`)
 
-function createPrismaClient(): PrismaClient {
   try {
-    const libsql = createTursoClient()
-    const adapter = new PrismaLibSQL(libsql)
+    // PrismaLibSQL is a factory — pass connection config, not a pre-created client
+    const adapter = new PrismaLibSQL({ url, authToken })
 
     console.log('[DB] Conectado ao Turso (libSQL) — banco de dados remoto')
 
@@ -44,7 +42,6 @@ function createPrismaClient(): PrismaClient {
 }
 
 // Singleton para desenvolvimento (evita recriação em hot-reload)
-// Em produção, cria uma nova instância por request worker
 export const db = globalForPrisma.prisma ?? createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') {
