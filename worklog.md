@@ -2557,3 +2557,29 @@ Stage Summary:
 ### Git Status:
 - Pushed to GitHub: `8c7ccaa`
 - All commits use `agencianextrom@gmail.com` email (Vercel compatible)
+
+---
+Task ID: FIX-1 (Critical Build/Deploy Fixes)
+Agent: Master Agent
+Task: Fix critical build errors preventing Vercel deployment and app runtime
+
+Work Log:
+- **Fixed Cloudinary client-side import error** (HTTP 500): Cloudinary SDK uses Node.js `fs` module which can't be bundled for browser. Created `/src/lib/upload-client.ts` with client-only upload functions (no cloudinary dependency). Updated `ImageUpload.tsx` to import from `upload-client.ts` instead of `upload.ts`.
+- **Fixed PrismaLibSQL adapter connection error** (URL_INVALID: 'undefined'): `PrismaLibSQL` is a factory (not direct adapter). Changed from passing pre-created libsql client to passing `{ url, authToken }` config object directly. The factory creates its own libsql client internally.
+- **Fixed @prisma/adapter-libsql version mismatch**: Downgraded from `^7.7.0` to `6.19.3` to match `@prisma/client@6.19.2`. The v7 adapter exports `PrismaLibSql` (lowercase l) while v6 exports `PrismaLibSQL` (uppercase).
+- **Fixed Prisma schema provider**: Changed `provider = "libsql"` to `provider = "sqlite"` because Prisma 6.19.2 doesn't recognize "libsql" as a provider. The Turso connection is handled entirely by the adapter.
+- **Removed deprecated middleware.ts**: Next.js 16 warns about middleware deprecation ("use proxy instead"). Removed the file since auth is handled at API route level.
+- **Updated next.config.ts**: Added `serverExternalPackages: ['cloudinary']` for server-side Cloudinary SDK usage.
+- **Fixed Git email**: Already configured as `agencianextrom@gmail.com`.
+- **Updated .env**: Turso URL and auth token already correctly set.
+- **Push to GitHub**: Committed and pushed as `7fba64c`.
+
+Stage Summary:
+- Homepage: 200 OK (renders correctly)
+- API Products: 200 OK (32 products from Turso DB)
+- API Stores: 200 OK (8 stores from Turso DB)
+- ESLint: 0 errors
+- Middleware warning: eliminated
+- Cloudinary: client/server split resolved
+- Turso DB: fully connected and operational
+- Files changed: 8 (2 new, 1 deleted, 5 modified)
