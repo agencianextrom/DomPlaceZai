@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
 
-    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string | undefined
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     if (!accountId) {
       return NextResponse.json({ notifications: [], total: 0, unreadCount: 0 })
@@ -88,7 +88,7 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json()
     const { notificationId, markAll } = body
 
-    const accountId = body.accountId || (session?.user as Record<string, unknown>)?.id as string | undefined
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     if (!accountId) {
       return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
@@ -141,7 +141,7 @@ export async function DELETE(request: NextRequest) {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
 
-    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string | undefined
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
     const notificationId = searchParams.get('id')
 
     if (!accountId) {

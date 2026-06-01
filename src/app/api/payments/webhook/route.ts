@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { logger } from '@/lib/logger'
 
 const MP_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN
 
@@ -9,7 +10,7 @@ export async function POST(request: NextRequest) {
 
     // Se não há token Mercado Pago configurado, apenas log e retornar OK
     if (!MP_ACCESS_TOKEN) {
-      console.log('[MercadoPago Webhook] Recebido (modo mock):', JSON.stringify(body).substring(0, 200))
+      logger.info('Recebido (modo mock)', { body: JSON.stringify(body).substring(0, 200) })
       return NextResponse.json({ received: true, mock: true })
     }
 
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
       // Mercado Pago envia x-id-empresarial e x-signature para verificação
       const xIdEmpresarial = request.headers.get('x-id-empresarial')
       if (xIdEmpresarial && !verifySignature(signature, xIdEmpresarial, requestId || '', dataIdFromBody(body))) {
-        console.warn('[MercadoPago Webhook] Assinatura inválida')
+        logger.warn('Assinatura inválida')
         // Mesmo assim retornar 200 para evitar retentativas
         return NextResponse.json({ received: true })
       }
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
               })
             }
 
-            console.log(`[MercadoPago Webhook] Pedido ${order.orderNumber} aprovado — pontos: ${points}`)
+            logger.info(`Pedido ${order.orderNumber} aprovado — pontos: ${points}`)
           }
         } else if (paymentStatus === 'cancelled' || paymentStatus === 'rejected') {
           const order = await db.order.findFirst({
@@ -108,7 +109,7 @@ export async function POST(request: NextRequest) {
         }
       } catch (mpError: unknown) {
         const msg = mpError instanceof Error ? mpError.message : String(mpError)
-        console.error('[MercadoPago Webhook] Erro ao processar pagamento:', msg)
+        logger.error('Erro ao processar pagamento:', msg)
       }
     }
 
@@ -116,7 +117,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Erro interno'
-    console.error('[MercadoPago Webhook] Erro:', message)
+    logger.error('Erro no webhook:', message)
     // Sempre 200 para evitar retentativas
     return NextResponse.json({ received: true, error: message })
   }
@@ -144,7 +145,7 @@ function verifySignature(
 
     // Se não tivermos a chave para verificação HMAC, aceitar (graceful degradation)
     if (!process.env.MERCADO_PAGO_WEBHOOK_SECRET) {
-      console.warn('[MercadoPago Webhook] MERCADO_PAGO_WEBHOOK_SECRET não configurada — pulando verificação HMAC')
+      logger.warn('MERCADO_PAGO_WEBHOOK_SECRET não configurada — pulando verificação HMAC')
       return true
     }
 

@@ -3,16 +3,17 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { generateOrderNumber } from '@/lib/orderFlow'
+import { logger } from '@/lib/logger'
 
 // GET: Listar pedidos de um usuário
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
-    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string | undefined
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
     const storeId = searchParams.get('storeId')
     const status = searchParams.get('status')
-    const limit = parseInt(searchParams.get('limit') || '20')
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100)
     const offset = parseInt(searchParams.get('offset') || '0')
 
     if (!accountId) {
@@ -97,7 +98,7 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const body = await request.json()
-    const accountId = body.accountId || (session?.user as Record<string, unknown>)?.id as string | undefined
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     const {
       storeId,
@@ -140,11 +141,12 @@ export async function POST(request: Request) {
       )
     }
 
-    // Verify stock for all products
+    // Verify stock for all products (batch query to avoid N+1)
+    const productIds = items.map((item: { productId: string }) => item.productId)
+    const products = await db.product.findMany({ where: { id: { in: productIds } } })
+    const productMap = new Map(products.map(p => [p.id, p]))
     for (const item of items) {
-      const product = await db.product.findUnique({
-        where: { id: item.productId },
-      })
+      const product = productMap.get(item.productId)
 
       if (!product) {
         return NextResponse.json(
@@ -279,7 +281,7 @@ export async function POST(request: Request) {
       })
     } catch {
       // Non-critical: cart cleanup failed, order was still created
-      console.warn('Could not clear cart after order creation')
+      logger.warn('Could not clear cart after order creation')
     }
 
     return NextResponse.json({
@@ -305,7 +307,7 @@ export async function POST(request: Request) {
       },
     })
   } catch (error: unknown) {
-    console.error('Erro ao criar pedido:', error)
+    logger.error('Erro ao criar pedido:', error)
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Erro interno do servidor' }, { status: 500 })
   }
 }

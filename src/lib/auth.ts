@@ -4,6 +4,7 @@ import GoogleProvider from 'next-auth/providers/google'
 import FacebookProvider from 'next-auth/providers/facebook'
 import { db } from '@/lib/db'
 import { hashPassword, verifyPassword } from '@/lib/crypto'
+import { logger } from '@/lib/logger'
 
 // Criar account no banco se não existe (para OAuth)
 async function ensureAccountExists(
@@ -58,11 +59,11 @@ async function ensureAccountExists(
       },
     })
 
-    console.log(`[Auth] Nova conta criada via ${provider}: ${email} (500 pontos de boas-vindas)`)
+    logger.info(`Nova conta criada via ${provider}: ${email} (500 pontos de boas-vindas)`)
 
     return account
   } catch (error) {
-    console.error(`[Auth] Erro ao criar conta via ${provider}:`, error)
+    logger.error(`Erro ao criar conta via ${provider}`, error)
     return null
   }
 }
@@ -108,7 +109,7 @@ const providers: NextAuthOptions['providers'] = [
           phone: account.phone,
         }
       } catch (error) {
-        console.error('Erro na autenticação:', error)
+        logger.error('Erro na autenticação', error)
         return null
       }
     },

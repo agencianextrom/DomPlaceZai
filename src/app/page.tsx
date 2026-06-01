@@ -19,6 +19,7 @@ import { AuthModal } from '@/components/auth/AuthModal'
 import { WelcomeModal } from '@/components/onboarding/WelcomeModal'
 import { AIChatBot } from '@/components/chat/AIChatBot'
 import { CookieConsent } from '@/components/layout/CookieConsent'
+import { ViewTransition } from '@/components/layout/ViewTransition'
 import { QuickInfo } from '@/components/home/QuickInfo'
 import { FlashSale } from '@/components/home/FlashSale'
 import { WeekendSpecials } from '@/components/home/WeekendSpecials'
@@ -58,6 +59,9 @@ import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { ProductData, StoreData } from '@/store/useAppStore'
 import { usePageViewTracking, trackEvent, AnalyticsEvents } from '@/lib/analytics'
+
+// Module-level BRL currency formatter
+const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
 
 // Dynamic time-based greeting helpers
 function getGreeting(): { text: string; emoji: string; period: string } {
@@ -141,34 +145,34 @@ function HomeSkeleton() {
 function ProductDetailView() {
   const { selectedProduct } = useAppStore()
   return (
-    <motion.div key="product" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4">
+    <ViewTransition viewKey="product" className="px-4">
       {selectedProduct ? (
         <ProductDetail product={selectedProduct} />
       ) : (
         <p className="text-center py-12 text-muted-foreground">Produto não encontrado</p>
       )}
-    </motion.div>
+    </ViewTransition>
   )
 }
 
 function StoreProfileView() {
   const { selectedStore } = useAppStore()
   return (
-    <motion.div key="store" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4">
+    <ViewTransition viewKey="store" className="px-4">
       {selectedStore ? (
         <StoreProfile store={selectedStore} />
       ) : (
         <p className="text-center py-12 text-muted-foreground">Loja não encontrada</p>
       )}
-    </motion.div>
+    </ViewTransition>
   )
 }
 
 function OrderDetailView() {
   return (
-    <motion.div key="order-detail" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+    <ViewTransition viewKey="order-detail">
       <OrderDetail />
-    </motion.div>
+    </ViewTransition>
   )
 }
 
@@ -219,7 +223,6 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState<'recent' | 'price_asc' | 'price_desc' | 'rating'>('recent')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
-  const setWishlistShareOpenFromParent = useAppStore((s: any) => s.setWishlistShareOpen) as ((v: boolean) => void) | undefined
   
   const categories = useMemo(() => {
     const cats = new Set(products.map(p => p.category))
@@ -422,9 +425,9 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
                   <p className="text-sm font-semibold line-clamp-1">{p.name}</p>
                   <p className="text-xs text-muted-foreground">{p.storeName}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-sm font-bold text-primary">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.price)}</span>
+                    <span className="text-sm font-bold text-primary">{formatBRL(p.price)}</span>
                     {p.comparePrice && p.comparePrice > p.price && (
-                      <span className="text-[10px] text-muted-foreground line-through">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.comparePrice)}</span>
+                      <span className="text-[10px] text-muted-foreground line-through">{formatBRL(p.comparePrice)}</span>
                     )}
                   </div>
                 </div>
@@ -525,14 +528,20 @@ export default function Home() {
           fetch('/api/products?limit=50'),
           fetch('/api/stores?limit=20'),
         ])
+
+        if (!productsRes.ok || !storesRes.ok) {
+          console.error('Failed to fetch data:', { products: productsRes.status, stores: storesRes.status })
+          return
+        }
+
         const productsData = await productsRes.json()
         const storesData = await storesRes.json()
         if (!cancelled) {
           setApiProducts(productsData.products || [])
           setApiStores(storesData.stores || [])
         }
-      } catch {
-        // Use fallback data silently
+      } catch (error) {
+        console.error('Error loading data:', error)
         if (!cancelled) {
           setApiProducts([])
           setApiStores([])
@@ -560,10 +569,10 @@ export default function Home() {
   }, [allStores, activeCategory])
 
   // Carousels data
-  const offerProducts = filteredProducts.filter(p => p.isOffer)
-  const newProducts = filteredProducts.filter(p => p.isNew)
-  const featuredProducts = filteredProducts.filter(p => p.isFeatured)
-  const suggestedProducts = filteredProducts.slice(0, 8)
+  const offerProducts = useMemo(() => filteredProducts.filter(p => p.isOffer), [filteredProducts])
+  const newProducts = useMemo(() => filteredProducts.filter(p => p.isNew), [filteredProducts])
+  const featuredProducts = useMemo(() => filteredProducts.filter(p => p.isFeatured), [filteredProducts])
+  const suggestedProducts = useMemo(() => filteredProducts.slice(0, 8), [filteredProducts])
   
   return (
     <div className="min-h-screen pb-20 md:pb-4">
@@ -641,7 +650,7 @@ export default function Home() {
                       >
                         <div className="flex items-center justify-between">
                           <h3 className="text-sm font-semibold">
-                            Mostrando: {allProducts.filter(p => p.category === activeCategory).length} produtos em{' '}
+                            Mostrando: {filteredProducts.length} produtos em{' '}
                             {activeCategory.replace(/_/g, ' ')}
                           </h3>
                           <button 
@@ -823,9 +832,9 @@ export default function Home() {
         ) : currentView === 'store' ? (
           <StoreProfileView />
         ) : currentView === 'cart' ? (
-          <motion.div key="cart" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+          <ViewTransition viewKey="cart">
             <CartView />
-          </motion.div>
+          </ViewTransition>
         ) : currentView === 'checkout' ? (
           <motion.div key="checkout" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4">
             <CheckoutView />
@@ -837,9 +846,9 @@ export default function Home() {
         ) : currentView === 'order-detail' ? (
           <OrderDetailView />
         ) : currentView === 'profile' ? (
-          <motion.div key="profile" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+          <ViewTransition viewKey="profile">
             <ProfileView />
-          </motion.div>
+          </ViewTransition>
         ) : currentView === 'store-dashboard' ? (
           <motion.div key="store-dashboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <StoreDashboard />

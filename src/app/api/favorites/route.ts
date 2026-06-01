@@ -1,17 +1,20 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET: Listar favoritos do usuário
 export async function GET(request: Request) {
   try {
+    const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
-    const accountId = searchParams.get('accountId')
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
     const type = searchParams.get('type') // 'product', 'store', ou 'all'
-    const limit = parseInt(searchParams.get('limit') || '50')
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100)
     const offset = parseInt(searchParams.get('offset') || '0')
 
     if (!accountId) {
-      return NextResponse.json({ error: 'ID da conta é obrigatório' }, { status: 400 })
+      return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
     }
 
     const where: Record<string, unknown> = { accountId }
@@ -91,11 +94,13 @@ export async function GET(request: Request) {
 // POST: Adicionar favorito
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions)
     const body = await request.json()
-    const { accountId, productId, storeId } = body
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
+    const { productId, storeId } = body
 
     if (!accountId) {
-      return NextResponse.json({ error: 'ID da conta é obrigatório' }, { status: 400 })
+      return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
     }
 
     if (!productId && !storeId) {
@@ -147,19 +152,32 @@ export async function POST(request: Request) {
 // DELETE: Remover favorito
 export async function DELETE(request: Request) {
   try {
+    const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
     const favoriteId = searchParams.get('id')
-    const accountId = searchParams.get('accountId')
     const productId = searchParams.get('productId')
     const storeId = searchParams.get('storeId')
 
+    if (!accountId) {
+      return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
+    }
+
     if (favoriteId) {
+      // Verify ownership before deleting
+      const favorite = await db.favorite.findUnique({ where: { id: favoriteId } })
+      if (!favorite) {
+        return NextResponse.json({ error: 'Favorito não encontrado' }, { status: 404 })
+      }
+      if (favorite.accountId !== accountId) {
+        return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
+      }
       await db.favorite.delete({ where: { id: favoriteId } })
       return NextResponse.json({ success: true, message: 'Favorito removido' })
     }
 
     // Remover por combinação accountId + productId/storeId
-    if (accountId && (productId || storeId)) {
+    if (productId || storeId) {
       const where: Record<string, unknown> = { accountId }
       if (productId) where.productId = productId
       if (storeId) where.storeId = storeId
@@ -171,12 +189,6 @@ export async function DELETE(request: Request) {
 
       await db.favorite.delete({ where: { id: favorite.id } })
       return NextResponse.json({ success: true, message: 'Favorito removido' })
-    }
-
-    // Limpar todos os favoritos do usuário
-    if (accountId) {
-      await db.favorite.deleteMany({ where: { accountId } })
-      return NextResponse.json({ success: true, message: 'Todos os favoritos removidos' })
     }
 
     return NextResponse.json(

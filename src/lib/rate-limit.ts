@@ -21,7 +21,7 @@ function cleanup() {
 
   for (const [key, entry] of rateLimitMap.entries()) {
     // Remove entries older than window
-    entry.timestamps = entry.timestamps.filter(t => now - t < (entry.count === 0 ? 0 : 60000))
+    entry.timestamps = entry.timestamps.filter(t => now - t < 600000)
     if (entry.timestamps.length === 0) {
       rateLimitMap.delete(key)
     }
@@ -53,6 +53,11 @@ export function rateLimit(
 ): RateLimitResult {
   cleanup()
 
+  // Prevent unbounded growth of the rate limit map
+  if (rateLimitMap.size > 10000) {
+    rateLimitMap.clear()
+  }
+
   const now = Date.now()
   const key = config.key || identifier
   const windowStart = now - config.windowMs
@@ -68,7 +73,7 @@ export function rateLimit(
 
   rateLimitMap.set(key, entry)
 
-  const success = entry.count <= config.limit
+  const success = entry.count < config.limit
   const remaining = Math.max(0, config.limit - entry.count)
   const resetAt = entry.timestamps[0] + config.windowMs
 

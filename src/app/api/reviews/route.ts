@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET: Listar avaliações de produto ou loja
 export async function GET(request: Request) {
@@ -84,13 +86,15 @@ export async function GET(request: Request) {
 // POST: Criar avaliação (usuários autenticados)
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions)
     const body = await request.json()
-    const { accountId, productId, storeId, rating, comment, images } = body
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
+    const { productId, storeId, rating, comment, images } = body
 
     if (!accountId || !rating) {
       return NextResponse.json(
-        { error: 'ID da conta e avaliação são obrigatórios' },
-        { status: 400 }
+        { error: 'Usuário não autenticado e avaliação são obrigatórios' },
+        { status: 401 }
       )
     }
 

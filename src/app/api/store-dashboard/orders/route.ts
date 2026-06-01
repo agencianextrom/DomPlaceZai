@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
-    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string
+    const accountId = (session?.user as Record<string, unknown>)?.id as string
     const status = searchParams.get('status')
     const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100)
     const offset = parseInt(searchParams.get('offset') || '0')

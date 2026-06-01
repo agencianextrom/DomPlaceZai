@@ -3,8 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { hashPassword } from '@/lib/crypto'
 import { getErrorMessage } from '@/lib/api-response'
 import { rateLimit, getClientIP } from '@/lib/rate-limit'
+import { logger } from '@/lib/logger'
 
 export async function POST(request: NextRequest) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ success: false, error: 'Endpoint desabilitado em produção' }, { status: 403 })
+  }
   const ip = getClientIP(request)
   const rl = rateLimit(ip, { limit: 2, windowMs: 300000 })
   if (!rl.success) {
@@ -14,6 +18,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ success: false, error: 'Endpoint desabilitado em produção' }, { status: 403 })
+  }
   const ip = getClientIP(request)
   const rl = rateLimit(ip, { limit: 2, windowMs: 300000 })
   if (!rl.success) {
@@ -312,7 +319,7 @@ async function seedDatabase() {
       },
     })
   } catch (error: unknown) {
-    console.error('Seed error:', error)
+    logger.error('Seed error:', error)
     return NextResponse.json({ success: false, error: getErrorMessage(error) }, { status: 500 })
   }
 }

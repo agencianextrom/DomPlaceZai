@@ -9,20 +9,25 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
-    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string | undefined
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     if (!accountId) {
       return NextResponse.json({ items: [] })
     }
 
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100)
+    const offset = parseInt(searchParams.get('offset') || '0')
+
     const items = await db.cartItem.findMany({
       where: { accountId },
       include: {
         product: {
-          include: { store: { select: { name: true, deliveryFee: true, freeDeliveryAbove: true } } },
+          include: { store: { select: { name: true, logo: true, category: true, deliveryFee: true, freeDeliveryAbove: true } } },
         },
       },
       orderBy: { createdAt: 'desc' },
+      take: limit,
+      skip: offset,
     })
 
     return NextResponse.json({
@@ -45,10 +50,10 @@ export async function GET(request: Request) {
           isOffer: item.product.isOffer,
           tags: item.product.tags,
           variations: item.product.variations,
-          category: '',
+          category: item.product.store.category,
           storeName: item.product.store.name,
           storeId: item.product.storeId,
-          storeLogo: null,
+          storeLogo: item.product.store.logo,
         },
         storeId: item.product.storeId,
         storeName: item.product.store.name,
@@ -70,7 +75,7 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const body = await request.json()
-    const accountId = body.accountId || (session?.user as Record<string, unknown>)?.id as string | undefined
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
     const { productId, quantity = 1 } = body
 
     if (!accountId || !productId) {
@@ -172,7 +177,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Quantidade deve ser pelo menos 1' }, { status: 400 })
     }
 
-    const accountId = bodyAccountId || (session?.user as Record<string, unknown>)?.id as string | undefined
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
 
     // Find cart item by cartItemId or by accountId + productId
     let cartItem
@@ -193,7 +198,7 @@ export async function PATCH(request: Request) {
     }
 
     // Verify ownership
-    if (accountId && cartItem.accountId !== accountId) {
+    if (cartItem.accountId !== accountId) {
       return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
@@ -221,11 +226,23 @@ export async function DELETE(request: Request) {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
     const cartItemId = searchParams.get('id')
-    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string | undefined
+    const accountId = (session?.user as Record<string, unknown>)?.id as string | undefined
     const productId = searchParams.get('productId')
+
+    if (!accountId) {
+      return NextResponse.json({ error: 'Usuário não autenticado' }, { status: 401 })
+    }
 
     // Remove specific item by cartItemId
     if (cartItemId) {
+      // Verify ownership before deleting
+      const cartItem = await db.cartItem.findUnique({ where: { id: cartItemId } })
+      if (!cartItem) {
+        return NextResponse.json({ error: 'Item não encontrado no carrinho' }, { status: 404 })
+      }
+      if (cartItem.accountId !== accountId) {
+        return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
+      }
       await db.cartItem.delete({ where: { id: cartItemId } })
       return NextResponse.json({ success: true, message: 'Item removido do carrinho' })
     }

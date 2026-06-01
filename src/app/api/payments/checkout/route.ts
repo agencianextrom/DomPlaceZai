@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { logger } from '@/lib/logger'
 
 const MP_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN
 
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     // Se não há token Mercado Pago, criar pagamento mock
     if (!MP_ACCESS_TOKEN) {
-      console.log('[MercadoPago] Modo mock — nenhuma chave de acesso configurada')
+      logger.info('Modo mock — nenhuma chave de acesso configurada')
 
       const mockId = `mock-pay-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`
 
@@ -163,7 +164,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Erro interno do servidor'
-    console.error('[MercadoPago] Erro no checkout:', message)
+    logger.error('Erro no checkout:', message)
     return NextResponse.json(
       { error: 'Erro ao processar pagamento. Tente novamente.' },
       { status: 500 }

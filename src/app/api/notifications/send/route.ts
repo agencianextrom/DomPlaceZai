@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getFCMTokensForAccount } from '@/lib/fcm-tokens'
+import { logger } from '@/lib/logger'
 
 const FIREBASE_SERVER_KEY = process.env.FIREBASE_SERVER_KEY
 const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     // Se Firebase não configurado, apenas log
     if (!FIREBASE_SERVER_KEY || !FIREBASE_PROJECT_ID) {
-      console.log(`[FCM] Notificação NÃO enviada (Firebase não configurado):`, {
+      logger.info('Notificação NÃO enviada (Firebase não configurado)', {
         to: accountId,
         title,
         body: messageBody,
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
 
     if (!fcmResponse.ok) {
       const errorText = await fcmResponse.text()
-      console.error('[FCM] Erro do Firebase:', fcmResponse.status, errorText)
+      logger.error('Erro do Firebase', undefined, { status: fcmResponse.status, errorText })
       return NextResponse.json({
         success: false,
         sent: false,
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     const result = await fcmResponse.json()
 
-    console.log(`[FCM] Notificação enviada para ${accountId}:`, {
+    logger.info(`Notificação enviada para ${accountId}`, {
       success: result.successCount ?? 0,
       failure: result.failureCount ?? 0,
     })
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Erro interno do servidor'
-    console.error('[FCM] Erro ao enviar notificação:', message)
+    logger.error('Erro ao enviar notificação:', message)
     return NextResponse.json(
       { success: false, error: 'Erro ao enviar notificação' },
       { status: 500 }

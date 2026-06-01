@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const { searchParams } = new URL(request.url)
-    const accountId = searchParams.get('accountId') || (session?.user as Record<string, unknown>)?.id as string
+    const accountId = (session?.user as Record<string, unknown>)?.id as string
 
     if (!accountId) {
       return NextResponse.json(
@@ -89,7 +89,7 @@ export async function PUT(request: Request) {
     const session = await getServerSession(authOptions)
     const body = await request.json()
 
-    const accountId = body.accountId || (session?.user as Record<string, unknown>)?.id as string
+    const accountId = (session?.user as Record<string, unknown>)?.id as string
 
     if (!accountId) {
       return NextResponse.json(

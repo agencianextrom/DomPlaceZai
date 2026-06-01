@@ -47,7 +47,7 @@ export async function PATCH(
     const { action, reason } = body
 
     // Identificar a conta do lojista
-    const accountId = body.accountId || (session?.user as Record<string, unknown>)?.id as string
+    const accountId = (session?.user as Record<string, unknown>)?.id as string
 
     if (!accountId) {
       return NextResponse.json(
