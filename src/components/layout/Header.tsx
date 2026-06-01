@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, ShoppingCart, Search, User, Menu, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, Settings, LogOut, Star, X } from 'lucide-react'
+import { MapPin, ShoppingCart, Search, User, Menu, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, Settings, LogOut, Star, X, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -11,7 +11,8 @@ import { useAppStore } from '@/store/useAppStore'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MobileNav } from './MobileNav'
 import { NotificationPanel } from '@/components/notifications/NotificationPanel'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useTheme } from 'next-themes'
 
 const desktopNavItems = [
   { id: 'home', icon: Home, label: 'Início' },
@@ -72,6 +73,9 @@ export function Header() {
   const canGoBack = navigationHistory.length > 1 && currentView !== 'home'
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const mounted = useRef(false)
+  useEffect(() => { mounted.current = true }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -312,6 +316,33 @@ export function Header() {
               
               {/* Notifications */}
               <NotificationPanel />
+              
+              {/* Theme toggle */}
+              {mounted && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative h-10 w-10 transition-all duration-300 hover-glow"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={theme}
+                      initial={{ scale: 0, rotate: -90, opacity: 0 }}
+                      animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                      exit={{ scale: 0, rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.25, type: 'spring', stiffness: 300, damping: 20 }}
+                    >
+                      {theme === 'dark' ? (
+                        <Sun className="h-5 w-5 text-amber-400" />
+                      ) : (
+                        <Moon className="h-5 w-5" />
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </Button>
+              )}
               
               {/* Cart - enhanced with animation */}
               <Button 

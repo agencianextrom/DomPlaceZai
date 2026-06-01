@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
 import { useAppStore, type StoreData } from '@/store/useAppStore'
+import { StoreCardSkeletonCarousel } from '@/components/home/StoreCardSkeleton'
 
 const gradients = [
   'from-emerald-500 to-green-600',
@@ -66,9 +67,10 @@ const deliveryTimes: Record<string, string> = {
 interface StoreCarouselProps {
   title: string
   stores: StoreData[]
+  isLoading?: boolean
 }
 
-export function StoreCarousel({ title, stores }: StoreCarouselProps) {
+export function StoreCarousel({ title, stores, isLoading }: StoreCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const { navigate, selectStore } = useAppStore()
   
@@ -80,7 +82,22 @@ export function StoreCarousel({ title, stores }: StoreCarouselProps) {
     })
   }
   
-  if (!stores.length) return null
+  if (!stores.length && !isLoading) return null
+  
+  // Show skeletons while loading
+  if (isLoading) {
+    return (
+      <section className="w-full">
+        <div className="flex items-center justify-between mb-3 px-1">
+          <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+            <span className="w-1 h-6 rounded-full bg-primary" />
+            {title}
+          </h2>
+        </div>
+        <StoreCardSkeletonCarousel count={3} />
+      </section>
+    )
+  }
   
   // Sort stores by rating to determine ranking
   const rankedStores = [...stores].sort((a, b) => b.rating - a.rating)

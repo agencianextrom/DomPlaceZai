@@ -8,7 +8,7 @@ import {
   ChevronRight, Search, BarChart3, CreditCard, Calendar,
   ArrowUpRight, ArrowDownRight, Activity, Package, Star,
   Phone, Mail, MoreHorizontal, RefreshCw, Loader2, Ban, Shield,
-  Trash2, MessageSquare, UserCog, AlertOctagon, Settings,
+  Trash2, MessageSquare, UserCog, AlertOctagon, Settings, ShoppingCart,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -41,8 +41,15 @@ interface AdminStats {
   totalReviews: number
   recentRegistrations: { id: string; name: string; email: string; role: string; status: string; createdAt: string }[]
   ordersToday: number
+  ordersThisWeek: number
+  ordersThisMonth: number
   revenueToday: number
+  revenueThisWeek: number
+  revenueThisMonth: number
+  activeUsersToday: number
   topStores: { id: string; name: string; slug: string; category: string; rating: number; totalReviews: number; totalSales: number }[]
+  recentOrders: { id: string; orderNumber: string; status: string; total: number; paymentMethod: string | null; deliveryType: string; createdAt: string; storeName: string; customerName: string; itemCount: number }[]
+  revenueByCategory: { category: string; sales: number; storeCount: number; percentage: number }[]
 }
 
 interface StoreItem {
@@ -228,17 +235,47 @@ function OverviewTab() {
   const totalStores = stats.totalStores.total
   const totalOrders = stats.totalOrders.total
 
+  const categoryColors: Record<string, string> = {
+    FOOD: 'from-emerald-400 to-emerald-600',
+    HEALTH: 'from-teal-400 to-teal-600',
+    SERVICES: 'from-amber-400 to-orange-500',
+    ANIMALS: 'from-purple-400 to-purple-600',
+    BEAUTY: 'from-pink-400 to-pink-600',
+    FASHION: 'from-rose-400 to-rose-600',
+    ELECTRONICS: 'from-cyan-400 to-cyan-600',
+    AGRICULTURE: 'from-lime-400 to-lime-600',
+    HOME_GARDEN: 'from-orange-400 to-orange-600',
+    SPORTS: 'from-red-400 to-red-600',
+    EDUCATION: 'from-sky-400 to-sky-600',
+    CONSTRUCTION: 'from-yellow-400 to-yellow-600',
+    AUTOMOTIVE: 'from-gray-400 to-gray-500',
+    OTHER: 'from-gray-400 to-gray-500',
+  }
+
+  const categoryLabels: Record<string, string> = {
+    FOOD: 'Alimentacao', HEALTH: 'Saude', SERVICES: 'Servicos', ANIMALS: 'Pets',
+    BEAUTY: 'Beleza', FASHION: 'Moda', ELECTRONICS: 'Eletronicos',
+    AGRICULTURE: 'Agricultura', HOME_GARDEN: 'Casa e Jardim', SPORTS: 'Esportes',
+    EDUCATION: 'Educacao', CONSTRUCTION: 'Construcao', AUTOMOTIVE: 'Automotivo',
+    OTHER: 'Outros',
+  }
+
+  const orderStatusLabel = (status: string) => {
+    const map: Record<string, string> = { PENDING: 'Pendente', CONFIRMED: 'Confirmado', PREPARING: 'Preparando', READY: 'Pronto', DELIVERING: 'Entregando', DELIVERED: 'Entregue', CANCELLED: 'Cancelado', REFUNDED: 'Devolvido' }
+    return map[status] || status
+  }
+
   return (
     <motion.div variants={tabVariants} initial="enter" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="space-y-5">
       {/* Stats Grid - 6 KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {[
-          { label: 'Usuarios', value: formatNumber(totalUsers), icon: Users, gradient: 'from-primary to-emerald-600', extra: `${stats.totalAccounts.byRole.affiliates} afiliados` },
+          { label: 'Usuarios', value: formatNumber(totalUsers), icon: Users, gradient: 'from-primary to-emerald-600', extra: `${stats.activeUsersToday ?? 0} ativos hoje` },
           { label: 'Lojas Ativas', value: `${stats.totalStores.byStatus.active}/${totalStores}`, icon: Store, gradient: 'from-emerald-600 to-teal-600', extra: `${stats.totalStores.byStatus.pending} pendentes` },
-          { label: 'Pedidos do Mes', value: formatNumber(totalOrders), icon: Package, gradient: 'from-amber-500 to-orange-500', extra: `${stats.ordersToday} hoje` },
-          { label: 'Faturamento', value: formatBRL(stats.totalRevenue), icon: DollarSign, gradient: 'from-emerald-500 to-emerald-700', extra: `${formatBRL(stats.revenueToday)} hoje` },
-          { label: 'Entregadores Online', value: String(stats.totalAccounts.byRole.drivers), icon: TrendingUp, gradient: 'from-teal-500 to-cyan-600', extra: `${Math.max(0, stats.totalAccounts.byRole.drivers - 2)} offline` },
-          { label: 'Avaliacao Media', value: '4.6', icon: Star, gradient: 'from-amber-400 to-yellow-500', extra: `${stats.totalReviews} avaliacoes` },
+          { label: 'Pedidos do Mes', value: formatNumber(stats.ordersThisMonth ?? totalOrders), icon: Package, gradient: 'from-amber-500 to-orange-500', extra: `${stats.ordersToday ?? 0} hoje · ${stats.ordersThisWeek ?? 0} semana` },
+          { label: 'Faturamento', value: formatBRL(stats.revenueThisMonth ?? stats.totalRevenue), icon: DollarSign, gradient: 'from-emerald-500 to-emerald-700', extra: `Hoje: ${formatBRL(stats.revenueToday)} · Semana: ${formatBRL(stats.revenueThisWeek ?? 0)}` },
+          { label: 'Entregadores', value: String(stats.totalAccounts.byRole.drivers), icon: TrendingUp, gradient: 'from-teal-500 to-cyan-600', extra: `${Math.max(0, stats.totalAccounts.byRole.drivers - 2)} offline` },
+          { label: 'Avaliacao Media', value: stats.totalReviews > 0 ? '4.6' : '-', icon: Star, gradient: 'from-amber-400 to-yellow-500', extra: `${stats.totalReviews} avaliacoes` },
         ].map((stat, i) => (
           <motion.div key={stat.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
             <Card className="border-border/50 overflow-hidden">
@@ -325,36 +362,32 @@ function OverviewTab() {
           </CardContent>
         </Card>
 
-        {/* Faturamento por Categoria (breakdown bars) */}
+        {/* Faturamento por Categoria (real data from API) */}
         <Card className="border-border/50 overflow-hidden">
           <CardContent className="p-4">
             <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
               <CreditCard className="h-4 w-4 text-amber-500" />
-              Faturamento por Categoria
+              Vendas por Categoria
             </h3>
             <div className="space-y-3">
-              {[
-                { name: 'Alimentacao', pct: 35, value: 'R$ 12.450', color: 'from-emerald-400 to-emerald-600' },
-                { name: 'Saude', pct: 22, value: 'R$ 7.820', color: 'from-sky-400 to-sky-600' },
-                { name: 'Servicos', pct: 18, value: 'R$ 6.400', color: 'from-amber-400 to-orange-500' },
-                { name: 'Pets', pct: 12, value: 'R$ 4.270', color: 'from-purple-400 to-purple-600' },
-                { name: 'Outros', pct: 13, value: 'R$ 4.630', color: 'from-gray-400 to-gray-500' },
-              ].map((cat) => (
-                <div key={cat.name}>
+              {(stats.revenueByCategory && stats.revenueByCategory.length > 0) ? stats.revenueByCategory.map((cat) => (
+                <div key={cat.category}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-muted-foreground">{cat.name}</span>
-                    <span className="text-xs font-semibold">{cat.value} ({cat.pct}%)</span>
+                    <span className="text-xs text-muted-foreground">{categoryLabels[cat.category] || cat.category}</span>
+                    <span className="text-xs font-semibold">{formatNumber(cat.sales)} vendas ({cat.percentage}%)</span>
                   </div>
                   <div className="h-2 bg-secondary/50 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
-                      animate={{ width: `${cat.pct}%` }}
+                      animate={{ width: `${cat.percentage}%` }}
                       transition={{ delay: 0.3, duration: 0.6 }}
-                      className={`h-full rounded-full bg-gradient-to-r ${cat.color}`}
+                      className={`h-full rounded-full bg-gradient-to-r ${categoryColors[cat.category] || 'from-gray-400 to-gray-500'}`}
                     />
                   </div>
                 </div>
-              ))}
+              )) : (
+                <p className="text-xs text-muted-foreground text-center py-4">Sem dados de categorias</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -385,6 +418,40 @@ function OverviewTab() {
                       <span className="text-xs">{store.rating > 0 ? store.rating.toFixed(1) : '-'}</span>
                     </div>
                     <span className="text-xs font-semibold">{formatNumber(store.totalSales)} vendas</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pedidos Recentes */}
+      {stats.recentOrders && stats.recentOrders.length > 0 && (
+        <Card className="border-border/50 overflow-hidden">
+          <CardContent className="p-4 relative">
+            <div className="absolute top-0 left-0 w-8 h-[2px] bg-gradient-to-r from-primary/60 to-transparent rounded-full" />
+            <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+              <ShoppingCart className="h-4 w-4 text-primary" />
+              Pedidos Recentes
+            </h3>
+            <div className="space-y-2">
+              {stats.recentOrders.map((order, i) => (
+                <motion.div key={order.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-secondary/50 transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-xs font-semibold">#{order.orderNumber}</span>
+                      <Badge className={`text-[10px] px-1.5 py-0 ${getStatusColor(order.status)}`}>{orderStatusLabel(order.status)}</Badge>
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[11px] text-muted-foreground">{order.customerName}</span>
+                      <span className="text-[11px] text-muted-foreground">·</span>
+                      <span className="text-[11px] text-muted-foreground">{order.storeName}</span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-semibold">{formatBRL(order.total)}</p>
+                    <p className="text-[10px] text-muted-foreground">{formatDate(order.createdAt)}</p>
                   </div>
                 </motion.div>
               ))}

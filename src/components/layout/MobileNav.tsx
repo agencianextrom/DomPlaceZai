@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { Home, Search, ClipboardList, Heart, UserCircle, ShoppingCart } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Home, Search, ClipboardList, Heart, UserCircle, ShoppingCart, Sun, Moon } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTheme } from 'next-themes'
 
 const navItems = [
   { id: 'home', icon: Home, label: 'Início' },
@@ -16,8 +17,9 @@ const navItems = [
 export function MobileNav() {
   const { currentView, navigate, getCartItemCount } = useAppStore()
   const [activeTabX, setActiveTabX] = useState<number | undefined>(undefined)
-  
-  const cartCount = getCartItemCount()
+  const { theme, setTheme } = useTheme()
+  const mounted = useRef(false)
+  useEffect(() => { mounted.current = true }, [])
   
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
@@ -25,6 +27,31 @@ export function MobileNav() {
       <div className="absolute inset-x-0 -top-2 h-2 bg-gradient-to-b from-transparent to-black/[0.04] pointer-events-none dark:from-transparent dark:to-black/10" />
       <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
       <div className="bg-background/85 backdrop-blur-xl border-t border-border/30 relative shadow-[0_-1px_12px_oklch(0_0_0/0.04)] dark:shadow-[0_-1px_12px_oklch(0_0_0/0.15)]">
+        {/* Theme toggle floating button - top right of nav */}
+        {mounted && (
+          <motion.button
+            whileTap={{ scale: 0.85 }}
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="absolute -top-10 right-3 z-10 h-8 w-8 rounded-full bg-card border border-border/60 shadow-md flex items-center justify-center transition-colors hover:bg-secondary"
+            aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={theme}
+                initial={{ scale: 0, rotate: -90 }}
+                animate={{ scale: 1, rotate: 0 }}
+                exit={{ scale: 0, rotate: 90 }}
+                transition={{ duration: 0.2 }}
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-4 w-4 text-amber-400" />
+                ) : (
+                  <Moon className="h-4 w-4 text-muted-foreground" />
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </motion.button>
+        )}
         {/* Active tab indicator (slides between tabs) */}
         <AnimatePresence>
           {activeTabX !== undefined && (

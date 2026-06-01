@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
@@ -22,6 +22,13 @@ export async function GET() {
       )
     }
 
+    // Date helpers
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const weekStart = new Date(today)
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1) // Monday
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+
     const [
       totalAccountsByRole,
       totalStoresByStatus,
@@ -32,7 +39,14 @@ export async function GET() {
       recentRegistrations,
       ordersToday,
       revenueToday,
+      revenueThisWeek,
+      revenueThisMonth,
       topStores,
+      recentOrders,
+      activeUsersToday,
+      ordersThisWeek,
+      ordersThisMonth,
+      revenueByCategory,
     ] = await Promise.all([
       // Contagem de contas por role
       db.account.groupBy({
@@ -74,25 +88,33 @@ export async function GET() {
         },
       }),
       // Pedidos de hoje
-      (() => {
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        return db.order.count({
-          where: { createdAt: { gte: today } },
-        })
-      })(),
-      // Receita de hoje
-      (() => {
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        return db.order.aggregate({
-          where: {
-            status: 'DELIVERED',
-            deliveredAt: { gte: today },
-          },
-          _sum: { total: true },
-        })
-      })(),
+      db.order.count({
+        where: { createdAt: { gte: today } },
+      }),
+      // Receita de hoje (pedidos entregues hoje)
+      db.order.aggregate({
+        where: {
+          status: 'DELIVERED',
+          deliveredAt: { gte: today },
+        },
+        _sum: { total: true },
+      }),
+      // Receita da semana
+      db.order.aggregate({
+        where: {
+          status: 'DELIVERED',
+          deliveredAt: { gte: weekStart },
+        },
+        _sum: { total: true },
+      }),
+      // Receita do mes
+      db.order.aggregate({
+        where: {
+          status: 'DELIVERED',
+          deliveredAt: { gte: monthStart },
+        },
+        _sum: { total: true },
+      }),
       // Top 5 lojas por vendas
       db.store.findMany({
         orderBy: { totalSales: 'desc' },
@@ -104,6 +126,49 @@ export async function GET() {
           category: true,
           rating: true,
           totalReviews: true,
+          totalSales: true,
+        },
+      }),
+      // Últimos 5 pedidos
+      db.order.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: {
+          id: true,
+          orderNumber: true,
+          status: true,
+          total: true,
+          paymentMethod: true,
+          deliveryType: true,
+          createdAt: true,
+          store: {
+            select: { name: true },
+          },
+          account: {
+            select: { name: true },
+          },
+          items: {
+            select: { id: true },
+          },
+        },
+      }),
+      // Usuários ativos hoje (que fizeram pedidos hoje)
+      db.order.groupBy({
+        by: ['accountId'],
+        where: { createdAt: { gte: today } },
+      }),
+      // Pedidos da semana
+      db.order.count({
+        where: { createdAt: { gte: weekStart } },
+      }),
+      // Pedidos do mes
+      db.order.count({
+        where: { createdAt: { gte: monthStart } },
+      }),
+      // Receita por categoria (via lojas)
+      db.store.findMany({
+        select: {
+          category: true,
           totalSales: true,
         },
       }),
@@ -162,44 +227,29 @@ export async function GET() {
     }
 
     // Formatar contagem de pedidos por status
-    const orderCounts = {
-      pending: 0,
-      confirmed: 0,
-      preparing: 0,
-      ready: 0,
-      delivering: 0,
-      delivered: 0,
-      cancelled: 0,
-      refunded: 0,
-    }
+    const orderCounts: Record<string, number> = {}
     for (const item of totalOrdersByStatus) {
-      switch (item.status) {
-        case 'PENDING':
-          orderCounts.pending = item._count.id
-          break
-        case 'CONFIRMED':
-          orderCounts.confirmed = item._count.id
-          break
-        case 'PREPARING':
-          orderCounts.preparing = item._count.id
-          break
-        case 'READY':
-          orderCounts.ready = item._count.id
-          break
-        case 'DELIVERING':
-          orderCounts.delivering = item._count.id
-          break
-        case 'DELIVERED':
-          orderCounts.delivered = item._count.id
-          break
-        case 'CANCELLED':
-          orderCounts.cancelled = item._count.id
-          break
-        case 'REFUNDED':
-          orderCounts.refunded = item._count.id
-          break
-      }
+      orderCounts[item.status] = item._count.id
     }
+
+    // Agrupar receita por categoria de loja
+    const categoryMap: Record<string, { sales: number; count: number }> = {}
+    for (const store of revenueByCategory) {
+      if (!categoryMap[store.category]) {
+        categoryMap[store.category] = { sales: 0, count: 0 }
+      }
+      categoryMap[store.category].sales += store.totalSales
+      categoryMap[store.category].count += 1
+    }
+    const totalCategorySales = Object.values(categoryMap).reduce((s, c) => s + c.sales, 0) || 1
+    const revenueByCategoryData = Object.entries(categoryMap)
+      .map(([category, data]) => ({
+        category,
+        sales: data.sales,
+        storeCount: data.count,
+        percentage: Math.round((data.sales / totalCategorySales) * 100),
+      }))
+      .sort((a, b) => b.sales - a.sales)
 
     return NextResponse.json({
       totalAccounts: {
@@ -219,8 +269,26 @@ export async function GET() {
       totalReviews,
       recentRegistrations,
       ordersToday,
+      ordersThisWeek,
+      ordersThisMonth,
       revenueToday: revenueToday._sum.total || 0,
+      revenueThisWeek: revenueThisWeek._sum.total || 0,
+      revenueThisMonth: revenueThisMonth._sum.total || 0,
+      activeUsersToday: activeUsersToday.length,
       topStores,
+      recentOrders: recentOrders.map((order) => ({
+        id: order.id,
+        orderNumber: order.orderNumber,
+        status: order.status,
+        total: order.total,
+        paymentMethod: order.paymentMethod,
+        deliveryType: order.deliveryType,
+        createdAt: order.createdAt,
+        storeName: order.store.name,
+        customerName: order.account.name,
+        itemCount: order.items.length,
+      })),
+      revenueByCategory: revenueByCategoryData,
     })
   } catch (error) {
     console.error('[Admin Stats] Erro:', error)

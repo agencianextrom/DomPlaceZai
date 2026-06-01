@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { useAppStore } from '@/store/useAppStore'
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { ProductCard } from '@/components/product/ProductCard'
+import { ProductCardSkeletonGrid } from '@/components/product/ProductCardSkeleton'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { ProductData, StoreData } from '@/store/useAppStore'
 
@@ -359,27 +360,25 @@ export function SearchView() {
       <div className="p-4">
         {/* Loading skeleton */}
         {isSearching && (
-          <div className="space-y-4 py-4">
+          <div className="space-y-6 py-4">
+            {/* Store result skeletons */}
             <div className="space-y-3">
-              {Array.from({ length: 3 }).map((_, i) => (
+              {Array.from({ length: 2 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/50">
-                  <div className="h-12 w-12 rounded-xl loading-skeleton shrink-0" />
+                  <div className="h-12 w-12 rounded-xl bg-muted animate-pulse shrink-0" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-3 w-3/4 rounded loading-skeleton" />
-                    <div className="h-2.5 w-1/2 rounded loading-skeleton" />
+                    <div className="h-3.5 w-3/4 rounded bg-muted animate-pulse" />
+                    <div className="h-3 w-1/2 rounded bg-muted animate-pulse" />
+                    <div className="flex gap-2 mt-1">
+                      <div className="h-3 w-16 rounded bg-muted animate-pulse" />
+                      <div className="h-3 w-20 rounded bg-muted animate-pulse" />
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="space-y-2">
-                  <div className="aspect-square rounded-xl loading-skeleton" />
-                  <div className="h-3 w-3/4 rounded loading-skeleton" />
-                  <div className="h-3 w-1/2 rounded loading-skeleton" />
-                </div>
-              ))}
-            </div>
+            {/* Product card skeletons */}
+            <ProductCardSkeletonGrid count={6} />
           </div>
         )}
 

@@ -617,11 +617,6 @@ export default function Home() {
                       <DailyRewards />
                     </section>
 
-                    {/* City News */}
-                    <section className="mt-6">
-                      <CityNews />
-                    </section>
-
                     {/* Welcome greeting */}
                     <motion.section 
                       className="mt-6"
@@ -784,6 +779,15 @@ export default function Home() {
                     <LazySection>
                       <section>
                         <PartnersBanner />
+                      </section>
+                    </LazySection>
+
+                    <Separator className="my-8 bg-border/50" />
+
+                    {/* City News */}
+                    <LazySection>
+                      <section>
+                        <CityNews />
                       </section>
                     </LazySection>
 
