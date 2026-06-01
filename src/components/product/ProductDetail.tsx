@@ -189,7 +189,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
               if (product.storeId) {
                 selectStore({
                   id: product.storeId,
-                  name: product.storeName,
+                  name: product.storeName || '',
                   slug: product.slug,
                   description: null,
                   category: product.category,
@@ -623,7 +623,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
             if (product.storeId) {
               selectStore({
                 id: product.storeId,
-                name: product.storeName,
+                name: product.storeName || '',
                 slug: product.slug,
                 description: null,
                 category: product.category,

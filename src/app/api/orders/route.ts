@@ -291,7 +291,7 @@ export async function POST(request: Request) {
                 quantity: number
               }) => ({
                 productId: item.productId,
-                productName: item.productName || item.name,
+                productName: item.productName || item.productId,
                 productImage: item.productImage || null,
                 price: item.price,
                 quantity: item.quantity,

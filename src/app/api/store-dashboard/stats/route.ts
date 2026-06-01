@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     const storeId = store.id
 
     // Definir statuses que contam como receita (pedidos pagos/ativos)
-    const revenueStatuses = ['CONFIRMED', 'PREPARING', 'READY', 'DELIVERING', 'DELIVERED']
+    const revenueStatuses = ['CONFIRMED', 'PREPARING', 'READY', 'DELIVERING', 'DELIVERED'] as ('CONFIRMED' | 'PREPARING' | 'READY' | 'DELIVERING' | 'DELIVERED')[]
 
     // Início do dia (meia-noite no fuso de Brasília)
     const todayStart = new Date()
@@ -207,16 +207,16 @@ export async function GET(request: Request) {
         todayRevenue: todayRevenueResult._sum.total || 0,
         weekRevenue: weekRevenueResult._sum.total || 0,
         monthRevenue: monthRevenueResult._sum.total || 0,
-        totalOrders,
-        pendingOrders,
-        preparingOrders,
-        deliveringOrders,
-        completedOrders,
-        cancelledOrders,
-        refundedOrders,
-        totalProducts,
-        activeProducts,
-        inactiveProducts: totalProducts - activeProductsResult,
+        totalOrders: totalOrdersResult,
+        pendingOrders: pendingOrdersResult,
+        preparingOrders: preparingOrdersResult,
+        deliveringOrders: deliveringOrdersResult,
+        completedOrders: completedOrdersResult,
+        cancelledOrders: cancelledOrdersResult,
+        refundedOrders: refundedOrdersResult,
+        totalProducts: totalProductsResult,
+        activeProducts: activeProductsResult,
+        inactiveProducts: totalProductsResult - activeProductsResult,
         averageRating,
         totalReviews: storeWithRatings?.totalReviews || 0,
       },

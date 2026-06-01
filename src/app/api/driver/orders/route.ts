@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
         deliveryType: 'DELIVERY' as const,
       }
 
-      [orders, total] = await Promise.all([
+      const availableResult = await Promise.all([
         db.order.findMany({
           where,
           include: {
@@ -79,14 +79,16 @@ export async function GET(request: NextRequest) {
         }),
         db.order.count({ where }),
       ])
+      orders = availableResult[0] as Record<string, unknown>[]
+      total = availableResult[1] as number
     } else if (type === 'active') {
       // Pedidos atribuídos a este entregador com status DELIVERING ou CONFIRMED
       const where = {
         driverId: driver.id,
-        status: { in: ['DELIVERING', 'CONFIRMED'] as const },
+        status: { in: ['DELIVERING', 'CONFIRMED'] as ['DELIVERING', 'CONFIRMED'] },
       }
 
-      [orders, total] = await Promise.all([
+      const activeResult = await Promise.all([
         db.order.findMany({
           where,
           include: {
@@ -118,14 +120,16 @@ export async function GET(request: NextRequest) {
         }),
         db.order.count({ where }),
       ])
+      orders = activeResult[0] as Record<string, unknown>[]
+      total = activeResult[1] as number
     } else if (type === 'completed') {
       // Pedidos concluídos ou cancelados por este entregador
       const where = {
         driverId: driver.id,
-        status: { in: ['DELIVERED', 'CANCELLED'] as const },
+        status: { in: ['DELIVERED', 'CANCELLED'] as ['DELIVERED', 'CANCELLED'] },
       }
 
-      [orders, total] = await Promise.all([
+      const completedResult = await Promise.all([
         db.order.findMany({
           where,
           include: {
@@ -149,6 +153,8 @@ export async function GET(request: NextRequest) {
         }),
         db.order.count({ where }),
       ])
+      orders = completedResult[0] as Record<string, unknown>[]
+      total = completedResult[1] as number
     } else {
       return NextResponse.json(
         { error: 'Tipo inválido. Use: available, active ou completed' },

@@ -38,9 +38,11 @@ export async function POST(request: NextRequest) {
       try {
         const mercadopago = await import('mercadopago')
         const mp = new mercadopago.default({ accessToken: MP_ACCESS_TOKEN })
-        const payment = await mp.payments.findById(String(paymentId))
+        const { Payment } = mercadopago
+        const paymentClient = new Payment(mp)
+        const payment = await paymentClient.get({ id: String(paymentId) })
 
-        const paymentData = payment as Record<string, unknown>
+        const paymentData = payment as unknown as Record<string, unknown>
         const paymentStatus = paymentData.status as string | undefined
         const externalRef = paymentData.external_reference as string | undefined
 

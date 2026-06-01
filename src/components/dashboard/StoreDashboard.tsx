@@ -243,7 +243,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
+  visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } },
 }
 
 function formatBRL(value: number) {
@@ -525,7 +525,6 @@ function EmptyState({
   description,
   action,
   actionLabel,
-  onAction,
 }: {
   icon: typeof Package
   title: string
@@ -1323,7 +1322,7 @@ export function StoreDashboard() {
 
   // Revenue chart data: last 7 days
   const revenueChartData = useMemo(() => {
-    const days = []
+    const days: { name: string; date: string; valor: number }[] = []
     const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
     const now = new Date()
     for (let i = 6; i >= 0; i--) {
@@ -1915,7 +1914,7 @@ export function StoreDashboard() {
             <TabsContent value="reviews">
               <AnimatePresence mode="wait">
                 <motion.div key="reviews" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
-                  <ReviewsManagement accountId={accountId || ''} />
+                  <ReviewsManagement />
                 </motion.div>
               </AnimatePresence>
             </TabsContent>

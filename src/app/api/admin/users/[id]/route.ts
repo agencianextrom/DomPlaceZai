@@ -135,7 +135,7 @@ export async function PATCH(
         }
 
         const oldRole = account.role
-        const operations: Promise<unknown>[] = []
+        const operations: any[] = []
 
         // Atualizar role da conta
         operations.push(

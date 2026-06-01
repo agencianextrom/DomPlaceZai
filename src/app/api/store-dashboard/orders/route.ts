@@ -105,10 +105,11 @@ export async function GET(request: Request) {
     ])
 
     // Calcular totais de receita para os pedidos filtrados
-    const revenueStatuses = ['CONFIRMED', 'PREPARING', 'READY', 'DELIVERING', 'DELIVERED']
+    const revenueStatuses = ['CONFIRMED', 'PREPARING', 'READY', 'DELIVERING', 'DELIVERED'] as ('CONFIRMED' | 'PREPARING' | 'READY' | 'DELIVERING' | 'DELIVERED')[]
     const filteredRevenueResult = await db.order.aggregate({
       where: {
-        ...where,
+        storeId,
+        ...(dateFrom || dateTo ? { createdAt: where.createdAt as { gte?: Date; lte?: Date } } : {}),
         status: { in: revenueStatuses },
       },
       _sum: { total: true },

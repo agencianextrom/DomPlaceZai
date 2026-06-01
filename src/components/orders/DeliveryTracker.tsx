@@ -80,6 +80,7 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
   const effectiveStep = currentStep
 
   // Elapsed time counter
+  const [elapsed, setElapsed] = useState(0)
   useEffect(() => {
     const timer = setInterval(() => {
       setElapsed(prev => prev + 1)

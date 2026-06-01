@@ -1392,7 +1392,7 @@ export function DriverDashboard() {
                         <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `R$${v}`} />
                         <Tooltip
                           contentStyle={{ borderRadius: 8, fontSize: 12, border: '1px solid hsl(var(--border))' }}
-                          formatter={(value: number) => [`R$ ${value.toFixed(2)}`, 'Ganhos']}
+                          formatter={(value) => [`R$ ${(value as number).toFixed(2)}`, 'Ganhos']}
                         />
                         <Bar dataKey="amount" radius={[6, 6, 0, 0]} maxBarSize={40}>
                           {weeklyChartData.map((entry, index) => {

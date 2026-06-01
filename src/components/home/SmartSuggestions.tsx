@@ -180,7 +180,7 @@ export function SmartSuggestions() {
           <Button
             variant="outline"
             className="w-full h-full min-h-[200px] sm:min-h-[240px] rounded-xl border-dashed border-2 border-primary/30 text-primary hover:bg-primary/5 hover:border-primary/50 flex flex-col items-center justify-center gap-2"
-            onClick={() => useAppStore.getState().setSearchQuery('recomendados') || useAppStore.getState().openSearch()}
+            onClick={() => { useAppStore.getState().setSearchQuery('recomendados'); useAppStore.getState().openSearch() }}
           >
             <ChevronRight className="h-5 w-5" />
             <span className="text-xs font-semibold">Ver mais</span>

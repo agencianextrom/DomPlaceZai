@@ -23,10 +23,10 @@ import { ImageUpload } from '@/components/ui/ImageUpload'
 const productSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres').max(100, 'Nome muito longo'),
   description: z.string().max(1000, 'Descrição muito longa').optional().default(''),
-  price: z.coerce.number({ invalid_type_error: 'Preço inválido' }).positive('Preço deve ser maior que zero').max(999999, 'Preço muito alto'),
-  comparePrice: z.coerce.number({ invalid_type_error: 'Preço comparativo inválido' }).positive('Deve ser maior que zero').max(999999, 'Preço muito alto').optional().default(0),
-  cost: z.coerce.number({ invalid_type_error: 'Custo inválido' }).min(0, 'Custo não pode ser negativo').max(999999, 'Custo muito alto').optional().default(0),
-  stock: z.coerce.number({ invalid_type_error: 'Estoque inválido' }).int('Estoque deve ser inteiro').min(0, 'Estoque não pode ser negativo').max(999999, 'Estoque muito alto').optional().default(0),
+  price: z.coerce.number({ message: 'Preço inválido' }).positive('Preço deve ser maior que zero').max(999999, 'Preço muito alto'),
+  comparePrice: z.coerce.number({ message: 'Preço comparativo inválido' }).positive('Deve ser maior que zero').max(999999, 'Preço muito alto').optional().default(0),
+  cost: z.coerce.number({ message: 'Custo inválido' }).min(0, 'Custo não pode ser negativo').max(999999, 'Custo muito alto').optional().default(0),
+  stock: z.coerce.number({ message: 'Estoque inválido' }).int('Estoque deve ser inteiro').min(0, 'Estoque não pode ser negativo').max(999999, 'Estoque muito alto').optional().default(0),
   sku: z.string().max(50, 'SKU muito longo').optional().default(''),
   category: z.string().min(1, 'Categoria é obrigatória'),
   tags: z.string().max(200, 'Tags muito longas').optional().default(''),
@@ -274,12 +274,12 @@ export function ProductForm() {
     } catch (err) {
       if (err instanceof z.ZodError) {
         const newErrors: ProductFormErrors = {}
-        err.errors.forEach((e) => {
-          const field = e.path[0]
+        for (const issue of err.issues) {
+          const field = issue.path[0]
           if (typeof field === 'string' && field !== 'description' && field !== 'tags') {
-            newErrors[field] = e.message
+            newErrors[field] = issue.message
           }
-        })
+        }
         setErrors(newErrors)
       }
       return false

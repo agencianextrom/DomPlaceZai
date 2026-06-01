@@ -263,7 +263,7 @@ export function LoyaltyHistory() {
                           <div>
                             <div className="flex items-center gap-2">
                               <p className="font-semibold text-sm">{entry.description}</p>
-                              {isFirst && !entry.isRead !== undefined && (
+                              {isFirst && !('isRead' in entry) && (
                                 <span className="h-2 w-2 rounded-full bg-primary" />
                               )}
                             </div>

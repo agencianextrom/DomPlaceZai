@@ -959,7 +959,7 @@ export function CheckoutView() {
       </div>
 
       {/* Bottom summary bar for mobile */}
-      {step !== 'confirmation' && (
+      {(step as string) !== 'confirmation' && (
         <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-strong border-t px-4 py-3" style={{ borderTop: '1px solid transparent', backgroundImage: 'linear-gradient(90deg, transparent, oklch(0.45 0.1 155 / 0.3), oklch(0.78 0.16 70 / 0.3), transparent)', backgroundOrigin: 'top', backgroundRepeat: 'no-repeat', backgroundSize: '100% 1px' }}>
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <div>

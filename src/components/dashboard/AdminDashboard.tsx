@@ -786,7 +786,7 @@ function UsersTab() {
                       <TableCell><Badge className={`text-[11px] ${getStatusColor(user.status)}`}>{user.status === 'ACTIVE' ? 'Ativo' : user.status === 'SUSPENDED' ? 'Suspenso' : 'Inativo'}</Badge></TableCell>
                       <TableCell className="text-sm">{formatDate(user.createdAt)}</TableCell>
                       <TableCell className="text-center text-sm">{user.roleInfo.user?.orderCount || 0}</TableCell>
-                      <TableCell className="text-right text-sm font-medium">{user.roleInfo.user?.totalSpent > 0 ? formatBRL(user.roleInfo.user.totalSpent) : '-'}</TableCell>
+                      <TableCell className="text-right text-sm font-medium">{(user.roleInfo.user?.totalSpent ?? 0) > 0 ? formatBRL(user.roleInfo.user!.totalSpent) : '-'}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           {user.status !== 'ACTIVE' && (
@@ -828,7 +828,7 @@ function UsersTab() {
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <span>{formatDate(user.createdAt)}</span>
                         <span>{user.roleInfo.user?.orderCount || 0} pedidos</span>
-                        {user.roleInfo.user?.totalSpent > 0 && <span>{formatBRL(user.roleInfo.user.totalSpent)}</span>}
+                        {(user.roleInfo.user?.totalSpent ?? 0) > 0 && <span>{formatBRL(user.roleInfo.user!.totalSpent)}</span>}
                       </div>
                       <Badge className={`text-[10px] ${getStatusColor(user.status)}`}>{user.status === 'ACTIVE' ? 'Ativo' : user.status === 'SUSPENDED' ? 'Suspenso' : 'Inativo'}</Badge>
                     </div>
@@ -1506,12 +1506,12 @@ export function AdminDashboard() {
             </TabsList>
 
             <AnimatePresence mode="wait">
-              <TabsContent value="overview" forceMount={false}><OverviewTab /></TabsContent>
-              <TabsContent value="stores" forceMount={false}><StoresTab /></TabsContent>
-              <TabsContent value="users" forceMount={false}><UsersTab /></TabsContent>
-              <TabsContent value="orders" forceMount={false}><OrdersTab /></TabsContent>
-              <TabsContent value="moderation" forceMount={false}><ModerationTab /></TabsContent>
-              <TabsContent value="finance" forceMount={false}><FinanceTab /></TabsContent>
+              <TabsContent value="overview"><OverviewTab /></TabsContent>
+              <TabsContent value="stores"><StoresTab /></TabsContent>
+              <TabsContent value="users"><UsersTab /></TabsContent>
+              <TabsContent value="orders"><OrdersTab /></TabsContent>
+              <TabsContent value="moderation"><ModerationTab /></TabsContent>
+              <TabsContent value="finance"><FinanceTab /></TabsContent>
             </AnimatePresence>
           </Tabs>
         </div>

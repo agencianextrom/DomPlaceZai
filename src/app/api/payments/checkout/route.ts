@@ -86,6 +86,10 @@ export async function POST(request: NextRequest) {
       accessToken: MP_ACCESS_TOKEN,
     })
 
+    // Use the correct SDK v2 API
+    const { Payment } = mercadopago
+    const paymentClient = new Payment(mp)
+
     if (paymentMethod === 'PIX' || paymentMethod === 'pix') {
       // Pagamento via PIX
       const paymentData = {
@@ -100,7 +104,7 @@ export async function POST(request: NextRequest) {
         },
       }
 
-      const payment = await mp.payments.create(paymentData as Parameters<typeof mp.payments.create>[0])
+      const payment = await paymentClient.create({ body: paymentData })
 
       // Atualizar pedido se orderId fornecido
       if (orderId) {
@@ -113,7 +117,7 @@ export async function POST(request: NextRequest) {
         }).catch(() => {})
       }
 
-      const pointOfInteraction = (payment as Record<string, unknown>).point_of_interaction as Record<string, unknown> | undefined
+      const pointOfInteraction = (payment as unknown as Record<string, unknown>).point_of_interaction as Record<string, unknown> | undefined
       const transactionData = pointOfInteraction?.transaction_data as Record<string, unknown> | undefined
 
       return NextResponse.json({
@@ -139,7 +143,7 @@ export async function POST(request: NextRequest) {
         installments: body.installments || 1,
       }
 
-      const payment = await mp.payments.create(paymentData as Parameters<typeof mp.payments.create>[0])
+      const payment = await paymentClient.create({ body: paymentData })
 
       // Atualizar pedido
       if (orderId) {

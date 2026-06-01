@@ -11,7 +11,6 @@ NProgress.configure({
   minimum: 0.08,
   easing: 'ease',
   trickleSpeed: 180,
-  trickleRate: 0.015,
 })
 
 export function NProgressLoader() {

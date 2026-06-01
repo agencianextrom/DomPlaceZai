@@ -172,9 +172,9 @@ export const authOptions: NextAuthOptions = {
 
         // Injetar dados extras do banco no user
         user.id = existingAccount.id
-        user.role = existingAccount.role as string
-        ;(user as Record<string, unknown>).avatar = existingAccount.avatar
-        ;(user as Record<string, unknown>).phone = existingAccount.phone
+        ;(user as unknown as Record<string, unknown>).role = existingAccount.role
+        ;(user as unknown as Record<string, unknown>).avatar = existingAccount.avatar
+        ;(user as unknown as Record<string, unknown>).phone = existingAccount.phone
       }
       return true
     },
@@ -183,9 +183,9 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id
         token.email = user.email
         token.name = user.name
-        token.role = (user as Record<string, unknown>).role || user.role
-        token.avatar = (user as Record<string, unknown>).avatar || null
-        token.phone = (user as Record<string, unknown>).phone || null
+        token.role = (user as unknown as Record<string, unknown>).role || (user as unknown as Record<string, unknown>).role
+        token.avatar = (user as unknown as Record<string, unknown>).avatar || null
+        token.phone = (user as unknown as Record<string, unknown>).phone || null
       }
 
       // Se for uma sessão existente, buscar dados atualizados do banco
@@ -209,10 +209,10 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as Record<string, unknown>).id = token.id
-        (session.user as Record<string, unknown>).role = token.role
-        (session.user as Record<string, unknown>).avatar = token.avatar
-        (session.user as Record<string, unknown>).phone = token.phone
+        ;(session.user as Record<string, unknown>).id = token.id as string
+        ;(session.user as Record<string, unknown>).role = token.role as string
+        ;(session.user as Record<string, unknown>).avatar = token.avatar as string | null
+        ;(session.user as Record<string, unknown>).phone = token.phone as string | null
       }
       return session
     },

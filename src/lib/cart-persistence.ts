@@ -68,7 +68,7 @@ export function loadCartFromStorage(): CartItemData[] | null {
         'storeName' in (item as object) &&
         'quantity' in (item as object) &&
         typeof (item as Record<string, unknown>).quantity === 'number' &&
-        (item as Record<string, unknown>).quantity > 0
+        (item as Record<string, unknown>).quantity as number > 0
     )
 
     if (!valid) return null

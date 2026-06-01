@@ -808,7 +808,7 @@ export function OrderDetail() {
         {order.status === 'DELIVERED' && (
           <div className="space-y-2">
             <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white gap-2" onClick={() => {
-              selectOrder(order)
+              useAppStore.getState().selectOrder(order)
               navigate('orders')
             }}>
               <Star className="h-4 w-4" />

@@ -46,8 +46,8 @@ export interface ProductData {
   tags: string
   variations: string | null
   category: string
-  freeDeliveryAbove: number | null
-  storeDeliveryFee: number
+  freeDeliveryAbove?: number | null
+  storeDeliveryFee?: number
 }
 
 export interface CartItemData {
@@ -83,6 +83,7 @@ export interface OrderData {
   total: number
   paymentMethod: string | null
   deliveryType: string
+  deliveryAddress?: string | null
   createdAt: string
   items?: { productName: string; quantity: number; price: number; total: number }[]
 }

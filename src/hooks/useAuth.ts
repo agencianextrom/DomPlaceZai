@@ -11,6 +11,7 @@ interface RegisterData {
   phone: string
   password: string
   role?: string
+  turnstileToken?: string
 }
 
 interface AuthUser {

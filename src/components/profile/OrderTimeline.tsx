@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { CheckCircle2, Circle, Package, CookingTimer, Truck as TruckIcon, PackageCheck, Clock } from 'lucide-react'
+import { CheckCircle2, Circle, Package, Timer, Truck as TruckIcon, PackageCheck, Clock } from 'lucide-react'
 
 export interface TimelineStep {
   id: string
@@ -26,7 +26,7 @@ const defaultSteps: TimelineStep[] = [
     title: 'Preparando',
     description: 'A loja esta preparando seus itens com carinho.',
     timestamp: 'Hoje, 14:45',
-    icon: <CookingTimer className="h-5 w-5" />,
+    icon: <Timer className="h-5 w-5" />,
     status: 'current',
   },
   {
