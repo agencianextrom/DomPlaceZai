@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useCallback, useRef } from 'react'
+import { useEffect, useRef, Suspense } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import NProgress from 'nprogress'
 
@@ -13,7 +13,7 @@ NProgress.configure({
   trickleSpeed: 180,
 })
 
-export function NProgressLoader() {
+function NProgressLoaderInner() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const previousPathRef = useRef<string | null>(null)
@@ -72,4 +72,12 @@ export function NProgressLoader() {
   }, [])
 
   return null
+}
+
+export function NProgressLoader() {
+  return (
+    <Suspense fallback={null}>
+      <NProgressLoaderInner />
+    </Suspense>
+  )
 }

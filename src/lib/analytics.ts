@@ -3,7 +3,7 @@
  * Tracks page views and custom events for conversion analysis
  */
 
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
 // PostHog project config (free tier: 1M events/month)
@@ -76,17 +76,15 @@ export function resetTracking() {
  */
 export function usePageViewTracking() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.posthog) {
-      const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '')
       window.posthog.capture('$pageview', {
-        $current_url: url,
+        $current_url: pathname,
         path: pathname,
       })
     }
-  }, [pathname, searchParams])
+  }, [pathname])
 }
 
 // Pre-defined events for DomPlace
