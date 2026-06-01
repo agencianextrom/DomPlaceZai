@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import {
   Store, ArrowLeft, DollarSign, ShoppingCart, Package, Star,
   TrendingUp, TrendingDown, Plus, Eye, MoreVertical, ChevronRight,
@@ -8,10 +8,12 @@ import {
   RefreshCw, Loader2, Trash2, ChefHat, Truck, CheckCircle2, XCircle,
   AlertTriangle, Settings, Tag, Percent, Gift, ShieldX, Phone, MapPin,
   Hash, Calendar, Copy, X, Save, ToggleLeft, Timer,
+  Zap, Heart, Megaphone, ArrowUpRight, FileText, ImageIcon,
+  GripVertical, MousePointerClick, CircleDot,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -19,6 +21,10 @@ import { Textarea } from '@/components/ui/textarea'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from '@/components/ui/table'
 import {
   AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader,
   AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel,
@@ -30,10 +36,14 @@ import { useAppStore } from '@/store/useAppStore'
 import { useAuth } from '@/hooks/useAuth'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
+  ResponsiveContainer, Area, AreaChart,
+} from 'recharts'
 import { ReviewsManagement } from './ReviewsManagement'
 import { ProductForm } from './ProductForm'
 
-// ─── Types ───
+// --- Types ---
 interface StatsData {
   totalRevenue: number
   todayRevenue: number
@@ -48,6 +58,7 @@ interface StatsData {
   activeProducts: number
   averageRating: number
   totalReviews: number
+  monthlyRevenue: number
 }
 
 interface OrderItem {
@@ -103,6 +114,8 @@ interface ProductData {
   category: string
   status?: string
   soldCount?: number
+  revenue?: number
+  image?: string | null
 }
 
 interface StoreSettings {
@@ -163,7 +176,7 @@ interface PromotionForm {
   endsAt: string
 }
 
-// ─── Animated Counter Hook ───
+// --- Animated Counter Hook ---
 function useAnimatedCounter(target: number, duration = 1200, decimals = 0) {
   const [value, setValue] = useState(0)
 
@@ -172,7 +185,6 @@ function useAnimatedCounter(target: number, duration = 1200, decimals = 0) {
     const step = () => {
       const elapsed = Date.now() - startTime
       const progress = Math.min(elapsed / duration, 1)
-      // easeOutExpo
       const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
       setValue(eased * target)
       if (progress < 1) requestAnimationFrame(step)
@@ -187,15 +199,15 @@ function useAnimatedCounter(target: number, duration = 1200, decimals = 0) {
   return decimals > 0 ? value.toFixed(decimals) : Math.round(value).toLocaleString('pt-BR')
 }
 
-// ─── Status Config ───
-const orderStatusConfig: Record<string, { label: string; color: string }> = {
-  PENDING: { label: 'Pendente', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
-  CONFIRMED: { label: 'Confirmado', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
-  PREPARING: { label: 'Preparando', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
-  READY: { label: 'Pronto', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
-  DELIVERING: { label: 'Em Entrega', color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' },
-  DELIVERED: { label: 'Entregue', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' },
-  CANCELLED: { label: 'Cancelado', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' },
+// --- Status Config (color-coded per spec) ---
+const orderStatusConfig: Record<string, { label: string; color: string; dotColor: string }> = {
+  PENDING: { label: 'Pendente', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', dotColor: 'bg-amber-500' },
+  CONFIRMED: { label: 'Confirmado', color: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400', dotColor: 'bg-sky-500' },
+  PREPARING: { label: 'Preparando', color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', dotColor: 'bg-purple-500' },
+  READY: { label: 'Pronto', color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400', dotColor: 'bg-teal-500' },
+  DELIVERING: { label: 'Em Entrega', color: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400', dotColor: 'bg-cyan-500' },
+  DELIVERED: { label: 'Entregue', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', dotColor: 'bg-emerald-500' },
+  CANCELLED: { label: 'Cancelado', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400', dotColor: 'bg-red-500' },
 }
 
 const promotionTypeLabels: Record<string, string> = {
@@ -205,7 +217,6 @@ const promotionTypeLabels: Record<string, string> = {
   BUY_X_GET_Y: 'Compre X Ganhe Y',
 }
 
-// ─── Order Action Config ───
 const orderActionConfig: Record<string, { action: string; label: string; icon: typeof CheckCircle2; variant: 'default' | 'outline' | 'destructive' }> = {
   PENDING: { action: 'accept', label: 'Aceitar', icon: CheckCircle2, variant: 'default' },
   CONFIRMED: { action: 'prepare', label: 'Preparar', icon: ChefHat, variant: 'outline' },
@@ -265,7 +276,22 @@ function formatDate(dateStr: string): string {
   })
 }
 
-// ─── Stat Card ───
+function formatDayLabel(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+}
+
+// --- Status Badge Component ---
+function StatusBadge({ status }: { status: string }) {
+  const cfg = orderStatusConfig[status] || { label: status, color: 'bg-muted text-muted-foreground', dotColor: 'bg-muted-foreground' }
+  return (
+    <Badge className={`${cfg.color} text-[10px] sm:text-xs px-2 py-0.5 border-0 gap-1 font-medium`}>
+      <CircleDot className={`h-2 w-2 ${cfg.dotColor}`} />
+      {cfg.label}
+    </Badge>
+  )
+}
+
+// --- Stat Card ---
 function StatCard({
   icon: Icon,
   label,
@@ -273,6 +299,7 @@ function StatCard({
   suffix,
   trend,
   delay,
+  gradient,
 }: {
   icon: typeof DollarSign
   label: string
@@ -280,6 +307,7 @@ function StatCard({
   suffix?: string
   trend: { value: string; positive: boolean }
   delay: number
+  gradient?: string
 }) {
   return (
     <motion.div
@@ -289,11 +317,10 @@ function StatCard({
       transition={{ delay }}
     >
       <Card className="border-border/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 overflow-hidden relative">
-        {/* Subtle gradient accent top line */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-emerald-400 to-accent/60 opacity-60" />
         <CardContent className="p-4">
           <div className="flex items-start justify-between">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center shrink-0">
+            <div className={`h-10 w-10 rounded-xl ${gradient || 'bg-gradient-to-br from-primary/15 to-primary/5'} flex items-center justify-center shrink-0`}>
               <Icon className="h-5 w-5 text-primary" />
             </div>
             <Badge
@@ -316,12 +343,45 @@ function StatCard({
   )
 }
 
-// ─── Skeleton Loaders ───
+// --- Quick Action Button ---
+function QuickActionButton({
+  icon: Icon,
+  label,
+  onClick,
+  delay,
+  color,
+}: {
+  icon: typeof DollarSign
+  label: string
+  onClick: () => void
+  delay: number
+  color?: string
+}) {
+  return (
+    <motion.button
+      variants={itemVariants}
+      initial="hidden"
+      animate="visible"
+      transition={{ delay }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
+      onClick={onClick}
+      className="flex flex-col items-center gap-2 p-3 rounded-xl border border-border/50 bg-card hover:bg-accent/50 transition-colors min-w-[72px]"
+    >
+      <div className={`h-10 w-10 rounded-xl ${color || 'bg-gradient-to-br from-primary/15 to-primary/5'} flex items-center justify-center`}>
+        <Icon className="h-5 w-5 text-primary" />
+      </div>
+      <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">{label}</span>
+    </motion.button>
+  )
+}
+
+// --- Skeleton Loaders ---
 function StatsSkeleton() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
-        {[0, 1].map((i) => (
+        {[0, 1, 2, 3].map((i) => (
           <Card key={i} className="border-border/50">
             <CardContent className="p-4 space-y-3">
               <div className="flex items-start justify-between">
@@ -334,40 +394,42 @@ function StatsSkeleton() {
           </Card>
         ))}
       </div>
-      <div className="grid grid-cols-3 gap-3">
-        {[0, 1, 2].map((i) => (
-          <Card key={i}>
-            <CardContent className="p-3 space-y-2">
-              <Skeleton className="h-5 w-16 mx-auto" />
-              <Skeleton className="h-3 w-10 mx-auto" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
       <Card className="border-border/50">
         <CardContent className="p-4 space-y-3">
           <Skeleton className="h-4 w-48" />
-          <div className="flex items-end gap-2 h-36">
-            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-20 w-full rounded-t-md" />
-                <Skeleton className="h-3 w-6 mx-auto" />
-              </div>
-            ))}
-          </div>
+          <Skeleton className="h-[200px] w-full rounded-lg" />
         </CardContent>
       </Card>
-      <div className="grid grid-cols-2 gap-3">
-        {[0, 1].map((i) => (
-          <Card key={i} className="border-border/50">
-            <CardContent className="p-4 space-y-3">
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-6 w-12" />
-              <Skeleton className="h-3 w-16" />
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card className="border-border/50">
+          <CardContent className="p-4 space-y-3">
+            <Skeleton className="h-4 w-40" />
+            {[0,1,2,3,4].map((i) => (
+              <div key={i} className="flex items-center justify-between py-2">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-4 w-4 rounded" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+                <Skeleton className="h-4 w-12" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+        <Card className="border-border/50">
+          <CardContent className="p-4 space-y-3">
+            <Skeleton className="h-4 w-40" />
+            {[0,1,2,3,4].map((i) => (
+              <div key={i} className="flex items-center gap-3 py-1">
+                <Skeleton className="h-8 w-8 rounded-lg shrink-0" />
+                <div className="flex-1 space-y-1.5">
+                  <Skeleton className="h-3 w-28" />
+                  <Skeleton className="h-2 w-16" />
+                </div>
+                <Skeleton className="h-4 w-14" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
@@ -459,7 +521,43 @@ function PromotionsSkeleton() {
   )
 }
 
-// ─── Error State ───
+// --- Empty State ---
+function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  action,
+  actionLabel,
+  onAction,
+}: {
+  icon: typeof Package
+  title: string
+  description: string
+  action?: () => void
+  actionLabel?: string
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center justify-center py-12 px-4 text-center"
+    >
+      <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-100 dark:to-emerald-900/30 flex items-center justify-center mb-4">
+        <Icon className="h-8 w-8 text-primary/70" />
+      </div>
+      <h3 className="text-lg font-semibold mb-1">{title}</h3>
+      <p className="text-sm text-muted-foreground mb-4 max-w-xs">{description}</p>
+      {actionLabel && action && (
+        <Button onClick={action} className="gap-2 bg-primary text-primary-foreground">
+          <Plus className="h-4 w-4" />
+          {actionLabel}
+        </Button>
+      )}
+    </motion.div>
+  )
+}
+
+// --- Error State ---
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <motion.div
@@ -482,7 +580,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
   )
 }
 
-// ─── Access Denied State ───
+// --- Access Denied State ---
 function AccessDenied() {
   const { goBack } = useAppStore()
   return (
@@ -509,7 +607,7 @@ function AccessDenied() {
   )
 }
 
-// ─── Auth Loading State ───
+// --- Auth Loading State ---
 function AuthLoading() {
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -521,7 +619,18 @@ function AuthLoading() {
   )
 }
 
-// ─── Order Detail Dialog ───
+// --- Custom Recharts Tooltip ---
+function RevenueChartTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="bg-background border border-border/80 rounded-lg px-3 py-2 shadow-lg">
+      <p className="text-[10px] text-muted-foreground mb-1">{label}</p>
+      <p className="text-sm font-bold text-primary">{formatBRL(payload[0].value)}</p>
+    </div>
+  )
+}
+
+// --- Order Detail Dialog ---
 function OrderDetailDialog({
   order,
   open,
@@ -532,7 +641,6 @@ function OrderDetailDialog({
   onClose: () => void
 }) {
   if (!order) return null
-  const statusCfg = orderStatusConfig[order.status] || { label: order.status, color: 'bg-muted text-muted-foreground' }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -545,18 +653,14 @@ function OrderDetailDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Status & Customer */}
           <div className="flex items-center justify-between">
-            <Badge className={`${statusCfg.color} text-xs px-3 py-1 border-0`}>
-              {statusCfg.label}
-            </Badge>
+            <StatusBadge status={order.status} />
             <span className="text-xs text-muted-foreground flex items-center gap-1">
               <Clock className="h-3 w-3" />
               {formatDate(order.createdAt)}
             </span>
           </div>
 
-          {/* Customer */}
           <Card className="border-border/50">
             <CardContent className="p-3">
               <div className="flex items-center gap-3">
@@ -573,7 +677,6 @@ function OrderDetailDialog({
             </CardContent>
           </Card>
 
-          {/* Items */}
           <div>
             <p className="text-xs font-semibold text-muted-foreground mb-2">Itens do pedido</p>
             <div className="space-y-2">
@@ -591,7 +694,6 @@ function OrderDetailDialog({
             </div>
           </div>
 
-          {/* Totals */}
           <Card className="border-border/50">
             <CardContent className="p-3 space-y-2">
               <div className="flex justify-between text-sm">
@@ -616,7 +718,6 @@ function OrderDetailDialog({
             </CardContent>
           </Card>
 
-          {/* Delivery info */}
           <div className="space-y-2">
             {order.deliveryAddress && (
               <div className="flex items-start gap-2 text-sm">
@@ -636,7 +737,6 @@ function OrderDetailDialog({
             </div>
           </div>
 
-          {/* Status History */}
           {order.statusHistory && order.statusHistory.length > 0 && (
             <div>
               <p className="text-xs font-semibold text-muted-foreground mb-2">Histórico de status</p>
@@ -645,11 +745,7 @@ function OrderDetailDialog({
                   const cfg = orderStatusConfig[entry.status]
                   return (
                     <div key={entry.id} className="flex items-center gap-2 text-xs">
-                      <div className={`h-2 w-2 rounded-full shrink-0 ${
-                        entry.status === 'DELIVERED' ? 'bg-emerald-500' :
-                        entry.status === 'CANCELLED' ? 'bg-red-500' :
-                        'bg-primary'
-                      }`} />
+                      <div className={`h-2 w-2 rounded-full shrink-0 ${cfg?.dotColor || 'bg-primary'}`} />
                       <span className="font-medium">{cfg?.label || entry.status}</span>
                       <span className="text-muted-foreground">•</span>
                       <span className="text-muted-foreground">{formatDate(entry.createdAt)}</span>
@@ -682,7 +778,7 @@ function OrderDetailDialog({
   )
 }
 
-// ─── Settings Form ───
+// --- Settings Form ---
 function SettingsTab({
   settings,
   loading,
@@ -696,7 +792,6 @@ function SettingsTab({
   onFetch: () => void
   onSave: (data: Record<string, unknown>) => void
 }) {
-  // Derive initial form from settings
   const initialForm = useMemo<Record<string, string>>(() => {
     if (!settings) return {
       name: '', description: '', phone: '', whatsapp: '', address: '',
@@ -726,7 +821,6 @@ function SettingsTab({
   const [form, setForm] = useState<Record<string, string>>(initialForm)
   const [settingsLoaded, setSettingsLoaded] = useState(false)
 
-  // Sync form when settings load (one-time, via render-phase assignment)
   if (settings && !settingsLoaded) {
     setForm(initialForm)
     setSettingsLoaded(true)
@@ -762,7 +856,6 @@ function SettingsTab({
       animate={{ opacity: 1, y: 0 }}
       className="space-y-4"
     >
-      {/* Info card */}
       <Card className="border-border/50">
         <CardContent className="p-4">
           <div className="flex items-center gap-3">
@@ -781,7 +874,6 @@ function SettingsTab({
         </CardContent>
       </Card>
 
-      {/* Basic Info */}
       <Card className="border-border/50">
         <CardHeader className="pb-2 pt-4 px-4">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -792,222 +884,115 @@ function SettingsTab({
         <CardContent className="px-4 pb-4 space-y-3">
           <div>
             <Label className="text-xs text-muted-foreground">Nome da loja</Label>
-            <Input
-              value={form.name}
-              onChange={(e) => updateField('name', e.target.value)}
-              className="mt-1 h-9 text-sm"
-            />
+            <Input value={form.name} onChange={(e) => updateField('name', e.target.value)} className="mt-1 h-9 text-sm" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Descrição</Label>
-            <Textarea
-              value={form.description}
-              onChange={(e) => updateField('description', e.target.value)}
-              className="mt-1 min-h-[80px] resize-none text-sm"
-            />
+            <Textarea value={form.description} onChange={(e) => updateField('description', e.target.value)} className="mt-1 min-h-[80px] resize-none text-sm" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <Label className="text-xs text-muted-foreground flex items-center gap-1">
-                <Phone className="h-3 w-3" /> Telefone
-              </Label>
-              <Input
-                value={form.phone}
-                onChange={(e) => updateField('phone', e.target.value)}
-                placeholder="(99) 99999-9999"
-                className="mt-1 h-9 text-sm"
-              />
+              <Label className="text-xs text-muted-foreground flex items-center gap-1"><Phone className="h-3 w-3" /> Telefone</Label>
+              <Input value={form.phone} onChange={(e) => updateField('phone', e.target.value)} placeholder="(99) 99999-9999" className="mt-1 h-9 text-sm" />
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground flex items-center gap-1">
-                <Phone className="h-3 w-3" /> WhatsApp
-              </Label>
-              <Input
-                value={form.whatsapp}
-                onChange={(e) => updateField('whatsapp', e.target.value)}
-                placeholder="+5599999999999"
-                className="mt-1 h-9 text-sm"
-              />
+              <Label className="text-xs text-muted-foreground flex items-center gap-1"><Phone className="h-3 w-3" /> WhatsApp</Label>
+              <Input value={form.whatsapp} onChange={(e) => updateField('whatsapp', e.target.value)} placeholder="+5599999999999" className="mt-1 h-9 text-sm" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Address */}
       <Card className="border-border/50">
         <CardHeader className="pb-2 pt-4 px-4">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-primary" />
-            Endereço
-          </CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" /> Endereço</CardTitle>
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-3">
           <div>
             <Label className="text-xs text-muted-foreground">Endereço</Label>
-            <Input
-              value={form.address}
-              onChange={(e) => updateField('address', e.target.value)}
-              className="mt-1 h-9 text-sm"
-            />
+            <Input value={form.address} onChange={(e) => updateField('address', e.target.value)} className="mt-1 h-9 text-sm" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Bairro</Label>
-            <Input
-              value={form.neighborhood}
-              onChange={(e) => updateField('neighborhood', e.target.value)}
-              className="mt-1 h-9 text-sm"
-            />
+            <Input value={form.neighborhood} onChange={(e) => updateField('neighborhood', e.target.value)} className="mt-1 h-9 text-sm" />
           </div>
         </CardContent>
       </Card>
 
-      {/* Operating Hours */}
       <Card className="border-border/50">
         <CardHeader className="pb-2 pt-4 px-4">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <Clock className="h-4 w-4 text-primary" />
-            Horário de Funcionamento
-          </CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-2"><Clock className="h-4 w-4 text-primary" /> Horário de Funcionamento</CardTitle>
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs text-muted-foreground">Abre às</Label>
-              <Input
-                type="time"
-                value={form.opensAt}
-                onChange={(e) => updateField('opensAt', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="time" value={form.opensAt} onChange={(e) => updateField('opensAt', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Fecha às</Label>
-              <Input
-                type="time"
-                value={form.closesAt}
-                onChange={(e) => updateField('closesAt', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="time" value={form.closesAt} onChange={(e) => updateField('closesAt', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Dias de funcionamento (1=Dom, 2=Seg, ..., 7=Sáb)</Label>
-            <Input
-              value={form.openDays}
-              onChange={(e) => updateField('openDays', e.target.value)}
-              placeholder="Ex: 2,3,4,5,6"
-              className="mt-1 h-9 text-sm"
-            />
+            <Input value={form.openDays} onChange={(e) => updateField('openDays', e.target.value)} placeholder="Ex: 2,3,4,5,6" className="mt-1 h-9 text-sm" />
           </div>
         </CardContent>
       </Card>
 
-      {/* Delivery Settings */}
       <Card className="border-border/50">
         <CardHeader className="pb-2 pt-4 px-4">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <Truck className="h-4 w-4 text-primary" />
-            Entrega
-          </CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-2"><Truck className="h-4 w-4 text-primary" /> Entrega</CardTitle>
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs text-muted-foreground">Taxa de entrega (R$)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={form.deliveryFee}
-                onChange={(e) => updateField('deliveryFee', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="number" step="0.01" value={form.deliveryFee} onChange={(e) => updateField('deliveryFee', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Frete grátis acima de (R$)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={form.freeDeliveryAbove}
-                onChange={(e) => updateField('freeDeliveryAbove', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="number" step="0.01" value={form.freeDeliveryAbove} onChange={(e) => updateField('freeDeliveryAbove', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs text-muted-foreground">Pedido mínimo (R$)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={form.minOrderValue}
-                onChange={(e) => updateField('minOrderValue', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="number" step="0.01" value={form.minOrderValue} onChange={(e) => updateField('minOrderValue', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Raio de entrega (km)</Label>
-              <Input
-                type="number"
-                value={form.deliveryRadius}
-                onChange={(e) => updateField('deliveryRadius', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="number" value={form.deliveryRadius} onChange={(e) => updateField('deliveryRadius', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Payment */}
       <Card className="border-border/50">
         <CardHeader className="pb-2 pt-4 px-4">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-primary" />
-            Pagamento
-          </CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-2"><DollarSign className="h-4 w-4 text-primary" /> Pagamento</CardTitle>
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-3">
           <div>
             <Label className="text-xs text-muted-foreground">Chave PIX</Label>
-            <Input
-              value={form.pixKey}
-              onChange={(e) => updateField('pixKey', e.target.value)}
-              className="mt-1 h-9 text-sm"
-            />
+            <Input value={form.pixKey} onChange={(e) => updateField('pixKey', e.target.value)} className="mt-1 h-9 text-sm" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Redes Sociais (link)</Label>
-            <Input
-              value={form.socialMedia}
-              onChange={(e) => updateField('socialMedia', e.target.value)}
-              className="mt-1 h-9 text-sm"
-            />
+            <Input value={form.socialMedia} onChange={(e) => updateField('socialMedia', e.target.value)} className="mt-1 h-9 text-sm" />
           </div>
         </CardContent>
       </Card>
 
-      {/* Save */}
-      <Button
-        onClick={handleSave}
-        disabled={saving}
-        className="w-full h-11 bg-primary text-primary-foreground font-semibold gap-2"
-      >
-        {saving ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Salvando...
-          </>
-        ) : (
-          <>
-            <Save className="h-4 w-4" />
-            Salvar Configurações
-          </>
-        )}
+      <Button onClick={handleSave} disabled={saving} className="w-full h-11 bg-primary text-primary-foreground font-semibold gap-2">
+        {saving ? (<><Loader2 className="h-4 w-4 animate-spin" /> Salvando...</>) : (<><Save className="h-4 w-4" /> Salvar Configurações</>)}
       </Button>
     </motion.div>
   )
 }
 
-// ─── Promotion Create Dialog ───
+// --- Promotion Create Dialog ---
 function PromotionCreateDialog({
   open,
   onClose,
@@ -1020,16 +1005,8 @@ function PromotionCreateDialog({
   loading: boolean
 }) {
   const [form, setForm] = useState<PromotionForm>({
-    title: '',
-    description: '',
-    type: 'PERCENTAGE',
-    value: '',
-    minOrderValue: '',
-    maxDiscount: '',
-    usageLimit: '',
-    code: '',
-    startsAt: '',
-    endsAt: '',
+    title: '', description: '', type: 'PERCENTAGE', value: '', minOrderValue: '',
+    maxDiscount: '', usageLimit: '', code: '', startsAt: '', endsAt: '',
   })
 
   const updateField = (field: keyof PromotionForm, value: string) => {
@@ -1037,22 +1014,10 @@ function PromotionCreateDialog({
   }
 
   const handleSubmit = () => {
-    if (!form.title.trim()) {
-      toast.error('Título é obrigatório')
-      return
-    }
-    if (!form.value || parseFloat(form.value) <= 0) {
-      toast.error('Valor da promoção é obrigatório')
-      return
-    }
-    if (!form.startsAt || !form.endsAt) {
-      toast.error('Datas de início e fim são obrigatórias')
-      return
-    }
-    if (new Date(form.endsAt) <= new Date(form.startsAt)) {
-      toast.error('Data de fim deve ser posterior à data de início')
-      return
-    }
+    if (!form.title.trim()) { toast.error('Título é obrigatório'); return }
+    if (!form.value || parseFloat(form.value) <= 0) { toast.error('Valor da promoção é obrigatório'); return }
+    if (!form.startsAt || !form.endsAt) { toast.error('Datas de início e fim são obrigatórias'); return }
+    if (new Date(form.endsAt) <= new Date(form.startsAt)) { toast.error('Data de fim deve ser posterior à data de início'); return }
 
     const data: Record<string, unknown> = {
       title: form.title.trim(),
@@ -1066,23 +1031,11 @@ function PromotionCreateDialog({
     if (form.maxDiscount) data.maxDiscount = parseFloat(form.maxDiscount)
     if (form.usageLimit) data.usageLimit = parseInt(form.usageLimit)
     if (form.code.trim()) data.code = form.code.trim()
-
     onCreate(data)
   }
 
   const handleClose = () => {
-    setForm({
-      title: '',
-      description: '',
-      type: 'PERCENTAGE',
-      value: '',
-      minOrderValue: '',
-      maxDiscount: '',
-      usageLimit: '',
-      code: '',
-      startsAt: '',
-      endsAt: '',
-    })
+    setForm({ title: '', description: '', type: 'PERCENTAGE', value: '', minOrderValue: '', maxDiscount: '', usageLimit: '', code: '', startsAt: '', endsAt: '' })
     onClose()
   }
 
@@ -1090,140 +1043,64 @@ function PromotionCreateDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Gift className="h-5 w-5 text-primary" />
-            Criar Promoção
-          </DialogTitle>
+          <DialogTitle className="flex items-center gap-2"><Gift className="h-5 w-5 text-primary" /> Criar Promoção</DialogTitle>
         </DialogHeader>
-
         <div className="space-y-3">
           <div>
             <Label className="text-xs text-muted-foreground">Título *</Label>
-            <Input
-              value={form.title}
-              onChange={(e) => updateField('title', e.target.value)}
-              placeholder="Ex: Promoção de Verão"
-              className="mt-1 h-9 text-sm"
-            />
+            <Input value={form.title} onChange={(e) => updateField('title', e.target.value)} placeholder="Ex: Promoção de Verão" className="mt-1 h-9 text-sm" />
           </div>
-
           <div>
             <Label className="text-xs text-muted-foreground">Descrição</Label>
-            <Textarea
-              value={form.description}
-              onChange={(e) => updateField('description', e.target.value)}
-              className="mt-1 min-h-[60px] resize-none text-sm"
-            />
+            <Textarea value={form.description} onChange={(e) => updateField('description', e.target.value)} className="mt-1 min-h-[60px] resize-none text-sm" />
           </div>
-
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs text-muted-foreground">Tipo *</Label>
-              <select
-                value={form.type}
-                onChange={(e) => updateField('type', e.target.value)}
-                className="w-full mt-1 h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                {Object.entries(promotionTypeLabels).map(([key, label]) => (
-                  <option key={key} value={key}>{label}</option>
-                ))}
+              <select value={form.type} onChange={(e) => updateField('type', e.target.value)} className="w-full mt-1 h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                {Object.entries(promotionTypeLabels).map(([key, label]) => (<option key={key} value={key}>{label}</option>))}
               </select>
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground">
-                Valor {form.type === 'PERCENTAGE' ? '(%)' : '(R$)'} *
-              </Label>
-              <Input
-                type="number"
-                step={form.type === 'PERCENTAGE' ? '1' : '0.01'}
-                value={form.value}
-                onChange={(e) => updateField('value', e.target.value)}
-                placeholder={form.type === 'PERCENTAGE' ? '10' : '5.00'}
-                className="mt-1 h-9 text-sm"
-              />
+              <Label className="text-xs text-muted-foreground">Valor {form.type === 'PERCENTAGE' ? '(%)' : '(R$)'} *</Label>
+              <Input type="number" step={form.type === 'PERCENTAGE' ? '1' : '0.01'} value={form.value} onChange={(e) => updateField('value', e.target.value)} placeholder={form.type === 'PERCENTAGE' ? '10' : '5.00'} className="mt-1 h-9 text-sm" />
             </div>
           </div>
-
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs text-muted-foreground">Pedido mínimo (R$)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={form.minOrderValue}
-                onChange={(e) => updateField('minOrderValue', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="number" step="0.01" value={form.minOrderValue} onChange={(e) => updateField('minOrderValue', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Desconto máximo (R$)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={form.maxDiscount}
-                onChange={(e) => updateField('maxDiscount', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="number" step="0.01" value={form.maxDiscount} onChange={(e) => updateField('maxDiscount', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
           </div>
-
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs text-muted-foreground">Limite de uso</Label>
-              <Input
-                type="number"
-                value={form.usageLimit}
-                onChange={(e) => updateField('usageLimit', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="number" value={form.usageLimit} onChange={(e) => updateField('usageLimit', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Código promocional</Label>
-              <Input
-                value={form.code}
-                onChange={(e) => updateField('code', e.target.value.toUpperCase())}
-                placeholder="Ex: VERAO20"
-                className="mt-1 h-9 text-sm"
-              />
+              <Input value={form.code} onChange={(e) => updateField('code', e.target.value.toUpperCase())} placeholder="Ex: VERAO20" className="mt-1 h-9 text-sm" />
             </div>
           </div>
-
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs text-muted-foreground">Início *</Label>
-              <Input
-                type="datetime-local"
-                value={form.startsAt}
-                onChange={(e) => updateField('startsAt', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="datetime-local" value={form.startsAt} onChange={(e) => updateField('startsAt', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Fim *</Label>
-              <Input
-                type="datetime-local"
-                value={form.endsAt}
-                onChange={(e) => updateField('endsAt', e.target.value)}
-                className="mt-1 h-9 text-sm"
-              />
+              <Input type="datetime-local" value={form.endsAt} onChange={(e) => updateField('endsAt', e.target.value)} className="mt-1 h-9 text-sm" />
             </div>
           </div>
         </div>
-
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={handleClose} className="h-9 text-xs">
-            Cancelar
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="h-9 text-xs gap-1 bg-primary text-primary-foreground"
-          >
-            {loading ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
-            ) : (
-              <Plus className="h-3 w-3" />
-            )}
+          <Button variant="outline" onClick={handleClose} className="h-9 text-xs">Cancelar</Button>
+          <Button onClick={handleSubmit} disabled={loading} className="h-9 text-xs gap-1 bg-primary text-primary-foreground">
+            {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
             Criar Promoção
           </Button>
         </DialogFooter>
@@ -1232,12 +1109,11 @@ function PromotionCreateDialog({
   )
 }
 
-// ─── Main Component ───
+// --- Main Component ---
 export function StoreDashboard() {
   const { goBack, currentUser } = useAppStore()
   const { isStoreOwner, isLoading: authLoading, isAuthenticated } = useAuth()
 
-  // State
   const [stats, setStats] = useState<StatsData | null>(null)
   const [products, setProducts] = useState<ProductData[]>([])
   const [orders, setOrders] = useState<OrderData[]>([])
@@ -1263,7 +1139,6 @@ export function StoreDashboard() {
 
   const accountId = currentUser?.id
 
-  // Helper: map stats API response to StatsData
   const mapStats = useCallback((s: Record<string, unknown>): StatsData => ({
     totalRevenue: (s.totalRevenue as number) ?? 0,
     todayRevenue: (s.todayRevenue as number) ?? 0,
@@ -1278,71 +1153,41 @@ export function StoreDashboard() {
     activeProducts: (s.activeProducts as number) ?? 0,
     averageRating: (s.averageRating as number) ?? 0,
     totalReviews: (s.totalReviews as number) ?? 0,
+    monthlyRevenue: (s.monthlyRevenue as number) ?? 0,
   }), [])
 
-  // Fetch stats and orders on mount
   const fetchStatsAndOrders = useCallback(async () => {
-    if (!accountId) {
-      setError('Você precisa estar logado para acessar o painel.')
-      setLoading(false)
-      return
-    }
-
-    setLoading(true)
-    setError(null)
-
+    if (!accountId) { setError('Você precisa estar logado para acessar o painel.'); setLoading(false); return }
+    setLoading(true); setError(null)
     try {
       const [statsRes, ordersRes] = await Promise.all([
         fetch(`/api/store-dashboard/stats?accountId=${accountId}`),
         fetch(`/api/store-dashboard/orders?accountId=${accountId}&limit=50`),
       ])
-
-      if (!statsRes.ok) {
-        const errData = await statsRes.json().catch(() => ({ error: 'Erro desconhecido' }))
-        throw new Error(errData.error || 'Erro ao buscar estatísticas')
-      }
-
-      if (!ordersRes.ok) {
-        const errData = await ordersRes.json().catch(() => ({ error: 'Erro desconhecido' }))
-        throw new Error(errData.error || 'Erro ao buscar pedidos')
-      }
-
+      if (!statsRes.ok) { const errData = await statsRes.json().catch(() => ({ error: 'Erro desconhecido' })); throw new Error(errData.error || 'Erro ao buscar estatísticas') }
+      if (!ordersRes.ok) { const errData = await ordersRes.json().catch(() => ({ error: 'Erro desconhecido' })); throw new Error(errData.error || 'Erro ao buscar pedidos') }
       const statsData = await statsRes.json()
       const ordersData = await ordersRes.json()
-
-      // Stats are nested under .stats in the API response
-      if (statsData.stats) {
-        setStats(mapStats(statsData.stats))
-      }
-
+      if (statsData.stats) setStats(mapStats(statsData.stats))
       setOrders(ordersData.orders ?? [])
     } catch (err) {
       console.error('Erro ao carregar dados do painel:', err)
       setError(err instanceof Error ? err.message : 'Erro ao carregar dados')
     } finally {
-      setLoading(false)
-      setStatsLoading(false)
-      setOrdersLoading(false)
+      setLoading(false); setStatsLoading(false); setOrdersLoading(false)
     }
   }, [accountId, mapStats])
 
-  // Fetch products when products tab is active
   const fetchProducts = useCallback(async () => {
     if (!accountId) return
-
     setProductsLoading(true)
     try {
-      // First fetch stats to get storeId
       const statsRes = await fetch(`/api/store-dashboard/stats?accountId=${accountId}`)
       if (!statsRes.ok) return
       const statsData = await statsRes.json()
-
       if (!statsData.storeId) return
-
-      // Fetch active products
       const productsRes = await fetch(`/api/products?storeId=${statsData.storeId}&status=ACTIVE&limit=100`)
       if (!productsRes.ok) return
-
       const productsData = await productsRes.json()
       setProducts(productsData.products ?? [])
     } catch (err) {
@@ -1352,44 +1197,22 @@ export function StoreDashboard() {
     }
   }, [accountId])
 
-  // Fetch store settings
   const fetchSettings = useCallback(async () => {
     if (!accountId) return
-
     setSettingsLoading(true)
     try {
       const res = await fetch(`/api/store-dashboard/settings?accountId=${accountId}`)
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' }))
-        throw new Error(errData.error || 'Erro ao buscar configurações')
-      }
+      if (!res.ok) { const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' })); throw new Error(errData.error || 'Erro ao buscar configurações') }
       const data = await res.json()
       setStoreSettings({
-        id: data.id,
-        name: data.name ?? '',
-        description: data.description,
-        phone: data.phone,
-        whatsapp: data.whatsapp,
-        address: data.address,
-        neighborhood: data.neighborhood,
-        city: data.city ?? '',
-        state: data.state ?? '',
-        opensAt: data.opensAt,
-        closesAt: data.closesAt,
-        openDays: data.openDays ?? '',
-        deliveryFee: data.deliveryFee ?? 0,
-        freeDeliveryAbove: data.freeDeliveryAbove,
-        minOrderValue: data.minOrderValue,
-        deliveryRadius: data.deliveryRadius,
-        pixKey: data.pixKey,
-        socialMedia: data.socialMedia,
-        logo: data.logo,
-        coverImage: data.coverImage,
-        category: data.category ?? '',
-        status: data.status ?? '',
-        rating: data.rating ?? 0,
-        totalReviews: data.totalReviews ?? 0,
-        totalSales: data.totalSales ?? 0,
+        id: data.id, name: data.name ?? '', description: data.description, phone: data.phone,
+        whatsapp: data.whatsapp, address: data.address, neighborhood: data.neighborhood,
+        city: data.city ?? '', state: data.state ?? '', opensAt: data.opensAt, closesAt: data.closesAt,
+        openDays: data.openDays ?? '', deliveryFee: data.deliveryFee ?? 0, freeDeliveryAbove: data.freeDeliveryAbove,
+        minOrderValue: data.minOrderValue, deliveryRadius: data.deliveryRadius, pixKey: data.pixKey,
+        socialMedia: data.socialMedia, logo: data.logo, coverImage: data.coverImage,
+        category: data.category ?? '', status: data.status ?? '', rating: data.rating ?? 0,
+        totalReviews: data.totalReviews ?? 0, totalSales: data.totalSales ?? 0,
       })
     } catch (err) {
       console.error('Erro ao carregar configurações:', err)
@@ -1399,17 +1222,12 @@ export function StoreDashboard() {
     }
   }, [accountId])
 
-  // Fetch promotions
   const fetchPromotions = useCallback(async () => {
     if (!accountId) return
-
     setPromotionsLoading(true)
     try {
       const res = await fetch(`/api/store-dashboard/promotions?accountId=${accountId}&limit=50`)
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' }))
-        throw new Error(errData.error || 'Erro ao buscar promoções')
-      }
+      if (!res.ok) { const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' })); throw new Error(errData.error || 'Erro ao buscar promoções') }
       const data = await res.json()
       setPromotions(data.promotions ?? [])
     } catch (err) {
@@ -1420,68 +1238,30 @@ export function StoreDashboard() {
     }
   }, [accountId])
 
-  // Load main data on mount
   useEffect(() => {
-    if (!authLoading && isAuthenticated && isStoreOwner) {
-      fetchStatsAndOrders()
-    }
+    if (!authLoading && isAuthenticated && isStoreOwner) { fetchStatsAndOrders() }
   }, [authLoading, isAuthenticated, isStoreOwner, fetchStatsAndOrders])
 
-  // Load tab-specific data
   useEffect(() => {
     if (!authLoading && !isAuthenticated || !isStoreOwner) return
-    if (activeTab === 'products' && products.length === 0 && !productsLoading) {
-      fetchProducts()
-    }
-    if (activeTab === 'settings' && !storeSettings && !settingsLoading) {
-      fetchSettings()
-    }
-    if (activeTab === 'promotions' && promotions.length === 0 && !promotionsLoading) {
-      fetchPromotions()
-    }
+    if (activeTab === 'products' && products.length === 0 && !productsLoading) fetchProducts()
+    if (activeTab === 'settings' && !storeSettings && !settingsLoading) fetchSettings()
+    if (activeTab === 'promotions' && promotions.length === 0 && !promotionsLoading) fetchPromotions()
   }, [activeTab, authLoading, isAuthenticated, isStoreOwner, products.length, productsLoading, fetchProducts, storeSettings, settingsLoading, fetchSettings, promotions.length, promotionsLoading, fetchPromotions])
 
-  // Order action handler (accept, prepare, ready, start_delivery, deliver, reject, cancel)
   const handleOrderAction = async (orderId: string, action: string, reason?: string) => {
     if (!accountId) return
-
     setActionLoading(orderId)
     try {
       const body: Record<string, unknown> = { action, accountId }
       if (reason) body.reason = reason
-
-      const res = await fetch(`/api/store-dashboard/orders/${orderId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' }))
-        throw new Error(errData.error || 'Erro ao atualizar pedido')
-      }
-
+      const res = await fetch(`/api/store-dashboard/orders/${orderId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      if (!res.ok) { const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' })); throw new Error(errData.error || 'Erro ao atualizar pedido') }
       const data = await res.json()
       toast.success(data.message || 'Pedido atualizado com sucesso!')
-
-      // Update order in local state
-      if (data.order) {
-        setOrders((prev) =>
-          prev.map((o) => (o.id === orderId ? { ...o, ...data.order } : o))
-        )
-      }
-
-      // Refresh stats
+      if (data.order) setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, ...data.order } : o)))
       setStatsLoading(true)
-      fetch(`/api/store-dashboard/stats?accountId=${accountId}`)
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.stats) {
-            setStats(mapStats(data.stats))
-          }
-        })
-        .catch(() => {})
-        .finally(() => setStatsLoading(false))
+      fetch(`/api/store-dashboard/stats?accountId=${accountId}`).then((r) => r.json()).then((d) => { if (d.stats) setStats(mapStats(d.stats)) }).catch(() => {}).finally(() => setStatsLoading(false))
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao atualizar pedido')
     } finally {
@@ -1489,31 +1269,14 @@ export function StoreDashboard() {
     }
   }
 
-  // Delete product handler
   const handleDeleteProduct = async (productId: string) => {
     setDeletingProduct(productId)
     try {
-      const res = await fetch(`/api/products/${productId}`, {
-        method: 'DELETE',
-      })
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' }))
-        throw new Error(errData.error || 'Erro ao deletar produto')
-      }
-
+      const res = await fetch(`/api/products/${productId}`, { method: 'DELETE' })
+      if (!res.ok) { const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' })); throw new Error(errData.error || 'Erro ao deletar produto') }
       toast.success('Produto removido com sucesso!')
       setProducts((prev) => prev.filter((p) => p.id !== productId))
-
-      // Refresh stats
-      fetch(`/api/store-dashboard/stats?accountId=${accountId}`)
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.stats) {
-            setStats(mapStats(data.stats))
-          }
-        })
-        .catch(() => {})
+      fetch(`/api/store-dashboard/stats?accountId=${accountId}`).then((r) => r.json()).then((d) => { if (d.stats) setStats(mapStats(d.stats)) }).catch(() => {})
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao deletar produto')
     } finally {
@@ -1521,27 +1284,14 @@ export function StoreDashboard() {
     }
   }
 
-  // Save settings handler
   const handleSaveSettings = async (data: Record<string, unknown>) => {
     if (!accountId) return
-
     setSettingsSaving(true)
     try {
-      const res = await fetch(`/api/store-dashboard/settings`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accountId, ...data }),
-      })
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' }))
-        throw new Error(errData.error || 'Erro ao salvar configurações')
-      }
-
+      const res = await fetch(`/api/store-dashboard/settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accountId, ...data }) })
+      if (!res.ok) { const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' })); throw new Error(errData.error || 'Erro ao salvar configurações') }
       const result = await res.json()
       toast.success(result.message || 'Configurações salvas com sucesso!')
-
-      // Refresh settings
       fetchSettings()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao salvar configurações')
@@ -1550,28 +1300,15 @@ export function StoreDashboard() {
     }
   }
 
-  // Create promotion handler
   const handleCreatePromotion = async (data: Record<string, unknown>) => {
     if (!accountId) return
-
     setPromotionCreating(true)
     try {
-      const res = await fetch(`/api/store-dashboard/promotions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accountId, ...data }),
-      })
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' }))
-        throw new Error(errData.error || 'Erro ao criar promoção')
-      }
-
+      const res = await fetch(`/api/store-dashboard/promotions`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accountId, ...data }) })
+      if (!res.ok) { const errData = await res.json().catch(() => ({ error: 'Erro desconhecido' })); throw new Error(errData.error || 'Erro ao criar promoção') }
       const result = await res.json()
       toast.success(result.message || 'Promoção criada com sucesso!')
       setPromoDialogOpen(false)
-
-      // Refresh promotions list
       fetchPromotions()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao criar promoção')
@@ -1580,14 +1317,15 @@ export function StoreDashboard() {
     }
   }
 
-  // Computed values
+  // Computed: Top 5 products by soldCount
   const topProducts = useMemo(() => {
     if (products.length === 0) return []
-    return [...products]
-      .sort((a, b) => (b.soldCount ?? 0) - (a.soldCount ?? 0))
-      .slice(0, 5)
-      .map((p) => ({ name: p.name, sales: p.soldCount ?? 0 }))
+    return [...products].sort((a, b) => (b.soldCount ?? 0) - (a.soldCount ?? 0)).slice(0, 5)
+      .map((p) => ({ id: p.id, name: p.name, sold: p.soldCount ?? 0, revenue: p.revenue ?? (p.price * (p.soldCount ?? 0)) }))
   }, [products])
+
+  // Computed: Recent 5 orders
+  const recentOrders = useMemo(() => orders.slice(0, 5), [orders])
 
   // Filtered orders
   const filteredOrders = useMemo(() => {
@@ -1595,39 +1333,39 @@ export function StoreDashboard() {
     return orders.filter((o) => o.status === orderFilter)
   }, [orders, orderFilter])
 
-  // Weekly sales computed from orders (last 7 days)
-  const weeklySales = useMemo(() => {
-    const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+  // Revenue chart data: last 7 days
+  const revenueChartData = useMemo(() => {
+    const days = []
+    const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
     const now = new Date()
-    const result = days.map((day) => ({ day, value: 0 }))
-
-    orders.forEach((order) => {
-      if (order.status === 'CANCELLED') return
-      const orderDate = new Date(order.createdAt)
-      const diffDays = Math.floor((now.getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24))
-      if (diffDays < 7) {
-        const dayIndex = orderDate.getDay()
-        result[dayIndex].value += order.total
-      }
-    })
-
-    return result
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now)
+      d.setDate(d.getDate() - i)
+      const dayStart = new Date(d)
+      dayStart.setUTCHours(3, 0, 0, 0)
+      const dayEnd = new Date(dayStart)
+      dayEnd.setDate(dayEnd.getDate() + 1)
+      const revenue = orders
+        .filter((o) => o.status !== 'CANCELLED' && o.status !== 'REFUNDED' && new Date(o.createdAt) >= dayStart && new Date(o.createdAt) < dayEnd)
+        .reduce((sum, o) => sum + o.total, 0)
+      days.push({
+        name: i === 0 ? 'Hoje' : dayNames[d.getDay()],
+        date: d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+        valor: revenue,
+      })
+    }
+    return days
   }, [orders])
 
-  const maxSaleValue = Math.max(...weeklySales.map((s) => s.value), 1)
   const inactiveProducts = stats ? stats.totalProducts - stats.activeProducts : 0
 
-  // Animated stats (use 0 until data loads)
-  const totalRevenue = useAnimatedCounter(stats?.totalRevenue ?? 0, 1400)
+  // Animated stats
   const todayRevenue = useAnimatedCounter(stats?.todayRevenue ?? 0, 1000)
-  const totalOrders = useAnimatedCounter(stats?.totalOrders ?? 0, 1000)
   const todayOrders = useAnimatedCounter(stats?.todayOrders ?? 0, 800)
-  const activeProductsCount = useAnimatedCounter(stats?.activeProducts ?? 0, 800)
-  const draftProductsCount = useAnimatedCounter(inactiveProducts, 600)
   const ratingValue = useAnimatedCounter(stats?.averageRating ?? 0, 1200, 1)
+  const monthlyRevenue = useAnimatedCounter(stats?.monthlyRevenue ?? stats?.totalRevenue ?? 0, 1400)
   const ratingFloor = Math.floor(stats?.averageRating ?? 0)
 
-  // Refresh handler
   const handleRefresh = () => {
     fetchStatsAndOrders()
     if (activeTab === 'products') fetchProducts()
@@ -1636,964 +1374,545 @@ export function StoreDashboard() {
     toast.success('Dados atualizados!')
   }
 
-  // Open order detail
   const openOrderDetail = (order: OrderData) => {
     setSelectedOrder(order)
     setOrderDetailOpen(true)
   }
 
-  // ─── Auth Guard ───
+  // --- Auth Guard ---
   if (authLoading) return <AuthLoading />
   if (!isAuthenticated || !isStoreOwner) return <AccessDenied />
 
   return (
     <div className="min-h-screen pb-24 relative">
-      {/* Subtle grid pattern background */}
       <div className="absolute inset-0 grid-pattern pointer-events-none" />
       <div className="relative">
-      {/* Header */}
-      <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={goBack} className="h-10 w-10">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex items-center gap-2 flex-1">
-            <Store className="h-5 w-5 text-primary" />
-            <h1 className="text-lg font-bold">Dashboard da Loja</h1>
+        {/* Header */}
+        <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" onClick={goBack} className="h-10 w-10">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div className="flex items-center gap-2 flex-1">
+              <Store className="h-5 w-5 text-primary" />
+              <h1 className="text-lg font-bold">Dashboard da Loja</h1>
+            </div>
+            <Button variant="ghost" size="icon" onClick={handleRefresh} className="h-10 w-10" disabled={loading}>
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleRefresh}
-            className="h-10 w-10"
-            disabled={loading}
-          >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-          </Button>
         </div>
-      </div>
 
-      <div className="max-w-5xl mx-auto px-4 mt-4">
-        {/* Error state */}
-        {error && !stats && !loading ? (
-          <ErrorState onRetry={fetchStatsAndOrders} />
-        ) : (
-        <Tabs defaultValue="overview" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="w-full sm:w-auto overflow-x-auto hide-scrollbar mb-4 relative">
-            {/* Animated underline indicator */}
-            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-300" />
-            <TabsTrigger value="overview" className="gap-1.5 text-xs sm:text-sm">
-              <BarChart3 className="h-3.5 w-3.5" />
-              Visão Geral
-            </TabsTrigger>
-            <TabsTrigger value="products" className="gap-1.5 text-xs sm:text-sm">
-              <Package className="h-3.5 w-3.5" />
-              Produtos
-            </TabsTrigger>
-            <TabsTrigger value="orders" className="gap-1.5 text-xs sm:text-sm">
-              <ShoppingCart className="h-3.5 w-3.5" />
-              Pedidos
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-1.5 text-xs sm:text-sm">
-              <TrendingUp className="h-3.5 w-3.5" />
-              Análises
-            </TabsTrigger>
-            <TabsTrigger value="promotions" className="gap-1.5 text-xs sm:text-sm">
-              <Gift className="h-3.5 w-3.5" />
-              Promoções
-            </TabsTrigger>
-            <TabsTrigger value="reviews" className="gap-1.5 text-xs sm:text-sm">
-              <MessageSquare className="h-3.5 w-3.5" />
-              Avaliações
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-1.5 text-xs sm:text-sm">
-              <Settings className="h-3.5 w-3.5" />
-              Configurações
-            </TabsTrigger>
-            <TabsTrigger value="new-product" className="gap-1.5 text-xs sm:text-sm">
-              <Plus className="h-3.5 w-3.5" />
-              Novo Produto
-            </TabsTrigger>
-          </TabsList>
+        <div className="max-w-6xl mx-auto px-4 mt-4">
+          {error && !stats && !loading ? (
+            <ErrorState onRetry={fetchStatsAndOrders} />
+          ) : (
+          <Tabs defaultValue="overview" className="w-full" onValueChange={setActiveTab}>
+            <TabsList className="w-full overflow-x-auto hide-scrollbar mb-4">
+              <TabsTrigger value="overview" className="gap-1.5 text-xs sm:text-sm"><BarChart3 className="h-3.5 w-3.5" /> Visão Geral</TabsTrigger>
+              <TabsTrigger value="orders" className="gap-1.5 text-xs sm:text-sm"><ShoppingCart className="h-3.5 w-3.5" /> Pedidos</TabsTrigger>
+              <TabsTrigger value="products" className="gap-1.5 text-xs sm:text-sm"><Package className="h-3.5 w-3.5" /> Produtos</TabsTrigger>
+              <TabsTrigger value="promotions" className="gap-1.5 text-xs sm:text-sm"><Gift className="h-3.5 w-3.5" /> Promoções</TabsTrigger>
+              <TabsTrigger value="reviews" className="gap-1.5 text-xs sm:text-sm"><Star className="h-3.5 w-3.5" /> Avaliações</TabsTrigger>
+              <TabsTrigger value="settings" className="gap-1.5 text-xs sm:text-sm"><Settings className="h-3.5 w-3.5" /> Configurações</TabsTrigger>
+              <TabsTrigger value="new-product" className="gap-1.5 text-xs sm:text-sm"><Plus className="h-3.5 w-3.5" /> Novo Produto</TabsTrigger>
+            </TabsList>
 
-          {/* ── Overview Tab ── */}
-          <TabsContent value="overview">
-            {loading || statsLoading ? (
-              <StatsSkeleton />
-            ) : (
-            <AnimatePresence mode="wait">
-              <motion.div
-                key="overview"
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                variants={containerVariants}
-                className="space-y-4"
-              >
-                {/* Revenue & Orders Row */}
-                <div className="grid grid-cols-2 gap-3">
-                  <StatCard
-                    icon={DollarSign}
-                    label="Receita total"
-                    value={`R$ ${totalRevenue}`}
-                    trend={{ value: '+12%', positive: true }}
-                    delay={0}
-                  />
-                  <StatCard
-                    icon={ShoppingCart}
-                    label="Total de pedidos"
-                    value={String(totalOrders)}
-                    trend={{ value: '+8%', positive: true }}
-                    delay={0.06}
-                  />
-                </div>
-
-                <div className="grid grid-cols-3 gap-3">
-                  <motion.div variants={itemVariants} transition={{ delay: 0.12 }}>
-                    <Card className="stat-gradient-primary hover:shadow-md transition-shadow">
-                      <CardContent className="p-3 text-center">
-                        <p className="text-lg font-bold text-primary animate-count-up">R$ {todayRevenue}</p>
-                        <p className="text-[10px] text-muted-foreground">Hoje</p>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                  <motion.div variants={itemVariants} transition={{ delay: 0.15 }}>
-                    <Card className="stat-gradient-amber hover:shadow-md transition-shadow">
-                      <CardContent className="p-3 text-center">
-                        <p className="text-lg font-bold text-amber-600 dark:text-amber-400 animate-count-up" style={{ animationDelay: '0.1s' }}>{todayOrders}</p>
-                        <p className="text-[10px] text-muted-foreground">Pedidos hoje</p>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                  <motion.div variants={itemVariants} transition={{ delay: 0.18 }}>
-                    <Card className="stat-gradient-teal hover:shadow-md transition-shadow">
-                      <CardContent className="p-3 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
-                          <p className="text-lg font-bold animate-count-up" style={{ animationDelay: '0.2s' }}>{ratingValue}</p>
-                        </div>
-                        <p className="text-[10px] text-muted-foreground">Avaliação</p>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                </div>
-
-                {/* Quick order status overview */}
-                {stats && (stats.pendingOrders > 0 || stats.preparingOrders > 0 || stats.deliveringOrders > 0) && (
-                  <motion.div variants={itemVariants} transition={{ delay: 0.2 }}>
-                    <Card className="border-border/50">
-                      <CardContent className="p-3">
-                        <div className="grid grid-cols-3 gap-2">
-                          {stats.pendingOrders > 0 && (
-                            <div className="text-center cursor-pointer hover:bg-amber-50 dark:hover:bg-amber-900/10 rounded-lg p-2 transition-colors" onClick={() => { setOrderFilter('PENDING'); setActiveTab('orders') }}>
-                              <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{stats.pendingOrders}</p>
-                              <p className="text-[10px] text-muted-foreground">Pendentes</p>
-                            </div>
-                          )}
-                          {stats.preparingOrders > 0 && (
-                            <div className="text-center cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/10 rounded-lg p-2 transition-colors" onClick={() => { setOrderFilter('PREPARING'); setActiveTab('orders') }}>
-                              <p className="text-lg font-bold text-orange-600 dark:text-orange-400">{stats.preparingOrders}</p>
-                              <p className="text-[10px] text-muted-foreground">Preparando</p>
-                            </div>
-                          )}
-                          {stats.deliveringOrders > 0 && (
-                            <div className="text-center cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/10 rounded-lg p-2 transition-colors" onClick={() => { setOrderFilter('DELIVERING'); setActiveTab('orders') }}>
-                              <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{stats.deliveringOrders}</p>
-                              <p className="text-[10px] text-muted-foreground">Em Entrega</p>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                )}
-
-                {/* Weekly Sales Chart */}
-                <motion.div variants={itemVariants} transition={{ delay: 0.2 }}>
-                  <Card className="border-border/50 overflow-hidden glassmorphism-strong">
-                    <CardHeader className="pb-2 pt-4 px-4">
-                      <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                        <BarChart3 className="h-4 w-4 text-primary" />
-                        Vendas dos últimos 7 dias
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4">
-                      {/* Chart area with gradient + grid */}
-                      <div className="rounded-lg bg-gradient-to-b from-primary/[0.03] to-transparent grid-pattern p-3">
-                        <div className="flex items-end gap-2 h-36">
-                          {weeklySales.map((day, i) => {
-                            const isToday = i === new Date().getDay()
-                            return (
-                              <motion.div
-                                key={day.day}
-                                className="flex-1 flex flex-col items-center gap-1.5"
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                transition={{ delay: 0.3 + i * 0.08, type: 'spring', stiffness: 200 }}
-                              >
-                                <motion.span
-                                  className={`text-[10px] font-semibold ${isToday ? 'text-primary' : 'text-muted-foreground'}`}
-                                  initial={{ opacity: 0 }}
-                                  animate={{ opacity: 1 }}
-                                  transition={{ delay: 0.5 + i * 0.08 }}
-                                >
-                                  {day.value > 0 ? Math.round(day.value) : '0'}
-                                </motion.span>
-                                <motion.div
-                                  className={`w-full rounded-t-md min-h-[4px] ${isToday
-                                    ? 'bg-gradient-to-t from-primary to-emerald-300 shadow-sm shadow-primary/20'
-                                    : 'bg-gradient-to-t from-primary/60 to-emerald-400/60'
-                                  }`}
-                                  initial={{ height: 0 }}
-                                  animate={{ height: `${(day.value / maxSaleValue) * 100}%` }}
-                                  transition={{ delay: 0.3 + i * 0.08, type: 'spring', stiffness: 150, damping: 20 }}
-                                />
-                                <span className={`text-[10px] ${isToday ? 'font-bold text-primary' : 'text-muted-foreground'}`}>{day.day}</span>
-                              </motion.div>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-
-                {/* Products & Rating Row */}
-                <div className="grid grid-cols-2 gap-3">
-                  <motion.div variants={itemVariants} transition={{ delay: 0.25 }}>
-                    <Card className="border-border/50">
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-2 mb-3">
-                          <Package className="h-4 w-4 text-primary" />
-                          <p className="text-sm font-semibold">Produtos</p>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-xl font-bold">{activeProductsCount}</p>
-                            <p className="text-[10px] text-muted-foreground">Ativos</p>
-                          </div>
-                          <Separator orientation="vertical" className="h-8" />
-                          <div>
-                            <p className="text-xl font-bold text-muted-foreground">{draftProductsCount}</p>
-                            <p className="text-[10px] text-muted-foreground">Inativos</p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-
-                  <motion.div variants={itemVariants} transition={{ delay: 0.3 }}>
-                    <Card className="border-border/50">
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-2 mb-3">
-                          <Star className="h-4 w-4 text-amber-500" />
-                          <p className="text-sm font-semibold">Avaliação</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <p className="text-3xl font-bold">{ratingValue}</p>
-                          <div>
-                            <div className="flex gap-0.5">
-                              {[1, 2, 3, 4, 5].map((s) => (
-                                <Star
-                                  key={s}
-                                  className={`h-3.5 w-3.5 ${s <= ratingFloor ? 'text-amber-500 fill-amber-500' : 'text-amber-200'}`}
-                                />
-                              ))}
-                            </div>
-                            <p className="text-[10px] text-muted-foreground">{ratingValue} de 5.0</p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-            )}
-          </TabsContent>
-
-          {/* ── Products Tab ── */}
-          <TabsContent value="products">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key="products"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-semibold text-sm">Meus Produtos</h2>
-                  <Button
-                    size="sm"
-                    className="bg-primary text-primary-foreground gap-1 h-8 text-xs"
-                    onClick={() => setActiveTab('new-product')}
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    Adicionar Produto
-                  </Button>
-                </div>
-
-                {productsLoading ? (
-                  <ProductsSkeleton />
-                ) : products.length === 0 ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col items-center justify-center py-16 text-center"
-                  >
-                    <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                      <Package className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="font-semibold mb-1">Nenhum produto encontrado</h3>
-                    <p className="text-sm text-muted-foreground">Adicione produtos para começar a vender.</p>
-                  </motion.div>
-                ) : (
+            {/* ══════════ VISÃO GERAL TAB ══════════ */}
+            <TabsContent value="overview">
+              {loading || statsLoading ? (
+                <StatsSkeleton />
+              ) : (
+              <AnimatePresence mode="wait">
                 <motion.div
-                  variants={containerVariants}
+                  key="overview"
                   initial="hidden"
                   animate="visible"
-                  className="space-y-2"
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                  variants={containerVariants}
+                  className="space-y-4"
                 >
-                  {products.map((product) => (
-                    <motion.div key={product.id} variants={itemVariants}>
-                      <Card className="border-border/50 hover:shadow-sm transition-shadow">
+                  {/* Stats Grid: Vendas Hoje, Pedidos, Avaliação, Faturamento Mensal */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <StatCard icon={DollarSign} label="Vendas Hoje" value={`R$ ${todayRevenue}`} trend={{ value: '+15%', positive: true }} delay={0} gradient="bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/30 dark:to-emerald-800/10" />
+                    <StatCard icon={ShoppingCart} label="Pedidos Hoje" value={String(todayOrders)} trend={{ value: '+8%', positive: true }} delay={0.06} gradient="bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/10" />
+                    <StatCard icon={Star} label="Avaliação" value={`${ratingValue} ⭐`} suffix={`/ ${stats?.totalReviews || 0} avaliações`} trend={{ value: '+0.2', positive: true }} delay={0.12} gradient="bg-gradient-to-br from-yellow-100 to-yellow-50 dark:from-yellow-900/30 dark:to-yellow-800/10" />
+                    <StatCard icon={TrendingUp} label="Faturamento Mensal" value={`R$ ${monthlyRevenue}`} trend={{ value: '+12%', positive: true }} delay={0.18} gradient="bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/30 dark:to-teal-800/10" />
+                  </div>
+
+                  {/* Quick Order Status Overview */}
+                  {stats && (stats.pendingOrders > 0 || stats.preparingOrders > 0 || stats.deliveringOrders > 0) && (
+                    <motion.div variants={itemVariants} transition={{ delay: 0.22 }}>
+                      <Card className="border-border/50">
                         <CardContent className="p-3">
-                          <div className="flex items-center gap-3">
-                            {/* Mini image placeholder */}
-                            <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary/20 to-emerald-100 dark:from-primary/10 dark:to-emerald-900/30 flex items-center justify-center shrink-0">
-                              <Package className="h-5 w-5 text-primary/60" />
-                            </div>
-
-                            {/* Product info */}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <p className="font-semibold text-sm truncate">{product.name}</p>
-                                <Badge
-                                  className={`text-[9px] px-1.5 py-0 border-0 shrink-0 ${
-                                    product.status === 'ACTIVE'
-                                      ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-                                      : 'bg-muted text-muted-foreground'
-                                  }`}
-                                >
-                                  Ativo
-                                </Badge>
+                          <div className="grid grid-cols-3 gap-2">
+                            {stats.pendingOrders > 0 && (
+                              <div className="text-center cursor-pointer hover:bg-amber-50 dark:hover:bg-amber-900/10 rounded-lg p-2 transition-colors" onClick={() => { setOrderFilter('PENDING'); setActiveTab('orders') }}>
+                                <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{stats.pendingOrders}</p>
+                                <p className="text-[10px] text-muted-foreground">Pendentes</p>
                               </div>
-                              <div className="flex items-center gap-3 mt-1">
-                                <span className="text-sm font-bold text-primary">{formatBRL(product.price)}</span>
-                                <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
-                                  <Package className="h-2.5 w-2.5" />
-                                  {product.stock > 0 ? `${product.stock} un.` : 'Esgotado'}
-                                </span>
-                                <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
-                                  <ShoppingCart className="h-2.5 w-2.5" />
-                                  {product.soldCount ?? 0} vendas
-                                </span>
+                            )}
+                            {stats.preparingOrders > 0 && (
+                              <div className="text-center cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/10 rounded-lg p-2 transition-colors" onClick={() => { setOrderFilter('PREPARING'); setActiveTab('orders') }}>
+                                <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{stats.preparingOrders}</p>
+                                <p className="text-[10px] text-muted-foreground">Preparando</p>
                               </div>
-                            </div>
-
-                            {/* Actions */}
-                            <div className="flex items-center gap-1 shrink-0">
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-600">
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Deletar produto</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Tem certeza que deseja remover <strong>{product.name}</strong>? Esta ação pode ser desfeita reativando o produto depois.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() => handleDeleteProduct(product.id)}
-                                      className="bg-red-600 hover:bg-red-700 text-white"
-                                      disabled={deletingProduct === product.id}
-                                    >
-                                      {deletingProduct === product.id ? (
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                      ) : (
-                                        'Deletar'
-                                      )}
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
+                            )}
+                            {stats.deliveringOrders > 0 && (
+                              <div className="text-center cursor-pointer hover:bg-cyan-50 dark:hover:bg-cyan-900/10 rounded-lg p-2 transition-colors" onClick={() => { setOrderFilter('DELIVERING'); setActiveTab('orders') }}>
+                                <p className="text-lg font-bold text-cyan-600 dark:text-cyan-400">{stats.deliveringOrders}</p>
+                                <p className="text-[10px] text-muted-foreground">Em Entrega</p>
+                              </div>
+                            )}
                           </div>
                         </CardContent>
                       </Card>
                     </motion.div>
-                  ))}
-                </motion.div>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </TabsContent>
+                  )}
 
-          {/* ── Orders Tab ── */}
-          <TabsContent value="orders">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key="orders"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-semibold text-sm">Pedidos Recentes</h2>
-                  <Badge variant="secondary" className="text-[10px]">{filteredOrders.length} pedidos</Badge>
-                </div>
-
-                {/* Order status filters */}
-                <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-3 mb-3">
-                  {orderFilterOptions.map((opt) => (
-                    <Button
-                      key={opt.value}
-                      size="sm"
-                      variant={orderFilter === opt.value ? 'default' : 'outline'}
-                      className={`h-7 text-[10px] shrink-0 ${orderFilter === opt.value ? 'bg-primary text-primary-foreground' : ''}`}
-                      onClick={() => setOrderFilter(opt.value)}
-                    >
-                      {opt.label}
-                      {opt.value !== 'all' && (
-                        <Badge className="ml-1 text-[8px] px-1 py-0 bg-primary-foreground/20 text-primary-foreground border-0">
-                          {orders.filter((o) => opt.value === 'all' || o.status === opt.value).length}
-                        </Badge>
-                      )}
-                    </Button>
-                  ))}
-                </div>
-
-                {ordersLoading ? (
-                  <OrdersSkeleton />
-                ) : filteredOrders.length === 0 ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col items-center justify-center py-16 text-center"
-                  >
-                    <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                      <ShoppingCart className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="font-semibold mb-1">Nenhum pedido encontrado</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {orderFilter === 'all'
-                        ? 'Os pedidos dos seus clientes aparecerão aqui.'
-                        : `Nenhum pedido com status "${orderFilterOptions.find(o => o.value === orderFilter)?.label}".`
-                      }
-                    </p>
+                  {/* Quick Actions */}
+                  <motion.div variants={itemVariants} transition={{ delay: 0.24 }}>
+                    <Card className="border-border/50">
+                      <CardContent className="p-4">
+                        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Ações Rápidas</h3>
+                        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+                          <QuickActionButton icon={Plus} label="Adicionar Produto" onClick={() => setActiveTab('new-product')} delay={0} color="bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/30 dark:to-emerald-800/10" />
+                          <QuickActionButton icon={Gift} label="Criar Promoção" onClick={() => setPromoDialogOpen(true)} delay={0.04} color="bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/10" />
+                          <QuickActionButton icon={Star} label="Ver Avaliações" onClick={() => setActiveTab('reviews')} delay={0.08} color="bg-gradient-to-br from-yellow-100 to-yellow-50 dark:from-yellow-900/30 dark:to-yellow-800/10" />
+                          <QuickActionButton icon={Settings} label="Configurar Loja" onClick={() => setActiveTab('settings')} delay={0.12} color="bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/30 dark:to-teal-800/10" />
+                        </div>
+                      </CardContent>
+                    </Card>
                   </motion.div>
-                ) : (
-                <motion.div
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="space-y-2"
-                >
-                  {filteredOrders.map((order) => {
-                    const statusCfg = orderStatusConfig[order.status] || { label: order.status, color: 'bg-muted text-muted-foreground' }
-                    const actionCfg = orderActionConfig[order.status]
-                    return (
-                      <motion.div key={order.id} variants={itemVariants}>
-                        <Card className="border-border/50 hover:shadow-sm transition-shadow">
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                  <User className="h-4 w-4 text-primary" />
-                                </div>
-                                <div>
-                                  <p className="font-semibold text-sm">{order.customerName || 'Cliente'}</p>
-                                  <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
-                                    <Clock className="h-2.5 w-2.5" />
-                                    {timeAgo(order.createdAt)}
-                                  </p>
-                                </div>
-                              </div>
-                              <Badge className={`${statusCfg.color} text-[10px] px-2 py-0.5 border-0`}>
-                                {statusCfg.label}
-                              </Badge>
+
+                  {/* Revenue Chart - Recharts Area Chart */}
+                  <motion.div variants={itemVariants} transition={{ delay: 0.26 }}>
+                    <Card className="border-border/50 overflow-hidden">
+                      <CardHeader className="pb-2 pt-4 px-4">
+                        <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                          <BarChart3 className="h-4 w-4 text-primary" />
+                          Receita dos Últimos 7 Dias
+                        </CardTitle>
+                        <CardDescription className="text-xs text-muted-foreground">Faturamento diário da loja</CardDescription>
+                      </CardHeader>
+                      <CardContent className="px-4 pb-4">
+                        <div className="h-[200px] w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={revenueChartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                              <defs>
+                                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                                </linearGradient>
+                              </defs>
+                              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
+                              <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                              <YAxis tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} tickFormatter={(v) => v >= 1000 ? `${(v/1000).toFixed(0)}k` : String(v)} />
+                              <RechartsTooltip content={<RevenueChartTooltip />} />
+                              <Area type="monotone" dataKey="valor" stroke="#10b981" strokeWidth={2.5} fill="url(#colorRevenue)" dot={{ r: 4, fill: '#10b981', stroke: 'white', strokeWidth: 2 }} activeDot={{ r: 6, fill: '#059669', stroke: 'white', strokeWidth: 2 }} />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+
+                  {/* Recent Orders Table + Top Products - 2 col on lg */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Recent Orders */}
+                    <motion.div variants={itemVariants} transition={{ delay: 0.28 }}>
+                      <Card className="border-border/50">
+                        <CardHeader className="pb-2 pt-4 px-4">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                              <FileText className="h-4 w-4 text-primary" />
+                              Pedidos Recentes
+                            </CardTitle>
+                            <Button variant="ghost" size="sm" className="text-xs text-primary h-7" onClick={() => setActiveTab('orders')}>
+                              Ver todos <ChevronRight className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="px-4 pb-4">
+                          {recentOrders.length === 0 ? (
+                            <div className="py-6 text-center">
+                              <ShoppingCart className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+                              <p className="text-xs text-muted-foreground">Nenhum pedido ainda</p>
                             </div>
-
-                            <Separator className="my-3" />
-
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <span className="text-xs text-muted-foreground font-mono">#{order.orderNumber}</span>
-                                <span className="text-xs text-muted-foreground">{order.items?.length ?? 0} itens</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="font-bold text-sm">{formatBRL(order.total)}</span>
-                                {actionCfg ? (
-                                  <Button
-                                    variant={actionCfg.variant}
-                                    size="sm"
-                                    className="h-7 text-xs gap-1 px-2 btn-shine"
-                                    onClick={() => handleOrderAction(order.id, actionCfg.action)}
-                                    disabled={actionLoading === order.id}
-                                  >
-                                    {actionLoading === order.id ? (
-                                      <Loader2 className="h-3 w-3 animate-spin" />
-                                    ) : (
-                                      <actionCfg.icon className="h-3 w-3" />
-                                    )}
-                                    {actionCfg.label}
-                                  </Button>
-                                ) : null}
-                              </div>
+                          ) : (
+                            <div className="space-y-2">
+                              {recentOrders.map((order, idx) => (
+                                <motion.div
+                                  key={order.id}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: 0.3 + idx * 0.05 }}
+                                  className="flex items-center justify-between py-2 px-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                                  onClick={() => openOrderDetail(order)}
+                                >
+                                  <div className="flex items-center gap-2.5 min-w-0">
+                                    <span className="text-[10px] text-muted-foreground font-mono shrink-0">#{order.orderNumber.slice(-4)}</span>
+                                    <div className="min-w-0">
+                                      <p className="text-xs font-medium truncate">{order.customerName}</p>
+                                      <p className="text-[10px] text-muted-foreground">{timeAgo(order.createdAt)}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <span className="text-xs font-semibold text-primary">{formatBRL(order.total)}</span>
+                                    <StatusBadge status={order.status} />
+                                  </div>
+                                </motion.div>
+                              ))}
                             </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
 
-                            {/* Action row: reject, details */}
-                            <div className="flex items-center gap-2 mt-3">
-                              {/* Reject/Cancel buttons for PENDING and CONFIRMED */}
-                              {order.status === 'PENDING' && (
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="h-7 text-xs gap-1 px-2 text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-900/20"
-                                      disabled={actionLoading === order.id}
-                                    >
-                                      <XCircle className="h-3 w-3" />
-                                      Rejeitar
-                                    </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Rejeitar pedido #{order.orderNumber}</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Tem certeza que deseja rejeitar este pedido? O estoque dos produtos será restaurado.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                      <AlertDialogAction
-                                        onClick={() => handleOrderAction(order.id, 'reject')}
-                                        className="bg-red-600 hover:bg-red-700 text-white"
-                                      >
-                                        Rejeitar Pedido
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              )}
-                              {order.status === 'CONFIRMED' && (
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="h-7 text-xs gap-1 px-2 text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-900/20"
-                                      disabled={actionLoading === order.id}
-                                    >
-                                      <XCircle className="h-3 w-3" />
-                                      Cancelar
-                                    </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Cancelar pedido #{order.orderNumber}</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Tem certeza que deseja cancelar este pedido? O estoque dos produtos será restaurado.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                      <AlertDialogAction
-                                        onClick={() => handleOrderAction(order.id, 'cancel')}
-                                        className="bg-red-600 hover:bg-red-700 text-white"
-                                      >
-                                        Cancelar Pedido
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              )}
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 text-xs gap-1 px-2"
-                                onClick={() => openOrderDetail(order)}
-                              >
-                                <Eye className="h-3 w-3" />
-                                Ver detalhes
+                    {/* Top Products */}
+                    <motion.div variants={itemVariants} transition={{ delay: 0.30 }}>
+                      <Card className="border-border/50">
+                        <CardHeader className="pb-2 pt-4 px-4">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                              <TrendingUp className="h-4 w-4 text-primary" />
+                              Top Produtos
+                            </CardTitle>
+                            <Button variant="ghost" size="sm" className="text-xs text-primary h-7" onClick={() => setActiveTab('products')}>
+                              Ver todos <ChevronRight className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="px-4 pb-4">
+                          {topProducts.length === 0 ? (
+                            <div className="py-6 text-center">
+                              <Package className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+                              <p className="text-xs text-muted-foreground">Nenhum produto cadastrado</p>
+                              <Button variant="outline" size="sm" className="mt-2 text-xs gap-1" onClick={() => setActiveTab('new-product')}>
+                                <Plus className="h-3 w-3" /> Criar produto
                               </Button>
                             </div>
-
-                            {/* Mini gradient accent line */}
-                            <div className="mt-3 h-[1px] bg-gradient-to-r from-primary/20 via-accent/20 to-transparent" />
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-                    )
-                  })}
-                </motion.div>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </TabsContent>
-
-          {/* ── Analytics Tab ── */}
-          <TabsContent value="analytics">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key="analytics"
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                variants={containerVariants}
-                className="space-y-4"
-              >
-                {/* Top Products */}
-                <motion.div variants={itemVariants}>
-                  <Card className="border-border/50 overflow-hidden card-aurora">
-                    <CardHeader className="pb-2 pt-4 px-4">
-                      <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-primary" />
-                        Top 5 Produtos por Vendas
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4 space-y-3">
-                      {topProducts.length > 0 ? (
-                        topProducts.map((product, i) => (
-                          <div key={product.name} className="flex items-center gap-3">
-                            <span className="text-xs font-bold text-muted-foreground w-5 text-center">{i + 1}</span>
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs font-medium">{product.name}</span>
-                                <span className="text-xs font-bold text-primary">{product.sales} vendas</span>
-                              </div>
-                              <div className="h-2 bg-muted rounded-full overflow-hidden">
+                          ) : (
+                            <div className="space-y-2">
+                              {topProducts.map((product, idx) => (
                                 <motion.div
-                                  className="h-full bg-gradient-to-r from-primary to-emerald-400 rounded-full"
-                                  initial={{ width: 0 }}
-                                  animate={{ width: `${(product.sales / (topProducts[0]?.sales || 1)) * 100}%` }}
-                                  transition={{ delay: 0.3 + i * 0.1, duration: 0.6, ease: 'easeOut' }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-sm text-muted-foreground text-center py-4">Nenhum dado de vendas disponível</p>
-                      )}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-
-                {/* Revenue Comparison */}
-                <motion.div variants={itemVariants}>
-                  <Card className="border-border/50 overflow-hidden glassmorphism-strong">
-                    <CardHeader className="pb-2 pt-4 px-4">
-                      <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                        <DollarSign className="h-4 w-4 text-primary" />
-                        Comparação de Receita
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-primary">{formatBRL(stats?.totalRevenue ?? 0)}</p>
-                          <p className="text-xs text-muted-foreground mt-1">Total acumulado</p>
-                          <Badge className="text-[10px] mt-1 text-emerald-700 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-900/20 border-0 gap-0.5">
-                            <TrendingUp className="h-2.5 w-2.5" />
-                            +12%
-                          </Badge>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-primary">{formatBRL(stats?.todayRevenue ?? 0)}</p>
-                          <p className="text-xs text-muted-foreground mt-1">Hoje</p>
-                          <Badge variant="secondary" className="text-[10px] mt-1 gap-0.5">
-                            <Minus className="h-2.5 w-2.5" />
-                            Hoje
-                          </Badge>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-
-                {/* Order Status Breakdown */}
-                <motion.div variants={itemVariants}>
-                  <Card className="border-border/50">
-                    <CardHeader className="pb-2 pt-4 px-4">
-                      <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                        <ShoppingCart className="h-4 w-4 text-primary" />
-                        Status dos Pedidos
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4 space-y-3">
-                      {stats ? (
-                        [
-                          { label: 'Pendentes', value: stats.pendingOrders, color: 'bg-amber-500' },
-                          { label: 'Preparando', value: stats.preparingOrders, color: 'bg-orange-500' },
-                          { label: 'Em Entrega', value: stats.deliveringOrders, color: 'bg-purple-500' },
-                          { label: 'Entregues', value: stats.completedOrders, color: 'bg-emerald-500' },
-                          { label: 'Cancelados', value: stats.cancelledOrders, color: 'bg-red-500' },
-                        ].map((item, i) => (
-                          <div key={item.label}>
-                            <div className="flex items-center justify-between mb-1">
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-xs font-medium">{item.label}</span>
-                              </div>
-                              <span className="text-xs font-bold">{item.value}</span>
-                            </div>
-                            <div className="h-2 bg-muted rounded-full overflow-hidden">
-                              <motion.div
-                                className={`h-full ${item.color} rounded-full`}
-                                initial={{ width: 0 }}
-                                animate={{ width: `${stats.totalOrders > 0 ? (item.value / stats.totalOrders) * 100 : 0}%` }}
-                                transition={{ delay: 0.3 + i * 0.1, duration: 0.8, ease: 'easeOut' }}
-                              />
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-sm text-muted-foreground text-center py-4">Carregando dados...</p>
-                      )}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-
-                {/* Customer Satisfaction */}
-                <motion.div variants={itemVariants}>
-                  <Card className="border-border/50">
-                    <CardHeader className="pb-2 pt-4 px-4">
-                      <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                        <Star className="h-4 w-4 text-amber-500" />
-                        Satisfação dos Clientes
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4 space-y-3">
-                      {[
-                        { label: 'Positivo', value: stats?.averageRating && stats.averageRating >= 4 ? 92 : 70, color: 'bg-emerald-500' },
-                        { label: 'Neutro', value: stats?.averageRating && stats.averageRating >= 4 ? 5 : 20, color: 'bg-amber-500' },
-                        { label: 'Negativo', value: stats?.averageRating && stats.averageRating >= 4 ? 3 : 10, color: 'bg-red-500' },
-                      ].map((item, i) => (
-                        <div key={item.label}>
-                          <div className="flex items-center justify-between mb-1">
-                            <div className="flex items-center gap-1.5">
-                              {item.label === 'Positivo' ? (
-                                <ThumbsUp className="h-3.5 w-3.5 text-emerald-500" />
-                              ) : item.label === 'Negativo' ? (
-                                <ThumbsDown className="h-3.5 w-3.5 text-red-500" />
-                              ) : (
-                                <Minus className="h-3.5 w-3.5 text-amber-500" />
-                              )}
-                              <span className="text-xs font-medium">{item.label}</span>
-                            </div>
-                            <span className="text-xs font-bold">{item.value}%</span>
-                          </div>
-                          <div className="h-2 bg-muted rounded-full overflow-hidden">
-                            <motion.div
-                              className={`h-full ${item.color} rounded-full`}
-                              initial={{ width: 0 }}
-                              animate={{ width: `${item.value}%` }}
-                              transition={{ delay: 0.3 + i * 0.15, duration: 0.8, ease: 'easeOut' }}
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </motion.div>
-            </AnimatePresence>
-          </TabsContent>
-
-          {/* ── Promotions Tab ── */}
-          <TabsContent value="promotions">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key="promotions"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                className="space-y-4"
-              >
-                <div className="flex items-center justify-between">
-                  <h2 className="font-semibold text-sm">Promoções</h2>
-                  <Button
-                    size="sm"
-                    className="bg-primary text-primary-foreground gap-1 h-8 text-xs"
-                    onClick={() => setPromoDialogOpen(true)}
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    Nova Promoção
-                  </Button>
-                </div>
-
-                {promotionsLoading ? (
-                  <PromotionsSkeleton />
-                ) : promotions.length === 0 ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col items-center justify-center py-16 text-center"
-                  >
-                    <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                      <Gift className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="font-semibold mb-1">Nenhuma promoção</h3>
-                    <p className="text-sm text-muted-foreground">Crie promoções para atrair mais clientes.</p>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="space-y-2"
-                  >
-                    {promotions.map((promo) => {
-                      const isExpired = new Date(promo.endsAt) < new Date()
-                      const isUpcoming = new Date(promo.startsAt) > new Date()
-                      return (
-                        <motion.div key={promo.id} variants={itemVariants}>
-                          <Card className="border-border/50 hover:shadow-sm transition-shadow">
-                            <CardContent className="p-4">
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2">
-                                    <p className="font-semibold text-sm truncate">{promo.title}</p>
-                                    <Badge
-                                      className={`text-[9px] px-1.5 py-0 border-0 shrink-0 ${
-                                        !promo.isActive || isExpired
-                                          ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                                          : isUpcoming
-                                            ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                                            : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-                                      }`}
-                                    >
-                                      {!promo.isActive ? 'Inativa' : isExpired ? 'Expirada' : isUpcoming ? 'Agendada' : 'Ativa'}
-                                    </Badge>
+                                  key={product.id}
+                                  initial={{ opacity: 0, x: 10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: 0.32 + idx * 0.05 }}
+                                  className="flex items-center gap-3 py-2"
+                                >
+                                  <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${idx === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : idx === 1 ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300' : idx === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' : 'bg-muted text-muted-foreground'}`}>
+                                    {idx + 1}
+                                  </span>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium truncate">{product.name}</p>
+                                    <p className="text-[10px] text-muted-foreground">{product.sold} vendidos</p>
                                   </div>
-                                  {promo.description && (
-                                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{promo.description}</p>
-                                  )}
-                                  <div className="flex items-center gap-3 mt-2">
-                                    <span className="text-xs font-semibold text-primary">
-                                      {promo.type === 'PERCENTAGE'
-                                        ? `${promo.value}% desconto`
-                                        : promo.type === 'FIXED_AMOUNT'
-                                          ? `${formatBRL(promo.value)} desconto`
-                                          : promo.type === 'FREE_DELIVERY'
-                                            ? 'Frete grátis'
-                                            : `Compre e Ganhe`
-                                      }
-                                    </span>
-                                    {promo.code && (
-                                      <span className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded flex items-center gap-1">
-                                        <Hash className="h-2.5 w-2.5" />
-                                        {promo.code}
-                                      </span>
+                                  <span className="text-xs font-semibold text-primary shrink-0">{formatBRL(product.revenue)}</span>
+                                </motion.div>
+                              ))}
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+              )}
+            </TabsContent>
+
+            {/* ══════════ PEDIDOS TAB ══════════ */}
+            <TabsContent value="orders">
+              <AnimatePresence mode="wait">
+                <motion.div key="orders" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="font-semibold text-sm">Todos os Pedidos</h2>
+                    <Badge variant="secondary" className="text-xs">{filteredOrders.length} pedidos</Badge>
+                  </div>
+
+                  {/* Filter chips */}
+                  <div className="flex gap-1.5 overflow-x-auto hide-scrollbar pb-3">
+                    {orderFilterOptions.map((opt) => (
+                      <Button
+                        key={opt.value}
+                        size="sm"
+                        variant={orderFilter === opt.value ? 'default' : 'outline'}
+                        className={`text-xs h-7 shrink-0 ${orderFilter === opt.value ? 'bg-primary text-primary-foreground' : ''}`}
+                        onClick={() => setOrderFilter(opt.value)}
+                      >
+                        {opt.label}
+                      </Button>
+                    ))}
+                  </div>
+
+                  {/* Desktop Table */}
+                  <div className="hidden md:block">
+                    <Card className="border-border/50 overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="text-xs">#</TableHead>
+                            <TableHead className="text-xs">Cliente</TableHead>
+                            <TableHead className="text-xs">Valor</TableHead>
+                            <TableHead className="text-xs">Status</TableHead>
+                            <TableHead className="text-xs">Data</TableHead>
+                            <TableHead className="text-xs text-right">Ações</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredOrders.map((order) => {
+                            const actionCfg = orderActionConfig[order.status]
+                            return (
+                              <TableRow key={order.id} className="hover:bg-muted/30">
+                                <TableCell className="text-xs font-mono">#{order.orderNumber.slice(-4)}</TableCell>
+                                <TableCell>
+                                  <div>
+                                    <p className="text-xs font-medium">{order.customerName}</p>
+                                    <p className="text-[10px] text-muted-foreground">{order.customerPhone || ''}</p>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="text-xs font-semibold">{formatBRL(order.total)}</TableCell>
+                                <TableCell><StatusBadge status={order.status} /></TableCell>
+                                <TableCell className="text-[10px] text-muted-foreground">{timeAgo(order.createdAt)}</TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex items-center justify-end gap-1">
+                                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => openOrderDetail(order)}>
+                                      <Eye className="h-3 w-3" />
+                                    </Button>
+                                    {actionCfg && (
+                                      <Button
+                                        size="sm"
+                                        variant={actionCfg.variant}
+                                        className="h-7 text-xs gap-1"
+                                        disabled={actionLoading === order.id}
+                                        onClick={() => handleOrderAction(order.id, actionCfg.action)}
+                                      >
+                                        {actionLoading === order.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <actionCfg.icon className="h-3 w-3" />}
+                                        {actionCfg.label}
+                                      </Button>
                                     )}
                                   </div>
-                                  <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
-                                    <span className="flex items-center gap-0.5">
-                                      <Calendar className="h-2.5 w-2.5" />
-                                      {formatDate(promo.startsAt)}
-                                    </span>
-                                    <span>→</span>
-                                    <span className="flex items-center gap-0.5">
-                                      <Calendar className="h-2.5 w-2.5" />
-                                      {formatDate(promo.endsAt)}
-                                    </span>
+                                </TableCell>
+                              </TableRow>
+                            )
+                          })}
+                        </TableBody>
+                      </Table>
+                    </Card>
+                  </div>
+
+                  {/* Mobile Cards */}
+                  <div className="md:hidden">
+                    {ordersLoading ? <OrdersSkeleton /> : filteredOrders.length === 0 ? (
+                      <EmptyState icon={ShoppingCart} title="Nenhum pedido encontrado" description={orderFilter !== 'all' ? 'Não há pedidos com esse filtro no momento.' : 'Seus pedidos aparecerão aqui.'} action={() => setOrderFilter('all')} actionLabel={orderFilter !== 'all' ? 'Limpar filtro' : undefined} />
+                    ) : (
+                      <div className="space-y-2">
+                        {filteredOrders.map((order) => {
+                          const actionCfg = orderActionConfig[order.status]
+                          return (
+                            <Card key={order.id} className="border-border/50">
+                              <CardContent className="p-3">
+                                <div className="flex items-start justify-between mb-2">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs font-mono text-muted-foreground">#{order.orderNumber.slice(-4)}</span>
+                                    <p className="text-xs font-medium">{order.customerName}</p>
                                   </div>
-                                  {promo.usageLimit && (
-                                    <div className="flex items-center gap-2 mt-2">
-                                      <Progress
-                                        value={Math.min(((promo.usedCount ?? 0) / promo.usageLimit) * 100, 100)}
-                                        className="h-1.5 flex-1"
-                                      />
-                                      <span className="text-[10px] text-muted-foreground">
-                                        {promo.usedCount ?? 0}/{promo.usageLimit}
-                                      </span>
-                                    </div>
+                                  <StatusBadge status={order.status} />
+                                </div>
+                                <Separator className="my-2" />
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" /> {timeAgo(order.createdAt)}</span>
+                                    <span className="text-xs font-semibold text-primary">{formatBRL(order.total)}</span>
+                                  </div>
+                                  <div className="flex items-center gap-1.5">
+                                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => openOrderDetail(order)}>
+                                      <Eye className="h-3 w-3" />
+                                    </Button>
+                                    {actionCfg && (
+                                      <Button size="sm" variant={actionCfg.variant} className="h-7 text-xs gap-1" disabled={actionLoading === order.id} onClick={() => handleOrderAction(order.id, actionCfg.action)}>
+                                        {actionLoading === order.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <actionCfg.icon className="h-3 w-3" />}
+                                        {actionCfg.label}
+                                      </Button>
+                                    )}
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </TabsContent>
+
+            {/* ══════════ PRODUTOS TAB ══════════ */}
+            <TabsContent value="products">
+              <AnimatePresence mode="wait">
+                <motion.div key="products" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="font-semibold text-sm">Meus Produtos</h2>
+                    <Button size="sm" className="bg-primary text-primary-foreground gap-1 h-8 text-xs" onClick={() => setActiveTab('new-product')}>
+                      <Plus className="h-3.5 w-3.5" /> Adicionar Produto
+                    </Button>
+                  </div>
+
+                  {productsLoading ? <ProductsSkeleton /> : products.length === 0 ? (
+                    <EmptyState icon={Package} title="Nenhum produto cadastrado" description="Comece adicionando seu primeiro produto ao catálogo." action={() => setActiveTab('new-product')} actionLabel="Adicionar Produto" />
+                  ) : (
+                    <div className="space-y-2">
+                      {products.map((product) => (
+                        <motion.div key={product.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
+                          <Card className="border-border/50 hover:shadow-sm transition-shadow">
+                            <CardContent className="p-3">
+                              <div className="flex items-center gap-3">
+                                <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary/10 to-emerald-100 dark:to-emerald-900/30 flex items-center justify-center shrink-0 overflow-hidden">
+                                  {product.image ? (
+                                    <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
+                                  ) : (
+                                    <Package className="h-5 w-5 text-primary/50" />
                                   )}
                                 </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium truncate">{product.name}</p>
+                                  <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="text-xs font-semibold text-primary">{formatBRL(product.price)}</span>
+                                    <Badge variant="secondary" className="text-[9px] px-1 py-0">{product.category}</Badge>
+                                  </div>
+                                  <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="text-[10px] text-muted-foreground">Estoque: {product.stock}</span>
+                                    {product.soldCount !== undefined && (
+                                      <span className="text-[10px] text-muted-foreground">• {product.soldCount} vendidos</span>
+                                    )}
+                                  </div>
+                                </div>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" disabled={deletingProduct === product.id}>
+                                      {deletingProduct === product.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Excluir produto?</AlertDialogTitle>
+                                      <AlertDialogDescription>Tem certeza que deseja excluir &quot;{product.name}&quot;? Esta ação não pode ser desfeita.</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                      <AlertDialogAction className="bg-destructive text-destructive-foreground" onClick={() => handleDeleteProduct(product.id)}>Excluir</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
                               </div>
                             </CardContent>
                           </Card>
                         </motion.div>
-                      )
-                    })}
-                  </motion.div>
-                )}
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </TabsContent>
 
-                {/* Create Promotion Dialog */}
-                <PromotionCreateDialog
-                  open={promoDialogOpen}
-                  onClose={() => setPromoDialogOpen(false)}
-                  onCreate={handleCreatePromotion}
-                  loading={promotionCreating}
-                />
-              </motion.div>
-            </AnimatePresence>
-          </TabsContent>
+            {/* ══════════ PROMOÇÕES TAB ══════════ */}
+            <TabsContent value="promotions">
+              <AnimatePresence mode="wait">
+                <motion.div key="promotions" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="font-semibold text-sm">Minhas Promoções</h2>
+                    <Button size="sm" className="bg-primary text-primary-foreground gap-1 h-8 text-xs" onClick={() => setPromoDialogOpen(true)}>
+                      <Plus className="h-3.5 w-3.5" /> Criar Promoção
+                    </Button>
+                  </div>
 
-          {/* ── Reviews Tab ── */}
-          <TabsContent value="reviews">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key="reviews"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-              >
-                <ReviewsManagement />
-              </motion.div>
-            </AnimatePresence>
-          </TabsContent>
+                  {promotionsLoading ? <PromotionsSkeleton /> : promotions.length === 0 ? (
+                    <EmptyState icon={Megaphone} title="Nenhuma promoção ativa" description="Crie promoções para atrair mais clientes e aumentar suas vendas." action={() => setPromoDialogOpen(true)} actionLabel="Criar Promoção" />
+                  ) : (
+                    <div className="space-y-2">
+                      {promotions.map((promo) => (
+                        <motion.div key={promo.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
+                          <Card className="border-border/50 hover:shadow-sm transition-shadow">
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <p className="text-sm font-semibold">{promo.title}</p>
+                                  <p className="text-[10px] text-muted-foreground mt-0.5">{promo.description}</p>
+                                </div>
+                                <Badge className={`text-[10px] px-1.5 py-0 border-0 ${promo.isActive ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
+                                  {promo.isActive ? 'Ativa' : 'Inativa'}
+                                </Badge>
+                              </div>
+                              <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
+                                <span className="flex items-center gap-1"><Tag className="h-3 w-3" /> {promotionTypeLabels[promo.type] || promo.type}: {promo.type === 'PERCENTAGE' ? `${promo.value}%` : formatBRL(promo.value)}</span>
+                                {promo.code && <span className="font-mono bg-muted px-1.5 py-0.5 rounded">{promo.code}</span>}
+                              </div>
+                              {promo.usageLimit && (
+                                <div className="mt-2">
+                                  <Progress value={promo.usedCount ? (promo.usedCount / promo.usageLimit) * 100 : 0} className="h-1.5" />
+                                  <p className="text-[10px] text-muted-foreground mt-0.5">{promo.usedCount || 0}/{promo.usageLimit} usos</p>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </TabsContent>
 
-          {/* ── Settings Tab ── */}
-          <TabsContent value="settings">
-            <SettingsTab
-              settings={storeSettings}
-              loading={settingsLoading}
-              saving={settingsSaving}
-              onFetch={fetchSettings}
-              onSave={handleSaveSettings}
-            />
-          </TabsContent>
+            {/* ══════════ AVALIAÇÕES TAB ══════════ */}
+            <TabsContent value="reviews">
+              <AnimatePresence mode="wait">
+                <motion.div key="reviews" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+                  <ReviewsManagement accountId={accountId || ''} />
+                </motion.div>
+              </AnimatePresence>
+            </TabsContent>
 
-          {/* ── New Product Tab ── */}
-          <TabsContent value="new-product">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key="new-product"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-              >
-                <ProductForm />
-              </motion.div>
-            </AnimatePresence>
-          </TabsContent>
-        </Tabs>
-        )}
-      </div>
+            {/* ══════════ CONFIGURAÇÕES TAB ══════════ */}
+            <TabsContent value="settings">
+              <SettingsTab
+                settings={storeSettings}
+                loading={settingsLoading}
+                saving={settingsSaving}
+                onFetch={fetchSettings}
+                onSave={handleSaveSettings}
+              />
+            </TabsContent>
+
+            {/* ══════════ NOVO PRODUTO TAB ══════════ */}
+            <TabsContent value="new-product">
+              <AnimatePresence mode="wait">
+                <motion.div key="new-product" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+                  <ProductForm />
+                </motion.div>
+              </AnimatePresence>
+            </TabsContent>
+          </Tabs>
+          )}
+        </div>
       </div>
 
       {/* Order Detail Dialog */}
       <OrderDetailDialog
         order={selectedOrder}
         open={orderDetailOpen}
-        onClose={() => {
-          setOrderDetailOpen(false)
-          setSelectedOrder(null)
-        }}
+        onClose={() => setOrderDetailOpen(false)}
+      />
+
+      {/* Promotion Create Dialog */}
+      <PromotionCreateDialog
+        open={promoDialogOpen}
+        onClose={() => setPromoDialogOpen(false)}
+        onCreate={handleCreatePromotion}
+        loading={promotionCreating}
       />
     </div>
   )

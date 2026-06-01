@@ -22,6 +22,7 @@ import { CookieConsent } from '@/components/layout/CookieConsent'
 import { ViewTransition } from '@/components/layout/ViewTransition'
 import { QuickInfo } from '@/components/home/QuickInfo'
 import { FlashSale } from '@/components/home/FlashSale'
+import { CityNews } from '@/components/home/CityNews'
 import { WeekendSpecials } from '@/components/home/WeekendSpecials'
 import { StoreComparison } from '@/components/home/StoreComparison'
 import { ProductComparison } from '@/components/product/ProductComparison'
@@ -602,12 +603,17 @@ export default function Home() {
 
                     {/* Hero */}
                     <section className="mt-2">
-                      <HeroBanner banners={fallbackBanners} />
+                      <HeroBanner banners={fallbackBanners} storeCount={allStores.length} productCount={allProducts.length} />
                     </section>
 
                     {/* Flash Sale */}
                     <section className="mt-4">
                       <FlashSale />
+                    </section>
+
+                    {/* City News */}
+                    <section className="mt-6">
+                      <CityNews />
                     </section>
 
                     {/* Welcome greeting */}

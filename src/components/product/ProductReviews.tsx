@@ -16,7 +16,7 @@ interface ProductReviewsProps {
   totalReviews: number
 }
 
-// ─── Mock Data ───
+// --- Mock Data ---
 const mockReviews = [
   {
     id: 'r1',
@@ -123,7 +123,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
 
   return (
     <div className="space-y-6">
-      {/* ── Reviews Summary ── */}
+      {/* -- Reviews Summary -- */}
       <Card className="border-border/50 overflow-hidden relative">
         {/* Subtle gradient top accent */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary/40 via-primary to-accent/40" />
@@ -178,7 +178,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
         </CardContent>
       </Card>
 
-      {/* ── Write Review Button / Form ── */}
+      {/* -- Write Review Button / Form -- */}
       <div>
         {!isFormOpen ? (
           <Button
@@ -305,7 +305,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
         )}
       </div>
 
-      {/* ── Reviews List ── */}
+      {/* -- Reviews List -- */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-sm">Avaliações ({reviews.length})</h3>
@@ -409,7 +409,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
         </motion.div>
       </div>
 
-      {/* ── Success Toast ── */}
+      {/* -- Success Toast -- */}
       <AnimatePresence>
         {submitted && (
           <motion.div

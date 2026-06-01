@@ -2,7 +2,8 @@
 
 import { 
   Heart, ShoppingCart, Star, Utensils, Sprout, HeartPulse, Smartphone, PawPrint, 
-  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows
+  Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows,
+  Zap, Check
 } from 'lucide-react'
 import { PriceDropAlert } from './PriceDropAlert'
 import { SocialProofBadges } from './SocialProofBadges'
@@ -11,7 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 
 interface ProductCardProps {
   product: ProductData
@@ -69,10 +70,148 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
+// Store initials helper
+function getStoreInitials(name: string): string {
+  return name
+    .split(' ')
+    .slice(0, 2)
+    .map(w => w[0])
+    .join('')
+    .toUpperCase()
+}
+
+// Mini cart popup component
+function MiniCartPopup({ product, onClose }: { product: ProductData; onClose: () => void }) {
+  const { addToCart, navigate } = useAppStore()
+  const [qty, setQty] = useState(1)
+  const [added, setAdded] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
+  const popupRef = useRef<HTMLDivElement>(null)
+
+  const handleAdd = useCallback(() => {
+    addToCart(product, product.storeName || 'Loja', qty)
+    setAdded(true)
+    setTimeout(() => {
+      onClose()
+    }, 1200)
+  }, [product, qty, addToCart, onClose])
+
+  const handleGoToCart = useCallback(() => {
+    onClose()
+    navigate('cart')
+  }, [onClose, navigate])
+
+  // Close on mouse leave after 1.5s
+  useEffect(() => {
+    if (!isHovering && !added) {
+      const timer = setTimeout(onClose, 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [isHovering, added, onClose])
+
+  return (
+    <motion.div
+      ref={popupRef}
+      initial={{ opacity: 0, y: 8, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 8, scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+      className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-64 bg-card border border-border rounded-xl shadow-xl overflow-hidden"
+      style={{ boxShadow: '0 8px 32px oklch(0.18 0.02 150 / 0.15)' }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Product info header */}
+      <div className="px-3 pt-3 pb-2 border-b border-border/50">
+        <div className="flex items-center gap-2">
+          <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${gradients[Math.abs(product.name.charCodeAt(0)) % gradients.length]} flex items-center justify-center shrink-0`}>
+            <CategoryIcon category={product.category} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold line-clamp-1">{product.name}</p>
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="text-sm font-bold text-primary">{formatBRL(product.price)}</span>
+              {product.comparePrice && product.comparePrice > product.price && (
+                <span className="text-[10px] text-muted-foreground line-through">
+                  {formatBRL(product.comparePrice)}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quantity + Actions */}
+      <div className="p-3">
+        {!added ? (
+          <>
+            <div className="flex items-center gap-3 mb-2.5">
+              <span className="text-xs text-muted-foreground">Qtd:</span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setQty(Math.max(1, qty - 1))}
+                  className="h-7 w-7 rounded-md border border-border flex items-center justify-center text-sm hover:bg-muted transition-colors"
+                >
+                  -
+                </button>
+                <span className="h-7 w-8 flex items-center justify-center text-sm font-bold">{qty}</span>
+                <button
+                  onClick={() => setQty(Math.min(product.stock || 99, qty + 1))}
+                  className="h-7 w-7 rounded-md border border-border flex items-center justify-center text-sm hover:bg-muted transition-colors"
+                >
+                  +
+                </button>
+              </div>
+              <span className="ml-auto text-sm font-bold text-primary">
+                {formatBRL(product.price * qty)}
+              </span>
+            </div>
+            <Button
+              size="sm"
+              className="w-full h-9 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-1.5 btn-glow"
+              onClick={handleAdd}
+            >
+              <ShoppingCart className="h-3.5 w-3.5" />
+              Adicionar ao Carrinho
+            </Button>
+          </>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-1"
+          >
+            <div className="flex items-center justify-center gap-1.5 text-primary font-semibold text-sm">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+              >
+                <Check className="h-4 w-4" />
+              </motion.div>
+              Adicionado com sucesso!
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full h-8 mt-2 text-xs border-primary/30 hover:bg-primary/5"
+              onClick={handleGoToCart}
+            >
+              Ver Carrinho ({qty})
+            </Button>
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
+  )
+}
+
 export function ProductCard({ product }: ProductCardProps) {
   const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct, isComparing, toggleCompareProduct } = useAppStore()
   const [showCartBtn, setShowCartBtn] = useState(false)
   const [cartAnimating, setCartAnimating] = useState(false)
+  const [showMiniCart, setShowMiniCart] = useState(false)
 
   const isFav = isFavoriteProduct(product.id)
   const isCompared = isComparing(product.id)
@@ -103,18 +242,22 @@ export function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
     addToCart(product, product.storeName || 'Loja')
-    // Animate the cart button
     setCartAnimating(true)
     setTimeout(() => setCartAnimating(false), 400)
   }, [product, addToCart])
 
+  const handleQuickAdd = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    setShowMiniCart(true)
+  }, [])
+
   return (
     <motion.div
-      whileHover={{ y: -3, boxShadow: '0 12px 32px oklch(0.18 0.02 150 / 0.1)' }}
-      className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm hover:shadow-md transition-shadow duration-300"
+      whileHover={{ y: -4, boxShadow: '0 16px 40px oklch(0.18 0.02 150 / 0.12)' }}
+      className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm hover:shadow-xl transition-all duration-300"
       onClick={handleCardClick}
       onMouseEnter={() => setShowCartBtn(true)}
-      onMouseLeave={() => setShowCartBtn(false)}
+      onMouseLeave={() => { setShowCartBtn(false); setShowMiniCart(false) }}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick() }}
@@ -127,14 +270,33 @@ export function ProductCard({ product }: ProductCardProps) {
           backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
           backgroundSize: '20px 20px',
         }} />
-        <div className="relative z-10 h-16 w-16 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+        <motion.div 
+          className="relative z-10 h-16 w-16 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm"
+          whileHover={{ scale: 1.12, rotate: 3 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+        >
           <CategoryIcon category={product.category} />
-        </div>
+        </motion.div>
         
         {/* Ribbon discount badge */}
         {discount > 0 && (
           <div className="ribbon-badge">
             -{discount}%
+          </div>
+        )}
+
+        {/* "Oferta" badge — red/orange gradient when isOffer */}
+        {product.isOffer && discount === 0 && (
+          <div className="absolute top-2 left-2 z-10">
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 text-[10px] font-bold px-2 py-0.5 shadow-md shadow-red-500/20">
+                <Zap className="h-2.5 w-2.5 mr-0.5 fill-white" />
+                Oferta
+              </Badge>
+            </motion.div>
           </div>
         )}
 
@@ -148,11 +310,19 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        {/* New badge (only if no discount) */}
-        {product.isNew && discount === 0 && (
-          <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground border-0 text-[10px] px-1.5 py-0 z-10">
-            Novo
-          </Badge>
+        {/* "Novo" badge (only if no discount and not offer) */}
+        {product.isNew && !product.isOffer && discount === 0 && (
+          <div className="absolute top-2 left-2 z-10">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+            >
+              <Badge className="bg-primary text-primary-foreground border-0 text-[10px] px-1.5 py-0 shadow-sm">
+                Novo
+              </Badge>
+            </motion.div>
+          </div>
         )}
 
         {/* Popular badge */}
@@ -163,26 +333,30 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
         
-        {/* Favorite */}
+        {/* Favorite button — top right, always visible */}
         <button
           onClick={handleFavoriteClick}
           className={`absolute z-10 h-7 w-7 rounded-full bg-white/80 dark:bg-black/40 flex items-center justify-center hover:bg-white dark:hover:bg-black/60 transition-colors ${
-            showFreeShipping ? 'top-12 left-2' : 'top-2 right-2'
+            showFreeShipping && !product.isOffer && discount === 0 ? 'top-12 left-2' : 'top-2 right-2'
           }`}
           aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
         >
           <motion.div
-            animate={isFav ? { scale: [1, 1.3, 0.9, 1.1, 1] } : { scale: 1 }}
+            animate={isFav ? { scale: [1, 1.4, 0.85, 1.15, 1] } : { scale: 1 }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
           >
             <Heart className={`h-3.5 w-3.5 transition-colors duration-200 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground group-hover:text-red-400'}`} />
           </motion.div>
         </button>
 
-        {/* Compare button - only on hover */}
+        {/* Compare button — only on hover */}
         <AnimatePresence>
-          {showCartBtn && (
-            <button
+          {showCartBtn && !showMiniCart && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
               onClick={(e) => {
                 e.stopPropagation()
                 toggleCompareProduct(product.id)
@@ -195,23 +369,23 @@ export function ProductCard({ product }: ProductCardProps) {
               aria-label={isCompared ? 'Remover da comparação' : 'Adicionar à comparação'}
             >
               <GitCompareArrows className={`h-3 w-3 ${isCompared ? '' : 'text-muted-foreground'}`} />
-            </button>
+            </motion.button>
           )}
         </AnimatePresence>
         
         {/* Quick add to cart (hover) */}
         <AnimatePresence>
-          {showCartBtn && (
+          {showCartBtn && !showMiniCart && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.2 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               className="absolute bottom-0 left-0 right-0 z-10 p-2"
             >
               <Button
                 size="sm"
-                className={`w-full h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg rounded-lg transition-transform ${
+                className={`w-full h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg rounded-lg transition-transform btn-glow ${
                   cartAnimating ? 'scale-95' : 'scale-100'
                 }`}
                 onClick={handleAddToCart}
@@ -227,13 +401,43 @@ export function ProductCard({ product }: ProductCardProps) {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Mini Cart Popup */}
+        <AnimatePresence>
+          {showMiniCart && (
+            <div className="absolute bottom-full left-0 right-0 z-50 flex justify-center pointer-events-auto">
+              <MiniCartPopup product={product} onClose={() => setShowMiniCart(false)} />
+            </div>
+          )}
+        </AnimatePresence>
       </div>
       
       {/* Info */}
       <div className="p-2.5 flex flex-col flex-1 min-h-0">
-        {product.storeName && (
-          <p className="text-[10px] font-medium text-primary truncate">{product.storeName}</p>
-        )}
+        {/* Store name with logo + Quick add button */}
+        <div className="flex items-center gap-1.5 mt-0">
+          {product.storeName && (
+            <div className="flex items-center gap-1 min-w-0 flex-1">
+              <div className="h-4 w-4 rounded bg-gradient-to-br from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/20 flex items-center justify-center shrink-0">
+                <span className="text-[7px] font-bold text-primary leading-none">
+                  {getStoreInitials(product.storeName)}
+                </span>
+              </div>
+              <p className="text-[10px] font-medium text-primary truncate">{product.storeName}</p>
+            </div>
+          )}
+          {/* Quick add (eye icon for mini cart popup) */}
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showCartBtn ? 1 : 0 }}
+            onClick={handleQuickAdd}
+            className="h-5 w-5 rounded flex items-center justify-center bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0"
+            aria-label="Adicionar rapidamente"
+          >
+            <Zap className="h-2.5 w-2.5" />
+          </motion.button>
+        </div>
+
         <h3 className="text-xs font-semibold mt-0.5 line-clamp-2 leading-tight min-h-[2rem]">{product.name}</h3>
         
         {/* Price Drop Alert - inline badge */}
@@ -247,9 +451,10 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         
         <div className="mt-auto pt-1.5">
+          {/* Large, bold price */}
           <div className="flex items-baseline gap-1.5">
             <motion.span 
-              className="text-sm font-bold text-primary price-animate" 
+              className="text-base font-extrabold text-primary leading-none" 
               initial={{ opacity: 0.8 }}
               animate={{ opacity: 1 }}
             >{formatBRL(product.price)}</motion.span>
@@ -260,6 +465,7 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
           
+          {/* Rating stars + review count */}
           {product.rating > 0 && (
             <div className="flex items-center gap-1 mt-1">
               <StarRating rating={product.rating} />
@@ -267,6 +473,23 @@ export function ProductCard({ product }: ProductCardProps) {
                 ({product.totalReviews})
               </span>
             </div>
+          )}
+
+          {/* Stock urgency text for very low stock */}
+          {product.stock > 0 && product.stock < 5 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-1"
+            >
+              <span className="text-[9px] font-bold text-red-500 flex items-center gap-0.5">
+                <motion.span
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                >🔥</motion.span>
+                Últimas {product.stock} unidades!
+              </span>
+            </motion.div>
           )}
         </div>
         

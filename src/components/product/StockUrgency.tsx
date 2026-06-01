@@ -30,7 +30,7 @@ export function StockUrgency({
   const isVeryLow = stock <= 5
   const isLow = stock <= 15
 
-  // ── Card variant (compact) ──────────────────────────────
+  // -- Card variant (compact) ------------------------------
   if (variant === 'card') {
     if (stock > 50) {
       return (
@@ -111,7 +111,7 @@ export function StockUrgency({
     )
   }
 
-  // ── Detail variant (full featured) ──────────────────────
+  // -- Detail variant (full featured) ----------------------
   if (isVeryLow) {
     return (
       <motion.div

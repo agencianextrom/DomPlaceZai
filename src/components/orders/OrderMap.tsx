@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { useDeliveryTracking } from '@/hooks/useDeliveryTracking'
 
-// ─── Leaflet dynamically imported (no SSR) ───
+// --- Leaflet dynamically imported (no SSR) ---
 const LeafletMapInner = dynamic(() => import('./LeafletMapInner'), { ssr: false })
 
 interface OrderMapProps {
@@ -33,7 +33,7 @@ export function OrderMap({ storeName, estimatedMinutes, orderId }: OrderMapProps
   const [countdownMinutes, setCountdownMinutes] = useState(estimatedMinutes)
   const [countdownSeconds, setCountdownSeconds] = useState(0)
 
-  // ── Connect to real tracking service when orderId is provided ──
+  // -- Connect to real tracking service when orderId is provided --
   const {
     tracking,
     isConnected,

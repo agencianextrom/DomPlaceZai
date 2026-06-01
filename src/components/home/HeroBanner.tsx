@@ -1,13 +1,16 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
-import { ChevronLeft, ChevronRight, MapPin, Flame, Sparkles } from 'lucide-react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { ChevronLeft, ChevronRight, MapPin, Flame, Sparkles, Store, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 
 interface HeroBannerProps {
   banners: { id: string; title: string; subtitle: string | null; image: string; gradient: string }[]
+  storeCount?: number
+  productCount?: number
 }
 
 const bannerGradients = [
@@ -72,12 +75,34 @@ function useCountdown() {
   return time
 }
 
-export function HeroBanner({ banners }: HeroBannerProps) {
+// Skeleton loading state
+function HeroBannerSkeleton() {
+  return (
+    <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl">
+      <div className="w-full h-[200px] sm:h-[280px] md:h-[320px] lg:h-[400px] bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20">
+        <div className="absolute inset-0 shimmer" />
+      </div>
+    </div>
+  )
+}
+
+export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroBannerProps) {
   const [current, setCurrent] = useState(0)
   const [progress, setProgress] = useState(0)
   const [scrollY, setScrollY] = useState(0)
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  const [touchDiffX, setTouchDiffX] = useState(0)
   const { navigate, setActiveCategory } = useAppStore()
   const countdown = useCountdown()
+  const dragX = useRef(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Simulate loading state on mount
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 600)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Track scroll for parallax effect
   useEffect(() => {
@@ -122,22 +147,56 @@ export function HeroBanner({ banners }: HeroBannerProps) {
     navigate('search')
   }, [navigate, setActiveCategory])
 
+  const handleComprarAgora = useCallback(() => {
+    setActiveCategory(null)
+    navigate('search')
+  }, [navigate, setActiveCategory])
+
+  // Touch swipe handlers
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX)
+    dragX.current = 0
+  }, [])
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (touchStartX === null) return
+    const diff = e.touches[0].clientX - touchStartX
+    dragX.current = diff
+    setTouchDiffX(diff)
+  }, [touchStartX])
+
+  const handleTouchEnd = useCallback(() => {
+    if (Math.abs(dragX.current) > 50) {
+      if (dragX.current < 0) next()
+      else prev()
+    }
+    setTouchStartX(null)
+    setTouchDiffX(0)
+  }, [next, prev])
+
   if (!enhancedBanners.length) return null
+
+  // Show skeleton on first load
+  if (!isLoaded) return <HeroBannerSkeleton />
 
   const banner = enhancedBanners[current]
 
   const pad = (n: number) => String(n).padStart(2, '0')
 
   return (
-    <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl">
+    <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl" ref={containerRef}>
       <AnimatePresence mode="wait">
         <motion.div
           key={banner.id}
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.96 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className={`relative w-full h-48 sm:h-60 md:h-72 lg:h-80 ${banner.gradient} flex items-center overflow-hidden`}
+          initial={{ opacity: 0, x: touchDiffX > 0 ? 60 : -60 }}
+          animate={{ opacity: 1, x: touchDiffX }}
+          exit={{ opacity: 0, x: touchDiffX > 0 ? -60 : 60 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className={`relative w-full h-[200px] sm:h-[280px] md:h-[320px] lg:h-[400px] ${banner.gradient} flex items-center overflow-hidden select-none`}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          draggable={false}
         >
           {/* Dot pattern texture overlay with parallax */}
           <div className="absolute inset-0 dot-pattern opacity-60" style={{ transform: `translateY(${scrollY * 0.15}px)` }} />
@@ -219,7 +278,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight"
               style={{ textShadow: '0 2px 12px rgba(0,0,0,0.2)' }}
             >
               {banner.title}
@@ -236,18 +295,47 @@ export function HeroBanner({ banners }: HeroBannerProps) {
               </motion.p>
             )}
 
+            {/* Store + product count badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-3 flex items-center gap-3"
+            >
+              <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/10">
+                <Store className="h-3.5 w-3.5 text-white/90" />
+                <span className="text-white text-xs font-medium">
+                  <span className="font-bold">{storeCount}</span> lojas
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/10">
+                <ShoppingBag className="h-3.5 w-3.5 text-white/90" />
+                <span className="text-white text-xs font-medium">
+                  <span className="font-bold">{productCount}</span> produtos
+                </span>
+              </div>
+            </motion.div>
+
+            {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-4 flex items-center gap-3"
+              className="mt-4 flex items-center gap-2.5"
             >
               <Button
                 onClick={handleVerOfertas}
-                className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden"
+                className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-5 sm:px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden"
               >
                 <span className="ripple-effect absolute inset-0 rounded-lg" />
                 <span className="relative z-10">Ver Ofertas</span>
+              </Button>
+              <Button
+                onClick={handleComprarAgora}
+                className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 font-semibold h-10 sm:h-11 px-5 sm:px-6 press-effect relative overflow-hidden transition-all duration-300"
+              >
+                <span className="ripple-effect absolute inset-0 rounded-lg" />
+                <span className="relative z-10">Comprar Agora</span>
               </Button>
             </motion.div>
 
@@ -308,7 +396,7 @@ export function HeroBanner({ banners }: HeroBannerProps) {
         <ChevronRight className="h-5 w-5" />
       </Button>
 
-      {/* Dots + Progress bar + Swipe indicator */}
+      {/* Dots + Progress bar */}
       <div className="absolute bottom-4 left-0 right-0 z-20 flex flex-col items-center gap-2">
         <div className="flex gap-1.5">
           {enhancedBanners.map((_, i) => (

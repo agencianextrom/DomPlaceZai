@@ -228,6 +228,7 @@ interface AppState {
   
   // Recent searches actions
   addRecentSearch: (query: string) => void
+  removeRecentSearch: (query: string) => void
   clearRecentSearches: () => void
   
   // Auth actions
@@ -445,6 +446,13 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ recentSearches: updated })
   },
   
+  removeRecentSearch: (query) => {
+    const state = get()
+    const updated = state.recentSearches.filter(s => s.toLowerCase() !== query.toLowerCase())
+    saveToStorage('domplace-recent-searches', updated)
+    set({ recentSearches: updated })
+  },
+
   clearRecentSearches: () => {
     saveToStorage('domplace-recent-searches', [])
     set({ recentSearches: [] })

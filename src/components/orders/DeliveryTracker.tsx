@@ -44,7 +44,7 @@ const fallbackDriver = {
 }
 
 export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime, orderId }: DeliveryTrackerProps) {
-  // ── Connect to real tracking service ──
+  // -- Connect to real tracking service --
   const {
     tracking,
     isConnected,

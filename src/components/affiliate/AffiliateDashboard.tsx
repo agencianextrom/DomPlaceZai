@@ -27,7 +27,7 @@ import { toast } from 'sonner'
 import { useAppStore } from '@/store/useAppStore'
 import { useAuth } from '@/hooks/useAuth'
 
-// ── Types ──
+// -- Types --
 interface DashboardData {
   referralCode: string
   commissionRate: number
@@ -101,7 +101,7 @@ function formatDateTime(iso: string): string {
   })
 }
 
-// ── Framer animation helpers ──
+// -- Framer animation helpers --
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -147,7 +147,7 @@ export function AffiliateDashboard() {
   const referralLink = dashboard ? `https://domplace.com/convite/${dashboard.referralCode}` : ''
   const initials = dashboard?.referralCode?.slice(0, 2) || 'AF'
 
-  // ── API fetchers ──
+  // -- API fetchers --
   const fetchDashboard = useCallback(async (isRefresh = false) => {
     try {
       if (isRefresh) {
@@ -227,7 +227,7 @@ export function AffiliateDashboard() {
     await fetchDashboard()
   }, [fetchDashboard, retryCount])
 
-  // ── Effects ──
+  // -- Effects --
   useEffect(() => {
     if (isAuthenticated && isAffiliate) {
       fetchDashboard()
@@ -249,7 +249,7 @@ export function AffiliateDashboard() {
     }
   }, [referralFilter, dashboard, fetchReferrals])
 
-  // ── Actions ──
+  // -- Actions --
   const copyCode = () => {
     if (!dashboard) return
     navigator.clipboard.writeText(dashboard.referralCode)
@@ -391,7 +391,7 @@ export function AffiliateDashboard() {
     pending: referrals.filter(r => getReferralStatus(r) === 'pending').length,
   }
 
-  // ── Auth checks (after all hooks) ──
+  // -- Auth checks (after all hooks) --
   if (!authLoading && !isAuthenticated) {
     return (
       <div className="min-h-screen pb-24 flex items-center justify-center px-4">
@@ -447,7 +447,7 @@ export function AffiliateDashboard() {
     )
   }
 
-  // ── Loading State ──
+  // -- Loading State --
   if (loading) {
     return (
       <div className="min-h-screen pb-24">
@@ -482,7 +482,7 @@ export function AffiliateDashboard() {
     )
   }
 
-  // ── Error State ──
+  // -- Error State --
   if (error) {
     return (
       <div className="min-h-screen pb-24 flex items-center justify-center px-4">
@@ -614,7 +614,7 @@ export function AffiliateDashboard() {
             {[
               { icon: Users, label: 'Indicacoes', value: dashboard.totalReferrals },
               { icon: ShoppingCart, label: 'Conversoes', value: dashboard.totalConversions },
-              { icon: Clock, label: 'Pendente', value: formatBRLShort(dashboard.pendingEarnings) },
+              { icon: TrendingUp, label: 'Taxa Conv.', value: dashboard.totalReferrals > 0 ? `${((dashboard.totalConversions / dashboard.totalReferrals) * 100).toFixed(0)}%` : '--' },
               { icon: Trophy, label: 'Total', value: formatBRLShort(dashboard.totalEarnings) },
             ].map((stat) => (
               <motion.div
@@ -637,6 +637,63 @@ export function AffiliateDashboard() {
       </motion.div>
 
       <div className="px-4 mt-2">
+        {/* -- Como Funciona Section -- */}
+        <motion.div
+          {...fadeUp}
+          transition={{ delay: 0.05 }}
+          className="mb-4"
+        >
+          <Card className="border-primary/20 overflow-hidden bg-gradient-to-br from-primary/5 via-background to-emerald-50/50 dark:from-primary/10 dark:via-background dark:to-emerald-900/10">
+            <CardContent className="p-4">
+              <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                Como Funciona?
+              </h3>
+              <div className="flex items-start gap-3">
+                {[
+                  { step: 1, title: 'Compartilhe', desc: 'Envie seu link unico para amigos, familia e redes sociais', icon: Share2, color: 'from-primary to-emerald-600' },
+                  { step: 2, title: 'Cadastre-se', desc: 'Seus indicados se cadastram e fazem compras no DomPlace', icon: UserPlus, color: 'from-emerald-500 to-teal-600' },
+                  { step: 3, title: 'Ganhe', desc: 'Receba comissao de cada compra realizada pelos seus indicados', icon: Trophy, color: 'from-amber-500 to-orange-500' },
+                ].map((item) => (
+                  <div key={item.step} className="flex-1 text-center">
+                    <motion.div
+                      whileHover={{ y: -3 }}
+                      className="relative"
+                    >
+                      <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto mb-2 shadow-lg`}>
+                        <item.icon className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-background border-2 border-primary flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-primary">{item.step}</span>
+                      </div>
+                    </motion.div>
+                    <p className="text-xs font-bold mb-0.5">{item.title}</p>
+                    <p className="text-[10px] text-muted-foreground leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+              {dashboard.totalReferrals > 0 && dashboard.totalConversions > 0 && (
+                <div className="mt-4 p-3 bg-background rounded-xl border border-primary/20">
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div>
+                      <p className="text-sm font-bold text-primary">{dashboard.totalReferrals}</p>
+                      <p className="text-[9px] text-muted-foreground">Indicacoes</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-amber-500">{dashboard.totalReferrals > 0 ? ((dashboard.totalConversions / dashboard.totalReferrals) * 100).toFixed(1) : '0'}%</p>
+                      <p className="text-[9px] text-muted-foreground">Conversao</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-emerald-500">{((dashboard.commissionRate || 0) * 100).toFixed(0)}%</p>
+                      <p className="text-[9px] text-muted-foreground">Comissao</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
         {/* Referral Link Section */}
         <motion.div
           {...fadeUp}

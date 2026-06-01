@@ -279,6 +279,12 @@ export function CartView() {
               <Store className="h-4 w-4 ml-2" />
             </Button>
           </div>
+          <p className="text-xs text-muted-foreground mt-4">
+            <button onClick={() => navigate('home')} className="text-primary hover:underline font-medium">
+              Continue comprando
+            </button>
+            {' '}e descubra mais produtos incríveis!
+          </p>
         </motion.div>
       </div>
     )
@@ -634,6 +640,11 @@ export function CartView() {
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
           </div>
+          <p className="text-center mt-2">
+            <button onClick={() => navigate('home')} className="text-xs text-muted-foreground hover:text-primary transition-colors">
+              Continue comprando
+            </button>
+          </p>
         </div>
       </div>
     </div>

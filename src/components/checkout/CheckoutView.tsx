@@ -376,10 +376,35 @@ export function CheckoutView() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
-            className="text-sm text-muted-foreground mb-4"
+            className="text-sm text-muted-foreground mb-1"
           >
             Você receberá atualizações sobre o status do seu pedido.
           </motion.p>
+
+          {/* Estimated delivery time */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.85 }}
+            className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 rounded-xl border border-emerald-200/50 dark:border-emerald-800/30 p-3 mb-4 max-w-sm mx-auto flex items-center gap-2"
+          >
+            <Clock className="h-5 w-5 text-primary" />
+            <div>
+              <p className="text-sm font-semibold text-primary">Previsão de entrega</p>
+              <p className="text-xs text-muted-foreground">
+                {deliveryType === 'PICKUP'
+                  ? 'Retirada disponível em 15-30 minutos'
+                  : deliveryTime === 'today-30'
+                    ? 'Hoje, 30-45 minutos'
+                    : deliveryTime === 'today-60'
+                      ? 'Hoje, 60-90 minutos'
+                      : deliveryTime === 'tomorrow'
+                        ? 'Amanhã, 09:00 - 18:00'
+                        : 'Agendado (a definir)'
+                }
+              </p>
+            </div>
+          </motion.div>
 
           {/* Pix QR Code Section */}
           {payment === 'PIX' && pixQrCode && (

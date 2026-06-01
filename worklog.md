@@ -516,8 +516,76 @@ Work Log:
 2. No real payment processing (Checkout uses mock data; needs Mercado Pago SDK)
 3. Product images use gradient placeholders (needs image upload system)
 4. Dashboard uses mock data (needs API connection for real data)
-5. Product comparison uses in-memory state only (lost on refresh)
-6. OrderSuccess/RateOrd
+---
+Task ID: 4 (Round 11 - Store Owner Dashboard Experience)
+Agent: Dashboard UX Expert
+Task: Dramatically improve StoreDashboard and ProductForm with professional data-rich experience
+
+Work Log:
+
+**StoreDashboard.tsx — Complete rewrite with professional dashboard experience:**
+- **Stats Overview**: 4 stat cards in 2x2 grid — Vendas Hoje (R$), Pedidos Hoje, Avaliação (⭐), Faturamento Mensal (R$) — each with animated counter, trend badge, gradient background
+- **Revenue Chart**: Recharts `AreaChart` with emerald gradient fill, animated dots, custom tooltip (RevenueChartTooltip), responsive container (200px height), last 7 days computed from real orders data
+- **Quick Order Status Overview**: Clickable pending/preparing/delivering counts that navigate to orders tab with pre-set filter
+- **Quick Actions Section**: 4 action buttons (Adicionar Produto, Criar Promoção, Ver Avaliações, Configurar Loja) with gradient icon backgrounds and hover effects
+- **Recent Orders**: Compact list (latest 5) with order #, customer name, time ago, value, status badge — click to open detail dialog; "Ver todos" link
+- **Top Products**: Ranked list (top 5) with medal-style rank badges (#1 gold, #2 silver, #3 bronze), product name, sold count, revenue
+- **Status Badge Component**: Reusable `StatusBadge` with `CircleDot` icon + colored backgrounds per status (PENDING=amber, CONFIRMED=sky, PREPARING=purple, READY=teal, DELIVERING=cyan, DELIVERED=emerald, CANCELLED=red)
+- **Tab-based layout**: 7 tabs — Visão Geral, Pedidos, Produtos, Promoções, Avaliações, Configurações, Novo Produto (same as before)
+- **Orders Tab**: Desktop table view (hidden on mobile) with columns: #, Cliente, Valor, Status, Data, Ações; mobile card view with same data; filter chips for all statuses; empty states
+- **Products Tab**: Product cards with image, name, price, category badge, stock, sold count; delete with AlertDialog confirmation; empty state with CTA button
+- **Promotions Tab**: Promo cards with title, description, type/value badge, code, usage progress bar; create button; empty state
+- **Loading States**: Skeleton loaders for stats (4 stat cards + chart + 2 sections), products, orders, settings, promotions
+- **Empty States**: Friendly empty states with icons and CTA buttons for products, orders, promotions
+- **API Integration**: Real API calls to `/api/store-dashboard/stats` and `/api/store-dashboard/orders`
+- All text in Brazilian Portuguese
+
+**ProductForm.tsx — Complete rewrite with professional form experience:**
+- **Zod Validation Schema**: Product schema with name (2-100 chars), price (positive), comparePrice, cost, stock, sku, category, tags validation
+- **New Fields**: SKU (Hash icon), Custo/Cost (DollarSign icon), 3-column price row (preço, comparativo, custo)
+- **Profit Margin**: Auto-calculated margin percentage displayed when cost > 0
+- **Auto-Save Draft**: `useAutoSaveDraft` hook that saves form + images to localStorage every 5 seconds; loads draft on mount with restore prompt; toggleable via Switch; clear on successful submit
+- **Draggable Image Gallery**: `DraggableImageGallery` using Framer Motion `Reorder.Group`/`Reorder.Item`; shows position badges (★ for primary), delete buttons, drag handles; whileDrag scale+rotate animation
+- **Image Upload**: Uses existing Cloudinary `ImageUpload` component at `/api/upload`; drag and drop support
+- **Form Reset**: "Limpar" button with RotateCcw icon to clear form and draft
+- **Sticky Preview**: Preview card on desktop with sticky positioning
+- **Enhanced Preview Card**: Shows SKU, margin info (TrendingUp badge + profit value), stock indicator, star rating placeholder
+- **Responsive Layout**: 2-column grid on sm+, stacked on mobile with preview toggle
+- **Success State**: Animated checkmark, product name display, "Criar outro produto" CTA
+- **Character Counter**: Description field shows current/max character count (1000)
+
+Stage Summary:
+- 2 components completely rewritten (~1300 lines each)
+- StoreDashboard: recharts AreaChart, StatusBadge component, quick actions, recent orders, top products, desktop orders table, empty states
+- ProductForm: Zod validation, SKU + cost fields, auto-save draft, draggable image gallery, profit margin calculation
+- Status badges color-coded: PENDING=amber, CONFIRMED=sky, PREPARING=purple, READY=teal, DELIVERING=cyan, DELIVERED=emerald, CANCELLED=red
+- ESLint: 0 errors (only pre-existing db.ts require error); Dev server: compiling with GET / 200
+
+---
+## CURRENT PROJECT STATUS (Post Round 11 — Store Owner Dashboard Upgrade)
+
+### Overall Assessment: STABLE — Professional dashboard experience for store owners
+
+### What's New:
+1. **Recharts AreaChart**: Interactive revenue chart with emerald gradient for last 7 days
+2. **4 Stat Cards**: Vendas Hoje, Pedidos Hoje, Avaliação, Faturamento Mensal with animated counters
+3. **Quick Actions**: 4 action buttons for common tasks (add product, create promo, reviews, settings)
+4. **Recent Orders**: Compact list with status badges and click-to-view detail
+5. **Top Products**: Ranked list with medal badges and revenue
+6. **Color-coded Status Badges**: PENDING=amber, CONFIRMED=sky, PREPARING=purple, READY=teal, DELIVERING=cyan, DELIVERED=emerald, CANCELLED=red
+7. **Desktop Orders Table**: Responsive table view on desktop, card view on mobile
+8. **Empty States**: Friendly empty states with CTA buttons for all lists
+9. **ProductForm Zod Validation**: Proper form validation with error messages
+10. **SKU + Cost Fields**: New product fields for code and cost tracking
+11. **Auto-Save Draft**: localStorage auto-save every 5s with draft restore prompt
+12. **Drag-to-Reorder Images**: Framer Motion Reorder for image gallery
+13. **Profit Margin**: Auto-calculated margin percentage display
+
+### Pre-existing Issues (unchanged):
+1. No actual auth backend (AuthModal is UI-only)
+2. No real payment processing
+3. Product images use gradient placeholders
+4. db.ts require() lint warning (pre-existing)
 
 ---
 Task ID: 10-F
@@ -2131,3 +2199,121 @@ Stage Summary:
 5. **MEDIUM**: Fix remaining `any` type usages (~17 instances across codebase)
 6. **MEDIUM**: Add remaining console.log cleanup (~60 statements in hooks/components)
 7. **LOW**: Persist product comparison in localStorage
+---
+Task ID: 3-b
+Agent: Conversion Optimization Expert
+Task: Improve ProductCard, HeroBanner, and UrgencyStrip for MAXIMUM CONVERSION
+
+Work Log:
+- **ProductCard.tsx** — Complete rewrite for conversion optimization:
+  - "Oferta" badge with red/orange gradient + Zap icon when isOffer
+  - Store logo (2-letter initials) next to store name
+  - Larger, bolder price (text-base font-extrabold)
+  - Stock urgency text "Últimas {n} unidades!" with fire emoji when stock < 5
+  - MiniCartPopup component: fly-out popup with quantity selector (+/-), total price, "Adicionar ao Carrinho" button, success state with "Ver Carrinho" link, auto-close on mouse leave
+  - Quick add Zap icon button next to store name
+  - Enhanced hover: stronger lift (y:-4) + bigger shadow (shadow-xl)
+  - Category icon hover: spring animation with rotate
+  - Cart button: btn-glow effect for extra visual punch
+  - Compare button: spring entrance animation
+
+- **HeroBanner.tsx** — Enhanced for engagement:
+  - Touch swipe support (onTouchStart/Move/End) with 50px threshold
+  - Loading skeleton state (HeroBannerSkeleton) with shimmer gradient, 600ms simulated load
+  - "Comprar Agora" CTA button (glass-morphism white/20 bg) alongside "Ver Ofertas"
+  - Store count + product count badges below subtitle (Store icon + ShoppingBag icon)
+  - Responsive heights: 200px mobile, 280px tablet, 320px mid, 400px desktop
+  - Title: text-5xl on lg for maximum impact
+  - Swipe-aware transitions: slides follow finger direction
+
+- **UrgencyStrip.tsx** — Conversion-focused social proof ticker:
+  - 8 realistic purchase messages with Dom Eliseu resident names + real store names + real products
+  - Format: "Maria acabou de comprar Açaí 500ml em Açaí da Boa • 3 min atrás"
+  - Purchase count: "{N} pedidos hoje em Dom Eliseu" (dynamically calculated based on hour)
+  - Delivery messages: "12 pedidos sendo entregues agora em Dom Eliseu"
+  - Rating messages: "Açaí da Boa: 4.9 estrelas • 256 avaliações positivas"
+  - Rotates every 4 seconds with vertical slide animation
+  - Left/right ShoppingBag + Clock icon accents
+  - Consistent emerald-to-teal gradient
+
+- **page.tsx**: Updated HeroBanner to pass storeCount={allStores.length} productCount={allProducts.length}
+
+Stage Summary:
+- 3 components completely rewritten for maximum conversion
+- ProductCard: 6 new conversion features (Oferta badge, store logo, MiniCartPopup, stock urgency text, quick add, enhanced hover)
+- HeroBanner: 4 new features (touch swipe, skeleton loading, Comprar Agora CTA, store/product count badges)
+- UrgencyStrip: Complete rewrite with realistic social proof messages from Dom Eliseu
+- ESLint: 0 errors on modified files; Dev server: GET / 200; All text in Brazilian Portuguese
+
+---
+Task ID: 5-6
+Agent: Features Developer
+Task: Improve Buyer Experience - Search, Filters, City News, and Seed Data
+
+Work Log:
+- **SearchView** (`/src/components/search/SearchView.tsx`): Complete rewrite
+  - Large search input with auto-focus and h-12 height
+  - Voice search button (Mic icon) using Web Speech API (pt-BR)
+  - 300ms debounce search fetching both /api/products?search= and /api/stores?search=
+  - Mixed results: store results shown as cards with Store icon + "Loja" badge, then product grid
+  - Recent searches as deletable chips with X hover button
+  - Trending searches for Dom Eliseu: Açaí, Ração, Farmácia, Pão, Verduras with emojis
+  - Category filter pills below search bar (9 categories with emojis)
+  - Sort filter chips (Relevância, Menor preço, Maior preço, Melhor avaliado, Entrega grátis)
+  - No results state: "Nenhum resultado para '{query}'" with trending suggestion chips
+  - Active category and sort badges with clear button
+  - All text in Brazilian Portuguese
+
+- **CategoryBar** (`/src/components/home/CategoryBar.tsx`): Enhanced
+  - Added emojis to each category alongside Lucide icons (All, Alimentação 🍛, Serviços 🔧, Agricultura 🌿, Moda 👗, Eletrônicos 📱, Saúde 💊, Casa & Jardim 🏠, Animais 🐾, Educação 📚, Beleza 💇, Esportes ⚽, Outros 📦)
+  - Active category highlighted with emerald gradient + shadow + ring
+  - Product count badges styled as pills (bg-primary/10 when active)
+  - Click filters products on homepage (already working)
+
+- **CityNews** (NEW: `/src/components/home/CityNews.tsx`):
+  - Section title: "📰 Novidades de Dom Eliseu" with gradient text
+  - 5 sample news cards: Feira do Produtor Rural, Novo posto de saúde, Campeonato de Futebol, Açaí Fest, Rodovia PA-279
+  - Each card: gradient placeholder area with emoji, date badge, location badge, title, description
+  - Horizontal scrollable with snap-x, max 3 cards visible on mobile
+  - Subtle hover effects (y:-3, scale:1.02, shadow-lg)
+  - "Ver mais" link with ChevronRight
+
+- **Seed API** (`/src/app/api/seed/route.ts`): Enhanced with realistic demo data
+  - Demo account: demo@domplace.com / demo123 (Maria Silva, with loyalty points, address, orders)
+  - Store 1: "Mercado do Zé" (FOOD) - 8 products (Arroz, Feijão, Óleo, Café, Açúcar, Farinha, Macarrão, Leite)
+  - Store 2: "Açaí da Boa" (FOOD) - 5 products (300ml, 500ml, Premium 700ml, Cupuaçu, Smoothie)
+  - Store 3: "Farmácia Vida" (HEALTH) - 5 products (Vitamina C, Kit Socorros, Dorflex, Protetor Solar, Bepantol)
+  - 5 more stores with products (Agropecuária, Padaria, Eletrônicos, Pet Shop, Salão)
+  - 4 promotions: ACAI10, PAO2, MERCADO10, PETGRATIS
+  - 8 banners, 5 reviews
+  - All prices in BRL, all in Dom Eliseu context
+  - Try/catch for each creation (skip if exists), counts returned
+  - Fixed admin accountId reference
+
+- **page.tsx**: Integrated CityNews between FlashSale and Welcome greeting section
+
+- **useAppStore.ts**: Added `removeRecentSearch` action for individual search deletion
+
+Stage Summary:
+- 1 new component created (CityNews)
+- 3 existing components enhanced (SearchView, CategoryBar, Seed API)
+- 2 supporting files modified (page.tsx, useAppStore.ts)
+- ESLint: 0 new errors (1 pre-existing in db.ts from Turso adapter)
+- TypeScript: 0 errors in modified files
+- Dev server: compiling successfully, all routes returning 200
+
+---
+Task ID: fix-affiliate-syntax
+Agent: Syntax Fix Agent
+Task: Fix JSX parsing error in AffiliateDashboard.tsx
+
+Work Log:
+- Fixed JSX comment on line 640: added missing `}` to close the JSX expression `{/* -- Como Funciona Section -- */}`
+- Removed extra `</div>` on line 1246 that had no matching opening tag
+- Verified with `bun run lint`: 0 errors
+
+Stage Summary:
+- Root cause: Line 640 had `{/* -- Como Funciona Section -- */` (missing closing `}` for JSX expression), causing the parser to treat everything after it as inside the unclosed expression
+- Secondary issue: An extra `</div>` tag existed at the end of the return statement
+- 2 minimal edits made, no component rewrite
+- ESLint: 0 errors

@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { motion, AnimatePresence } from 'framer-motion'
 
-// ─── Types ───
+// --- Types ---
 interface ShoppingItem {
   id: string
   name: string
@@ -29,7 +29,7 @@ interface ShoppingList {
   iconBg: string
 }
 
-// ─── Mock Data ───
+// --- Mock Data ---
 const initialLists: ShoppingList[] = [
   {
     id: 'l1',

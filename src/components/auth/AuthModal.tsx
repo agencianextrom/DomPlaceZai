@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppStore } from '@/store/useAppStore'
 import { useAuth } from '@/hooks/useAuth'
 import { toast } from 'sonner'
+import { motion, AnimatePresence } from 'framer-motion'
 import dynamic from 'next/dynamic'
 
 // Dynamic import Turnstile to avoid SSR issues
@@ -44,6 +45,21 @@ const roleOptions: { value: RegisterRole; label: string; icon: React.ReactNode; 
 const isGoogleConfigured = typeof window !== 'undefined' && !!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 const isFacebookConfigured = typeof window !== 'undefined' && !!process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID
 const isTurnstileConfigured = typeof window !== 'undefined' && !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+
+const GoogleIcon = () => (
+  <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
+    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+  </svg>
+)
+
+const FacebookIcon = () => (
+  <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="#1877F2">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+  </svg>
+)
 
 export function AuthModal() {
   const { isAuthModalOpen, closeAuthModal } = useAppStore()
@@ -72,7 +88,6 @@ export function AuthModal() {
       toast.error('Preencha todos os campos')
       return
     }
-    // Check Turnstile if configured
     if (isTurnstileConfigured && !turnstileToken) {
       toast.error('Complete a verificação de segurança')
       return
@@ -106,7 +121,6 @@ export function AuthModal() {
       toast.error('Você precisa aceitar os termos de uso')
       return
     }
-    // Check Turnstile if configured
     if (isTurnstileConfigured && !turnstileToken) {
       toast.error('Complete a verificação de segurança')
       return
@@ -150,47 +164,51 @@ export function AuthModal() {
     }
   }
 
-  const GoogleIcon = () => (
-    <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
-      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-    </svg>
-  )
-
-  const FacebookIcon = () => (
-    <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="#1877F2">
-      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-    </svg>
-  )
-
   return (
     <Dialog open={isAuthModalOpen} onOpenChange={(open) => { if (!open) closeAuthModal() }}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden max-h-[90vh] overflow-y-auto sm:rounded-2xl rounded-none sm:rounded-2xl">
         <Tabs defaultValue="login" className="w-full">
-          <div className="bg-gradient-to-r from-primary to-emerald-600 px-6 pt-6 pb-4">
-            <DialogHeader>
-              <DialogTitle className="text-white text-lg font-bold">
-                DomPlace
-              </DialogTitle>
-              <DialogDescription className="text-white/80 text-sm">
-                Acesse sua conta ou cadastre-se
-              </DialogDescription>
-            </DialogHeader>
-            <TabsList className="mt-4 bg-white/20 h-10 p-0.5 rounded-lg w-full">
-              <TabsTrigger value="login" className="flex-1 rounded-md text-white data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm">
-                Entrar
-              </TabsTrigger>
-              <TabsTrigger value="register" className="flex-1 rounded-md text-white data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm">
-                Cadastrar
-              </TabsTrigger>
-            </TabsList>
+          {/* -- Header with gradient -- */}
+          <div className="bg-gradient-to-br from-primary via-emerald-600 to-teal-600 px-6 pt-6 pb-4 sticky top-0 z-10">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key="auth-header"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <DialogHeader>
+                  <DialogTitle className="text-white text-xl font-bold flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-white/20 flex items-center justify-center">
+                      <Store className="h-4 w-4 text-white" />
+                    </div>
+                    DomPlace
+                  </DialogTitle>
+                  <DialogDescription className="text-white/80 text-sm">
+                    Acesse sua conta ou cadastre-se
+                  </DialogDescription>
+                </DialogHeader>
+                <TabsList className="mt-4 bg-white/20 h-10 p-0.5 rounded-lg w-full">
+                  <TabsTrigger value="login" className="flex-1 rounded-md text-white data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200">
+                    Entrar
+                  </TabsTrigger>
+                  <TabsTrigger value="register" className="flex-1 rounded-md text-white data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200">
+                    Cadastrar
+                  </TabsTrigger>
+                </TabsList>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          {/* Login */}
+          {/* -- Login Tab -- */}
           <TabsContent value="login" className="p-6 mt-0">
-            <form onSubmit={handleLogin} className="space-y-4">
+            <motion.form
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.25 }}
+              onSubmit={handleLogin}
+              className="space-y-4"
+            >
               <div className="space-y-2">
                 <Label htmlFor="login-email" className="text-sm">E-mail</Label>
                 <div className="relative">
@@ -256,25 +274,33 @@ export function AuthModal() {
 
               <Button
                 type="submit"
-                className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+                className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60"
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex items-center gap-2"
+                  >
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Entrando...
-                  </>
+                  </motion.div>
                 ) : (
                   'Entrar'
                 )}
               </Button>
 
-              <Separator />
+              <div className="relative flex items-center justify-center">
+                <Separator className="flex-1" />
+                <span className="px-3 text-[10px] text-muted-foreground uppercase tracking-wider">ou continue com</span>
+                <Separator className="flex-1" />
+              </div>
 
               <Button
                 type="button"
                 variant="outline"
-                className="w-full h-11"
+                className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors"
                 disabled={!isGoogleConfigured}
                 onClick={isGoogleConfigured ? handleGoogleSignIn : undefined}
               >
@@ -289,69 +315,79 @@ export function AuthModal() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11"
+                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors"
                   onClick={handleFacebookSignIn}
                 >
                   <FacebookIcon />
                   Entrar com Facebook
                 </Button>
               )}
-            </form>
+            </motion.form>
           </TabsContent>
 
-          {/* Register */}
+          {/* -- Register Tab -- */}
           <TabsContent value="register" className="p-6 mt-0">
-            <form onSubmit={handleRegister} className="space-y-3">
+            <motion.form
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.25 }}
+              onSubmit={handleRegister}
+              className="space-y-3"
+            >
               {/* Role selector */}
               <div className="space-y-2">
                 <Label className="text-sm">Tipo de conta</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {roleOptions.map((option) => (
-                    <button
+                    <motion.button
                       key={option.value}
                       type="button"
+                      whileTap={{ scale: 0.97 }}
                       onClick={() => setRegRole(option.value)}
-                      className={`flex flex-col items-center gap-1 p-2.5 rounded-lg border-2 text-center transition-all ${
+                      className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 text-center transition-all duration-200 ${
                         regRole === option.value
-                          ? 'border-primary bg-primary/5 text-primary'
-                          : 'border-muted hover:border-muted-foreground/30'
+                          ? 'border-primary bg-primary/5 text-primary shadow-[0_2px_8px_oklch(0.45_0.1_155/0.1)]'
+                          : 'border-border hover:border-muted-foreground/30 hover:bg-muted/50'
                       }`}
                     >
                       {option.icon}
                       <span className="text-xs font-medium">{option.label}</span>
-                    </button>
+                      <span className="text-[9px] text-muted-foreground leading-tight">{option.description}</span>
+                    </motion.button>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="reg-name" className="text-sm">Nome completo</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="reg-name"
-                    type="text"
-                    placeholder="Maria Silva"
-                    value={regName}
-                    onChange={(e) => setRegName(e.target.value)}
-                    className="pl-9 h-11"
-                  />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="reg-name" className="text-sm">Nome completo</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="reg-name"
+                      type="text"
+                      placeholder="Maria Silva"
+                      value={regName}
+                      onChange={(e) => setRegName(e.target.value)}
+                      className="pl-9 h-11"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="reg-email" className="text-sm">E-mail</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="reg-email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    value={regEmail}
-                    onChange={(e) => setRegEmail(e.target.value)}
-                    className="pl-9 h-11"
-                    autoComplete="email"
-                  />
+                <div className="space-y-2">
+                  <Label htmlFor="reg-email" className="text-sm">E-mail</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="reg-email"
+                      type="email"
+                      placeholder="seu@email.com"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      className="pl-9 h-11"
+                      autoComplete="email"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -370,49 +406,51 @@ export function AuthModal() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="reg-password" className="text-sm">Senha</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="reg-password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Mínimo 6 caracteres"
-                    value={regPassword}
-                    onChange={(e) => setRegPassword(e.target.value)}
-                    className="pl-9 pr-10 h-11"
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="reg-password" className="text-sm">Senha</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="reg-password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Mínimo 6 caracteres"
+                      value={regPassword}
+                      onChange={(e) => setRegPassword(e.target.value)}
+                      className="pl-9 pr-10 h-11"
+                      autoComplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="reg-confirm-password" className="text-sm">Confirmar senha</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="reg-confirm-password"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Repita a senha"
-                    value={regConfirmPassword}
-                    onChange={(e) => setRegConfirmPassword(e.target.value)}
-                    className="pl-9 pr-10 h-11"
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
+                <div className="space-y-2">
+                  <Label htmlFor="reg-confirm-password" className="text-sm">Confirmar senha</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="reg-confirm-password"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="Repita a senha"
+                      value={regConfirmPassword}
+                      onChange={(e) => setRegConfirmPassword(e.target.value)}
+                      className="pl-9 pr-10 h-11"
+                      autoComplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -444,34 +482,42 @@ export function AuthModal() {
                 />
                 <label htmlFor="reg-terms" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
                   Li e aceito os{' '}
-                  <span className="text-primary hover:underline cursor-pointer">Termos de Uso</span>
+                  <span className="text-primary hover:underline cursor-pointer font-medium">Termos de Uso</span>
                   {' '}e a{' '}
-                  <span className="text-primary hover:underline cursor-pointer">Política de Privacidade</span>
+                  <span className="text-primary hover:underline cursor-pointer font-medium">Política de Privacidade</span>
                   {' '}conforme a LGPD.
                 </label>
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+                className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60"
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex items-center gap-2"
+                  >
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Cadastrando...
-                  </>
+                  </motion.div>
                 ) : (
                   'Criar Conta'
                 )}
               </Button>
 
-              <Separator />
+              <div className="relative flex items-center justify-center">
+                <Separator className="flex-1" />
+                <span className="px-3 text-[10px] text-muted-foreground uppercase tracking-wider">ou continue com</span>
+                <Separator className="flex-1" />
+              </div>
 
               <Button
                 type="button"
                 variant="outline"
-                className="w-full h-11"
+                className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors"
                 disabled={!isGoogleConfigured}
                 onClick={isGoogleConfigured ? handleGoogleSignIn : undefined}
               >
@@ -486,14 +532,14 @@ export function AuthModal() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11"
+                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors"
                   onClick={handleFacebookSignIn}
                 >
                   <FacebookIcon />
                   Cadastrar com Facebook
                 </Button>
               )}
-            </form>
+            </motion.form>
           </TabsContent>
         </Tabs>
       </DialogContent>

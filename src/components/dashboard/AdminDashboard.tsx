@@ -31,7 +31,7 @@ import { toast } from 'sonner'
 import { useAppStore } from '@/store/useAppStore'
 import { useAuth } from '@/hooks/useAuth'
 
-// ── Types ──
+// -- Types --
 interface AdminStats {
   totalAccounts: { byRole: { users: number; storeOwners: number; drivers: number; affiliates: number; admins: number }; total: number }
   totalStores: { byStatus: { active: number; pending: number; suspended: number; inactive: number }; total: number }
@@ -149,7 +149,7 @@ const tabVariants = {
   exit: { opacity: 0, y: -8 },
 }
 
-// ── Reusable Error State ──
+// -- Reusable Error State --
 function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
     <motion.div
@@ -170,7 +170,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
   )
 }
 
-// ── Reusable Empty State ──
+// -- Reusable Empty State --
 function EmptyState({ icon: Icon, message }: { icon: React.ComponentType<{ className?: string }>; message: string }) {
   return (
     <Card className="border-border/50">
@@ -184,7 +184,7 @@ function EmptyState({ icon: Icon, message }: { icon: React.ComponentType<{ class
   )
 }
 
-// ── Visão Geral Tab ──
+// -- Visão Geral Tab --
 function OverviewTab() {
   const [state, setState] = useState<FetchState<AdminStats>>({ data: null, loading: true, error: null })
 
@@ -339,7 +339,7 @@ function OverviewTab() {
   )
 }
 
-// ── Lojas Tab ──
+// -- Lojas Tab --
 function StoresTab() {
   const [state, setState] = useState<FetchState<StoreItem[]>>({ data: null, loading: true, error: null })
   const [search, setSearch] = useState('')
@@ -552,7 +552,7 @@ function StoresTab() {
   )
 }
 
-// ── Usuarios Tab ──
+// -- Usuarios Tab --
 function UsersTab() {
   const [state, setState] = useState<FetchState<UserItem[]>>({ data: null, loading: true, error: null })
   const [search, setSearch] = useState('')
@@ -789,7 +789,7 @@ function UsersTab() {
   )
 }
 
-// ── Pedidos Tab ──
+// -- Pedidos Tab --
 function OrdersTab() {
   const [state, setState] = useState<FetchState<OrderItem[]>>({ data: null, loading: true, error: null })
   const [statusFilter, setStatusFilter] = useState<string | null>(null)
@@ -917,7 +917,7 @@ function OrdersTab() {
   )
 }
 
-// ── Moderacao Tab ──
+// -- Moderacao Tab --
 function ModerationTab() {
   const [state, setState] = useState<FetchState<ReviewItem[]>>({ data: null, loading: true, error: null })
   const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -1115,7 +1115,7 @@ function ModerationTab() {
   )
 }
 
-// ── Financeiro Tab ──
+// -- Financeiro Tab --
 function FinanceTab() {
   const [state, setState] = useState<{ affiliates: PayoutAffiliate[]; totalPending: number } | null>(null)
   const [loading, setLoading] = useState(true)
@@ -1274,7 +1274,7 @@ function FinanceTab() {
   )
 }
 
-// ── Main Component ──
+// -- Main Component --
 export function AdminDashboard() {
   const { goBack } = useAppStore()
   const { isAdmin, isLoading: authLoading, isAuthenticated } = useAuth()

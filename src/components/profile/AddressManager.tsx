@@ -18,7 +18,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 
-// ─── Types ───
+// --- Types ---
 interface Address {
   id: string
   label: string
@@ -54,7 +54,7 @@ const emptyForm: AddressFormData = {
   complement: '',
 }
 
-// ─── Mock Data ───
+// --- Mock Data ---
 const initialAddresses: Address[] = [
   {
     id: 'a1',
@@ -383,7 +383,7 @@ export function AddressManager() {
         )}
       </motion.div>
 
-      {/* ── Add/Edit Dialog ── */}
+      {/* -- Add/Edit Dialog -- */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-h-[85vh] overflow-y-auto">
           <DialogHeader>

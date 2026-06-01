@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Package, MapPin, Clock, DollarSign, Star, Phone, MessageCircle,
   ChevronRight, TrendingUp, Trophy, Navigation, CheckCircle2,
-  Truck, Bike, Car, Power, PowerOff, History, Wallet,
+  Truck, Bike, Car, Power, PowerOff, History, Wallet, User,
   BarChart3, AlertCircle, RefreshCw, ShieldCheck, ShieldAlert,
   ShieldX, Loader2, XCircle, Send, Ban, PackageCheck, MapPinned,
   Lock
@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { useAppStore } from '@/store/useAppStore'
@@ -290,7 +291,7 @@ function AccessDenied() {
   )
 }
 
-// ── Order detail skeleton for when fetching detail ──
+// -- Order detail skeleton for when fetching detail --
 function OrderDetailSkeleton() {
   return (
     <div className="p-4 space-y-3">
@@ -337,7 +338,7 @@ export function DriverDashboard() {
   const initials = driverProfile ? getInitials(driverProfile.account.name) : ''
   const verification = driverProfile?.driver.verification || 'PENDING'
 
-  // ── Fetch driver profile ──
+  // -- Fetch driver profile --
   const fetchProfile = useCallback(async () => {
     try {
       const res = await fetch('/api/driver/profile')
@@ -355,7 +356,7 @@ export function DriverDashboard() {
     }
   }, [])
 
-  // ── Fetch orders by type ──
+  // -- Fetch orders by type --
   const fetchOrders = useCallback(async (type: string) => {
     try {
       const res = await fetch(`/api/driver/orders?type=${type}&limit=50`)
@@ -367,7 +368,7 @@ export function DriverDashboard() {
     }
   }, [])
 
-  // ── Fetch order detail ──
+  // -- Fetch order detail --
   const fetchOrderDetail = useCallback(async (orderId: string) => {
     setOrderDetailLoading(true)
     setExpandedOrderId(orderId)
@@ -386,7 +387,7 @@ export function DriverDashboard() {
     }
   }, [])
 
-  // ── Fetch earnings ──
+  // -- Fetch earnings --
   const fetchEarnings = useCallback(async (period: string) => {
     try {
       const res = await fetch(`/api/driver/earnings?period=${period}`)
@@ -398,7 +399,7 @@ export function DriverDashboard() {
     }
   }, [])
 
-  // ── Fetch all data ──
+  // -- Fetch all data --
   const fetchAll = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -419,14 +420,14 @@ export function DriverDashboard() {
     setLoading(false)
   }, [fetchProfile, fetchOrders, fetchEarnings, earningsPeriod])
 
-  // ── Initial load ──
+  // -- Initial load --
   useEffect(() => {
     if (!authLoading && isAuthenticated && isDeliveryDriver) {
       fetchAll()
     }
   }, [isAuthenticated, isDeliveryDriver, authLoading])
 
-  // ── Refresh orders when profile status changes ──
+  // -- Refresh orders when profile status changes --
   useEffect(() => {
     if (!loading && driverProfile) {
       Promise.all([
@@ -441,14 +442,14 @@ export function DriverDashboard() {
     }
   }, [driverProfile?.driver.status])
 
-  // ── Fetch earnings when period changes ──
+  // -- Fetch earnings when period changes --
   useEffect(() => {
     if (!loading) {
       fetchEarnings(earningsPeriod).then(setEarnings)
     }
   }, [earningsPeriod, fetchEarnings, loading])
 
-  // ── Cleanup GPS interval on unmount ──
+  // -- Cleanup GPS interval on unmount --
   useEffect(() => {
     return () => {
       if (gpsIntervalRef.current) {
@@ -457,7 +458,7 @@ export function DriverDashboard() {
     }
   }, [])
 
-  // ── Handle status toggle (POST /api/driver/status) ──
+  // -- Handle status toggle (POST /api/driver/status) --
   const handleStatusToggle = async (checked: boolean) => {
     setStatusChanging(true)
     try {
@@ -485,7 +486,7 @@ export function DriverDashboard() {
     }
   }
 
-  // ── Handle accept order ──
+  // -- Handle accept order --
   const handleAcceptOrder = async (orderId: string) => {
     setActionInProgress(orderId)
     try {
@@ -520,7 +521,7 @@ export function DriverDashboard() {
     }
   }
 
-  // ── Handle decline order ──
+  // -- Handle decline order --
   const handleDeclineOrder = async (orderId: string) => {
     setActionInProgress(orderId)
     try {
@@ -546,7 +547,7 @@ export function DriverDashboard() {
     }
   }
 
-  // ── Handle order status update (pick_up / delivering / delivered) ──
+  // -- Handle order status update (pick_up / delivering / delivered) --
   const handleUpdateOrderStatus = async (orderId: string, action: string) => {
     setActionInProgress(orderId)
     try {
@@ -596,7 +597,7 @@ export function DriverDashboard() {
     }
   }
 
-  // ── Simulate GPS location update ──
+  // -- Simulate GPS location update --
   const toggleGpsSimulation = async () => {
     if (gpsSimulating) {
       // Stop simulation
@@ -643,28 +644,28 @@ export function DriverDashboard() {
     }, 10000) // Every 10 seconds
   }
 
-  // ── Handle refresh ──
+  // -- Handle refresh --
   const handleRefresh = () => {
     setRetryCount(0)
     fetchAll()
   }
 
-  // ── Auth loading ──
+  // -- Auth loading --
   if (authLoading) {
     return <LoadingSkeleton />
   }
 
-  // ── Access denied: not authenticated or not a delivery driver ──
+  // -- Access denied: not authenticated or not a delivery driver --
   if (!isAuthenticated || !isDeliveryDriver) {
     return <AccessDenied />
   }
 
-  // ── Loading state ──
+  // -- Loading state --
   if (loading) {
     return <LoadingSkeleton />
   }
 
-  // ── Error state ──
+  // -- Error state --
   if (error) {
     return <ErrorState message={error} onRetry={handleRefresh} retryCount={retryCount} />
   }
@@ -676,7 +677,7 @@ export function DriverDashboard() {
   const profile = driverProfile
   const driver = driverProfile.driver
 
-  // ── Build weekly chart data ──
+  // -- Build weekly chart data --
   const weeklyChartData = [
     { day: 'Seg', amount: 0 },
     { day: 'Ter', amount: 0 },
@@ -694,7 +695,7 @@ export function DriverDashboard() {
     })
   }
 
-  // ── History items ──
+  // -- History items --
   const historyItems: {
     id: string
     orderNumber: string
@@ -734,7 +735,7 @@ export function DriverDashboard() {
 
   return (
     <div className="min-h-screen pb-24">
-      {/* ── Header ── */}
+      {/* -- Header -- */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -765,7 +766,7 @@ export function DriverDashboard() {
             </motion.div>
           </div>
 
-          {/* ── Driver info ── */}
+          {/* -- Driver info -- */}
           <div className="relative flex items-center gap-4">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -792,7 +793,7 @@ export function DriverDashboard() {
                 <VerificationBadge verification={verification} />
               </div>
             </div>
-            {/* ── Online/Offline Toggle ── */}
+            {/* -- Online/Offline Toggle -- */}
             <motion.div
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-xl px-3 py-2"
@@ -817,7 +818,7 @@ export function DriverDashboard() {
             </motion.div>
           </div>
 
-          {/* ── Today stats ── */}
+          {/* -- Today stats -- */}
           <div className="relative grid grid-cols-3 gap-3 mt-5">
             {[
               { icon: Package, label: 'Entregas Hoje', value: earnings?.deliveryCount ?? 0, color: 'from-white/20 to-white/10' },
@@ -846,7 +847,7 @@ export function DriverDashboard() {
       </motion.div>
 
       <div className="px-4 mt-2">
-        {/* ── GPS Simulation Button ── */}
+        {/* -- GPS Simulation Button -- */}
         <AnimatePresence>
           {(isOnline || isBusy) && (
             <motion.div
@@ -888,7 +889,7 @@ export function DriverDashboard() {
           )}
         </AnimatePresence>
 
-        {/* ── Active Delivery Card ── */}
+        {/* -- Active Delivery Card -- */}
         <AnimatePresence>
           {(isOnline || isBusy) && activeDelivery && (
             <motion.div
@@ -913,7 +914,7 @@ export function DriverDashboard() {
                     <span className="text-xs text-muted-foreground">ETA: {activeDelivery.estimatedTime || '--'}</span>
                   </div>
 
-                  {/* ── Route visualization ── */}
+                  {/* -- Route visualization -- */}
                   <div className="space-y-3 mb-4">
                     <div className="flex items-start gap-3">
                       <div className="flex flex-col items-center mt-1">
@@ -938,7 +939,7 @@ export function DriverDashboard() {
                     </div>
                   </div>
 
-                  {/* ── Progress ── */}
+                  {/* -- Progress -- */}
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[10px] text-muted-foreground">Progresso da entrega</span>
@@ -947,7 +948,7 @@ export function DriverDashboard() {
                     <Progress value={getDeliveryProgress(activeDelivery.status)} className="h-2" />
                   </div>
 
-                  {/* ── Map placeholder ── */}
+                  {/* -- Map placeholder -- */}
                   <div className="h-32 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center mb-4 border border-border/50">
                     <div className="text-center">
                       <MapPin className="h-8 w-8 text-primary mx-auto mb-1" />
@@ -956,7 +957,7 @@ export function DriverDashboard() {
                     </div>
                   </div>
 
-                  {/* ── Value info ── */}
+                  {/* -- Value info -- */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
                       <div className="text-center">
@@ -970,7 +971,7 @@ export function DriverDashboard() {
                     </div>
                   </div>
 
-                  {/* ── Customer contact + Status action ── */}
+                  {/* -- Customer contact + Status action -- */}
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-primary/30 hover:bg-primary/5">
                       <Phone className="h-4 w-4 text-primary" />
@@ -1004,9 +1005,9 @@ export function DriverDashboard() {
           )}
         </AnimatePresence>
 
-        {/* ── Tabs content ── */}
+        {/* -- Tabs content -- */}
         <Tabs defaultValue="orders" className="w-full">
-          <TabsList className="w-full grid grid-cols-3 mb-4">
+          <TabsList className="w-full grid grid-cols-4 mb-4">
             <TabsTrigger value="orders" className="text-xs gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Package className="h-3.5 w-3.5" />
               Pedidos
@@ -1019,9 +1020,13 @@ export function DriverDashboard() {
               <History className="h-3.5 w-3.5" />
               Historico
             </TabsTrigger>
+            <TabsTrigger value="profile" className="text-xs gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <User className="h-3.5 w-3.5" />
+              Perfil
+            </TabsTrigger>
           </TabsList>
 
-          {/* ── Available Orders Tab ── */}
+          {/* -- Available Orders Tab -- */}
           <TabsContent value="orders" className="mt-0">
             {isOnline || isBusy ? (
               availableOrders.length > 0 ? (
@@ -1069,7 +1074,7 @@ export function DriverDashboard() {
                             </div>
                           </div>
 
-                          {/* ── Expanded order detail ── */}
+                          {/* -- Expanded order detail -- */}
                           <AnimatePresence>
                             {expandedOrderId === order.id && (
                               <motion.div
@@ -1229,7 +1234,7 @@ export function DriverDashboard() {
             )}
           </TabsContent>
 
-          {/* ── Earnings Tab ── */}
+          {/* -- Earnings Tab -- */}
           <TabsContent value="earnings" className="mt-0">
             {/* Period selector */}
             <div className="flex bg-secondary/50 rounded-xl p-1 mb-4">
@@ -1299,62 +1304,46 @@ export function DriverDashboard() {
               </motion.div>
             )}
 
-            {/* Weekly chart */}
-            {earningsPeriod === 'week' && earnings && earnings.deliveryCount > 0 && (
-              <Card className="border-border/50 mb-4">
-                <CardContent className="p-4">
-                  <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4 text-primary" />
-                    Ganhos da Semana
-                  </h3>
-                  <div className="flex items-end gap-2 h-32">
-                    {weeklyChartData.map((day, i) => {
-                      const maxAmount = Math.max(...weeklyChartData.map(d => d.amount), 1)
-                      const height = (day.amount / maxAmount) * 100
-                      const isToday = i === new Date().getDay() - 1
-                      return (
-                        <motion.div
-                          key={day.day}
-                          className="flex-1 flex flex-col items-center gap-1"
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          transition={{ delay: i * 0.08 }}
-                        >
-                          <span className="text-[10px] font-semibold text-muted-foreground">
-                            R$ {day.amount.toFixed(0)}
-                          </span>
-                          <div className="w-full flex items-end" style={{ height: '80px' }}>
-                            <motion.div
-                              initial={{ height: 0 }}
-                              animate={{ height: `${height}%` }}
-                              transition={{ delay: i * 0.08, duration: 0.5 }}
-                              className={`w-full rounded-t-lg ${isToday ? 'bg-gradient-to-t from-primary to-emerald-400' : 'bg-gradient-to-t from-primary/30 to-primary/50'}`}
-                            />
-                          </div>
-                          <span className={`text-[10px] ${isToday ? 'font-bold text-primary' : 'text-muted-foreground'}`}>
-                            {day.day}
-                          </span>
-                        </motion.div>
-                      )
-                    })}
+            {/* Weekly chart with recharts */}
+            <Card className="border-border/50 mb-4">
+              <CardContent className="p-4">
+                <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4 text-primary" />
+                  {earningsPeriod === 'week' ? 'Ganhos da Semana' : earningsPeriod === 'month' ? 'Ganhos do Mes' : 'Ganhos de Hoje'}
+                </h3>
+                {weeklyChartData.some(d => d.amount > 0) ? (
+                  <div className="h-48">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={weeklyChartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                        <XAxis dataKey="day" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                        <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `R$${v}`} />
+                        <Tooltip
+                          contentStyle={{ borderRadius: 8, fontSize: 12, border: '1px solid hsl(var(--border))' }}
+                          formatter={(value: number) => [`R$ ${value.toFixed(2)}`, 'Ganhos']}
+                        />
+                        <Bar dataKey="amount" radius={[6, 6, 0, 0]} maxBarSize={40}>
+                          {weeklyChartData.map((entry, index) => {
+                            const dayOfWeek = new Date().getDay()
+                            const adjustedIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+                            return (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={index === adjustedIndex ? '#10b981' : '#10b98140'}
+                              />
+                            )
+                          })}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {earningsPeriod === 'week' && earnings && earnings.deliveryCount === 0 && (
-              <Card className="border-border/50 mb-4">
-                <CardContent className="p-4">
-                  <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4 text-primary" />
-                    Ganhos da Semana
-                  </h3>
+                ) : (
                   <div className="flex items-center justify-center h-24 text-center">
-                    <p className="text-xs text-muted-foreground">Nenhuma entrega esta semana</p>
+                    <p className="text-xs text-muted-foreground">Nenhuma entrega neste periodo</p>
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                )}
+              </CardContent>
+            </Card>
 
             {/* Stats summary */}
             <div className="grid grid-cols-2 gap-3">
@@ -1375,7 +1364,7 @@ export function DriverDashboard() {
             </div>
           </TabsContent>
 
-          {/* ── History Tab ── */}
+          {/* -- History Tab -- */}
           <TabsContent value="history" className="mt-0">
             {historyItems.length > 0 ? (
               <div className="space-y-2">
@@ -1456,6 +1445,119 @@ export function DriverDashboard() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* -- Profile Tab -- */}
+          <TabsContent value="profile" className="mt-0">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-4"
+            >
+              {/* Driver identity card */}
+              <Card className="border-primary/20 overflow-hidden">
+                <div className="bg-gradient-to-r from-primary to-emerald-600 p-4 flex items-center gap-4">
+                  <div className="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl font-bold border-2 border-white/30">
+                    {initials}
+                  </div>
+                  <div className="text-white">
+                    <h3 className="font-bold text-lg">{profile.account.name}</h3>
+                    <p className="text-sm text-white/70">{profile.account.phone || 'Telefone nao informado'}</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star className="h-4 w-4 text-amber-300 fill-amber-300" />
+                      <span className="text-sm font-semibold">{driver.rating}</span>
+                      <VerificationBadge verification={verification} />
+                    </div>
+                  </div>
+                </div>
+                <CardContent className="p-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <VehicleIcon className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Veiculo</p>
+                        <p className="text-xs font-semibold capitalize">{driver.vehicleType === 'motorcycle' ? 'Moto' : driver.vehicleType === 'bicycle' ? 'Bicicleta' : driver.vehicleType === 'car' ? 'Carro' : driver.vehicleType}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 rounded-xl bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center">
+                        <ShieldCheck className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">CNH</p>
+                        <p className="text-xs font-semibold">{driver.cnhNumber || 'Nao informada'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/20 flex items-center justify-center">
+                        <BarChart3 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Comissao</p>
+                        <p className="text-xs font-semibold">{(driver.commissionRate * 100).toFixed(0)}%</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 rounded-xl bg-teal-100 dark:bg-teal-900/20 flex items-center justify-center">
+                        <MapPinned className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Placa</p>
+                        <p className="text-xs font-semibold">{driver.vehiclePlate || 'Nao informada'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* CNH Status */}
+              <Card className="border-border/50">
+                <CardContent className="p-4">
+                  <h4 className="text-sm font-bold mb-3 flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-primary" />
+                    Status da Verificacao
+                  </h4>
+                  <div className={`p-3 rounded-xl border ${verification === 'VERIFIED' ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800' : verification === 'PENDING' ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800' : 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-800'}`}>
+                    <div className="flex items-center gap-2">
+                      {verification === 'VERIFIED' ? (
+                        <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                      ) : verification === 'PENDING' ? (
+                        <ShieldAlert className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                      ) : (
+                        <ShieldX className="h-5 w-5 text-red-600 dark:text-red-400" />
+                      )}
+                      <div>
+                        <p className="text-sm font-semibold">
+                          {verification === 'VERIFIED' ? 'Documento Verificado' : verification === 'PENDING' ? 'Verificacao Pendente' : 'Verificacao Rejeitada'}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {verification === 'VERIFIED'
+                            ? 'Sua CNH foi verificada e voce esta apto a realizar entregas'
+                            : verification === 'PENDING'
+                            ? 'Envie fotos da sua CNH para comecar a entregar'
+                            : 'Houve um problema com sua verificacao. Entre em contato com suporte.'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Member since */}
+              <Card className="border-border/50">
+                <CardContent className="p-4">
+                  <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-primary" />
+                    Membro desde
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {new Date(driver.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           </TabsContent>
         </Tabs>
       </div>

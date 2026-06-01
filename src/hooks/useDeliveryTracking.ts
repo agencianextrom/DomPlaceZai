@@ -253,7 +253,7 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
       setConnectionError('Erro ao conectar ao rastreamento')
     })
 
-    // ── tracking:init: full initial data load ──
+    // -- tracking:init: full initial data load --
     socket.on('tracking:init', (data: ServerTrackingInit) => {
       if (data.orderId === orderIdRef.current) {
         const mapped = mapServerDataToTracking(data)
@@ -275,7 +275,7 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
       }
     })
 
-    // ── location:update: real-time GPS updates every 5s ──
+    // -- location:update: real-time GPS updates every 5s --
     socket.on('location:update', (data: ServerLocationUpdate) => {
       if (data.orderId === orderIdRef.current) {
         const loc = data.location
@@ -309,7 +309,7 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
       }
     })
 
-    // ── order:status: status change events ──
+    // -- order:status: status change events --
     socket.on('order:status', (data: ServerOrderStatus) => {
       if (data.orderId === orderIdRef.current) {
         const statusLabel = getStatusLabel(data.status)
@@ -346,7 +346,7 @@ export function useDeliveryTracking(options: UseDeliveryTrackingOptions): UseDel
       }
     })
 
-    // ── tracking:update: full data response from update:request ──
+    // -- tracking:update: full data response from update:request --
     socket.on('tracking:update', (data: ServerTrackingUpdate) => {
       if (data.orderId === orderIdRef.current) {
         const mapped = mapServerDataToTracking(data)
