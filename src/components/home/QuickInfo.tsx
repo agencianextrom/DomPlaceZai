@@ -1,60 +1,46 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Package, Store, Sparkles, Clock, TrendingUp, MessageCircle, CloudSun, ChevronLeft, ChevronRight, Thermometer, Droplets, Sun, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Wind, Loader2 } from 'lucide-react'
+import { Package, Store, Sparkles, Clock, TrendingUp, MessageCircle, CloudSun, ChevronLeft, ChevronRight, Thermometer, Droplets, Sun, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Wind, Loader2, ShoppingCart, RefreshCw } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAppStore } from '@/store/useAppStore'
 
-// Mock data for the quick info panel
-const quickStats = [
-  { label: 'Produtos', value: '32', icon: Package, color: 'text-emerald-500 bg-emerald-500/10', progress: 78 },
-  { label: 'Lojas', value: '8', icon: Store, color: 'text-amber-500 bg-amber-500/10', progress: 45 },
-  { label: 'Ofertas', value: '12', icon: Sparkles, color: 'text-primary bg-primary/10', progress: 92 },
-]
+// Types for API responses
+interface QuickStatsData {
+  productCount: number
+  storeCount: number
+  offerCount: number
+}
 
-const recentOrders = [
-  {
-    id: 'o1',
-    storeName: 'Açaí da Boa',
-    productName: 'Açaí 500ml',
-    status: 'Em andamento',
-    time: 'Há 15 min',
-    statusColor: 'text-amber-500 bg-amber-500/10',
-    progress: 65,
-  },
-  {
-    id: 'o2',
-    storeName: 'Mercado do Zé',
-    productName: 'Arroz Tio João 5kg',
-    status: 'Entregue',
-    time: 'Ontem',
-    statusColor: 'text-emerald-500 bg-emerald-500/10',
-    progress: 100,
-  },
-]
+interface ApiOrderItem {
+  productName: string
+  quantity: number
+  price: number
+  total: number
+}
 
-const dailyTips = [
-  {
-    id: 't1',
-    storeName: 'Açaí da Boa',
-    tip: 'Experimente o Açaí Premium com granola artesanal — clientes ganham 10% de cashback na primeira compra!',
-    icon: MessageCircle,
-    emoji: '🍇',
-  },
-  {
-    id: 't2',
-    storeName: 'Padaria Pão Quente',
-    tip: 'Pão francês fresquinho todo dia até 7h da manhã. Peça 6 unidades por apenas R$ 6,00!',
-    icon: TrendingUp,
-    emoji: '🍞',
-  },
-  {
-    id: 't3',
-    storeName: 'Farmácia Vida',
-    tip: 'Vitaminas com até 20% de desconto esta semana. Não perca a promoção de inverno!',
-    icon: Sparkles,
-    emoji: '💊',
-  },
-]
+interface ApiOrder {
+  id: string
+  orderNumber: string
+  storeId: string
+  storeName: string
+  status: string
+  total: number
+  createdAt: string
+  items: ApiOrderItem[]
+}
+
+interface ApiPromotion {
+  id: string
+  storeId?: string
+  code?: string
+  title: string
+  type: string
+  value: number
+  description?: string | null
+  endsAt?: string | null
+}
 
 // Weather icon mapping from Open-Meteo WMO codes / Portuguese conditions
 function getWeatherIcon(condition: string) {
@@ -85,12 +71,91 @@ const fallbackWeather: WeatherData = {
   feelsLike: '36°C',
 }
 
+// Status mapping for order display
+const statusMap: Record<string, { label: string; color: string; progress: number }> = {
+  DELIVERING: { label: 'Em andamento', color: 'text-amber-500 bg-amber-500/10', progress: 65 },
+  DELIVERED: { label: 'Entregue', color: 'text-emerald-500 bg-emerald-500/10', progress: 100 },
+  PREPARING: { label: 'Preparando', color: 'text-orange-500 bg-orange-500/10', progress: 40 },
+  CONFIRMED: { label: 'Confirmado', color: 'text-teal-500 bg-teal-500/10', progress: 25 },
+  PENDING: { label: 'Pendente', color: 'text-amber-500 bg-amber-500/10', progress: 10 },
+  CANCELLED: { label: 'Cancelado', color: 'text-red-500 bg-red-500/10', progress: 0 },
+}
+
+// Skeleton components for independent loading
+function StatsSkeleton() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="flex items-center gap-3">
+          <Skeleton className="h-9 w-9 rounded-lg" />
+          <div className="flex-1 space-y-1.5">
+            <div className="flex justify-between">
+              <Skeleton className="h-3 w-12" />
+              <Skeleton className="h-4 w-6" />
+            </div>
+            <Skeleton className="h-1.5 w-full rounded-full" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function OrdersSkeleton() {
+  return (
+    <div className="space-y-2.5">
+      {Array.from({ length: 2 }).map((_, i) => (
+        <div key={i} className="p-2.5 rounded-lg bg-card/60 border border-border/40">
+          <div className="flex items-start gap-3">
+            <Skeleton className="h-8 w-8 rounded-lg" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-3.5 w-28" />
+              <Skeleton className="h-3 w-20" />
+              <div className="flex gap-2">
+                <Skeleton className="h-4 w-16 rounded" />
+                <Skeleton className="h-3 w-12" />
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function TipsSkeleton() {
+  return (
+    <div className="p-3 rounded-lg bg-gradient-to-r from-accent/5 to-primary/5 border border-accent/10">
+      <div className="flex items-center gap-1.5 mb-1.5">
+        <Skeleton className="h-4 w-4 rounded" />
+        <Skeleton className="h-3 w-20" />
+      </div>
+      <Skeleton className="h-3 w-full" />
+      <Skeleton className="h-3 w-3/4 mt-1" />
+    </div>
+  )
+}
+
 export function QuickInfo() {
+  const { currentUser } = useAppStore()
   const [currentTip, setCurrentTip] = useState(0)
   const [currentTime, setCurrentTime] = useState('')
   const [currentDate, setCurrentDate] = useState('')
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [weatherLoading, setWeatherLoading] = useState(true)
+
+  // Real data states
+  const [stats, setStats] = useState<QuickStatsData | null>(null)
+  const [statsLoading, setStatsLoading] = useState(true)
+  const [statsError, setStatsError] = useState(false)
+
+  const [recentOrders, setRecentOrders] = useState<ApiOrder[]>([])
+  const [ordersLoading, setOrdersLoading] = useState(true)
+  const [ordersError, setOrdersError] = useState(false)
+
+  const [promotions, setPromotions] = useState<ApiPromotion[]>([])
+  const [promotionsLoading, setPromotionsLoading] = useState(true)
+  const [promotionsError, setPromotionsError] = useState(false)
 
   // Update time every minute
   useEffect(() => {
@@ -114,14 +179,22 @@ export function QuickInfo() {
         const res = await fetch('/api/weather')
         if (res.ok) {
           const data = await res.json()
-          const temp = data.temp != null ? data.temp : 30
-          const feelsLike = data.feelsLike != null ? data.feelsLike : temp + 4
-          setWeather({
-            temp: `${Math.round(temp)}°C`,
-            condition: data.condition || 'Nuvens dispersas',
-            humidity: `${data.humidity ?? 70}%`,
-            feelsLike: `${Math.round(feelsLike)}°C`,
-          })
+          const temp = Number(data.temp)
+          const feelsLike = Number(data.feelsLike)
+          const humidity = Number(data.humidity)
+          const condition = data.condition || ''
+
+          // Validate that all critical values are real numbers — use fallback if any are invalid
+          if (!isNaN(temp) && !isNaN(feelsLike) && !isNaN(humidity) && condition.length > 0) {
+            setWeather({
+              temp: `${Math.round(temp)}°C`,
+              condition,
+              humidity: `${Math.round(humidity)}%`,
+              feelsLike: `${Math.round(feelsLike)}°C`,
+            })
+          } else {
+            setWeather(fallbackWeather)
+          }
         } else {
           setWeather(fallbackWeather)
         }
@@ -137,19 +210,121 @@ export function QuickInfo() {
     return () => clearInterval(interval)
   }, [])
 
+  // Fetch quick stats (products, stores, offers)
+  const fetchStats = useCallback(async () => {
+    setStatsLoading(true)
+    setStatsError(false)
+    try {
+      const [productsRes, storesRes, offersRes] = await Promise.all([
+        fetch('/api/products?isOffer=true&limit=1'),
+        fetch('/api/stores?limit=1'),
+        fetch('/api/products?isOffer=true&limit=100'),
+      ])
+
+      let productTotal = 0
+      let storeTotal = 0
+      let offerCount = 0
+
+      if (productsRes.ok) {
+        const data = await productsRes.json()
+        productTotal = data.total || 0
+      }
+      if (storesRes.ok) {
+        const data = await storesRes.json()
+        storeTotal = data.total || 0
+      }
+      if (offersRes.ok) {
+        const data = await offersRes.json()
+        offerCount = data.total || (data.products || []).length
+      }
+
+      setStats({ productCount: productTotal, storeCount: storeTotal, offerCount })
+    } catch {
+      setStatsError(true)
+    } finally {
+      setStatsLoading(false)
+    }
+  }, [])
+
+  // Fetch recent orders (auth-dependent)
+  const fetchOrders = useCallback(async () => {
+    setOrdersLoading(true)
+    setOrdersError(false)
+    try {
+      const res = await fetch('/api/orders?limit=3')
+      if (res.ok) {
+        const data = await res.json()
+        setRecentOrders(data.orders || [])
+      } else {
+        setRecentOrders([])
+      }
+    } catch {
+      setOrdersError(true)
+    } finally {
+      setOrdersLoading(false)
+    }
+  }, [])
+
+  // Fetch promotions as "Dicas do Dia"
+  const fetchPromotions = useCallback(async () => {
+    setPromotionsLoading(true)
+    setPromotionsError(false)
+    try {
+      const res = await fetch('/api/promotions')
+      if (res.ok) {
+        const data = await res.json()
+        setPromotions(data.promotions || [])
+      } else {
+        setPromotions([])
+      }
+    } catch {
+      setPromotionsError(true)
+    } finally {
+      setPromotionsLoading(false)
+    }
+  }, [])
+
+  // Fetch all data on mount
+  useEffect(() => {
+    fetchStats()
+    fetchOrders()
+    fetchPromotions()
+  }, [fetchStats, fetchOrders, fetchPromotions])
+
   const weatherData = weather || fallbackWeather
   const WeatherIcon = getWeatherIcon(weatherData.condition)
 
+  // Build stats display from real data
+  const quickStats = stats
+    ? [
+        { label: 'Produtos', value: String(stats.productCount), icon: Package, color: 'text-emerald-500 bg-emerald-500/10', progress: Math.min(100, (stats.productCount / 200) * 100) },
+        { label: 'Lojas', value: String(stats.storeCount), icon: Store, color: 'text-amber-500 bg-amber-500/10', progress: Math.min(100, (stats.storeCount / 30) * 100) },
+        { label: 'Ofertas', value: String(stats.offerCount), icon: Sparkles, color: 'text-primary bg-primary/10', progress: Math.min(100, (stats.offerCount / 50) * 100) },
+      ]
+    : []
+
+  // Build tips from promotions
+  const tipEmojis = ['🎁', '🏷️', '🔥', '💰', '✨', '🎉']
+  const tipIcons = [MessageCircle, TrendingUp, Sparkles, MessageCircle, TrendingUp, Sparkles]
+
   // Auto-rotate tips every 5s
   useEffect(() => {
+    if (promotions.length <= 1) return
     const interval = setInterval(() => {
-      setCurrentTip(prev => (prev + 1) % dailyTips.length)
+      setCurrentTip(prev => (prev + 1) % promotions.length)
     }, 5000)
     return () => clearInterval(interval)
-  }, [])
+  }, [promotions.length])
 
-  const nextTip = () => setCurrentTip(prev => (prev + 1) % dailyTips.length)
-  const prevTip = () => setCurrentTip(prev => (prev - 1 + dailyTips.length) % dailyTips.length)
+  const nextTip = () => setCurrentTip(prev => (prev + 1) % Math.max(promotions.length, 1))
+  const prevTip = () => setCurrentTip(prev => (prev - 1 + Math.max(promotions.length, 1)) % Math.max(promotions.length, 1))
+
+  // Get promotion description text
+  const getPromoText = (promo: ApiPromotion): string => {
+    if (promo.description) return promo.description
+    const discountText = promo.type === 'PERCENTAGE' ? `${promo.value}% de desconto` : `R$ ${promo.value.toFixed(2)} de desconto`
+    return promo.code ? `Use o cupom ${promo.code} e ganhe ${discountText}!` : discountText
+  }
 
   return (
     <aside className="hidden lg:block w-[300px] xl:w-[340px] shrink-0">
@@ -232,33 +407,44 @@ export function QuickInfo() {
                 <div className="w-2 h-2 rounded-full bg-primary animate-breathe" />
                 Resumo Rápido
               </h3>
-              <div className="space-y-3">
-                {quickStats.map((stat) => (
-                  <motion.div
-                    key={stat.label}
-                    whileHover={{ x: 2 }}
-                    className="flex items-center gap-3"
-                  >
-                    <div className={`h-9 w-9 rounded-lg ${stat.color} flex items-center justify-center shrink-0`}>
-                      <stat.icon className="h-4 w-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-[10px] text-muted-foreground">{stat.label}</span>
-                        <span className="text-sm font-bold">{stat.value}</span>
+              {statsLoading && <StatsSkeleton />}
+              {statsError && !statsLoading && (
+                <div className="text-center py-4">
+                  <p className="text-xs text-muted-foreground mb-2">Erro ao carregar estatísticas</p>
+                  <button onClick={fetchStats} className="text-xs text-primary hover:underline flex items-center gap-1 mx-auto">
+                    <RefreshCw className="h-3 w-3" /> Tentar novamente
+                  </button>
+                </div>
+              )}
+              {!statsLoading && !statsError && quickStats.length > 0 && (
+                <div className="space-y-3">
+                  {quickStats.map((stat) => (
+                    <motion.div
+                      key={stat.label}
+                      whileHover={{ x: 2 }}
+                      className="flex items-center gap-3"
+                    >
+                      <div className={`h-9 w-9 rounded-lg ${stat.color} flex items-center justify-center shrink-0`}>
+                        <stat.icon className="h-4 w-4" />
                       </div>
-                      <div className="h-1.5 bg-muted/50 rounded-full overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full bg-gradient-to-r from-primary to-emerald-400"
-                          initial={{ width: 0 }}
-                          animate={{ width: `${stat.progress}%` }}
-                          transition={{ delay: 0.5, duration: 1, ease: 'easeOut' }}
-                        />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[10px] text-muted-foreground">{stat.label}</span>
+                          <span className="text-sm font-bold">{stat.value}</span>
+                        </div>
+                        <div className="h-1.5 bg-muted/50 rounded-full overflow-hidden">
+                          <motion.div
+                            className="h-full rounded-full bg-gradient-to-r from-primary to-emerald-400"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${stat.progress}%` }}
+                            transition={{ delay: 0.5, duration: 1, ease: 'easeOut' }}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
@@ -274,43 +460,65 @@ export function QuickInfo() {
             <Clock className="h-3.5 w-3.5 text-primary" />
             Pedidos Recentes
           </h3>
-          <div className="space-y-2.5">
-            {recentOrders.map((order) => (
-              <motion.div
-                key={order.id}
-                whileHover={{ x: 3 }}
-                className="p-2.5 rounded-lg bg-card/60 border border-border/40 hover:border-primary/20 transition-colors"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
-                    <Package className="h-3.5 w-3.5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold truncate">{order.productName}</p>
-                    <p className="text-[10px] text-muted-foreground">{order.storeName}</p>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded ${order.statusColor}`}>
-                        {order.status}
-                      </span>
-                      <span className="text-[9px] text-muted-foreground">{order.time}</span>
+          {ordersLoading && <OrdersSkeleton />}
+          {ordersError && !ordersLoading && (
+            <div className="text-center py-4">
+              <p className="text-xs text-muted-foreground mb-2">Erro ao carregar pedidos</p>
+              <button onClick={fetchOrders} className="text-xs text-primary hover:underline flex items-center gap-1 mx-auto">
+                <RefreshCw className="h-3 w-3" /> Tentar novamente
+              </button>
+            </div>
+          )}
+          {!ordersLoading && !ordersError && recentOrders.length === 0 && (
+            <div className="text-center py-4">
+              <ShoppingCart className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+              <p className="text-xs text-muted-foreground">
+                {currentUser ? 'Nenhum pedido recente' : 'Faça login para ver pedidos'}
+              </p>
+            </div>
+          )}
+          {!ordersLoading && !ordersError && recentOrders.length > 0 && (
+            <div className="space-y-2.5">
+              {recentOrders.map((order) => {
+                const status = statusMap[order.status] || statusMap.PENDING
+                const firstItem = order.items?.[0]
+                return (
+                  <motion.div
+                    key={order.id}
+                    whileHover={{ x: 3 }}
+                    className="p-2.5 rounded-lg bg-card/60 border border-border/40 hover:border-primary/20 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
+                        <Package className="h-3.5 w-3.5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold truncate">{firstItem?.productName || `Pedido ${order.orderNumber}`}</p>
+                        <p className="text-[10px] text-muted-foreground">{order.storeName}</p>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded ${status.color}`}>
+                            {status.label}
+                          </span>
+                        </div>
+                        {/* Order progress bar */}
+                        <div className="mt-2 h-1 bg-muted/30 rounded-full overflow-hidden">
+                          <motion.div
+                            className={`h-full rounded-full ${order.status === 'DELIVERED' ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${status.progress}%` }}
+                            transition={{ delay: 0.6, duration: 0.8, ease: 'easeOut' }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                    {/* Order progress bar */}
-                    <div className="mt-2 h-1 bg-muted/30 rounded-full overflow-hidden">
-                      <motion.div
-                        className={`h-full rounded-full ${order.status === 'Entregue' ? 'bg-emerald-500' : 'bg-amber-500'}`}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${order.progress}%` }}
-                        transition={{ delay: 0.6, duration: 0.8, ease: 'easeOut' }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                  </motion.div>
+                )
+              })}
+            </div>
+          )}
         </motion.div>
 
-        {/* Dicas do Dia — Carousel */}
+        {/* Dicas do Dia — Carousel (from real promotions) */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -322,48 +530,76 @@ export function QuickInfo() {
               <Sparkles className="h-3.5 w-3.5 text-amber-500" />
               Dicas do Dia
             </h3>
-            <div className="flex items-center gap-1">
-              <button onClick={prevTip} className="h-6 w-6 rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
-                <ChevronLeft className="h-3.5 w-3.5" />
-              </button>
-              <span className="text-[10px] text-muted-foreground tabular-nums">{currentTip + 1}/{dailyTips.length}</span>
-              <button onClick={nextTip} className="h-6 w-6 rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
-                <ChevronRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
+            {promotions.length > 1 && (
+              <div className="flex items-center gap-1">
+                <button onClick={prevTip} className="h-6 w-6 rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                </button>
+                <span className="text-[10px] text-muted-foreground tabular-nums">{currentTip + 1}/{promotions.length}</span>
+                <button onClick={nextTip} className="h-6 w-6 rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="relative overflow-hidden min-h-[80px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentTip}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="p-3 rounded-lg bg-gradient-to-r from-accent/5 to-primary/5 border border-accent/10"
-              >
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <span className="text-base">{dailyTips[currentTip].emoji}</span>
-                  <span className="text-[10px] font-semibold text-accent">{dailyTips[currentTip].storeName}</span>
-                </div>
-                <p className="text-xs text-foreground/80 leading-relaxed">{dailyTips[currentTip].tip}</p>
-              </motion.div>
-            </AnimatePresence>
+            {promotionsLoading && <TipsSkeleton />}
+            {promotionsError && !promotionsLoading && (
+              <div className="text-center py-4">
+                <p className="text-xs text-muted-foreground mb-2">Erro ao carregar dicas</p>
+                <button onClick={fetchPromotions} className="text-xs text-primary hover:underline flex items-center gap-1 mx-auto">
+                  <RefreshCw className="h-3 w-3" /> Tentar novamente
+                </button>
+              </div>
+            )}
+            {!promotionsLoading && !promotionsError && promotions.length === 0 && (
+              <div className="p-3 rounded-lg bg-gradient-to-r from-accent/5 to-primary/5 border border-accent/10 text-center py-6">
+                <Sparkles className="h-6 w-6 text-muted-foreground/30 mx-auto mb-2" />
+                <p className="text-xs text-muted-foreground">Nenhuma promoção ativa no momento</p>
+              </div>
+            )}
+            {!promotionsLoading && !promotionsError && promotions.length > 0 && (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentTip}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="p-3 rounded-lg bg-gradient-to-r from-accent/5 to-primary/5 border border-accent/10"
+                >
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="text-base">{tipEmojis[currentTip % tipEmojis.length]}</span>
+                    <span className="text-[10px] font-semibold text-accent">
+                      {promotions[currentTip].code
+                        ? `Cupom: ${promotions[currentTip].code}`
+                        : 'Promoção ativa'}
+                    </span>
+                  </div>
+                  <p className="text-xs font-semibold text-foreground/90">{promotions[currentTip].title}</p>
+                  <p className="text-[11px] text-foreground/60 mt-0.5 leading-relaxed">
+                    {getPromoText(promotions[currentTip])}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            )}
           </div>
 
           {/* Carousel dots */}
-          <div className="flex justify-center gap-1.5 mt-3">
-            {dailyTips.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentTip(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === currentTip ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/20 hover:bg-muted-foreground/40'
-                }`}
-              />
-            ))}
-          </div>
+          {promotions.length > 1 && (
+            <div className="flex justify-center gap-1.5 mt-3">
+              {promotions.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentTip(i)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === currentTip ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/20 hover:bg-muted-foreground/40'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </motion.div>
       </div>
     </aside>

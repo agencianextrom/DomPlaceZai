@@ -4,6 +4,7 @@ import { PrismaLibSQL } from '@prisma/adapter-libsql'
 /**
  * DomPlace - Conexão com banco de dados Turso (libSQL)
  * Turso é o banco de dados ABSOLUTO — sem fallback para SQLite local.
+ * Cliente é inicializado de forma lazy para evitar erros durante build/SSG.
  */
 
 const globalForPrisma = globalThis as unknown as {
@@ -24,9 +25,7 @@ function createPrismaClient(): PrismaClient {
   console.log(`[DB] Conectando ao Turso: ${url.substring(0, 40)}...`)
 
   try {
-    // PrismaLibSQL is a factory — pass connection config, not a pre-created client
     const adapter = new PrismaLibSQL({ url, authToken })
-
     console.log('[DB] Conectado ao Turso (libSQL) — banco de dados remoto')
 
     return new PrismaClient({
@@ -41,12 +40,23 @@ function createPrismaClient(): PrismaClient {
   }
 }
 
-// Singleton para desenvolvimento (evita recriação em hot-reload)
-export const db = globalForPrisma.prisma ?? createPrismaClient()
-
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = db
+// Lazy singleton — only initializes on first access, not at module load time.
+// This prevents build-time failures when TURSO_URL is not available.
+function getDb(): PrismaClient {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = createPrismaClient()
+  }
+  return globalForPrisma.prisma
 }
+
+export const db = new Proxy({} as PrismaClient, {
+  get(_target, prop, receiver) {
+    // Allow typeof/toString checks without initializing
+    if (prop === Symbol.toPrimitive || prop === Symbol.toStringTag || prop === 'then') return undefined
+    if (prop === typeof Symbol && typeof prop === 'symbol') return undefined
+    return Reflect.get(getDb(), prop, receiver)
+  },
+})
 
 /**
  * Verificação de saúde da conexão com o banco de dados
@@ -59,7 +69,7 @@ export async function dbHealthCheck(): Promise<{
 }> {
   try {
     const start = Date.now()
-    await db.$queryRaw`SELECT 1`
+    await getDb().$queryRaw`SELECT 1`
     const latency = Date.now() - start
     return { ok: true, latency, engine: 'turso' }
   } catch (error) {

@@ -1,63 +1,8 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ShoppingBag, Clock, TrendingUp, Star, Truck, Eye } from 'lucide-react'
-
-// Realistic names of Dom Eliseu residents
-const names = [
-  'Maria', 'João', 'Ana', 'Carlos', 'Fernanda', 'Pedro', 'Lucia', 'José',
-  'Camila', 'Marcos', 'Patrícia', 'Diego', 'Juliana', 'Rafael', 'Vanessa',
-  'Thiago', 'Aline', 'Bruno', 'Beatriz', 'Gabriel', 'Daniela', 'Lucas',
-  'Renata', 'Felipe', 'Sandra', 'André', 'Solange', 'Rodrigo', 'Elaine', 'Victor',
-]
-
-// Stores from Dom Eliseu
-const stores = [
-  'Açaí da Boa',
-  'Mercado do Zé',
-  'Padaria Pão Quente',
-  'Farmácia Vida',
-  'Pet Shop Amigo Fiel',
-  'Salão da Bella',
-  'Loja do Eletrônico',
-  'Agropecuária São Paulo',
-]
-
-// Products from Dom Eliseu
-const products = [
-  'Açaí 500ml',
-  'Arroz Tio João 5kg',
-  'Pão Francês',
-  'Vitamina C 500mg',
-  'Ração para Cachorro',
-  'Hidratante Capilar',
-  'Capa de Celular',
-  'Adubo NPK 20kg',
-]
-
-// Time ago labels
-const timeAgoLabels = [
-  '1 min atrás',
-  '2 min atrás',
-  '3 min atrás',
-  '5 min atrás',
-  '7 min atrás',
-  '10 min atrás',
-  '12 min atrás',
-  '15 min atrás',
-]
-
-// Review quotes
-const reviewQuotes = [
-  '"Melhor da cidade!"',
-  '"Muito bom, recomendo!"',
-  '"Entrega rápida e saboroso!"',
-  '"Sempre peço aqui!"',
-  '"Qualidade excelente!"',
-  '"Preço justo e bom produto!"',
-  '"Atendimento nota 10!"',
-]
+import { ShoppingBag, Clock, TrendingUp, Star, Truck, Sparkles, Tag, Gift } from 'lucide-react'
 
 // Store color pairs for avatars
 const storeAvatarColors = [
@@ -71,24 +16,15 @@ const storeAvatarColors = [
   'from-red-400 to-rose-500',
 ]
 
-// Generate deterministic "purchase count today" based on hour
-function getPurchaseCount(): number {
-  const hour = new Date().getHours()
-  const base = Math.floor(80 + Math.sin((hour - 6) * Math.PI / 12) * 120 + Math.random() * 20)
-  return Math.max(base, 42)
-}
-
-// Generate delivery count
-function getActiveDeliveries(): number {
-  const hour = new Date().getHours()
-  if (hour < 7 || hour > 22) return Math.floor(Math.random() * 3) + 1
-  return Math.floor(Math.random() * 10) + 5
-}
-
-// Generate viewer count
-function getViewerCount(): number {
-  return Math.floor(Math.random() * 8) + 2
-}
+// Promotional messages shown when no real product data
+const promoMessages: { id: string; text: string; icon: React.ReactNode; isUrgent?: boolean }[] = [
+  { id: 'promo-1', text: 'Entrega grátis em compras acima de R$50 🚚', icon: <Truck className="h-3 w-3" />, isUrgent: true },
+  { id: 'promo-2', text: 'Novas ofertas toda semana no DomPlace', icon: <Tag className="h-3 w-3" /> },
+  { id: 'promo-3', text: 'Ganhe pontos com o programa de fidelidade', icon: <Gift className="h-3 w-3" /> },
+  { id: 'promo-4', text: 'Encontre os melhores preços em Dom Eliseu', icon: <TrendingUp className="h-3 w-3" /> },
+  { id: 'promo-5', text: 'Peça pelo app e receba em casa!', icon: <Sparkles className="h-3 w-3" />, isUrgent: true },
+  { id: 'promo-6', text: 'Resgate prêmios diários na seção Recompensas', icon: <Star className="h-3 w-3" /> },
+]
 
 type SocialMessage = {
   id: string
@@ -98,66 +34,32 @@ type SocialMessage = {
   isUrgent?: boolean
 }
 
-// Generate rich social proof messages
-function generateMessages(): SocialMessage[] {
+// Generate messages from real product data + promo messages
+function generateMessages(products: { name: string; storeName: string; createdAt: string }[]): SocialMessage[] {
   const messages: SocialMessage[] = []
-  const now = new Date()
 
-  // Purchase messages with avatars
-  for (let i = 0; i < 6; i++) {
-    const name = names[(now.getMinutes() + i * 3) % names.length]
-    const store = stores[(now.getMinutes() + i * 2) % stores.length]
-    const product = products[(now.getMinutes() + i) % products.length]
-    const timeAgo = timeAgoLabels[i % timeAgoLabels.length]
-    const colorIdx = (now.getMinutes() + i) % storeAvatarColors.length
+  // Real product messages
+  for (const product of products) {
     messages.push({
-      id: `purchase-${i}`,
-      text: `${name} comprou ${product} há ${timeAgo}`,
-      icon: <ShoppingBag className="h-3 w-3" />,
-      avatar: { initials: name.slice(0, 2).toUpperCase(), color: storeAvatarColors[colorIdx] },
+      id: `new-${product.name}`,
+      text: `Novo produto: ${product.name}`,
+      icon: <Sparkles className="h-3 w-3" />,
+      avatar: {
+        initials: product.storeName.substring(0, 2).toUpperCase(),
+        color: storeAvatarColors[Math.abs(product.name.length) % storeAvatarColors.length],
+      },
     })
   }
 
-  // Active deliveries
-  const deliveryCount = getActiveDeliveries()
-  messages.push({
-    id: 'delivery-1',
-    text: `🚚 ${deliveryCount} entregas acontecendo agora em Dom Eliseu`,
-    icon: <Truck className="h-3 w-3" />,
-    isUrgent: true,
-  })
-  messages.push({
-    id: 'delivery-2',
-    text: `⚡ Mercado do Zé: entrega em 15 min para o Centro`,
-    icon: <Clock className="h-3 w-3" />,
-  })
+  // Always include promo messages for variety
+  messages.push(...promoMessages)
 
-  // Review messages with avatar
-  const quote = reviewQuotes[now.getSeconds() % reviewQuotes.length]
-  const reviewer = names[now.getSeconds() % names.length]
-  const colorIdx2 = now.getSeconds() % storeAvatarColors.length
-  messages.push({
-    id: 'rating-1',
-    text: `⭐ ${reviewer} avaliou Açaí da Boa: ${quote}`,
-    icon: <Star className="h-3 w-3" />,
-    avatar: { initials: reviewer.slice(0, 2).toUpperCase(), color: storeAvatarColors[colorIdx2] },
-  })
-
-  // Viewer count
-  const viewerCount = getViewerCount()
-  messages.push({
-    id: 'viewer-1',
-    text: `🔥 ${viewerCount} pessoas estão vendo este produto agora`,
-    icon: <Eye className="h-3 w-3" />,
-    isUrgent: true,
-  })
-
-  // Trending
-  messages.push({
-    id: 'trending-1',
-    text: `📈 Pão Francês é o mais vendido hoje em Dom Eliseu`,
-    icon: <TrendingUp className="h-3 w-3" />,
-  })
+  // Shuffle deterministically based on current minute for variety
+  const minute = new Date().getMinutes()
+  for (let i = messages.length - 1; i > 0; i--) {
+    const j = (i + minute) % (i + 1)
+    ;[messages[i], messages[j]] = [messages[j], messages[i]]
+  }
 
   return messages
 }
@@ -167,24 +69,30 @@ export function UrgencyStrip() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const hasFetched = useRef(false)
 
-  const purchaseCount = useMemo(() => getPurchaseCount(), [])
-  const allMessages = useMemo(() => {
-    const countMsg: SocialMessage = {
-      id: 'purchase-count',
-      text: `${purchaseCount} pedidos hoje em Dom Eliseu 🎉`,
-      icon: <TrendingUp className="h-3 w-3" />,
-      isUrgent: true,
-    }
-    const msgs = generateMessages()
-    msgs.splice(3, 0, countMsg)
-    return msgs
-  }, [purchaseCount])
-
-  // Regenerate messages periodically
+  // Fetch real products on mount
   useEffect(() => {
-    setMessages(allMessages)
-  }, [allMessages])
+    if (hasFetched.current) return
+    hasFetched.current = true
+
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/products?limit=5&sort=newest')
+        if (res.ok) {
+          const data = await res.json()
+          const products = data.products || []
+          setMessages(generateMessages(products))
+          return
+        }
+      } catch {
+        // Network error — use promo messages only
+      }
+      // Fallback: promo messages only
+      setMessages(generateMessages([]))
+    }
+    fetchData()
+  }, [])
 
   // Auto-advance messages
   useEffect(() => {

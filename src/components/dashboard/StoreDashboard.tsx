@@ -1105,6 +1105,7 @@ export function StoreDashboard() {
   const [products, setProducts] = useState<ProductData[]>([])
   const [orders, setOrders] = useState<OrderData[]>([])
   const [storeSettings, setStoreSettings] = useState<StoreSettings | null>(null)
+  const [storeId, setStoreId] = useState<string | null>(null)
   const [promotions, setPromotions] = useState<PromotionData[]>([])
 
   const [loading, setLoading] = useState(true)
@@ -1156,6 +1157,7 @@ export function StoreDashboard() {
       const statsData = await statsRes.json()
       const ordersData = await ordersRes.json()
       if (statsData.stats) setStats(mapStats(statsData.stats))
+      if (statsData.storeId) setStoreId(statsData.storeId)
       setOrders(ordersData.orders ?? [])
     } catch (err) {
       console.error('Erro ao carregar dados do painel:', err)
@@ -1914,7 +1916,7 @@ export function StoreDashboard() {
             <TabsContent value="reviews">
               <AnimatePresence mode="wait">
                 <motion.div key="reviews" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
-                  <ReviewsManagement />
+                  <ReviewsManagement storeId={storeId} />
                 </motion.div>
               </AnimatePresence>
             </TabsContent>

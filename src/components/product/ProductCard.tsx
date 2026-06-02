@@ -12,8 +12,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
-import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
-import { getProductRealImages } from '@/lib/product-real-images'
+import { resolveProductImage } from '@/lib/product-images'
+import { useState, useCallback, useRef, useEffect } from 'react'
 
 interface ProductCardProps {
   product: ProductData
@@ -213,19 +213,14 @@ export function ProductCard({ product }: ProductCardProps) {
   const [showCartBtn, setShowCartBtn] = useState(false)
   const [cartAnimating, setCartAnimating] = useState(false)
   const [showMiniCart, setShowMiniCart] = useState(false)
+  const [imgError, setImgError] = useState(false)
 
-  // Resolve product image URL from slug or stored images
-  const imageUrl = useMemo(() => {
-    // Try parsing stored images JSON first
-    try {
-      const stored = JSON.parse(product.images)
-      if (Array.isArray(stored) && stored.length > 0 && stored[0]) return stored[0]
-    } catch { /* ignore */ }
-    // Fallback: look up by slug
-    const real = getProductRealImages(product.slug)
-    if (real.length > 0) return real[0]
-    return ''
-  }, [product.images, product.slug])
+  // Resolve the best product image URL
+  const imageUrl = !imgError ? resolveProductImage({
+    slug: product.slug,
+    category: product.category,
+    images: product.images,
+  }) : null
 
   const isFav = isFavoriteProduct(product.id)
   const isCompared = isComparing(product.id)
@@ -278,27 +273,34 @@ export function ProductCard({ product }: ProductCardProps) {
     >
       {/* Image area */}
       <div className="relative aspect-square flex items-center justify-center bg-gradient-to-br overflow-hidden">
-        <div className={`${gradient} absolute inset-0`} />
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
-          backgroundSize: '20px 20px',
-        }} />
         {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={product.name}
-            className="relative z-10 h-full w-full object-cover"
-            loading="lazy"
-          />
+          <>
+            <img
+              src={imageUrl}
+              alt={product.name}
+              className="absolute inset-0 w-full h-full object-cover z-0"
+              onError={() => setImgError(true)}
+              loading="lazy"
+            />
+            {/* Gradient overlay on image for better badge readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-[1]" />
+          </>
         ) : (
-          <motion.div 
-            className="relative z-10 h-16 w-16 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm"
-            whileHover={{ scale: 1.12, rotate: 3 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-          >
-            <CategoryIcon category={product.category} />
-          </motion.div>
+          <>
+            <div className={`${gradient} absolute inset-0`} />
+            {/* Subtle pattern overlay */}
+            <div className="absolute inset-0 opacity-[0.04]" style={{
+              backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
+              backgroundSize: '20px 20px',
+            }} />
+            <motion.div 
+              className="relative z-10 h-16 w-16 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm"
+              whileHover={{ scale: 1.12, rotate: 3 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            >
+              <CategoryIcon category={product.category} />
+            </motion.div>
+          </>
         )}
         
         {/* Ribbon discount badge */}

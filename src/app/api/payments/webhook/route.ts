@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createHmac, timingSafeEqual } from 'crypto'
 import { db } from '@/lib/db'
 import { logger } from '@/lib/logger'
 
@@ -6,7 +7,15 @@ const MP_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const rawBody = await request.text()
+    let body: Record<string, unknown>
+
+    try {
+      body = JSON.parse(rawBody) as Record<string, unknown>
+    } catch {
+      logger.warn('Webhook recebido com JSON inválido')
+      return NextResponse.json({ received: true })
+    }
 
     // Se não há token Mercado Pago configurado, apenas log e retornar OK
     if (!MP_ACCESS_TOKEN) {
@@ -21,19 +30,28 @@ export async function POST(request: NextRequest) {
     if (signature) {
       // Mercado Pago envia x-id-empresarial e x-signature para verificação
       const xIdEmpresarial = request.headers.get('x-id-empresarial')
-      if (xIdEmpresarial && !verifySignature(signature, xIdEmpresarial, requestId || '', dataIdFromBody(body))) {
-        logger.warn('Assinatura inválida')
-        // Mesmo assim retornar 200 para evitar retentativas
-        return NextResponse.json({ received: true })
+      if (xIdEmpresarial) {
+        const isValid = verifySignature(
+          signature,
+          xIdEmpresarial,
+          requestId || '',
+          dataIdFromBody(body),
+          rawBody
+        )
+        if (!isValid) {
+          logger.warn('Assinatura do webhook inválida — rejeitando requisição')
+          return NextResponse.json({ received: true, error: 'Invalid signature' }, { status: 403 })
+        }
       }
     }
 
     // Processar webhook
-    const { type, action, data } = body
+    const { type, data } = body
+    const dataRecord = data as Record<string, unknown> | undefined
 
     // Só processar eventos de pagamento
-    if (type === 'payment' && data?.id) {
-      const paymentId = data.id
+    if (type === 'payment' && dataRecord?.id) {
+      const paymentId = dataRecord.id
 
       try {
         const mercadopago = await import('mercadopago')
@@ -130,14 +148,25 @@ function dataIdFromBody(body: Record<string, unknown>): string {
   return data?.id as string ?? ''
 }
 
+/**
+ * Verifica a assinatura HMAC-SHA256 do Mercado Pago.
+ *
+ * O Mercado Pago envia o header `x-signature` no formato:
+ *   ts=<timestamp>,v1=<hmac_hex>
+ *
+ * O HMAC é calculado como:
+ *   HMAC-SHA256(webhookSecret, data_id + ts)
+ *
+ * Se `MERCADO_PAGO_WEBHOOK_SECRET` não estiver configurado, retorna true
+ * (graceful degradation para ambientes de desenvolvimento).
+ */
 function verifySignature(
   signature: string,
-  xIdEmpresarial: string,
-  requestId: string,
-  dataId: string
+  _xIdEmpresarial: string,
+  _requestId: string,
+  dataId: string,
+  _rawBody: string
 ): boolean {
-  // Verificação básica da assinatura do Mercado Pago
-  // Em produção, implementar verificação HMAC completa
   try {
     const parts = signature.split(',')
     const tsPart = parts.find((p) => p.startsWith('ts='))
@@ -145,14 +174,37 @@ function verifySignature(
 
     if (!tsPart || !v1Part) return false
 
-    // Se não tivermos a chave para verificação HMAC, aceitar (graceful degradation)
-    if (!process.env.MERCADO_PAGO_WEBHOOK_SECRET) {
+    const ts = tsPart.slice(3) // remove "ts="
+    const v1 = v1Part.slice(3) // remove "v1="
+
+    if (!ts || !v1) return false
+
+    // Graceful degradation: skip verification if no secret configured
+    const webhookSecret = process.env.MERCADO_PAGO_WEBHOOK_SECRET
+    if (!webhookSecret) {
       logger.warn('MERCADO_PAGO_WEBHOOK_SECRET não configurada — pulando verificação HMAC')
       return true
     }
 
-    // Implementação simplificada — em produção usar crypto.createHmac
-    return tsPart.length > 0 && v1Part.length > 0
+    // Compute expected HMAC: SHA256(secret, data_id + ts)
+    const payload = `${dataId}${ts}`
+    const expectedHmac = createHmac('sha256', webhookSecret)
+      .update(payload)
+      .digest('hex')
+
+    // Timing-safe comparison to prevent timing attacks
+    if (expectedHmac.length !== v1.length) return false
+
+    const isValid = timingSafeEqual(
+      Buffer.from(expectedHmac, 'hex'),
+      Buffer.from(v1, 'hex')
+    )
+
+    if (!isValid) {
+      logger.warn('HMAC mismatch — assinatura do webhook não confere')
+    }
+
+    return isValid
   } catch {
     return false
   }

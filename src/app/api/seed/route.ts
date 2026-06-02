@@ -4,7 +4,7 @@ import { hashPassword } from '@/lib/crypto'
 import { getErrorMessage } from '@/lib/api-response'
 import { rateLimit, getClientIP } from '@/lib/rate-limit'
 import { logger } from '@/lib/logger'
-import { getProductRealImages, PRODUCT_REAL_IMAGES } from '@/lib/product-real-images'
+import { productImageMap, storeImageMap as realStoreImageMap } from '@/lib/product-images'
 
 export async function POST(request: NextRequest) {
   if (process.env.NODE_ENV === 'production') {
@@ -179,26 +179,14 @@ async function seedDatabase() {
       counts.accounts++
     } catch { /* skip if exists */ }
 
-    // --- Image map for store categories ---
-    const storeImageMap: Record<string, string> = {
-      'mercado-do-ze': '/images/grocery.jpg',
-      'acai-da-boa': '/images/acai.jpg',
-      'agropecuaria-sp': '/images/agriculture.jpg',
-      'farmacia-vida': '/images/pharmacy.jpg',
-      'padaria-pao-quente': '/images/bakery.jpg',
-      'loja-eletronico': '/images/electronics.jpg',
-      'pet-shop-amigo-fiel': '/images/pets.jpg',
-      'salao-da-bella': '/images/beauty.jpg',
-    }
-
-    // --- Store covers from real images ---
-    const storeCovers = (PRODUCT_REAL_IMAGES['__store_covers'] || {}) as Record<string, string>
+    // --- Image maps from product-images.ts (real Unsplash URLs) ---
+    const storeImageMap = realStoreImageMap
 
     // --- Store 1: Mercado do Zé (FOOD) - 8 products ---
     const store1Data = {
       name: 'Mercado do Zé',
       slug: 'mercado-do-ze', category: 'FOOD' as const,
-      coverImage: storeCovers['mercado-do-ze'] || '/images/grocery.jpg', logo: storeCovers['mercado-do-ze'] || '/images/grocery.jpg',
+      coverImage: storeImageMap['mercado-do-ze'] || '', logo: storeImageMap['mercado-do-ze'] || '',
       description: 'O melhor mercado de Dom Eliseu com produtos frescos e preços justos. Arroz, feijão, óleo, farinha e muito mais.',
       address: 'Rua Principal, 123', neighborhood: 'Centro', phone: '(91) 99999-0001', whatsapp: '(91) 99999-0001',
       deliveryFee: 5.00, freeDeliveryAbove: 50, opensAt: '07:00', closesAt: '21:00',
@@ -249,7 +237,7 @@ async function seedDatabase() {
           isFeatured: pd.isFeatured, isNew: pd.isNew, isOffer: pd.isOffer,
           tags: pd.tags, variations: pd.variations || null,
           soldCount: Math.floor(Math.random() * 100),
-          images: JSON.stringify(getProductRealImages(pd.slug, storeImageMap['mercado-do-ze'] || '')),
+          images: JSON.stringify([productImageMap[pd.slug] || storeImageMap['mercado-do-ze'] || '']),
           status: 'ACTIVE',
         },
       })
@@ -260,7 +248,7 @@ async function seedDatabase() {
     const store2Data = {
       name: 'Açaí da Boa',
       slug: 'acai-da-boa', category: 'FOOD' as const,
-      coverImage: storeCovers['acai-da-boa'] || '/images/acai.jpg', logo: storeCovers['acai-da-boa'] || '/images/acai.jpg',
+      coverImage: storeImageMap['acai-da-boa'] || '', logo: storeImageMap['acai-da-boa'] || '',
       description: 'O mais autêntico açaí paraense, feito com frutas selecionadas. Tigelas, smoothies e muito mais.',
       address: 'Av. Brasil, 456', neighborhood: 'Centro', phone: '(91) 99999-0002', whatsapp: '(91) 99999-0002',
       deliveryFee: 3.00, freeDeliveryAbove: 30, opensAt: '08:00', closesAt: '22:00',
@@ -308,7 +296,7 @@ async function seedDatabase() {
           isFeatured: pd.isFeatured, isNew: pd.isNew, isOffer: pd.isOffer,
           tags: pd.tags, variations: pd.variations || null,
           soldCount: Math.floor(Math.random() * 150),
-          images: JSON.stringify(getProductRealImages(pd.slug, storeImageMap['acai-da-boa'] || '')),
+          images: JSON.stringify([productImageMap[pd.slug] || storeImageMap['acai-da-boa'] || '']),
           status: 'ACTIVE',
         },
       })
@@ -319,7 +307,7 @@ async function seedDatabase() {
     const store3Data = {
       name: 'Farmácia Vida',
       slug: 'farmacia-vida', category: 'HEALTH' as const,
-      coverImage: storeCovers['farmacia-vida'] || '/images/pharmacy.jpg', logo: storeCovers['farmacia-vida'] || '/images/pharmacy.jpg',
+      coverImage: storeImageMap['farmacia-vida'] || '', logo: storeImageMap['farmacia-vida'] || '',
       description: 'Sua saúde em primeiro lugar. Medicamentos, suplementos, vitaminas e atendimento farmacêutico.',
       address: 'Rua Pará, 789', neighborhood: 'Centro', phone: '(91) 99999-0004', whatsapp: '(91) 99999-0004',
       deliveryFee: 0, freeDeliveryAbove: null as number | null, opensAt: '07:00', closesAt: '22:00',
@@ -367,7 +355,7 @@ async function seedDatabase() {
           isFeatured: pd.isFeatured, isNew: pd.isNew, isOffer: pd.isOffer,
           tags: pd.tags, variations: pd.variations || null,
           soldCount: Math.floor(Math.random() * 80),
-          images: JSON.stringify(getProductRealImages(pd.slug, storeImageMap['farmacia-vida'] || '')),
+          images: JSON.stringify([productImageMap[pd.slug] || storeImageMap['farmacia-vida'] || '']),
           status: 'ACTIVE',
         },
       })
@@ -376,11 +364,11 @@ async function seedDatabase() {
 
     // --- Remaining stores (5 more) ---
     const storesData = [
-      { name: 'Agropecuária São Paulo', slug: 'agropecuaria-sp', category: 'AGRICULTURE' as const, description: 'Tudo para o campo e para a cidade. Ferramentas, sementes e muito mais.', address: 'Rod. PA-279, Km 5', neighborhood: 'Zona Rural', phone: '(91) 99999-0003', whatsapp: '(91) 99999-0003', deliveryFee: 8.00, freeDeliveryAbove: 200, opensAt: '06:00', closesAt: '18:00', weeklyScore: 75, rating: 4.5, totalReviews: 67, totalSales: 320 },
-      { name: 'Padaria Pão Quente', slug: 'padaria-pao-quente', category: 'FOOD' as const, description: 'Pão fresquinho todo dia! Doces, salgados e muito mais.', address: 'Rua Amazonas, 321', neighborhood: 'Centro', phone: '(91) 99999-0005', whatsapp: '(91) 99999-0005', deliveryFee: 3.00, freeDeliveryAbove: 25, opensAt: '05:00', closesAt: '20:00', weeklyScore: 95, rating: 4.8, totalReviews: 198, totalSales: 2100 },
-      { name: 'Loja do Eletrônico', slug: 'loja-eletronico', category: 'ELECTRONICS' as const, description: 'Celulares, acessórios e eletrônicos com as melhores ofertas.', address: 'Rua Tocantins, 654', neighborhood: 'Centro', phone: '(91) 99999-0006', whatsapp: '(91) 99999-0006', deliveryFee: 5.00, freeDeliveryAbove: 100, opensAt: '08:00', closesAt: '20:00', weeklyScore: 70, rating: 4.3, totalReviews: 45, totalSales: 180 },
-      { name: 'Pet Shop Amigo Fiel', slug: 'pet-shop-amigo-fiel', category: 'ANIMALS' as const, description: 'Tudo para seu melhor amigo. Rações, banho, tosa e acessórios.', address: 'Rua Maranhão, 987', neighborhood: 'Centro', phone: '(91) 99999-0007', whatsapp: '(91) 99999-0007', deliveryFee: 4.00, freeDeliveryAbove: 80, opensAt: '08:00', closesAt: '19:00', weeklyScore: 82, rating: 4.7, totalReviews: 112, totalSales: 490 },
-      { name: 'Salão da Bella', slug: 'salao-da-bella', category: 'BEAUTY' as const, description: 'Beleza e bem-estar. Cortes, coloração e tratamentos capilares.', address: 'Rua Ceará, 147', neighborhood: 'Centro', phone: '(91) 99999-0008', whatsapp: '(91) 99999-0008', deliveryFee: 0, freeDeliveryAbove: null as number | null, opensAt: '09:00', closesAt: '20:00', weeklyScore: 90, rating: 4.9, totalReviews: 210, totalSales: 1500 },
+      { name: 'Agropecuária São Paulo', slug: 'agropecuaria-sp', category: 'AGRICULTURE' as const, coverImage: storeImageMap['agropecuaria-sp'] || '', logo: storeImageMap['agropecuaria-sp'] || '', description: 'Tudo para o campo e para a cidade. Ferramentas, sementes e muito mais.', address: 'Rod. PA-279, Km 5', neighborhood: 'Zona Rural', phone: '(91) 99999-0003', whatsapp: '(91) 99999-0003', deliveryFee: 8.00, freeDeliveryAbove: 200, opensAt: '06:00', closesAt: '18:00', weeklyScore: 75, rating: 4.5, totalReviews: 67, totalSales: 320 },
+      { name: 'Padaria Pão Quente', slug: 'padaria-pao-quente', category: 'FOOD' as const, coverImage: storeImageMap['padaria-pao-quente'] || '', logo: storeImageMap['padaria-pao-quente'] || '', description: 'Pão fresquinho todo dia! Doces, salgados e muito mais.', address: 'Rua Amazonas, 321', neighborhood: 'Centro', phone: '(91) 99999-0005', whatsapp: '(91) 99999-0005', deliveryFee: 3.00, freeDeliveryAbove: 25, opensAt: '05:00', closesAt: '20:00', weeklyScore: 95, rating: 4.8, totalReviews: 198, totalSales: 2100 },
+      { name: 'Loja do Eletrônico', slug: 'loja-eletronico', category: 'ELECTRONICS' as const, coverImage: storeImageMap['loja-eletronico'] || '', logo: storeImageMap['loja-eletronico'] || '', description: 'Celulares, acessórios e eletrônicos com as melhores ofertas.', address: 'Rua Tocantins, 654', neighborhood: 'Centro', phone: '(91) 99999-0006', whatsapp: '(91) 99999-0006', deliveryFee: 5.00, freeDeliveryAbove: 100, opensAt: '08:00', closesAt: '20:00', weeklyScore: 70, rating: 4.3, totalReviews: 45, totalSales: 180 },
+      { name: 'Pet Shop Amigo Fiel', slug: 'pet-shop-amigo-fiel', category: 'ANIMALS' as const, coverImage: storeImageMap['pet-shop-amigo-fiel'] || '', logo: storeImageMap['pet-shop-amigo-fiel'] || '', description: 'Tudo para seu melhor amigo. Rações, banho, tosa e acessórios.', address: 'Rua Maranhão, 987', neighborhood: 'Centro', phone: '(91) 99999-0007', whatsapp: '(91) 99999-0007', deliveryFee: 4.00, freeDeliveryAbove: 80, opensAt: '08:00', closesAt: '19:00', weeklyScore: 82, rating: 4.7, totalReviews: 112, totalSales: 490 },
+      { name: 'Salão da Bella', slug: 'salao-da-bella', category: 'BEAUTY' as const, coverImage: storeImageMap['salao-da-bella'] || '', logo: storeImageMap['salao-da-bella'] || '', description: 'Beleza e bem-estar. Cortes, coloração e tratamentos capilares.', address: 'Rua Ceará, 147', neighborhood: 'Centro', phone: '(91) 99999-0008', whatsapp: '(91) 99999-0008', deliveryFee: 0, freeDeliveryAbove: null as number | null, opensAt: '09:00', closesAt: '20:00', weeklyScore: 90, rating: 4.9, totalReviews: 210, totalSales: 1500 },
     ]
 
     const allProductsData: Array<{ storeId: string; name: string; slug: string; description: string; price: number; comparePrice: number | null; stock: number; rating: number; totalReviews: number; isFeatured: boolean; isNew: boolean; isOffer: boolean; tags: string; variations: string | null }> = [
@@ -431,8 +419,6 @@ async function seedDatabase() {
           data: {
             accountId: account.id,
             ...sd,
-            coverImage: storeCovers[sd.slug] || storeImageMap[sd.slug] || '',
-            logo: storeCovers[sd.slug] || storeImageMap[sd.slug] || '',
             status: 'ACTIVE',
             city: 'Dom Eliseu',
             state: 'PA',
@@ -470,13 +456,6 @@ async function seedDatabase() {
       if (!pd.storeId) continue
 
       try {
-        // Resolve store image from storeId
-        const storeImage = storeImageMap[Object.keys(storeImageMap).find(k => {
-          const store = stores.find(s => s.id === pd.storeId)
-          if (!store) return false
-          return k.includes(store.slug?.split('-').slice(0, 2).join('-') || '')
-        }) || ''] || ''
-
         await db.product.create({
           data: {
             storeId: pd.storeId,
@@ -486,7 +465,7 @@ async function seedDatabase() {
             isFeatured: pd.isFeatured, isNew: pd.isNew, isOffer: pd.isOffer,
             tags: pd.tags, variations: pd.variations || null,
             soldCount: Math.floor(Math.random() * 100),
-            images: JSON.stringify(getProductRealImages(pd.slug, storeImage || '')),
+            images: JSON.stringify([productImageMap[pd.slug] || '']),
             status: 'ACTIVE',
           },
         })
@@ -496,14 +475,14 @@ async function seedDatabase() {
 
     // --- Banners ---
     const bannersData = [
-      { storeId: stores[1]?.id, title: 'Ofertas da Semana', subtitle: 'Até 40% de desconto em produtos locais', level: 'DAILY_OFFERS' as const, order: 0, image: '/images/acai.jpg' },
-      { storeId: stores[4]?.id, title: 'Entrega Grátis Pão Quente', subtitle: 'Compras acima de R$ 25 na padaria', level: 'DAILY_OFFERS' as const, order: 1, image: '/images/bakery.jpg' },
-      { storeId: stores[3]?.id, title: 'Novidades Agropecuária', subtitle: 'Novas sementes e ferramentas chegaram!', level: 'NEW_IN_CITY' as const, order: 0, image: '/images/agriculture.jpg' },
-      { storeId: stores[7]?.id, title: 'Salão da Bella - Novos Serviços', subtitle: 'Escova progressiva e botox capilar', level: 'NEW_IN_CITY' as const, order: 1, image: '/images/beauty.jpg' },
-      { storeId: stores[0]?.id, title: 'Feira do Produtor', subtitle: 'Toda sexta-feira com produtos fresquinhos!', level: 'LOCAL_PARTNERSHIPS' as const, order: 0, image: '/images/grocery.jpg' },
-      { storeId: stores[6]?.id, title: 'Dia do Pet', subtitle: '20% de desconto em rações todo sábado', level: 'SEASONAL' as const, order: 0, image: '/images/pets.jpg' },
-      { storeId: stores[2]?.id, title: 'Farmácia Vida - Saúde em primeiro lugar', subtitle: 'Entrega grátis em todos os medicamentos', level: 'FEATURED' as const, order: 0, image: '/images/pharmacy.jpg' },
-      { storeId: stores[5]?.id, title: 'Loja do Eletrônico - Ofertas Imperdíveis', subtitle: 'Fones e acessórios com até 50% OFF', level: 'FEATURED' as const, order: 1, image: '/images/electronics.jpg' },
+      { storeId: stores[1]?.id, title: 'Ofertas da Semana', subtitle: 'Até 40% de desconto em produtos locais', level: 'DAILY_OFFERS' as const, order: 0, image: storeImageMap['acai-da-boa'] || '' },
+      { storeId: stores[4]?.id, title: 'Entrega Grátis Pão Quente', subtitle: 'Compras acima de R$ 25 na padaria', level: 'DAILY_OFFERS' as const, order: 1, image: storeImageMap['padaria-pao-quente'] || '' },
+      { storeId: stores[3]?.id, title: 'Novidades Agropecuária', subtitle: 'Novas sementes e ferramentas chegaram!', level: 'NEW_IN_CITY' as const, order: 0, image: storeImageMap['agropecuaria-sp'] || '' },
+      { storeId: stores[7]?.id, title: 'Salão da Bella - Novos Serviços', subtitle: 'Escova progressiva e botox capilar', level: 'NEW_IN_CITY' as const, order: 1, image: storeImageMap['salao-da-bella'] || '' },
+      { storeId: stores[0]?.id, title: 'Feira do Produtor', subtitle: 'Toda sexta-feira com produtos fresquinhos!', level: 'LOCAL_PARTNERSHIPS' as const, order: 0, image: storeImageMap['mercado-do-ze'] || '' },
+      { storeId: stores[6]?.id, title: 'Dia do Pet', subtitle: '20% de desconto em rações todo sábado', level: 'SEASONAL' as const, order: 0, image: storeImageMap['pet-shop-amigo-fiel'] || '' },
+      { storeId: stores[2]?.id, title: 'Farmácia Vida - Saúde em primeiro lugar', subtitle: 'Entrega grátis em todos os medicamentos', level: 'FEATURED' as const, order: 0, image: storeImageMap['farmacia-vida'] || '' },
+      { storeId: stores[5]?.id, title: 'Loja do Eletrônico - Ofertas Imperdíveis', subtitle: 'Fones e acessórios com até 50% OFF', level: 'FEATURED' as const, order: 1, image: storeImageMap['loja-eletronico'] || '' },
     ]
 
     for (const bd of bannersData) {

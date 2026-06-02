@@ -1,19 +1,38 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import {
   Star, MessageSquare, Reply, Filter, ThumbsUp, ThumbsDown, Minus,
-  CheckCircle2, XCircle, AlertCircle, User, Clock, Send, ShieldCheck,
+  CheckCircle2, AlertCircle, Clock, Send, ShieldCheck, Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
+
+// -- Types --
+interface ApiReview {
+  id: string
+  accountId: string
+  rating: number
+  comment: string
+  images?: string[]
+  reply?: string | null
+  replyDate?: string | null
+  isVerified: boolean
+  createdAt: string
+}
+
+interface ApiReviewsResponse {
+  reviews: ApiReview[]
+  averageRating: number
+  ratingDistribution: { rating: number; count: number }[]
+}
 
 interface ReviewData {
   id: string
@@ -22,28 +41,43 @@ interface ReviewData {
   rating: number
   comment: string
   date: string
-  productName: string
   isVerified: boolean
-  reply?: string
-  replyDate?: string
+  reply?: string | null
+  replyDate?: string | null
   sentiment: 'positive' | 'neutral' | 'negative'
 }
 
-const mockReviews: ReviewData[] = [
-  { id: 'r1', customerName: 'Maria Silva', customerInitials: 'MS', rating: 5, comment: 'Melhor açaí da cidade! Sempre fresquinho e com acompanhamentos deliciosos. Recomendo demais!', date: '2 horas atrás', productName: 'Açaí 500ml', isVerified: true, reply: 'Obrigado Maria! Ficamos felizes com seu feedback! 🥰', replyDate: '1 hora atrás', sentiment: 'positive' },
-  { id: 'r2', customerName: 'João Santos', customerInitials: 'JS', rating: 4, comment: 'Muito bom, mas a entrega demorou um pouco mais do que o esperado. Produto de qualidade.', date: '5 horas atrás', productName: 'Açaí Premium 700ml', isVerified: true, sentiment: 'positive' },
-  { id: 'r3', customerName: 'Ana Oliveira', customerInitials: 'AO', rating: 5, comment: 'Amei! O combo família é perfeito para reuniões. Já é a terceira vez que peço.', date: '1 dia atrás', productName: 'Combo Família 1L', isVerified: true, sentiment: 'positive' },
-  { id: 'r4', customerName: 'Pedro Costa', customerInitials: 'PC', rating: 3, comment: 'Produto ok, mas achei a porção pequena para o preço. O sabor é bom.', date: '2 dias atrás', productName: 'Smoothie de Açaí', isVerified: false, sentiment: 'neutral' },
-  { id: 'r5', customerName: 'Carla Mendes', customerInitials: 'CM', rating: 5, comment: 'Incrível! Chegou super rápido e estava perfeito. A granola artesanal faz toda a diferença!', date: '2 dias atrás', productName: 'Açaí 500ml', isVerified: true, reply: 'Que ótimo saber, Carla! A granola é nossa especial! 🌟', replyDate: '2 dias atrás', sentiment: 'positive' },
-  { id: 'r6', customerName: 'Lucas Ferreira', customerInitials: 'LF', rating: 2, comment: 'Pedi o açaí com granola e veio sem granola. Precisa melhorar o atendimento.', date: '3 dias atrás', productName: 'Açaí com Granola 300ml', isVerified: true, sentiment: 'negative' },
-  { id: 'r7', customerName: 'Beatriz Souza', customerInitials: 'BS', rating: 4, comment: 'Muito saboroso! Só acho que poderia ter mais opções de acompanhamentos.', date: '4 dias atrás', productName: 'Tigela Especial', isVerified: false, sentiment: 'positive' },
-  { id: 'r8', customerName: 'Ricardo Lima', customerInitials: 'RL', rating: 1, comment: 'Entrega atrasou mais de 1 hora e o produto veio completamente derretido. Péssimo!', date: '5 dias atrás', productName: 'Açaí 500ml', isVerified: true, reply: 'Sentimos muito pelo transtorno, Ricardo. Já acionamos nossa equipe de entregas para resolver isso. Gostaríamos de reembolsar seu pedido. Entre em contato conosco!', replyDate: '5 dias atrás', sentiment: 'negative' },
-]
+interface ReviewsManagementProps {
+  storeId: string | null
+}
 
 const sentimentConfig = {
   positive: { label: 'Positivo', color: 'text-emerald-700 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-900/30', icon: ThumbsUp, borderColor: 'border-emerald-200 dark:border-emerald-800/30' },
   neutral: { label: 'Neutro', color: 'text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/30', icon: Minus, borderColor: 'border-amber-200 dark:border-amber-800/30' },
   negative: { label: 'Negativo', color: 'text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/30', icon: ThumbsDown, borderColor: 'border-red-200 dark:border-red-800/30' },
+}
+
+function getSentiment(rating: number): 'positive' | 'neutral' | 'negative' {
+  if (rating >= 4) return 'positive'
+  if (rating === 3) return 'neutral'
+  return 'negative'
+}
+
+function getInitials(id: string): string {
+  const hash = id.slice(-6).toUpperCase()
+  return hash.slice(0, 2)
+}
+
+function formatTimeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return 'Agora'
+  if (mins < 60) return `${mins} min atrás`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours}h atrás`
+  const days = Math.floor(hours / 24)
+  if (days === 1) return 'Ontem'
+  return `${days} dias atrás`
 }
 
 const containerVariants = {
@@ -56,31 +90,105 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } },
 }
 
-export function ReviewsManagement() {
-  const [reviews] = useState<ReviewData[]>(mockReviews)
+// -- Loading skeleton --
+function ReviewsLoadingSkeleton() {
+  return (
+    <div className="space-y-4">
+      <Card className="border-border/50 overflow-hidden">
+        <CardContent className="p-4 space-y-3">
+          <Skeleton className="h-5 w-48" />
+          <div className="flex gap-4">
+            <Skeleton className="h-16 w-16 rounded" />
+            <div className="flex-1 space-y-2">
+              {[1,2,3,4,5].map(i => <Skeleton key={i} className="h-2 w-full" />)}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      {[1,2,3].map(i => (
+        <Skeleton key={i} className="h-40 w-full rounded-xl" />
+      ))}
+    </div>
+  )
+}
+
+export function ReviewsManagement({ storeId }: ReviewsManagementProps) {
+  const [reviews, setReviews] = useState<ReviewData[]>([])
+  const [averageRating, setAverageRating] = useState<number>(0)
+  const [ratingDistribution, setRatingDistribution] = useState<{ star: number; count: number; percent: number }[]>([])
+  const [loading, setLoading] = useState(true)
+  const [replying, setReplying] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState<string>('all')
   const [replyDialogOpen, setReplyDialogOpen] = useState(false)
   const [replyingTo, setReplyingTo] = useState<ReviewData | null>(null)
   const [replyText, setReplyText] = useState('')
 
+  // Fetch reviews from API
+  const fetchReviews = useCallback(async () => {
+    if (!storeId) {
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/reviews?storeId=${storeId}`)
+      if (!res.ok) {
+        throw new Error('Erro ao carregar avaliações')
+      }
+      const data: ApiReviewsResponse = await res.json()
+
+      // Map API reviews to ReviewData
+      const mappedReviews: ReviewData[] = (data.reviews || []).map((r: ApiReview) => ({
+        id: r.id,
+        customerName: `Cliente #${r.id.slice(-6).toUpperCase()}`,
+        customerInitials: getInitials(r.id),
+        rating: r.rating,
+        comment: r.comment,
+        date: formatTimeAgo(r.createdAt),
+        isVerified: r.isVerified,
+        reply: r.reply || null,
+        replyDate: r.replyDate ? formatTimeAgo(r.replyDate) : null,
+        sentiment: getSentiment(r.rating),
+      }))
+
+      setReviews(mappedReviews)
+      setAverageRating(data.averageRating || 0)
+
+      const total = mappedReviews.length
+      const dist = [5, 4, 3, 2, 1].map(star => {
+        const apiDist = (data.ratingDistribution || []).find(d => d.rating === star)
+        const count = apiDist?.count || mappedReviews.filter(r => r.rating === star).length
+        return {
+          star,
+          count,
+          percent: total > 0 ? Math.round((count / total) * 100) : 0,
+        }
+      })
+      setRatingDistribution(dist)
+    } catch {
+      toast.error('Erro ao carregar avaliações')
+      setReviews([])
+    } finally {
+      setLoading(false)
+    }
+  }, [storeId])
+
+  useEffect(() => {
+    fetchReviews()
+  }, [fetchReviews])
+
   // Stats
   const stats = useMemo(() => {
     const total = reviews.length
-    const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / total
-    const ratingDistribution = [5, 4, 3, 2, 1].map(star => ({
-      star,
-      count: reviews.filter(r => r.rating === star).length,
-      percent: Math.round((reviews.filter(r => r.rating === star).length / total) * 100),
-    }))
     const sentimentCounts = {
       positive: reviews.filter(r => r.sentiment === 'positive').length,
       neutral: reviews.filter(r => r.sentiment === 'neutral').length,
       negative: reviews.filter(r => r.sentiment === 'negative').length,
     }
     const totalReplied = reviews.filter(r => r.reply).length
-    const replyRate = Math.round((totalReplied / total) * 100)
-    return { total, avgRating, ratingDistribution, sentimentCounts, totalReplied, replyRate }
-  }, [reviews])
+    const replyRate = total > 0 ? Math.round((totalReplied / total) * 100) : 0
+    return { total, avgRating: averageRating, ratingDistribution, sentimentCounts, totalReplied, replyRate }
+  }, [reviews, averageRating, ratingDistribution])
 
   // Filtered reviews
   const filteredReviews = useMemo(() => {
@@ -90,21 +198,57 @@ export function ReviewsManagement() {
     return reviews.filter(r => r.rating === parseInt(selectedFilter))
   }, [reviews, selectedFilter])
 
-  const handleReply = () => {
-    if (!replyText.trim()) {
+  // Handle reply submission
+  const handleReply = async () => {
+    if (!replyText.trim() || !replyingTo || !storeId) {
       toast.error('Digite uma resposta antes de enviar')
       return
     }
-    toast.success('Resposta enviada com sucesso!')
-    setReplyDialogOpen(false)
-    setReplyText('')
-    setReplyingTo(null)
+    setReplying(true)
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          storeId,
+          reviewId: replyingTo.id,
+          reply: replyText.trim(),
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Erro ao enviar resposta')
+      }
+      toast.success('Resposta enviada com sucesso!')
+      setReplyDialogOpen(false)
+      setReplyText('')
+      setReplyingTo(null)
+      // Refresh reviews
+      fetchReviews()
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao enviar resposta')
+    } finally {
+      setReplying(false)
+    }
   }
 
   const openReplyDialog = (review: ReviewData) => {
     setReplyingTo(review)
     setReplyText('')
     setReplyDialogOpen(true)
+  }
+
+  if (loading) {
+    return <ReviewsLoadingSkeleton />
+  }
+
+  if (!storeId) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        <MessageSquare className="h-10 w-10 mx-auto mb-2 opacity-30" />
+        <p className="text-sm">Nenhuma loja encontrada</p>
+      </div>
+    )
   }
 
   return (
@@ -322,12 +466,6 @@ export function ReviewsManagement() {
                         </Badge>
                       </div>
 
-                      {/* Product */}
-                      <p className="text-[10px] text-muted-foreground mt-2 flex items-center gap-1">
-                        <span className="font-medium">Produto:</span>
-                        {review.productName}
-                      </p>
-
                       {/* Comment */}
                       <p className="text-sm mt-2 leading-relaxed">{review.comment}</p>
 
@@ -423,8 +561,12 @@ export function ReviewsManagement() {
             <Button variant="outline" onClick={() => setReplyDialogOpen(false)} className="h-9 text-xs">
               Cancelar
             </Button>
-            <Button onClick={handleReply} className="h-9 text-xs gap-1 bg-primary text-primary-foreground">
-              <Send className="h-3 w-3" />
+            <Button onClick={handleReply} disabled={replying} className="h-9 text-xs gap-1 bg-primary text-primary-foreground">
+              {replying ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <Send className="h-3 w-3" />
+              )}
               Enviar Resposta
             </Button>
           </DialogFooter>

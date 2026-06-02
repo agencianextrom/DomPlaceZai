@@ -36,19 +36,27 @@ export async function GET(request: NextRequest) {
 
     // Use web search SDK
     const zai = await ZAI.create()
-    const searchResults = await zai.web.search({
+    const searchResults = await zai.functions.invoke('web_search', {
       query: 'Dom Eliseu Pará notícias',
-      count: 10,
-    })
+      num: 10,
+    }) as Array<{
+      url: string
+      name: string
+      snippet: string
+      host_name: string
+      rank: number
+      date: string
+      favicon: string
+    }>
 
     // Transform search results into news items
-    const news: NewsItem[] = (searchResults?.results || []).map((result: any, index: number) => ({
+    const news: NewsItem[] = (searchResults || []).map((result, index: number) => ({
       id: `news-${Date.now()}-${index}`,
-      title: result.title || 'Notícia de Dom Eliseu',
-      snippet: result.snippet || result.description || '',
-      source: result.source || result.domain || 'Fonte local',
-      date: result.date || result.publishedDate || new Date().toLocaleDateString('pt-BR'),
-      url: result.url || result.link || '#',
+      title: result.name || 'Notícia de Dom Eliseu',
+      snippet: result.snippet || '',
+      source: result.host_name || 'Fonte local',
+      date: result.date || new Date().toLocaleDateString('pt-BR'),
+      url: result.url || '#',
     })).filter((item: NewsItem) =>
       item.title && item.snippet && item.snippet.length > 20
     )

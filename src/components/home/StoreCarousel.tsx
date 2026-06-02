@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, Clock, Star, MapPin, Trophy, ShoppingBag, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -114,10 +114,10 @@ export function StoreCarousel({ title, stores, isLoading }: StoreCarouselProps) 
     const openMins = h * 60 + m
     const closeMins = eh * 60 + em
     if (openMins <= closeMins) {
-      return currentMins >= openMins && currentMins <= closeMins
+      return currentMins >= openMins && currentMins < closeMins
     }
     // Handles overnight hours (e.g., bar open till 2am)
-    return currentMins >= openMins || currentMins <= closeMins
+    return currentMins >= openMins || currentMins < closeMins
   }
 
   const getRank = (storeId: string) => {
@@ -230,12 +230,14 @@ interface StoreCardProps {
 
 function StoreCard({ store, index, gradient, logoColor, deliveryTime, rank, open, onClick, isDesktop }: StoreCardProps) {
   const initials = store.name.substring(0, 2).toUpperCase()
+  const [logoError, setLogoError] = useState(false)
+  const hasLogo = store.logo && !logoError
 
   // On mobile, use motion.button; on desktop, just a button (parent handles animation)
   const inner = (
     <div
       onClick={onClick}
-      className={`h-full bg-card rounded-xl border border-border overflow-hidden text-left hover:shadow-lg transition-all duration-300 group hover:-translate-y-0.5 ${isDesktop ? '' : 'shrink-0 w-[260px] sm:w-[280px]'} cursor-pointer`}
+      className={`h-full bg-card rounded-xl border border-border overflow-hidden text-left hover:shadow-lg hover:border-primary/30 transition-all duration-300 group hover:-translate-y-1 ${isDesktop ? '' : 'shrink-0 w-[260px] sm:w-[280px]'} cursor-pointer`}
     >
       {/* Gradient header with pattern overlay */}
       <div className={`h-24 bg-gradient-to-br ${gradient} relative overflow-hidden`}>
@@ -257,6 +259,11 @@ function StoreCard({ store, index, gradient, logoColor, deliveryTime, rank, open
             Entrega R${store.deliveryFee.toFixed(2)}
           </Badge>
         )}
+        {store.deliveryFee === 0 && (
+          <Badge className="absolute top-2 right-2 bg-emerald-500 text-white border-0 text-[10px]">
+            Frete Grátis
+          </Badge>
+        )}
 
         {/* Decorative circles */}
         <div className="absolute -right-4 -bottom-4 w-20 h-20 rounded-full bg-white/10" />
@@ -264,8 +271,18 @@ function StoreCard({ store, index, gradient, logoColor, deliveryTime, rank, open
       </div>
 
       <div className="p-3 flex gap-3">
-        <div className={`w-10 h-10 rounded-full ${logoColor} flex items-center justify-center text-sm font-bold shrink-0 shadow-sm ring-2 ring-white dark:ring-card`}>
-          {initials}
+        {/* Store logo: show real image when available, fallback to initials */}
+        <div className={`w-10 h-10 rounded-full ${hasLogo ? 'ring-2 ring-white dark:ring-card overflow-hidden bg-white' : `${logoColor} flex items-center justify-center text-sm font-bold`} shrink-0 shadow-sm ring-2 ring-white dark:ring-card`}>
+          {hasLogo ? (
+            <img
+              src={store.logo || ''}
+              alt={store.name}
+              className="w-full h-full object-cover"
+              onError={() => setLogoError(true)}
+            />
+          ) : (
+            initials
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{store.name}</h3>
@@ -276,18 +293,19 @@ function StoreCard({ store, index, gradient, logoColor, deliveryTime, rank, open
             <span className="flex items-center gap-0.5">
               <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
               {store.rating.toFixed(1)}
+              <span className="text-[10px]">({store.totalReviews})</span>
             </span>
             <span className={`flex items-center gap-0.5 ${open ? 'text-emerald-600' : 'text-red-500'}`}>
-              <Clock className="h-3 w-3" />
+              <span className={`h-1.5 w-1.5 rounded-full ${open ? 'bg-emerald-500 animate-pulse-soft' : 'bg-red-400'}`} />
               {open ? 'Aberto' : 'Fechado'}
             </span>
-            <span className="flex items-center gap-0.5">
-              <Clock className="h-3 w-3" />
-              {deliveryTime}
-            </span>
+          </div>
+          <div className="flex items-center gap-0.5 mt-0.5 text-[11px] text-muted-foreground">
+            <Clock className="h-3 w-3" />
+            {deliveryTime}
           </div>
           {store.address && (
-            <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-0.5 truncate">
+            <p className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-0.5 truncate">
               <MapPin className="h-2.5 w-2.5 shrink-0" />
               {store.address}
             </p>

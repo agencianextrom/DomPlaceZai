@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 
@@ -20,53 +21,6 @@ interface PromoCode {
   isActive: boolean
   color: string
 }
-
-const availablePromos: PromoCode[] = [
-  {
-    code: 'ACAI10',
-    description: '10% de desconto em pedidos de açaí',
-    discountLabel: '10% OFF',
-    discountValue: '10%',
-    validUntil: '30/06/2025',
-    minOrder: 'R$ 30,00',
-    type: 'percentage',
-    isActive: true,
-    color: 'from-emerald-500 to-teal-600',
-  },
-  {
-    code: 'FRETE5',
-    description: 'R$5 de desconto no frete',
-    discountLabel: 'R$5 OFF',
-    discountValue: 'R$ 5,00',
-    validUntil: '15/07/2025',
-    minOrder: null,
-    type: 'fixed',
-    isActive: true,
-    color: 'from-amber-500 to-orange-600',
-  },
-  {
-    code: 'GRATIS',
-    description: 'Frete grátis em compras acima de R$40',
-    discountLabel: 'Frete Grátis',
-    discountValue: '100%',
-    validUntil: '31/07/2025',
-    minOrder: 'R$ 40,00',
-    type: 'free_delivery',
-    isActive: true,
-    color: 'from-primary to-emerald-600',
-  },
-  {
-    code: 'DESCONTO20',
-    description: '20% de desconto na primeira compra',
-    discountLabel: '20% OFF',
-    discountValue: '20%',
-    validUntil: '31/12/2025',
-    minOrder: 'R$ 50,00',
-    type: 'percentage',
-    isActive: true,
-    color: 'from-rose-500 to-pink-600',
-  },
-]
 
 interface AppliedPromo {
   code: string
@@ -83,27 +37,29 @@ export function PromoCodeWidget() {
   const [error, setError] = useState<string | null>(null)
   const [successAnimation, setSuccessAnimation] = useState(false)
   const [apiPromotions, setApiPromotions] = useState<PromoCode[]>([])
+  const [isLoadingPromos, setIsLoadingPromos] = useState(true)
 
   const hasAppliedPromos = appliedPromos.length > 0
 
   // Fetch promotions from API on mount
   useEffect(() => {
     const fetchPromotions = async () => {
+      setIsLoadingPromos(true)
       try {
         const res = await fetch('/api/promotions')
         const data = await res.json()
-        if (data.promotions && data.promotions.length > 0) {
-          const mapped: PromoCode[] = data.promotions.map((p: any) => ({
-            code: p.code || '',
-            description: p.description || p.title || '',
+        if (res.ok && data.promotions && data.promotions.length > 0) {
+          const mapped: PromoCode[] = data.promotions.map((p: Record<string, unknown>) => ({
+            code: (p.code as string) || '',
+            description: (p.description as string) || (p.title as string) || '',
             discountLabel: p.type === 'PERCENTAGE' ? `${p.value}% OFF` : 
                            p.type === 'FIXED_AMOUNT' ? `R$${p.value} OFF` : 'Frete Grátis',
             discountValue: p.type === 'PERCENTAGE' ? `${p.value}%` : `R$ ${p.value}`,
-            validUntil: p.endsAt ? new Date(p.endsAt).toLocaleDateString('pt-BR') : '',
-            minOrder: p.minOrderValue ? `R$ ${p.minOrderValue.toFixed(2).replace('.', ',')}` : null,
-            type: p.type === 'PERCENTAGE' ? 'percentage' : 
-                  p.type === 'FIXED_AMOUNT' ? 'fixed' : 'free_delivery',
-            isActive: p.isActive,
+            validUntil: p.endsAt ? new Date(p.endsAt as string).toLocaleDateString('pt-BR') : '',
+            minOrder: p.minOrderValue ? `R$ ${(p.minOrderValue as number).toFixed(2).replace('.', ',')}` : null,
+            type: p.type === 'PERCENTAGE' ? 'percentage' as const : 
+                  p.type === 'FIXED_AMOUNT' ? 'fixed' as const : 'free_delivery' as const,
+            isActive: p.isActive as boolean,
             color: p.type === 'PERCENTAGE' ? 'from-emerald-500 to-teal-600' :
                     p.type === 'FIXED_AMOUNT' ? 'from-amber-500 to-orange-600' :
                     'from-primary to-emerald-600',
@@ -111,17 +67,16 @@ export function PromoCodeWidget() {
           setApiPromotions(mapped)
         }
       } catch {
-        // Silently fail, use hardcoded promos
+        // Silently fail — no fallback to hardcoded codes
+      } finally {
+        setIsLoadingPromos(false)
       }
     }
     fetchPromotions()
   }, [])
 
-  const activePromos = apiPromotions.length > 0 ? apiPromotions : availablePromos
-
-  const validCodesList = apiPromotions.length > 0 
-    ? apiPromotions.map(p => p.code) 
-    : ['ACAI10', 'FRETE5', 'GRATIS', 'DESCONTO20']
+  // Only use API promotions — no hardcoded fallback
+  const availablePromos = apiPromotions.filter(p => !appliedPromos.some(ap => ap.code === p.code))
 
   const handleApplyCode = () => {
     const code = promoInput.trim().toUpperCase()
@@ -139,8 +94,8 @@ export function PromoCodeWidget() {
 
     setApplyingCode(code)
 
-    // Try API validation first
-    fetch(`/api/promotions?code=${code}`)
+    // Validate via API
+    fetch(`/api/promotions?code=${encodeURIComponent(code)}`)
       .then(res => res.json())
       .then(data => {
         if (data.valid) {
@@ -162,30 +117,15 @@ export function PromoCodeWidget() {
           toast.success(`Cupom ${code} aplicado com sucesso! 🎉`)
           setPromoInput('')
         } else {
-          setError('Código inválido ou expirado')
-          toast.error('Código inválido')
+          const errorMsg = data.error || 'Código inválido ou expirado'
+          setError(errorMsg)
+          toast.error(errorMsg)
         }
         setApplyingCode(null)
       })
       .catch(() => {
-        // Fallback to hardcoded validation
-        const promo = activePromos.find(p => p.code === code)
-        if (promo && validCodesList.includes(code)) {
-          setAppliedPromos(prev => [...prev, {
-            code: promo.code,
-            discountLabel: promo.discountLabel,
-            discountValue: promo.discountValue,
-            color: promo.color,
-            type: promo.type,
-          }])
-          setSuccessAnimation(true)
-          setTimeout(() => setSuccessAnimation(false), 1500)
-          toast.success(`Cupom ${code} aplicado com sucesso! 🎉`)
-          setPromoInput('')
-        } else {
-          setError('Código inválido. Verifique e tente novamente.')
-          toast.error('Código inválido')
-        }
+        setError('Erro de conexão. Tente novamente.')
+        toast.error('Erro de conexão. Tente novamente.')
         setApplyingCode(null)
       })
   }
@@ -333,7 +273,7 @@ export function PromoCodeWidget() {
                           <p className="font-bold text-sm">{promo.code}</p>
                           <p className="text-[10px] text-white/80">
                             {promo.type === 'percentage' && `Desconto de ${promo.discountValue} no pedido`}
-                            {promo.type === 'fixed' && `Desconto de ${promo.discountValue} no frete`}
+                            {promo.type === 'fixed' && `Desconto de ${promo.discountValue} no pedido`}
                             {promo.type === 'free_delivery' && 'Frete grátis neste pedido'}
                           </p>
                         </div>
@@ -355,84 +295,120 @@ export function PromoCodeWidget() {
         )}
       </AnimatePresence>
 
-      {/* Available promos section */}
-      <div className="mt-1">
-        <div className="flex items-center justify-between px-1 mb-2.5">
-          <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-            Cupons disponíveis
-          </p>
-        </div>
+      {/* Available promos section — only from API */}
+      {apiPromotions.length > 0 && (
+        <div className="mt-1">
+          <div className="flex items-center justify-between px-1 mb-2.5">
+            <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+              Cupons disponíveis
+            </p>
+          </div>
 
-        <div className="space-y-2">
-          {activePromos.filter(p => !appliedPromos.some(ap => ap.code === p.code)).map((promo) => (
-            <motion.div
-              key={promo.code}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
-              <Card className="border-border/50 hover:shadow-sm transition-shadow overflow-hidden cursor-pointer group"
-                onClick={() => {
-                  setPromoInput(promo.code)
-                  setError(null)
-                }}
-              >
-                <CardContent className="p-3">
-                  <div className="flex items-center gap-3">
-                    {/* Icon */}
-                    <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${promo.color} flex items-center justify-center shrink-0 shadow-sm`}>
-                      {promo.type === 'percentage' ? (
-                        <Percent className="h-5 w-5 text-white" />
-                      ) : promo.type === 'fixed' ? (
-                        <Tag className="h-5 w-5 text-white" />
-                      ) : (
-                        <Truck className="h-5 w-5 text-white" />
-                      )}
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-xs">{promo.code}</p>
-                        <Badge className="text-[8px] px-1 py-0 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0 font-bold">
-                          {promo.discountLabel}
-                        </Badge>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{promo.description}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
-                          <Clock className="h-2.5 w-2.5" />
-                          Até {promo.validUntil}
-                        </span>
-                        {promo.minOrder && (
-                          <span className="text-[9px] text-muted-foreground">
-                            Mín. {promo.minOrder}
-                          </span>
-                        )}
+          {isLoadingPromos ? (
+            <div className="space-y-2">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Card key={i} className="overflow-hidden">
+                  <CardContent className="p-3">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="h-10 w-10 rounded-xl" />
+                      <div className="flex-1 space-y-1.5">
+                        <Skeleton className="h-3 w-24" />
+                        <Skeleton className="h-2.5 w-full" />
+                        <Skeleton className="h-2 w-16" />
                       </div>
                     </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {availablePromos.map((promo) => (
+                <motion.div
+                  key={promo.code}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <Card className="border-border/50 hover:shadow-sm transition-shadow overflow-hidden cursor-pointer group"
+                    onClick={() => {
+                      setPromoInput(promo.code)
+                      setError(null)
+                    }}
+                  >
+                    <CardContent className="p-3">
+                      <div className="flex items-center gap-3">
+                        {/* Icon */}
+                        <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${promo.color} flex items-center justify-center shrink-0 shadow-sm`}>
+                          {promo.type === 'percentage' ? (
+                            <Percent className="h-5 w-5 text-white" />
+                          ) : promo.type === 'fixed' ? (
+                            <Tag className="h-5 w-5 text-white" />
+                          ) : (
+                            <Truck className="h-5 w-5 text-white" />
+                          )}
+                        </div>
 
-                    {/* Copy button */}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-8 text-[10px] shrink-0 gap-1 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleCopyCode(promo.code)
-                      }}
-                    >
-                      <Copy className="h-3 w-3" />
-                      Copiar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="font-bold text-xs">{promo.code}</p>
+                            <Badge className="text-[8px] px-1 py-0 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0 font-bold">
+                              {promo.discountLabel}
+                            </Badge>
+                          </div>
+                          <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{promo.description}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            {promo.validUntil && (
+                              <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
+                                <Clock className="h-2.5 w-2.5" />
+                                Até {promo.validUntil}
+                              </span>
+                            )}
+                            {promo.minOrder && (
+                              <span className="text-[9px] text-muted-foreground">
+                                Mín. {promo.minOrder}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Copy button */}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 text-[10px] shrink-0 gap-1 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleCopyCode(promo.code)
+                          }}
+                        >
+                          <Copy className="h-3 w-3" />
+                          Copiar
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
-      </div>
+      )}
+
+      {/* No promotions state */}
+      {!isLoadingPromos && apiPromotions.length === 0 && !hasAppliedPromos && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-6"
+        >
+          <Sparkles className="h-10 w-10 mx-auto mb-2 text-muted-foreground/20" />
+          <p className="text-sm text-muted-foreground">Nenhum cupom disponível no momento</p>
+          <p className="text-xs text-muted-foreground mt-1">Mas você ainda pode digitar um código acima!</p>
+        </motion.div>
+      )}
     </div>
   )
 }

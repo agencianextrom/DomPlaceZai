@@ -8,7 +8,7 @@ const securityHeaders = [
   { key: 'X-XSS-Protection', value: '1; mode=block' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self)' },
-  { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://res.cloudinary.com https://placehold.co; connect-src 'self' https://api.cloudinary.com; frame-src https://challenges.cloudflare.com" },
+  { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://res.cloudinary.com https://placehold.co https://images.unsplash.com; connect-src 'self' https://api.cloudinary.com; frame-src https://challenges.cloudflare.com" },
 ]
 
 const nextConfig: NextConfig = {

@@ -65,17 +65,7 @@ interface PayoutHistoryItem {
   createdAt: string
 }
 
-const mockBanners = [
-  { id: 'b1', title: 'Ganhe 10% de volta', desc: 'Indique amigos e ganhe 10% de cashback nas compras deles!', gradient: 'from-primary to-emerald-600' },
-  { id: 'b2', title: 'Dom Eliseu entrega tudo', desc: 'De acai a agropecuaria, tudo chega na sua porta!', gradient: 'from-amber-500 to-orange-500' },
-  { id: 'b3', title: 'Primeira compra gratis', desc: 'Seus indicados ganham frete gratis na primeira compra!', gradient: 'from-teal-500 to-cyan-500' },
-]
-
-const mockPostTemplates = [
-  { id: 't1', platform: 'WhatsApp', text: 'Opa! Descobri o DomPlace, o app de entregas de Dom Eliseu! Tem de tudo: mercado, acai, farmacia, pet shop e mais. Baixe com meu link e ganhe R$10 de desconto: {link}', icon: 'MessageCircle', color: 'text-emerald-600' },
-  { id: 't2', platform: 'Instagram', text: 'Dom Eliseu agora tem delivery de verdade! No DomPlace voce encontra de tudo com entrega rapida. Use meu codigo {code} e ganhe desconto na primeira compra! {link}', icon: 'Instagram', color: 'text-pink-600' },
-  { id: 't3', platform: 'Facebook', text: 'Moradores de Dom Eliseu! O DomPlace facilitou minha vida. Encomendo de varias lojas sem sair de casa. Indico demais! {link}', icon: 'Facebook', color: 'text-sky-600' },
-]
+import QRCode from 'qrcode'
 
 function formatBRL(value: number): string {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -143,8 +133,24 @@ export function AffiliateDashboard() {
   const [referralOffset, setReferralOffset] = useState(0)
   const [customLinkId, setCustomLinkId] = useState('')
   const [refreshing, setRefreshing] = useState(false)
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null)
 
-  const referralLink = dashboard ? `https://domplace.com/convite/${dashboard.referralCode}` : ''
+  // Generate QR code when dashboard loads
+  const referralLink = dashboard?.referralCode
+    ? `${typeof window !== 'undefined' ? window.location.origin : 'https://domplace.com'}?ref=${dashboard.referralCode}`
+    : ''
+
+  useEffect(() => {
+    if (referralLink) {
+      QRCode.toDataURL(referralLink, {
+        width: 200,
+        margin: 2,
+        color: { dark: '#000000', light: '#ffffff' },
+        errorCorrectionLevel: 'M',
+      }).then(dataUrl => setQrCodeDataUrl(dataUrl)).catch(() => {})
+    }
+  }, [referralLink])
+
   const initials = dashboard?.referralCode?.slice(0, 2) || 'AF'
 
   // -- API fetchers --
@@ -778,11 +784,17 @@ export function AffiliateDashboard() {
                 </motion.button>
               </div>
 
-              {/* QR Code placeholder */}
+              {/* QR Code */}
               <div className="mt-4 flex items-center justify-center">
-                <div className="h-32 w-32 bg-white rounded-xl border-2 border-dashed border-primary/30 flex flex-col items-center justify-center gap-1">
-                  <QrCode className="h-10 w-10 text-primary/40" />
-                  <p className="text-[10px] text-muted-foreground">QR Code</p>
+                <div className="h-32 w-32 bg-white rounded-xl border-2 border-primary/30 flex items-center justify-center overflow-hidden">
+                  {qrCodeDataUrl ? (
+                    <img src={qrCodeDataUrl} alt="QR Code de indicacao" className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      <QrCode className="h-10 w-10 text-primary/40" />
+                      <p className="text-[10px] text-muted-foreground">QR Code</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -1228,7 +1240,11 @@ export function AffiliateDashboard() {
                 Banners para compartilhar
               </h4>
               <div className="space-y-3">
-                {mockBanners.map((banner, i) => (
+                {[
+                  { id: 'b1', gradient: 'from-primary to-emerald-600', title: 'DomPlace - Entregas em Dom Eliseu', desc: 'Peça online e receba na sua porta!' },
+                  { id: 'b2', gradient: 'from-emerald-600 to-teal-600', title: 'Ganhe R$10 no primeiro pedido', desc: `Use o código ${dashboard?.referralCode || '...'}` },
+                  { id: 'b3', gradient: 'from-amber-500 to-orange-600', title: 'Indique amigos, ganhe comissões', desc: 'Programa de afiliados DomPlace' },
+                ].map((banner, i) => (
                   <motion.div
                     key={banner.id}
                     {...fadeUp}
@@ -1240,7 +1256,7 @@ export function AffiliateDashboard() {
                         <p className="text-sm text-white/80 mt-1">{banner.desc}</p>
                       </div>
                       <CardContent className="p-3 flex items-center justify-between">
-                        <span className="text-[10px] text-muted-foreground">DomPlace - {dashboard.referralCode}</span>
+                        <span className="text-[10px] text-muted-foreground">DomPlace - {dashboard?.referralCode}</span>
                         <Button
                           size="sm"
                           variant="ghost"
@@ -1266,7 +1282,11 @@ export function AffiliateDashboard() {
                 Modelos de postagem
               </h4>
               <div className="space-y-2">
-                {mockPostTemplates.map((template, i) => (
+                {[
+                  { id: 't1', platform: 'WhatsApp', text: 'Ola! Descobri o DomPlace, o app de entregas de Dom Eliseu! Tem de tudo com entrega rapida. Use meu link e ganhe desconto: {link}' },
+                  { id: 't2', platform: 'Instagram', text: '🚀 DomPlace - O marketplace de Dom Eliseu agora no seu celular! Mercado, acai, farmacia e muito mais com entrega na porta. Baixe agora: {link}' },
+                  { id: 't3', platform: 'Facebook', text: 'Gente, descobri um app incrivel para pedidos em Dom Eliseu! O DomPlace tem tudo: mercado, restaurantes, farmacia, pet shop... Entrega rapida e preco bom. Indico demais! Link: {link}' },
+                ].map((template, i) => (
                   <motion.div
                     key={template.id}
                     {...fadeUp}
@@ -1281,14 +1301,14 @@ export function AffiliateDashboard() {
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground leading-relaxed mb-2">
-                          {template.text.replace('{link}', referralLink).replace('{code}', dashboard.referralCode)}
+                          {template.text.replace('{link}', referralLink).replace('{code}', dashboard?.referralCode)}
                         </p>
                         <Button
                           size="sm"
                           variant="ghost"
                           className="h-7 text-xs text-primary hover:bg-primary/5 gap-1"
                           onClick={() => {
-                            navigator.clipboard.writeText(template.text.replace('{link}', referralLink).replace('{code}', dashboard.referralCode))
+                            navigator.clipboard.writeText(template.text.replace('{link}', referralLink).replace('{code}', dashboard?.referralCode))
                             toast.success('Texto copiado!')
                           }}
                         >

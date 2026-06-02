@@ -30,6 +30,8 @@ import { OrderMap } from '@/components/orders/OrderMap'
 import { NotificationsPage } from '@/components/notifications/NotificationsPage'
 import { AdminDashboard } from '@/components/dashboard/AdminDashboard'
 import { SmartSuggestions } from '@/components/home/SmartSuggestions'
+import { RecentOrders } from '@/components/home/RecentOrders'
+import { FeedActivity } from '@/components/home/FeedActivity'
 import { SupportCenter } from '@/components/support/SupportCenter'
 import { ProductQuickView } from '@/components/product/ProductQuickView'
 import { StoreSearch } from '@/components/home/StoreSearch'
@@ -533,14 +535,14 @@ export default function Home() {
 
         if (!productsRes.ok || !storesRes.ok) {
           console.error('Failed to fetch data:', { products: productsRes.status, stores: storesRes.status })
-          return
-        }
-
-        const productsData = await productsRes.json()
-        const storesData = await storesRes.json()
-        if (!cancelled) {
-          setApiProducts(productsData.products || [])
-          setApiStores(storesData.stores || [])
+          // Don't return — fall through so setIsLoading(false) is reached and fallback data is used
+        } else {
+          const productsData = await productsRes.json()
+          const storesData = await storesRes.json()
+          if (!cancelled) {
+            setApiProducts(productsData.products || [])
+            setApiStores(storesData.stores || [])
+          }
         }
       } catch (error) {
         console.error('Error loading data:', error)
@@ -574,7 +576,7 @@ export default function Home() {
   const offerProducts = useMemo(() => filteredProducts.filter(p => p.isOffer), [filteredProducts])
   const newProducts = useMemo(() => filteredProducts.filter(p => p.isNew), [filteredProducts])
   const featuredProducts = useMemo(() => filteredProducts.filter(p => p.isFeatured), [filteredProducts])
-  const suggestedProducts = useMemo(() => filteredProducts.slice(0, 8), [filteredProducts])
+  // Note: SmartSuggestions component handles suggestions; no need for a separate carousel
   
   return (
     <div className="min-h-screen pb-20 md:pb-4">
@@ -635,10 +637,12 @@ export default function Home() {
                             <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 ml-0.5" />
                           </div>
                         </div>
-                        <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
-                          <Sparkles className="h-4 w-4 text-amber-500" />
-                          <span>3 lojas com ofertas novas</span>
-                        </div>
+                        {offerProducts.length > 0 && (
+                          <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
+                            <Sparkles className="h-4 w-4 text-amber-500" />
+                            <span>{offerProducts.length} {offerProducts.length === 1 ? 'oferta ativa' : 'ofertas ativas'}</span>
+                          </div>
+                        )}
                       </div>
                     </motion.section>
                     
@@ -671,68 +675,46 @@ export default function Home() {
                     )}
 
                     {/* === PRIORITY 2: Lazy loaded === */}
-
-                    <Separator className="my-8 bg-border/50" />
-
-                    {/* Offers of the Day */}
-                    <LazySection>
-                      {offerProducts.length > 0 && (
-                        <section>
-                          <ProductCarousel title="🔥 Ofertas do Dia" products={offerProducts} />
-                        </section>
-                      )}
-                    </LazySection>
-
-                    <Separator className="my-8 bg-border/50" />
+                    <div className="mt-8">
 
                     {/* Featured Stores */}
-                    <LazySection>
-                      {filteredStores.length > 0 && (
-                        <section>
+                    {filteredStores.length > 0 && (
+                      <LazySection>
+                        <section className="mt-8">
                           <StoreCarousel title="🏪 Lojas em Destaque" stores={filteredStores} />
                         </section>
-                      )}
-                    </LazySection>
+                      </LazySection>
+                    )}
 
                     {/* === PRIORITY 3: Lazy loaded, below fold === */}
 
-                    <Separator className="my-8 bg-border/50" />
-
                     {/* Weekend Specials */}
                     <LazySection>
-                      <section className="mt-4">
+                      <section>
                         <WeekendSpecials />
                       </section>
                     </LazySection>
-
-                    <Separator className="my-8 bg-border/50" />
 
                     {/* Daily Deals */}
                     <LazySection>
                       <DailyDeals />
                     </LazySection>
 
-                    <Separator className="my-8 bg-border/50" />
-
                     {/* Store Favorites Carousel */}
                     <LazySection>
                       <StoreFavorites stores={allStores} />
                     </LazySection>
 
-                    <Separator className="my-8 bg-border/50" />
-
                     {/* New in City */}
-                    <LazySection>
-                      {newProducts.length > 0 && (
+                    {newProducts.length > 0 && (
+                      <LazySection>
                         <section>
                           <ProductCarousel title="✨ Novidades na Cidade" products={newProducts} />
                         </section>
-                      )}
-                    </LazySection>
+                      </LazySection>
+                    )}
 
                     {/* === PRIORITY 4: Lazy loaded, bottom === */}
-
-                    <Separator className="my-8 bg-border/50" />
 
                     {/* Store Search */}
                     <LazySection>
@@ -741,39 +723,20 @@ export default function Home() {
                       </section>
                     </LazySection>
 
-                    <Separator className="my-8 bg-border/50" />
-
                     {/* Delivery Fee Calculator */}
                     <LazySection>
                       <DeliveryFeeCalculator />
                     </LazySection>
-
-                    <Separator className="my-8 bg-border/50" />
 
                     {/* Smart Suggestions (AI) */}
                     <LazySection>
                       <SmartSuggestions />
                     </LazySection>
 
-                    <Separator className="my-8 bg-border/50" />
-
-                    {/* Suggestions */}
-                    <LazySection>
-                      {suggestedProducts.length > 0 && (
-                        <section>
-                          <ProductCarousel title="💡 Sugestões para Você" products={suggestedProducts} />
-                        </section>
-                      )}
-                    </LazySection>
-
-                    <Separator className="my-8 bg-border/50" />
-
                     {/* Map Store Locator */}
                     <LazySection>
                       <MapStoreLocator stores={allStores} />
                     </LazySection>
-
-                    <Separator className="my-8 bg-border/50" />
 
                     {/* Partners */}
                     <LazySection>
@@ -782,8 +745,6 @@ export default function Home() {
                       </section>
                     </LazySection>
 
-                    <Separator className="my-8 bg-border/50" />
-
                     {/* City News */}
                     <LazySection>
                       <section>
@@ -791,21 +752,24 @@ export default function Home() {
                       </section>
                     </LazySection>
 
-                    <Separator className="my-8 bg-border/50" />
+                    {/* Recent Orders */}
+                    <LazySection>
+                      <section>
+                        <RecentOrders />
+                      </section>
+                    </LazySection>
                     
                     {/* Segmented Ads */}
-                    <LazySection>
-                      {filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5').length > 0 && (
+                    {filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5').length > 0 && (
+                      <LazySection>
                         <section>
                           <ProductCarousel 
                             title="📢 Anúncios Segmentados" 
                             products={filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5')} 
                           />
                         </section>
-                      )}
-                    </LazySection>
-
-                    <Separator className="my-8 bg-border/50" />
+                      </LazySection>
+                    )}
 
                     {/* Store Comparison CTA */}
                     <LazySection>
@@ -833,6 +797,15 @@ export default function Home() {
                         </div>
                       </section>
                     </LazySection>
+
+                    {/* Feed Activity */}
+                    <LazySection>
+                      <section>
+                        <FeedActivity />
+                      </section>
+                    </LazySection>
+
+                    </div>
                   </>
                 )}
                 

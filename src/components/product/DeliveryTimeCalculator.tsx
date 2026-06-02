@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Truck, Clock, Calendar, MapPin, ChevronLeft, ChevronRight,
@@ -9,19 +9,20 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { useAppStore } from '@/store/useAppStore'
 
 interface DeliveryTimeCalculatorProps {
   storeName?: string
   deliveryFee?: number
   freeDeliveryAbove?: number | null
-}
-
-// Mock distance data
-const distanceData = {
-  distance: 3.2, // km
-  unit: 'km',
-  baseTime: 15, // minutes base
-  perKm: 4, // minutes per km
+  /** Delivery address string for distance estimation */
+  deliveryAddress?: string | null
+  /** Store address string for distance estimation */
+  storeAddress?: string | null
+  /** Whether we have active delivery tracking data */
+  isTracking?: boolean
+  /** Current tracking step index (0-3: confirmed, preparing, transit, delivered) */
+  trackingStep?: number
 }
 
 // Generate delivery schedule for next 7 days
@@ -72,23 +73,52 @@ const deliverySteps = [
   { id: 'delivered', label: 'Entregue', icon: CheckCircle, color: 'text-emerald-500' },
 ]
 
-export function DeliveryTimeCalculator({ storeName, deliveryFee, freeDeliveryAbove }: DeliveryTimeCalculatorProps) {
-  const [currentStep, setCurrentStep] = useState(0)
+/**
+ * Estimate a rough distance between delivery address and store.
+ * Returns distance in km, or a generic estimate for Dom Eliseu if no real data.
+ */
+function estimateDistance(deliveryAddress?: string | null, storeAddress?: string | null): number {
+  // If both addresses are provided and different, assume a within-town distance
+  if (deliveryAddress && storeAddress && deliveryAddress !== storeAddress) {
+    // Simple heuristic: different addresses in a small town ≈ 2-5 km
+    return 2.5 + Math.random() * 2
+  }
+  // If only one address or same address, assume a short distance (Dom Eliseu is a small town)
+  if (deliveryAddress || storeAddress) {
+    return 1.5
+  }
+  // No address data — generic estimate for Dom Eliseu
+  return 3.0
+}
+
+export function DeliveryTimeCalculator({
+  storeName,
+  deliveryFee,
+  freeDeliveryAbove,
+  deliveryAddress,
+  storeAddress,
+  isTracking,
+  trackingStep,
+}: DeliveryTimeCalculatorProps) {
+  const trackingData = useAppStore(s => s.trackingData)
   const [schedule] = useState(() => generateSchedule())
   const [selectedDay, setSelectedDay] = useState(0)
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
   const [showSchedule, setShowSchedule] = useState(false)
 
-  // Calculate estimated delivery time (derived from distance)
-  const estimatedMinutes = distanceData.baseTime + Math.round(distanceData.distance * distanceData.perKm)
+  // Calculate distance from addresses
+  const distance = estimateDistance(deliveryAddress, storeAddress)
 
-  // Auto-advance delivery steps for demo animation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentStep(prev => (prev + 1) % deliverySteps.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
+  // Calculate estimated delivery time (derived from distance)
+  const baseTime = 15 // minutes base
+  const perKm = 4 // minutes per km
+  const estimatedMinutes = baseTime + Math.round(distance * perKm)
+
+  // Determine if we have active tracking data
+  const hasTracking = isTracking || !!trackingData
+  const activeStep = trackingData?.progress != null
+    ? Math.min(Math.floor(trackingData.progress / 25), 3)
+    : (trackingStep ?? 0)
 
   const todaySchedule = schedule[0]
   const activeDay = schedule[selectedDay]
@@ -114,33 +144,33 @@ export function DeliveryTimeCalculator({ storeName, deliveryFee, freeDeliveryAbo
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm">Previsão de Entrega</h3>
-                  <p className="text-[10px] text-muted-foreground">Baseado na distância do endereço</p>
+                  <p className="text-[10px] text-muted-foreground">{deliveryAddress || storeAddress ? 'Baseado no seu endereço' : 'Dom Eliseu e região'}</p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold text-primary">{estimatedMinutes > 0 ? `${estimatedMinutes}-${estimatedMinutes + 15}` : '30-45'} min</p>
                 <p className="text-[10px] text-muted-foreground flex items-center gap-0.5 justify-end">
                   <MapPin className="h-2.5 w-2.5" />
-                  {distanceData.distance} km
+                  {distance.toFixed(1)} km
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Animated delivery steps */}
+          {/* Delivery progress steps — shown when tracking is active */}
           <div className="px-4 py-4">
             <div className="flex items-center justify-between mb-4">
               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                Progresso da entrega
+                {hasTracking ? 'Status do pedido' : 'Etapas da entrega'}
               </span>
               <motion.div
-                key={currentStep}
+                key={hasTracking ? activeStep : 'idle'}
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
               >
                 <Badge variant="secondary" className="text-[9px] bg-primary/10 text-primary border-0">
                   <Zap className="h-2.5 w-2.5 mr-0.5" />
-                  {deliverySteps[currentStep].label}
+                  {hasTracking ? deliverySteps[activeStep].label : 'Aguardando pedido'}
                 </Badge>
               </motion.div>
             </div>
@@ -151,8 +181,8 @@ export function DeliveryTimeCalculator({ storeName, deliveryFee, freeDeliveryAbo
               <div className="flex items-center gap-0">
                 {deliverySteps.map((step, idx) => {
                   const StepIcon = step.icon
-                  const isActive = idx <= currentStep
-                  const isCurrent = idx === currentStep
+                  const isActive = hasTracking ? idx <= activeStep : false
+                  const isCurrent = hasTracking ? idx === activeStep : false
 
                   return (
                     <div key={step.id} className="flex items-center flex-1 last:flex-none">
@@ -166,7 +196,7 @@ export function DeliveryTimeCalculator({ storeName, deliveryFee, freeDeliveryAbo
                             : 'bg-muted text-muted-foreground'
                         } ${isCurrent ? 'ring-[3px] ring-primary/20' : ''}`}
                       >
-                        {isActive && idx < currentStep ? (
+                        {isActive && idx < activeStep ? (
                           <CheckCircle className="h-4 w-4" />
                         ) : (
                           <StepIcon className="h-4 w-4" />
@@ -180,7 +210,7 @@ export function DeliveryTimeCalculator({ storeName, deliveryFee, freeDeliveryAbo
                             className="h-full bg-primary rounded-full"
                             initial={{ width: '0%' }}
                             animate={{
-                              width: idx < currentStep ? '100%' : isCurrent ? '50%' : '0%'
+                              width: hasTracking ? (idx < activeStep ? '100%' : isCurrent ? '50%' : '0%') : '0%'
                             }}
                             transition={{ delay: 0.2, duration: 0.8, ease: 'easeInOut' }}
                           />

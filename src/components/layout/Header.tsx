@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, ShoppingCart, Search, User, Menu, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, Settings, LogOut, Star, X, Sun, Moon } from 'lucide-react'
+import { MapPin, ShoppingCart, Search, User, Menu, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, LogOut, Star, X, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -43,7 +43,6 @@ const mobileMenuSections = [
     items: [
       { id: 'profile', icon: UserCircle, label: 'Meu Perfil', action: 'navigate' as const },
       { id: 'notifications', icon: Star, label: 'Notificações', action: 'navigate' as const },
-      { id: 'settings', icon: Settings, label: 'Configurações', action: 'navigate' as const },
     ],
   },
 ]

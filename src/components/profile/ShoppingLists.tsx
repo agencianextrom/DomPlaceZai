@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { ListChecks, Flame, Plus, Share2, Clock, ShoppingCart, ChevronDown, ChevronUp, X } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { ListChecks, Flame, Plus, Share2, Clock, ShoppingCart, ChevronDown, ChevronUp, X, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -9,56 +9,29 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { motion, AnimatePresence } from 'framer-motion'
+import { toast } from 'sonner'
+import {
+  saveListsToStorage,
+  loadListsFromStorage,
+  type ShoppingItem,
+  type ShoppingList,
+} from '@/lib/shopping-lists-persistence'
 
-// --- Types ---
-interface ShoppingItem {
-  id: string
-  name: string
-  quantity: number
-  price: number
-  checked: boolean
+// --- Icon mapping ---
+const iconMap: Record<string, typeof ListChecks> = {
+  ListChecks,
+  Flame,
 }
 
-interface ShoppingList {
-  id: string
-  name: string
-  icon: typeof ListChecks
-  items: ShoppingItem[]
-  lastModified: string
-  color: string
-  iconBg: string
+function getIconComponent(iconName: string): typeof ListChecks {
+  return iconMap[iconName] || ListChecks
 }
 
-// --- Mock Data ---
-const initialLists: ShoppingList[] = [
-  {
-    id: 'l1',
-    name: 'Compras da Semana',
-    icon: ListChecks,
-    items: [
-      { id: 'i1', name: 'Arroz Tio João 5kg', quantity: 1, price: 24.90, checked: false },
-      { id: 'i2', name: 'Feijão Carioca 1kg', quantity: 2, price: 8.90, checked: false },
-      { id: 'i3', name: 'Açaí 500ml', quantity: 3, price: 15.00, checked: true },
-      { id: 'i4', name: 'Leite Integral 1L', quantity: 4, price: 6.90, checked: false },
-    ],
-    lastModified: 'Hoje, 14:30',
-    color: 'text-primary',
-    iconBg: 'bg-primary/10',
-  },
-  {
-    id: 'l2',
-    name: 'Churrasco de Sábado',
-    icon: Flame,
-    items: [
-      { id: 'i5', name: 'Carne bovina 2kg', quantity: 1, price: 59.90, checked: false },
-      { id: 'i6', name: 'Linguiça 500g', quantity: 2, price: 12.50, checked: false },
-      { id: 'i7', name: 'Refrigerante 2L', quantity: 3, price: 8.00, checked: true },
-    ],
-    lastModified: 'Ontem, 19:15',
-    color: 'text-orange-600 dark:text-orange-400',
-    iconBg: 'bg-orange-100 dark:bg-orange-900/20',
-  },
-]
+// --- Helpers ---
+function formatLastModified(): string {
+  const now = new Date()
+  return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -78,9 +51,28 @@ function formatBRL(value: number) {
 }
 
 export function ShoppingLists() {
-  const [lists, setLists] = useState<ShoppingList[]>(initialLists)
   const [expandedList, setExpandedList] = useState<string | null>(null)
   const [newItemTexts, setNewItemTexts] = useState<Record<string, string>>({})
+  const [editingListId, setEditingListId] = useState<string | null>(null)
+  const [editingListName, setEditingListName] = useState('')
+  const isInitialized = useRef(false)
+
+  // Load lists from localStorage on mount — use lazy initializer pattern
+  // to avoid calling setState inside an effect.
+  const [lists, setLists] = useState<ShoppingList[]>(() => {
+    if (typeof window === 'undefined') return []
+    const stored = loadListsFromStorage()
+    return stored && stored.length > 0 ? stored : []
+  })
+
+  // Persist lists to localStorage on changes (skip first render)
+  useEffect(() => {
+    if (!isInitialized.current) {
+      isInitialized.current = true
+      return
+    }
+    saveListsToStorage(lists)
+  }, [lists])
 
   const toggleItem = (listId: string, itemId: string) => {
     setLists((prev) =>
@@ -91,6 +83,7 @@ export function ShoppingLists() {
               items: list.items.map((item) =>
                 item.id === itemId ? { ...item, checked: !item.checked } : item
               ),
+              lastModified: formatLastModified(),
             }
           : list
       )
@@ -116,6 +109,7 @@ export function ShoppingLists() {
                   checked: false,
                 },
               ],
+              lastModified: formatLastModified(),
             }
           : list
       )
@@ -127,10 +121,94 @@ export function ShoppingLists() {
     setLists((prev) =>
       prev.map((list) =>
         list.id === listId
-          ? { ...list, items: list.items.filter((item) => item.id !== itemId) }
+          ? { ...list, items: list.items.filter((item) => item.id !== itemId), lastModified: formatLastModified() }
           : list
       )
     )
+  }
+
+  const createList = () => {
+    const newList: ShoppingList = {
+      id: `l-new-${Date.now()}`,
+      name: `Nova Lista ${lists.length + 1}`,
+      iconName: 'ListChecks',
+      items: [],
+      lastModified: formatLastModified(),
+      color: 'text-primary',
+      iconBg: 'bg-primary/10',
+    }
+    setLists([...lists, newList])
+    setExpandedList(newList.id)
+    setEditingListId(newList.id)
+    setEditingListName(newList.name)
+  }
+
+  const deleteList = (listId: string) => {
+    setLists((prev) => prev.filter((list) => list.id !== listId))
+    if (expandedList === listId) setExpandedList(null)
+    toast.success('Lista removida')
+  }
+
+  const startEditListName = (listId: string, currentName: string) => {
+    setEditingListId(listId)
+    setEditingListName(currentName)
+  }
+
+  const saveListName = (listId: string) => {
+    const trimmed = editingListName.trim()
+    if (!trimmed) {
+      setEditingListId(null)
+      return
+    }
+    setLists((prev) =>
+      prev.map((list) =>
+        list.id === listId ? { ...list, name: trimmed, lastModified: formatLastModified() } : list
+      )
+    )
+    setEditingListId(null)
+  }
+
+  const handleShareList = (list: ShoppingList) => {
+    const lines: string[] = []
+    lines.push(`📋 ${list.name}`)
+    lines.push('')
+
+    if (list.items.length === 0) {
+      lines.push('(Lista vazia)')
+    } else {
+      list.items.forEach((item) => {
+        const check = item.checked ? '✅' : '⬜'
+        lines.push(`${check} ${item.quantity}x ${item.name}${item.price > 0 ? ` — ${formatBRL(item.price * item.quantity)}` : ''}`)
+      })
+
+      const total = list.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      const checked = list.items.filter(i => i.checked).length
+      lines.push('')
+      lines.push(`Progresso: ${checked}/${list.items.length}`)
+      if (total > 0) lines.push(`Total estimado: ${formatBRL(total)}`)
+    }
+
+    lines.push('')
+    lines.push('— via DomPlace 🛒')
+
+    const text = lines.join('\n')
+
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success('Lista copiada!')
+    }).catch(() => {
+      // Fallback: try execCommand for older browsers
+      try {
+        const textarea = document.createElement('textarea')
+        textarea.value = text
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+        toast.success('Lista copiada!')
+      } catch {
+        toast.error('Não foi possível copiar a lista')
+      }
+    })
   }
 
   const getTotal = (items: ShoppingItem[]) => {
@@ -142,7 +220,7 @@ export function ShoppingLists() {
   }
 
   const getListIcon = (list: ShoppingList) => {
-    const ListIcon = list.icon
+    const ListIcon = getIconComponent(list.iconName)
     return <ListIcon className={`h-5 w-5 ${list.color}`} />
   }
 
@@ -157,19 +235,7 @@ export function ShoppingLists() {
         <Button
           size="sm"
           className="bg-primary text-primary-foreground gap-1 h-8 text-xs"
-          onClick={() => {
-            const newList: ShoppingList = {
-              id: `l-new-${Date.now()}`,
-              name: `Nova Lista ${lists.length + 1}`,
-              icon: ListChecks,
-              items: [],
-              lastModified: 'Agora',
-              color: 'text-primary',
-              iconBg: 'bg-primary/10',
-            }
-            setLists([...lists, newList])
-            setExpandedList(newList.id)
-          }}
+          onClick={createList}
         >
           <Plus className="h-3.5 w-3.5" />
           Criar nova lista
@@ -203,7 +269,22 @@ export function ShoppingLists() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="font-semibold text-sm truncate">{list.name}</p>
+                        {editingListId === list.id ? (
+                          <Input
+                            value={editingListName}
+                            onChange={(e) => setEditingListName(e.target.value)}
+                            onBlur={() => saveListName(list.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') saveListName(list.id)
+                              if (e.key === 'Escape') setEditingListId(null)
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="h-7 text-sm font-semibold w-full max-w-[180px]"
+                            autoFocus
+                          />
+                        ) : (
+                          <p className="font-semibold text-sm truncate">{list.name}</p>
+                        )}
                         {isComplete && (
                           <Badge className="text-[9px] px-1.5 py-0 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-0">
                             Completa
@@ -229,7 +310,9 @@ export function ShoppingLists() {
                         className="h-8 w-8"
                         onClick={(e) => {
                           e.stopPropagation()
+                          handleShareList(list)
                         }}
+                        title="Copiar lista"
                       >
                         <Share2 className="h-4 w-4 text-muted-foreground" />
                       </Button>
@@ -341,13 +424,46 @@ export function ShoppingLists() {
                             </Button>
                           </div>
 
-                          {/* Total */}
-                          {list.items.length > 0 && total > 0 && (
-                            <div className="flex items-center justify-between pt-2 mt-2 border-t border-border">
-                              <span className="text-xs text-muted-foreground">Total estimado</span>
-                              <span className="font-bold text-sm text-primary">{formatBRL(total)}</span>
+                          {/* Total + Actions */}
+                          <div className="flex items-center justify-between pt-2 mt-2 border-t border-border">
+                            <div className="flex items-center gap-2">
+                              {list.items.length > 0 && total > 0 && (
+                                <>
+                                  <span className="text-xs text-muted-foreground">Total estimado</span>
+                                  <span className="font-bold text-sm text-primary">{formatBRL(total)}</span>
+                                </>
+                              )}
                             </div>
-                          )}
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => startEditListName(list.id, list.name)}
+                                title="Editar nome"
+                              >
+                                <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => handleShareList(list)}
+                                title="Copiar lista"
+                              >
+                                <Share2 className="h-3.5 w-3.5 text-muted-foreground" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => deleteList(list.id)}
+                                title="Excluir lista"
+                              >
+                                <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                       </motion.div>
                     )}
@@ -358,6 +474,27 @@ export function ShoppingLists() {
           )
         })}
       </motion.div>
+
+      {/* Empty state */}
+      {lists.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-8"
+        >
+          <ListChecks className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
+          <p className="text-sm text-muted-foreground">Nenhuma lista criada</p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-3 gap-1"
+            onClick={createList}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Criar primeira lista
+          </Button>
+        </motion.div>
+      )}
     </div>
   )
 }

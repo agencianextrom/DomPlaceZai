@@ -99,9 +99,9 @@ const vehicleIcons: Record<string, typeof Bike> = {
   car: Truck,
 }
 
-// Mock GPS coordinates (São Paulo area)
-const MOCK_BASE_LAT = -23.5505
-const MOCK_BASE_LNG = -46.6333
+// Mock GPS coordinates (Dom Eliseu, PA)
+const MOCK_BASE_LAT = -3.3917
+const MOCK_BASE_LNG = -50.3558
 
 function formatCurrency(value: number): string {
   return `R$ ${value.toFixed(2).replace('.', ',')}`
@@ -449,22 +449,13 @@ export function DriverDashboard() {
     }
   }, [earningsPeriod, fetchEarnings, loading])
 
-  // -- Cleanup GPS interval on unmount --
-  useEffect(() => {
-    return () => {
-      if (gpsIntervalRef.current) {
-        clearInterval(gpsIntervalRef.current)
-      }
-    }
-  }, [])
-
-  // -- Handle status toggle (POST /api/driver/status) --
+  // -- Handle status toggle (PATCH /api/driver/status) --
   const handleStatusToggle = async (checked: boolean) => {
     setStatusChanging(true)
     try {
       const newStatus = checked ? 'ONLINE' : 'OFFLINE'
       const res = await fetch('/api/driver/status', {
-        method: 'POST',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
       })
@@ -597,7 +588,52 @@ export function DriverDashboard() {
     }
   }
 
-  // -- Simulate GPS location update --
+  // -- Send real browser geolocation to server --
+  const sendRealLocation = async () => {
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 30000,
+        })
+      })
+      const location: GpsLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        heading: position.coords.heading || Math.floor(Math.random() * 360),
+        speed: position.coords.speed || 0,
+        accuracy: position.coords.accuracy || 10,
+      }
+      const res = await fetch('/api/driver/location', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(location),
+      })
+      if (res.ok) {
+        setLastGpsUpdate(new Date().toLocaleTimeString('pt-BR'))
+      }
+    } catch {
+      // Silently ignore GPS errors (permission denied, not available, etc.)
+    }
+  }
+
+  // -- Send real location periodically when online --
+  useEffect(() => {
+    if (!isOnline && !isBusy) {
+      if (gpsIntervalRef.current) {
+        clearInterval(gpsIntervalRef.current)
+        gpsIntervalRef.current = null
+      }
+      return
+    }
+    // Send real location immediately, then every 30s
+    sendRealLocation()
+    if (gpsIntervalRef.current) clearInterval(gpsIntervalRef.current)
+    gpsIntervalRef.current = setInterval(sendRealLocation, 30000)
+  }, [isOnline, isBusy])
+
+  // -- Simulate GPS location update (for demo/testing) --
   const toggleGpsSimulation = async () => {
     if (gpsSimulating) {
       // Stop simulation
@@ -625,7 +661,7 @@ export function DriverDashboard() {
           accuracy: 5 + Math.random() * 15,
         }
         const res = await fetch('/api/driver/location', {
-          method: 'PUT',
+          method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(location),
         })
@@ -861,11 +897,13 @@ export function DriverDashboard() {
                   <div className="flex items-center gap-2">
                     <MapPinned className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-xs font-semibold">Simulacao GPS</p>
+                      <p className="text-xs font-semibold">Localizacao GPS</p>
                       <p className="text-[10px] text-muted-foreground">
                         {gpsSimulating
-                          ? `Ativa - Ultima atualizacao: ${lastGpsUpdate || 'enviando...'}`
-                          : 'Envie localizacoes simuladas ao servidor'
+                          ? `Simulacao ativa - Ultima: ${lastGpsUpdate || 'enviando...'}`
+                          : lastGpsUpdate
+                            ? `Ultima atualizacao: ${lastGpsUpdate}`
+                            : 'Localizacao enviada automaticamente'
                         }
                       </p>
                     </div>
@@ -881,7 +919,7 @@ export function DriverDashboard() {
                     ) : (
                       <Send className="h-3.5 w-3.5" />
                     )}
-                    {gpsSimulating ? 'Parar' : 'Simular'}
+                    {gpsSimulating ? 'Parar Simulacao' : 'Simular GPS'}
                   </Button>
                 </CardContent>
               </Card>

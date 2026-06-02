@@ -15,7 +15,8 @@ const navItems = [
 ]
 
 export function MobileNav() {
-  const { currentView, navigate, getCartItemCount } = useAppStore()
+  const { currentView, navigate, cartItems } = useAppStore()
+  const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0)
   const [activeTabX, setActiveTabX] = useState<number | undefined>(undefined)
   const { theme, setTheme } = useTheme()
   const mounted = useRef(false)
@@ -32,7 +33,7 @@ export function MobileNav() {
           <motion.button
             whileTap={{ scale: 0.85 }}
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="absolute -top-10 right-3 z-10 h-8 w-8 rounded-full bg-card border border-border/60 shadow-md flex items-center justify-center transition-colors hover:bg-secondary"
+            className="absolute -top-12 right-3 z-10 h-10 w-10 rounded-full bg-card border border-border/60 shadow-md flex items-center justify-center transition-colors hover:bg-secondary"
             aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
           >
             <AnimatePresence mode="wait">
@@ -78,7 +79,7 @@ export function MobileNav() {
                     navigate(item.id as 'home')
                   }
                 }}
-                className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px] rounded-xl transition-colors duration-200 ${isActive ? 'bg-primary/[0.06]' : 'active:bg-secondary/60'}`}
+                className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px] rounded-xl transition-colors duration-200 active:scale-95 ${isActive ? 'bg-primary/[0.06]' : 'active:bg-secondary/60'}`}
               >
                 {isActive && (
                   <motion.div
@@ -99,6 +100,15 @@ export function MobileNav() {
                 <span className={`text-[10px] font-medium transition-all duration-200 leading-tight ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
                   {item.label}
                 </span>
+                {/* Tap pulse ring feedback */}
+                {isActive && (
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0.5 }}
+                    animate={{ scale: 1.2, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    className="absolute inset-0 rounded-xl bg-primary/10 pointer-events-none"
+                  />
+                )}
               </button>
             )
           })}
@@ -114,7 +124,7 @@ export function MobileNav() {
             <motion.div
               animate={{ 
                 boxShadow: cartCount > 0 
-                  ? '0 4px 20px oklch(0.45 0.1 155 / 0.35), 0 0 0 2px oklch(0.45 0.1 155 / 0.1)' 
+                  ? '0 6px 24px oklch(0.45 0.1 155 / 0.4), 0 2px 8px oklch(0.45 0.1 155 / 0.15)' 
                   : '0 2px 8px oklch(0 0 0 / 0.1)' 
               }}
               transition={{ duration: 0.3 }}
@@ -143,7 +153,7 @@ export function MobileNav() {
                 key={item.id}
                 ref={(el) => { if (el && isActive) setActiveTabX(el.offsetLeft + el.offsetWidth / 2 - 24) }}
                 onClick={() => navigate(item.id as 'orders' | 'favorites' | 'profile')}
-                className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px] rounded-xl transition-colors duration-200 ${isActive ? 'bg-primary/[0.06]' : 'active:bg-secondary/60'}`}
+                className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px] rounded-xl transition-colors duration-200 active:scale-95 ${isActive ? 'bg-primary/[0.06]' : 'active:bg-secondary/60'}`}
               >
                 {isActive && (
                   <motion.div
@@ -164,6 +174,15 @@ export function MobileNav() {
                 <span className={`text-[10px] font-medium transition-all duration-200 leading-tight ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
                   {item.label}
                 </span>
+                {/* Tap pulse ring feedback */}
+                {isActive && (
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0.5 }}
+                    animate={{ scale: 1.2, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    className="absolute inset-0 rounded-xl bg-primary/10 pointer-events-none"
+                  />
+                )}
               </button>
             )
           })}

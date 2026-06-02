@@ -1,19 +1,50 @@
 'use client'
 
-import { ArrowLeft, Clock, MapPin, Phone, MessageCircle, ShoppingBag, Heart, Share2, ChevronDown, ChevronUp, Store, Truck, Star, Instagram, Facebook, Globe, Percent, ShieldCheck, Zap, Award } from 'lucide-react'
+import { ArrowLeft, Clock, MapPin, Phone, MessageCircle, ShoppingBag, Heart, Share2, ChevronDown, ChevronUp, Store, Truck, Star, Instagram, Facebook, Globe, Percent, ShieldCheck, Zap, Award, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useAppStore, type StoreData, type ProductData } from '@/store/useAppStore'
 import { ProductCard, formatBRL } from '@/components/product/ProductCard'
 import { StarRating } from '@/components/ui/StarRating'
 import { StoreRatingBreakdown } from './StoreRatingBreakdown'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface StoreProfileProps {
   store: StoreData
+}
+
+// --- Types ---
+interface ReviewData {
+  id: string
+  accountName: string | null
+  accountAvatar: string | null
+  rating: number
+  comment: string | null
+  images: string | null
+  reply: string | null
+  isVerified: boolean
+  createdAt: string
+}
+
+interface RatingDistributionItem {
+  rating: number
+  count: number
+}
+
+interface PromotionData {
+  id: string
+  code: string
+  title: string
+  description: string | null
+  type: string
+  value: number
+  minOrderValue: number | null
+  endsAt: string
+  maxDiscount: number | null
 }
 
 const categoryLabels: Record<string, string> = {
@@ -33,19 +64,6 @@ const categoryLabels: Record<string, string> = {
 
 const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 
-const mockReviews = [
-  { name: 'Maria S.', initials: 'MS', rating: 5, comment: 'Loja excelente! Produtos de qualidade e atendimento ótimo. Sempre entrego rápido.', date: '3 dias atrás' },
-  { name: 'João P.', initials: 'JP', rating: 4, comment: 'Boa variedade de produtos e preços justos. Recomendo a todos!', date: '1 semana atrás' },
-  { name: 'Ana C.', initials: 'AC', rating: 5, comment: 'Melhor loja de Dom Eliseu! Sempre compro aqui.', date: '2 semanas atrás' },
-  { name: 'Pedro L.', initials: 'PL', rating: 4, comment: 'Ótimo atendimento no WhatsApp. Produtos frescos!', date: '3 semanas atrás' },
-]
-
-const mockPromotions = [
-  { id: 'p1', title: 'Happy Hour', desc: '30% de desconto em todos os produtos das 17h às 19h', validUntil: '30/06/2025', badge: '-30%', color: 'from-red-500 to-rose-600' },
-  { id: 'p2', title: 'Primeira Compra', desc: 'R$10 de desconto na sua primeira compra acima de R$30', validUntil: 'Sem validade', badge: 'R$10 OFF', color: 'from-primary to-emerald-600' },
-  { id: 'p3', title: 'Combo Família', desc: 'Compre 3 produtos e ganhe 10% de desconto no total', validUntil: '15/05/2025', badge: '-10%', color: 'from-amber-500 to-orange-600' },
-]
-
 const storeInfoCards = [
   { icon: Truck, label: 'Entrega Rápida', value: '30-45 min', color: 'text-primary', bg: 'bg-primary/10' },
   { icon: ShieldCheck, label: 'Pagamento Seguro', value: 'Pix, Cartão', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/20' },
@@ -61,6 +79,38 @@ const tabItems = [
 
 type TabValue = typeof tabItems[number]['value']
 
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+  if (diffDays === 0) return 'Hoje'
+  if (diffDays === 1) return 'Ontem'
+  if (diffDays < 7) return `${diffDays} dias atrás`
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} semana${Math.floor(diffDays / 7) > 1 ? 's' : ''} atrás`
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} mês${Math.floor(diffDays / 30) > 1 ? 'es' : ''} atrás`
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
+function getPromoGradient(type: string): string {
+  switch (type) {
+    case 'PERCENTAGE': return 'from-emerald-500 to-teal-600'
+    case 'FIXED_AMOUNT': return 'from-amber-500 to-orange-600'
+    case 'FREE_DELIVERY': return 'from-primary to-emerald-600'
+    default: return 'from-primary to-emerald-600'
+  }
+}
+
+function getPromoBadge(type: string, value: number): string {
+  switch (type) {
+    case 'PERCENTAGE': return `${value}% OFF`
+    case 'FIXED_AMOUNT': return `R$${value} OFF`
+    case 'FREE_DELIVERY': return 'Frete Grátis'
+    default: return `${value}%`
+  }
+}
+
 export function StoreProfile({ store }: StoreProfileProps) {
   const { goBack, navigate, isFavoriteStore, toggleFavoriteStore } = useAppStore()
   const [products, setProducts] = useState<ProductData[]>([])
@@ -68,15 +118,23 @@ export function StoreProfile({ store }: StoreProfileProps) {
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [activeTab, setActiveTab] = useState<TabValue>('produtos')
   const [showWhatsAppFab, setShowWhatsAppFab] = useState(false)
+
+  // Reviews & Promotions state
+  const [reviews, setReviews] = useState<ReviewData[]>([])
+  const [ratingDistribution, setRatingDistribution] = useState<RatingDistributionItem[]>([])
+  const [reviewsLoading, setReviewsLoading] = useState(false)
+  const [promotions, setPromotions] = useState<PromotionData[]>([])
+  const [promotionsLoading, setPromotionsLoading] = useState(false)
   
   const isFav = isFavoriteStore(store.id)
 
+  // Fetch products
   useEffect(() => {
     let cancelled = false
     const fetchData = async () => {
       setLoading(true)
       try {
-        const res = await fetch(`/api/stores/${store.id}`)
+        const res = await fetch(`/api/stores/${store.id}?include=products`)
         const data = await res.json()
         if (!cancelled) setProducts(data.products || [])
       } catch {
@@ -87,6 +145,52 @@ export function StoreProfile({ store }: StoreProfileProps) {
     fetchData()
     return () => { cancelled = true }
   }, [store.id])
+
+  // Fetch reviews (lazy — only when reviews tab is active)
+  const fetchReviews = useCallback(async () => {
+    setReviewsLoading(true)
+    try {
+      const res = await fetch(`/api/reviews?storeId=${store.id}`)
+      const data = await res.json()
+      if (res.ok) {
+        setReviews(data.reviews || [])
+        setRatingDistribution(data.ratingDistribution || [])
+      }
+    } catch {
+      // Silent fail
+    } finally {
+      setReviewsLoading(false)
+    }
+  }, [store.id])
+
+  // Fetch promotions (lazy — only when promos tab is active)
+  const fetchPromotions = useCallback(async () => {
+    setPromotionsLoading(true)
+    try {
+      const res = await fetch(`/api/promotions?storeId=${store.id}`)
+      const data = await res.json()
+      if (res.ok) {
+        setPromotions(data.promotions || [])
+      }
+    } catch {
+      // Silent fail
+    } finally {
+      setPromotionsLoading(false)
+    }
+  }, [store.id])
+
+  // Lazy fetch when switching tabs
+  useEffect(() => {
+    if (activeTab === 'avaliacoes' && reviews.length === 0 && !reviewsLoading) {
+      fetchReviews()
+    }
+  }, [activeTab, reviews.length, reviewsLoading, fetchReviews])
+
+  useEffect(() => {
+    if (activeTab === 'promocoes' && promotions.length === 0 && !promotionsLoading) {
+      fetchPromotions()
+    }
+  }, [activeTab, promotions.length, promotionsLoading, fetchPromotions])
 
   // Show WhatsApp FAB after scrolling past hero
   useEffect(() => {
@@ -129,6 +233,37 @@ export function StoreProfile({ store }: StoreProfileProps) {
       window.open(`https://wa.me/55${phone}`, '_blank')
     }
   }
+
+  // Loading skeleton for reviews
+  const ReviewSkeleton = () => (
+    <Card className="border-border/50">
+      <CardContent className="p-4">
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-3 w-32" />
+          </div>
+        </div>
+        <Skeleton className="h-3 w-full mt-3" />
+        <Skeleton className="h-3 w-3/4 mt-1" />
+      </CardContent>
+    </Card>
+  )
+
+  // Loading skeleton for promotions
+  const PromoSkeleton = () => (
+    <Card className="overflow-hidden">
+      <div className="flex">
+        <Skeleton className="w-24 sm:w-32 h-full" />
+        <CardContent className="p-4 flex-1 space-y-2">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-3 w-full" />
+          <Skeleton className="h-3 w-20" />
+        </CardContent>
+      </div>
+    </Card>
+  )
   
   return (
     <div className="min-h-screen pb-20 md:pb-4">
@@ -601,37 +736,65 @@ export function StoreProfile({ store }: StoreProfileProps) {
                 rating={store.rating}
                 totalReviews={store.totalReviews}
                 storeName={store.name}
+                ratingDistribution={ratingDistribution}
               />
               
               {/* Reviews list */}
-              {mockReviews.map((review, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
+              {reviewsLoading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <ReviewSkeleton key={i} />
+                  ))}
+                </div>
+              ) : reviews.length > 0 ? (
+                reviews.map((review, i) => (
+                  <motion.div
+                    key={review.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.08 }}
+                  >
+                    <Card className="border-border/50 card-spotlight hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/20 flex items-center justify-center text-sm font-bold text-primary">
+                            {(review.accountName || 'U')[0].toUpperCase()}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <p className="font-semibold text-sm">{review.accountName || 'Usuário'}</p>
+                              <span className="text-[10px] text-muted-foreground">{formatDate(review.createdAt)}</span>
+                            </div>
+                            <div className="mt-0.5">
+                              <StarRating rating={review.rating} size="sm" />
+                            </div>
+                          </div>
+                        </div>
+                        {review.comment && (
+                          <p className="text-sm text-muted-foreground mt-2">{review.comment}</p>
+                        )}
+                        {/* Store reply */}
+                        {review.reply && (
+                          <div className="mt-2 ml-6 p-2.5 bg-primary/5 rounded-lg border border-primary/10">
+                            <p className="text-[10px] font-semibold text-primary mb-1">Resposta da loja</p>
+                            <p className="text-xs text-muted-foreground">{review.reply}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-12 text-muted-foreground"
                 >
-                  <Card className="border-border/50 card-spotlight hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/20 flex items-center justify-center text-sm font-bold text-primary">
-                          {review.initials}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <p className="font-semibold text-sm">{review.name}</p>
-                            <span className="text-[10px] text-muted-foreground">{review.date}</span>
-                          </div>
-                          <div className="mt-0.5">
-                            <StarRating rating={review.rating} size="sm" />
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-2">{review.comment}</p>
-                    </CardContent>
-                  </Card>
+                  <Star className="h-12 w-12 mx-auto mb-3 text-muted-foreground/20" />
+                  <p className="font-medium">Nenhuma avaliação ainda</p>
+                  <p className="text-sm mt-1">Seja o primeiro a avaliar esta loja!</p>
                 </motion.div>
-              ))}
+              )}
             </motion.div>
           )}
 
@@ -656,46 +819,66 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     Ver todas as promoções
                   </h3>
                   <p className="text-sm text-white/80 mt-1">
-                    {mockPromotions.length} ofertas ativas nesta loja
+                    {promotionsLoading ? 'Carregando...' : `${promotions.length} ofertas ativas nesta loja`}
                   </p>
                 </div>
               </div>
 
               {/* Promo cards */}
-              {mockPromotions.map((promo, i) => (
-                <motion.div
-                  key={promo.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Card className="overflow-hidden card-spotlight hover:shadow-lg transition-all card-premium-hover">
-                    <div className="flex">
-                      <div className={`w-24 sm:w-32 bg-gradient-to-br ${promo.color} flex items-center justify-center shrink-0`}>
-                        <motion.span 
-                          className="text-white font-bold text-sm sm:text-base text-center px-2"
-                          animate={{ scale: [1, 1.05, 1] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                        >
-                          {promo.badge}
-                        </motion.span>
-                      </div>
-                      <CardContent className="p-4 flex-1">
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <p className="font-bold text-sm">{promo.title}</p>
-                            <p className="text-xs text-muted-foreground mt-1">{promo.desc}</p>
-                            <p className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-1">
-                              <Clock className="h-2.5 w-2.5" />
-                              Válido até {promo.validUntil}
-                            </p>
-                          </div>
+              {promotionsLoading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <PromoSkeleton key={i} />
+                  ))}
+                </div>
+              ) : promotions.length > 0 ? (
+                promotions.map((promo, i) => (
+                  <motion.div
+                    key={promo.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <Card className="overflow-hidden card-spotlight hover:shadow-lg transition-all card-premium-hover">
+                      <div className="flex">
+                        <div className={`w-24 sm:w-32 bg-gradient-to-br ${getPromoGradient(promo.type)} flex items-center justify-center shrink-0`}>
+                          <motion.span 
+                            className="text-white font-bold text-sm sm:text-base text-center px-2"
+                            animate={{ scale: [1, 1.05, 1] }}
+                            transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                          >
+                            {getPromoBadge(promo.type, promo.value)}
+                          </motion.span>
                         </div>
-                      </CardContent>
-                    </div>
-                  </Card>
+                        <CardContent className="p-4 flex-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="font-bold text-sm">{promo.title}</p>
+                              <p className="text-xs text-muted-foreground mt-1">{promo.description || `Desconto de ${getPromoBadge(promo.type, promo.value)} para pedidos${promo.minOrderValue ? ` acima de R$${promo.minOrderValue}` : ''}`}</p>
+                              <div className="flex items-center gap-3 mt-1.5">
+                                <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                                  <Clock className="h-2.5 w-2.5" />
+                                  {promo.endsAt ? `Válido até ${new Date(promo.endsAt).toLocaleDateString('pt-BR')}` : 'Sem validade'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-12 text-muted-foreground"
+                >
+                  <Percent className="h-12 w-12 mx-auto mb-3 text-muted-foreground/20" />
+                  <p className="font-medium">Nenhuma promoção ativa</p>
+                  <p className="text-sm mt-1">no momento</p>
                 </motion.div>
-              ))}
+              )}
             </motion.div>
           )}
         </AnimatePresence>

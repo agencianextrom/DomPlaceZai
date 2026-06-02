@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { motion } from 'framer-motion'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
+import { resolveProductImage } from '@/lib/product-images'
 import { toast } from 'sonner'
 
 const weekendProducts: (ProductData & { discount: number })[] = [
@@ -186,12 +187,18 @@ export function WeekendSpecials() {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.4 }}
               >
-                <Card className="overflow-hidden h-full hover:shadow-lg transition-all border-amber-200/30 dark:border-amber-800/20 group cursor-pointer">
+                <Card className="overflow-hidden h-full hover:shadow-lg transition-all border-amber-200/30 dark:border-amber-800/20 group cursor-pointer" onClick={() => { selectProduct(product); navigate('product') }}>
                   <CardContent className="p-0 h-full flex flex-col">
                     {/* Image area */}
-                    <div className={`relative aspect-[4/3] flex items-center justify-center bg-gradient-to-br ${productGradients[idx % productGradients.length]}`}>
+                    <div className={`relative aspect-[4/3] flex items-center justify-center bg-gradient-to-br ${productGradients[idx % productGradients.length]} overflow-hidden`}>
+                      {(() => {
+                        const imgUrl = resolveProductImage({ slug: product.slug, category: product.category, images: product.images })
+                        return imgUrl ? (
+                          <img src={imgUrl} alt={product.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} loading="lazy" />
+                        ) : null
+                      })()}
                       <motion.div
-                        className="h-14 w-14 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform"
+                        className="h-14 w-14 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform z-10"
                       >
                         <span className="text-3xl">
                           {product.category === 'FOOD' ? '\uD83C\uDF4E' : '\uD83C\uDF31'}
@@ -256,7 +263,12 @@ export function WeekendSpecials() {
                                   text: `Confira esta oferta de fim de semana: ${product.name} por ${formatBRL(product.price)} no DomPlace!`,
                                 })
                               } else {
-                                toast.success('Link copiado!')
+                                const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
+                                navigator.clipboard.writeText(shareUrl).then(() => {
+                                  toast.success('Link copiado!')
+                                }).catch(() => {
+                                  toast.error('Nao foi possivel copiar o link')
+                                })
                               }
                             }}
                           >
@@ -272,7 +284,7 @@ export function WeekendSpecials() {
           </div>
 
           {/* Bottom decorative bar */}
-          <div className="h-1 mt-4 bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 rounded-full overflow-hidden">
+          <div className="h-1 mt-4 bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 rounded-full overflow-hidden relative">
             <motion.div
               className="absolute inset-0 w-1/2"
               animate={{ x: ['-100%', '200%'] }}

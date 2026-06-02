@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
 import { motion, AnimatePresence } from 'framer-motion'
 import { formatBRL, CategoryIcon } from '@/components/product/ProductCard'
+import { resolveProductImage } from '@/lib/product-images'
 
 const dailyDeals: ProductData[] = [
   { id: 'dd1', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Arroz Tio João 5kg', slug: 'arroz-tio-joao', description: 'Arroz tipo 1 premium para sua família.', price: 24.90, comparePrice: 29.90, images: '[]', stock: 15, rating: 4.5, totalReviews: 23, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["5kg","1kg"]', category: 'FOOD' },
@@ -131,7 +132,13 @@ export function DailyDeals() {
           </Badge>
 
           <div className="relative flex gap-4">
-            <div className="h-24 w-24 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div className="h-24 w-24 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+              {(() => {
+                const imgUrl = resolveProductImage({ slug: featured.slug, category: featured.category, images: featured.images })
+                return imgUrl ? (
+                  <img src={imgUrl} alt={featured.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                ) : null
+              })()}
               <CategoryIcon category={featured.category} />
             </div>
             <div className="flex-1 min-w-0">
@@ -179,6 +186,7 @@ export function DailyDeals() {
           const discount = product.comparePrice
             ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
             : 0
+          const imgUrl = resolveProductImage({ slug: product.slug, category: product.category, images: product.images })
 
           return (
             <motion.div
@@ -198,7 +206,10 @@ export function DailyDeals() {
               </Badge>
 
               {/* Image */}
-              <div className="h-16 rounded-lg bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 flex items-center justify-center mt-1 mb-2 group-hover:scale-105 transition-transform">
+              <div className="h-16 rounded-lg bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 flex items-center justify-center mt-1 mb-2 group-hover:scale-105 transition-transform overflow-hidden relative">
+                {imgUrl ? (
+                  <img src={imgUrl} alt={product.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                ) : null}
                 <CategoryIcon category={product.category} />
               </div>
 

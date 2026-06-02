@@ -5,7 +5,7 @@ import {
   User, MapPin, CreditCard, Heart, ClipboardList, Gift, Users, Settings, LogOut, 
   Star, ChevronRight, Award, Edit3, Plus, Trash2, Package, ShoppingBag, Clock,
   Bell, Moon, MapPinned, Share2, Ticket, Copy, Check, ListChecks, LayoutDashboard,
-  BellRing, Shield, Headphones, PartyPopper, Truck, UserPlus, Loader2
+  BellRing, Shield, Headphones, PartyPopper, Truck, UserPlus, Loader2, LogIn
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -130,6 +130,10 @@ const menuItems = [
 
 export function ProfileView() {
   const { navigate, currentUser } = useAppStore()
+  // Client-side favorites from Zustand store (may differ from DB count)
+  const clientFavoriteCount = useAppStore(
+    (s) => s.favoriteProductIds.size + s.favoriteStoreIds.size
+  )
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [darkModeEnabled, setDarkModeEnabled] = useState(false)
@@ -223,11 +227,15 @@ export function ProfileView() {
   }
 
   // Derived values
-  const displayName = profile?.name || 'Usuário'
-  const displayEmail = profile?.email || ''
+  const displayName = profile?.name || currentUser?.name || 'Usuário'
+  const displayEmail = profile?.email || currentUser?.email || ''
   const avatarInitial = displayName.charAt(0).toUpperCase()
   const orderCount = profile?.orderCount ?? 0
-  const favoriteCount = profile?.favoriteCount ?? 0
+  // Use the max of DB favorites and client-side favorites to stay in sync
+  const favoriteCount = Math.max(
+    profile?.favoriteCount ?? 0,
+    clientFavoriteCount
+  )
   const loyaltyPoints = loyaltyData?.currentBalance ?? profile?.loyaltyBalance ?? 0
 
   if (activeSection === 'loyalty') {
@@ -491,6 +499,135 @@ export function ProfileView() {
   
   return (
     <div className="min-h-screen p-4 pb-24">
+      {/* Non-authenticated user: show login prompt */}
+      {!currentUser ? (
+        <div className="min-h-screen p-4 pb-24">
+          {/* Profile header with gradient cover area and wave bottom */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative overflow-hidden rounded-2xl mb-5"
+          >
+            {/* Cover gradient area */}
+            <div className="relative bg-gradient-to-br from-primary via-emerald-600 to-teal-600 pt-6 pb-8 text-white">
+              {/* Background decorations */}
+              <div className="absolute inset-0 opacity-[0.06]" style={{
+                backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+                backgroundSize: '20px 20px',
+              }} />
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
+              <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-white/[0.03] rounded-full" />
+              
+              {/* Profile info - login prompt */}
+              <div className="relative px-6">
+                <div className="flex items-end gap-4">
+                  {/* Avatar placeholder */}
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
+                    className="relative"
+                  >
+                    <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
+                      <User className="h-10 w-10 sm:h-12 sm:w-12 text-white/70" />
+                    </div>
+                  </motion.div>
+                  <div className="flex-1 pb-1">
+                    <h1 className="text-xl sm:text-2xl font-bold text-shadow-lg">Visitante</h1>
+                    <p className="text-sm text-white/70 mt-0.5">Faça login para ver seu perfil</p>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    className="bg-white/15 hover:bg-white/25 text-white border border-white/20 text-sm backdrop-blur-sm shrink-0"
+                    onClick={() => useAppStore.getState().openAuthModal()}
+                  >
+                    <LogIn className="h-3 w-3 mr-1" />
+                    Entrar
+                  </Button>
+                </div>
+              </div>
+              
+              {/* SVG wave bottom edge */}
+              <svg className="absolute bottom-0 left-0 right-0 z-10" viewBox="0 0 1440 32" fill="none" preserveAspectRatio="none">
+                <path d="M0 16C180 28 360 4 540 16C720 28 900 4 1080 16C1260 28 1440 16 1440 16V32H0V16Z" fill="oklch(0.99 0.002 120)" className="dark:hidden" />
+                <path d="M0 16C180 28 360 4 540 16C720 28 900 4 1080 16C1260 28 1440 16 1440 16V32H0V16Z" fill="oklch(0.15 0.015 150)" className="hidden dark:block" />
+              </svg>
+            </div>
+          </motion.div>
+
+          {/* Empty state - login prompt */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="flex flex-col items-center justify-center py-10 text-center"
+          >
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative"
+            >
+              <div className="h-20 w-20 rounded-full bg-gradient-to-br from-primary/10 to-emerald-100 dark:from-primary/20 dark:to-emerald-900/20 flex items-center justify-center">
+                <User className="h-10 w-10 text-primary/40" />
+              </div>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+                className="absolute -inset-3 rounded-full border border-dashed border-primary/15"
+              />
+            </motion.div>
+            <h2 className="text-lg font-bold mt-5">Faça login para ver seu perfil</h2>
+            <p className="text-sm text-muted-foreground mt-2 max-w-xs">
+              Acesse sua conta para ver pedidos, favoritos, pontos de fidelidade e muito mais.
+            </p>
+            <Button
+              className="mt-5 bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8 btn-glow"
+              onClick={() => useAppStore.getState().openAuthModal()}
+            >
+              <LogIn className="h-4 w-4" />
+              Entrar na conta
+            </Button>
+          </motion.div>
+
+          <Separator className="my-4 section-divider" />
+          
+          {/* Menu items - visible but prompt login when clicked */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.25 }}
+          >
+            <div className="space-y-1.5">
+              {menuItems.map((item, idx) => (
+                <motion.button
+                  key={item.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.25 + idx * 0.03 }}
+                  whileHover={{ x: 4, transition: { duration: 0.2 } }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    toast.info('Faça login para acessar esta funcionalidade')
+                    useAppStore.getState().openAuthModal()
+                  }}
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 hover:shadow-sm transition-all text-left group menu-item-hover elevated-card ripple-effect"
+                >
+                  <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
+                    <item.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm">{item.label}</p>
+                    <p className="text-xs text-muted-foreground truncate">{item.desc}</p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-0.5 shrink-0 transition-all" />
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      ) : (
+      <>
       {/* Profile header with gradient cover area and wave bottom */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -919,6 +1056,8 @@ export function ProfileView() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </>
+      )}
     </div>
   )
 }

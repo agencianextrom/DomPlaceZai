@@ -16,12 +16,27 @@ import { PriceDropAlert } from './PriceDropAlert'
 import { SocialProofBadges } from './SocialProofBadges'
 import { StockUrgency } from './StockUrgency'
 import { QuantityStepper } from '@/components/ui/QuantityStepper'
+import { resolveProductImage } from '@/lib/product-images'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 
 interface ProductDetailProps {
   product: ProductData
+}
+
+interface RelatedProductAPI {
+  id: string
+  name: string
+  price: number
+  comparePrice: number | null
+  images: string | null
+  rating: number
+  totalReviews: number
+  isNew?: boolean
+  isOffer?: boolean
+  soldCount?: number
 }
 
 const gradients = [
@@ -32,7 +47,6 @@ const gradients = [
   'from-lime-100 to-green-200 dark:from-lime-900/30 dark:to-green-800/30',
 ]
 
-
 // Trust badges
 const trustBadges = [
   { icon: ShieldCheck, label: 'Garantia de satisfação', desc: 'Devolução fácil em até 7 dias', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
@@ -40,30 +54,48 @@ const trustBadges = [
   { icon: Zap, label: 'Pagamento seguro', desc: 'Pix, cartão e dinheiro', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20' },
 ]
 
-// Mock similar products
-const mockSimilarProducts: ProductData[] = [
-  { id: 'sp1', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Açúcar Cristal 1kg', slug: 'acucar-cristal', description: 'Açúcar cristal de alta qualidade.', price: 5.49, comparePrice: null, images: '[]', stock: 120, rating: 4.2, totalReviews: 18, isFeatured: false, isNew: false, isOffer: false, tags: '["básico"]', variations: null, category: 'FOOD' },
-  { id: 'sp2', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Café Torrado 500g', slug: 'cafe-torrado', description: 'Café premium torrado e moído.', price: 18.90, comparePrice: 22.00, images: '[]', stock: 60, rating: 4.6, totalReviews: 32, isFeatured: true, isNew: false, isOffer: true, tags: '["popular"]', variations: '["250g","500g"]', category: 'FOOD' },
-  { id: 'sp3', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Macarrão Espaguete 500g', slug: 'macarrao-espaguete', description: 'Macarrão espaguete tipo italiano.', price: 4.90, comparePrice: null, images: '[]', stock: 90, rating: 4.4, totalReviews: 22, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-  { id: 'sp4', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Açaí com Granola 300ml', slug: 'acai-granola', description: 'Açaí cremoso com granola crocante.', price: 12.00, comparePrice: null, images: '[]', stock: 80, rating: 4.7, totalReviews: 56, isFeatured: false, isNew: true, isOffer: false, tags: '["infantil"]', variations: null, category: 'FOOD' },
-  { id: 'sp5', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Leite Integral 1L', slug: 'leite-integral', description: 'Leite integral pasteurizado.', price: 6.90, comparePrice: 7.50, images: '[]', stock: 150, rating: 4.3, totalReviews: 41, isFeatured: false, isNew: false, isOffer: true, tags: '["básico","popular"]', variations: null, category: 'FOOD' },
-  { id: 'sp6', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Smoothie de Açaí', slug: 'smoothie-acai', description: 'Smoothie refrescante de açaí com frutas.', price: 18.00, comparePrice: null, images: '[]', stock: 40, rating: 4.8, totalReviews: 28, isFeatured: true, isNew: true, isOffer: false, tags: '["novidade"]', variations: null, category: 'FOOD' },
-]
+// Map API related/boughtTogether items to a minimal display type
+interface DisplayRelatedProduct {
+  id: string
+  name: string
+  price: number
+  comparePrice: number | null
+  category: string
+  isOffer: boolean
+}
 
-// "Frequently bought together" mock data
-const frequentlyBoughtTogether: ProductData[] = [
-  { id: 'fbt1', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Açúcar Cristal 1kg', slug: 'acucar-cristal', description: 'Açúcar cristal premium.', price: 5.49, comparePrice: null, images: '[]', stock: 120, rating: 4.2, totalReviews: 18, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-  { id: 'fbt2', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Café Torrado 500g', slug: 'cafe-torrado', description: 'Café premium.', price: 18.90, comparePrice: 22.00, images: '[]', stock: 60, rating: 4.6, totalReviews: 32, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: null, category: 'FOOD' },
-]
+function mapApiRelatedToDisplay(p: RelatedProductAPI, product: ProductData): DisplayRelatedProduct {
+  return {
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    comparePrice: p.comparePrice,
+    category: product.category,
+    isOffer: p.isOffer || false,
+  }
+}
+
+// Skeleton loader for product grid items
+function ProductGridSkeleton() {
+  return (
+    <div className="space-y-2">
+      <Skeleton className="aspect-square rounded-xl" />
+      <Skeleton className="h-3 w-3/4" />
+      <Skeleton className="h-4 w-1/2" />
+    </div>
+  )
+}
 
 export function ProductDetail({ product }: ProductDetailProps) {
   const { goBack, navigate, selectStore, addToCart, isFavoriteProduct, toggleFavoriteProduct } = useAppStore()
   const [quantity, setQuantity] = useState(1)
   const [selectedVariation, setSelectedVariation] = useState<string | null>(null)
   const [showFullDescription, setShowFullDescription] = useState(false)
-  const [similarProducts, setSimilarProducts] = useState<ProductData[]>(mockSimilarProducts)
+  const [similarProducts, setSimilarProducts] = useState<DisplayRelatedProduct[]>([])
+  const [frequentlyBoughtTogether, setFrequentlyBoughtTogether] = useState<DisplayRelatedProduct[]>([])
   const [showStickyBar, setShowStickyBar] = useState(false)
   const [bundleAdded, setBundleAdded] = useState(false)
+  const [isLoadingRelated, setIsLoadingRelated] = useState(true)
   const buySectionRef = useRef<HTMLDivElement>(null)
   
   const isFav = isFavoriteProduct(product.id)
@@ -77,13 +109,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const tags = product.tags ? JSON.parse(product.tags) : []
 
   useEffect(() => {
-    // Set default variation
     if (variations.length > 0 && !selectedVariation) {
       setSelectedVariation(variations[0])
     }
   }, [variations, selectedVariation])
 
-  // Show sticky bar when scrolled past the buy section
   useEffect(() => {
     const handleScroll = () => {
       if (!buySectionRef.current) return
@@ -94,24 +124,50 @@ export function ProductDetail({ product }: ProductDetailProps) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Try to fetch similar products from API
+  // Fetch related products + frequently bought together from product detail API
   useEffect(() => {
     let cancelled = false
-    const fetchSimilar = async () => {
+    const fetchRelated = async () => {
+      setIsLoadingRelated(true)
       try {
-        const res = await fetch(`/api/products?limit=8&category=${product.category}`)
+        const res = await fetch(`/api/products/${product.id}`)
         const data = await res.json()
-        if (!cancelled && data.products) {
-          const filtered = (data.products as ProductData[])
-            .filter(p => p.id !== product.id)
-            .slice(0, 6)
-          if (filtered.length > 0) setSimilarProducts(filtered)
+        if (!cancelled && res.ok) {
+          // Use relatedProducts for "similar products"
+          if (data.relatedProducts && data.relatedProducts.length > 0) {
+            setSimilarProducts(data.relatedProducts.map((p: RelatedProductAPI) => mapApiRelatedToDisplay(p, product)))
+          } else {
+            // Fallback: fetch by category
+            const catRes = await fetch(`/api/products?limit=8&category=${product.category}`)
+            const catData = await catRes.json()
+            if (!cancelled && catData.products) {
+              const filtered = (catData.products as ProductData[])
+                .filter(p => p.id !== product.id)
+                .slice(0, 6)
+                .map(p => ({
+                  id: p.id,
+                  name: p.name,
+                  price: p.price,
+                  comparePrice: p.comparePrice,
+                  category: p.category,
+                  isOffer: p.isOffer,
+                }))
+              if (filtered.length > 0) setSimilarProducts(filtered)
+            }
+          }
+
+          // Use boughtTogether for "frequently bought together"
+          if (data.boughtTogether && data.boughtTogether.length > 0) {
+            setFrequentlyBoughtTogether(data.boughtTogether.map((p: RelatedProductAPI) => mapApiRelatedToDisplay(p, product)).slice(0, 2))
+          }
         }
       } catch {
-        // use mock data
+        // Silent fail — will show empty state
+      } finally {
+        if (!cancelled) setIsLoadingRelated(false)
       }
     }
-    fetchSimilar()
+    fetchRelated()
     return () => { cancelled = true }
   }, [product.id, product.category])
 
@@ -127,16 +183,34 @@ export function ProductDetail({ product }: ProductDetailProps) {
   // Calculate "frequently bought together" total
   const fbtTotal = product.price + frequentlyBoughtTogether.reduce((sum, p) => sum + p.price, 0)
   const fbtSavings = frequentlyBoughtTogether.reduce((sum, p) => sum + ((p.comparePrice || p.price) - p.price), 0)
-  // Bundle discount: 10% off the combined price
-  const bundleDiscount = Math.round(fbtTotal * 0.10 * 100) / 100
-  const bundleTotal = Math.round((fbtTotal - bundleDiscount) * 100) / 100
+  const bundleDiscount = frequentlyBoughtTogether.length > 0 ? Math.round(fbtTotal * 0.10 * 100) / 100 : 0
+  const bundleTotal = frequentlyBoughtTogether.length > 0 ? Math.round((fbtTotal - bundleDiscount) * 100) / 100 : 0
 
   const handleAddBundle = () => {
-    // Add main product
     addToCart(product, product.storeName || 'Loja', quantity)
-    // Add bundle items
+    // For FBT items, we need to construct minimal ProductData for addToCart
     frequentlyBoughtTogether.forEach(p => {
-      addToCart(p, p.storeName || 'Loja', 1)
+      const fakeProduct: ProductData = {
+        id: p.id,
+        storeId: product.storeId,
+        storeName: product.storeName,
+        name: p.name,
+        slug: p.name.toLowerCase().replace(/\s+/g, '-'),
+        description: null,
+        price: p.price,
+        comparePrice: p.comparePrice,
+        images: '[]',
+        stock: 99,
+        rating: 0,
+        totalReviews: 0,
+        isFeatured: false,
+        isNew: false,
+        isOffer: p.isOffer,
+        tags: '[]',
+        variations: null,
+        category: p.category,
+      }
+      addToCart(fakeProduct, product.storeName || 'Loja', 1)
     })
     setBundleAdded(true)
     toast.success('Kit completo adicionado ao carrinho!', {
@@ -175,6 +249,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
         productName={product.name}
         category={product.category}
         count={5}
+        productSlug={product.slug}
       />
       
       {/* Info */}
@@ -457,162 +532,215 @@ export function ProductDetail({ product }: ProductDetailProps) {
         <Separator className="my-4" />
 
         {/* Frequently bought together */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-2"
-        >
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
-            <ShoppingCart className="h-4 w-4 text-primary" />
-            Compre junto
-            <Badge variant="secondary" className="text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-800/30">
-              Economize {formatBRL(bundleDiscount)}
-            </Badge>
-          </h3>
-          <Card className="border-primary/20 overflow-hidden">
-            <CardContent className="p-4">
-              <div className="flex flex-col sm:flex-row items-center gap-3">
-                {/* Main product */}
-                <motion.div
-                  className="flex items-center gap-3 flex-1 min-w-0"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className={`h-14 w-14 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-sm relative`}>
-                    <CategoryIcon category={product.category} />
-                    <motion.div
-                      animate={bundleAdded ? { scale: [0, 1] } : {}}
-                      className={`absolute inset-0 rounded-xl bg-primary/80 flex items-center justify-center ${bundleAdded ? '' : 'hidden'}`}
-                    >
-                      <Check className="h-6 w-6 text-white" />
-                    </motion.div>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold line-clamp-2">{product.name}</p>
-                    <p className="text-sm font-bold text-primary">{formatBRL(product.price)}</p>
-                  </div>
-                </motion.div>
-                
-                {/* Plus signs */}
-                {frequentlyBoughtTogether.map((fbt, fbtIdx) => (
-                  <Fragment key={fbt.id}>
-                    <div className="hidden sm:flex h-8 w-8 rounded-full bg-muted items-center justify-center shrink-0">
-                      <Plus className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    <div className="sm:hidden flex h-6 w-6 rounded-full bg-muted items-center justify-center shrink-0">
-                      <Plus className="h-3 w-3 text-muted-foreground" />
-                    </div>
-                    <motion.div
-                      className="flex items-center gap-3 flex-1 min-w-0"
-                      whileHover={{ scale: 1.02 }}
-                    >
-                      <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-amber-100 to-orange-200 dark:from-amber-900/30 dark:to-orange-800/30 flex items-center justify-center shrink-0 shadow-sm relative">
-                        <CategoryIcon category={fbt.category} />
-                        <motion.div
-                          animate={bundleAdded ? { scale: [0, 1] } : {}}
-                          transition={{ delay: 0.1 + fbtIdx * 0.1 }}
-                          className={`absolute inset-0 rounded-xl bg-primary/80 flex items-center justify-center ${bundleAdded ? '' : 'hidden'}`}
-                        >
-                          <Check className="h-6 w-6 text-white" />
-                        </motion.div>
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold line-clamp-2">{fbt.name}</p>
-                        <p className="text-sm font-bold text-primary">{formatBRL(fbt.price)}</p>
-                      </div>
-                    </motion.div>
-                  </Fragment>
-                ))}
-
-                {/* Total */}
-                <div className="w-full sm:w-auto pt-3 sm:pt-0 sm:ml-2">
-                  <div className="bg-gradient-to-r from-primary/5 to-amber-500/5 rounded-xl p-3 border border-primary/10 text-center sm:text-left sm:min-w-[130px]">
-                    <p className="text-[10px] text-muted-foreground">Kit completo</p>
-                    <div className="flex items-baseline gap-2">
-                      <p className="text-lg font-bold text-primary">{formatBRL(bundleTotal)}</p>
-                      <span className="text-xs text-muted-foreground line-through">{formatBRL(fbtTotal)}</span>
-                    </div>
-                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-0.5">
-                      <Tag className="h-3 w-3" />
-                      Economize {formatBRL(bundleDiscount)} comprando juntos
-                    </p>
-                    <AnimatePresence mode="wait">
+        {frequentlyBoughtTogether.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-2"
+          >
+            <h3 className="font-semibold mb-3 flex items-center gap-2">
+              <ShoppingCart className="h-4 w-4 text-primary" />
+              Compre junto
+              <Badge variant="secondary" className="text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-800/30">
+                Economize {formatBRL(bundleDiscount)}
+              </Badge>
+            </h3>
+            <Card className="border-primary/20 overflow-hidden">
+              <CardContent className="p-4">
+                <div className="flex flex-col sm:flex-row items-center gap-3">
+                  {/* Main product */}
+                  <motion.div
+                    className="flex items-center gap-3 flex-1 min-w-0"
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <div className={`h-14 w-14 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-sm relative overflow-hidden`}>
+                      {(() => {
+                        const imgUrl = resolveProductImage({ slug: product.slug, category: product.category, images: product.images })
+                        return imgUrl ? (
+                          <img src={imgUrl} alt={product.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                        ) : null
+                      })()}
+                      <CategoryIcon category={product.category} />
                       <motion.div
-                        key={bundleAdded ? 'added' : 'add'}
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
+                        animate={bundleAdded ? { scale: [0, 1] } : {}}
+                        className={`absolute inset-0 rounded-xl bg-primary/80 flex items-center justify-center ${bundleAdded ? '' : 'hidden'}`}
                       >
-                        {bundleAdded ? (
-                          <Button size="sm" className="w-full mt-2 h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg gap-1">
-                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
-                              <Check className="h-3.5 w-3.5" />
-                            </motion.div>
-                            Adicionados!
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            onClick={handleAddBundle}
-                            className="w-full mt-2 h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg btn-glow gap-1"
-                          >
-                            <ShoppingCart className="h-3.5 w-3.5" />
-                            Adicionar todos ao carrinho
-                          </Button>
-                        )}
+                        <Check className="h-6 w-6 text-white" />
                       </motion.div>
-                    </AnimatePresence>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold line-clamp-2">{product.name}</p>
+                      <p className="text-sm font-bold text-primary">{formatBRL(product.price)}</p>
+                    </div>
+                  </motion.div>
+                  
+                  {/* Plus signs */}
+                  {frequentlyBoughtTogether.map((fbt, fbtIdx) => (
+                    <Fragment key={fbt.id}>
+                      <div className="hidden sm:flex h-8 w-8 rounded-full bg-muted items-center justify-center shrink-0">
+                        <Plus className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                      <div className="sm:hidden flex h-6 w-6 rounded-full bg-muted items-center justify-center shrink-0">
+                        <Plus className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                      <motion.div
+                        className="flex items-center gap-3 flex-1 min-w-0"
+                        whileHover={{ scale: 1.02 }}
+                      >
+                        <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-amber-100 to-orange-200 dark:from-amber-900/30 dark:to-orange-800/30 flex items-center justify-center shrink-0 shadow-sm relative overflow-hidden">
+                          {(() => {
+                            const imgUrl = resolveProductImage({ category: fbt.category })
+                            return imgUrl ? (
+                              <img src={imgUrl} alt={fbt.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                            ) : null
+                          })()}
+                          <CategoryIcon category={fbt.category} />
+                          <motion.div
+                            animate={bundleAdded ? { scale: [0, 1] } : {}}
+                            transition={{ delay: 0.1 + fbtIdx * 0.1 }}
+                            className={`absolute inset-0 rounded-xl bg-primary/80 flex items-center justify-center ${bundleAdded ? '' : 'hidden'}`}
+                          >
+                            <Check className="h-6 w-6 text-white" />
+                          </motion.div>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold line-clamp-2">{fbt.name}</p>
+                          <p className="text-sm font-bold text-primary">{formatBRL(fbt.price)}</p>
+                        </div>
+                      </motion.div>
+                    </Fragment>
+                  ))}
+
+                  {/* Total */}
+                  <div className="w-full sm:w-auto pt-3 sm:pt-0 sm:ml-2">
+                    <div className="bg-gradient-to-r from-primary/5 to-amber-500/5 rounded-xl p-3 border border-primary/10 text-center sm:text-left sm:min-w-[130px]">
+                      <p className="text-[10px] text-muted-foreground">Kit completo</p>
+                      <div className="flex items-baseline gap-2">
+                        <p className="text-lg font-bold text-primary">{formatBRL(bundleTotal)}</p>
+                        <span className="text-xs text-muted-foreground line-through">{formatBRL(fbtTotal)}</span>
+                      </div>
+                      <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-0.5">
+                        <Tag className="h-3 w-3" />
+                        Economize {formatBRL(bundleDiscount)} comprando juntos
+                      </p>
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={bundleAdded ? 'added' : 'add'}
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -5 }}
+                        >
+                          {bundleAdded ? (
+                            <Button size="sm" className="w-full mt-2 h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg gap-1">
+                              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
+                                <Check className="h-3.5 w-3.5" />
+                              </motion.div>
+                              Adicionados!
+                            </Button>
+                          ) : (
+                            <Button
+                              size="sm"
+                              onClick={handleAddBundle}
+                              className="w-full mt-2 h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg btn-glow gap-1"
+                            >
+                              <ShoppingCart className="h-3.5 w-3.5" />
+                              Adicionar todos ao carrinho
+                            </Button>
+                          )}
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
 
         <Separator className="my-4" />
 
         {/* Similar products */}
         <div>
           <h3 className="font-semibold mb-4">Produtos similares</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {similarProducts.length > 0 ? similarProducts.slice(0, 6).map((p, i) => (
-              <motion.div
-                key={p.id}
-                whileHover={{ y: -3 }}
-                className="bg-card rounded-xl border border-border overflow-hidden cursor-pointer card-spotlight hover:shadow-lg transition-shadow"
-                onClick={() => {
-                  useAppStore.getState().selectProduct(p)
-                  navigate('product')
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
-                }}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <div className="aspect-square bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative">
-                  <CategoryIcon category={p.category} />
-                  {p.isOffer && p.comparePrice && (
-                    <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[9px] px-1.5 py-0 font-bold">
-                      -{Math.round(((p.comparePrice - p.price) / p.comparePrice) * 100)}%
-                    </Badge>
-                  )}
-                </div>
-                <div className="p-2.5">
-                  <h4 className="text-xs font-semibold line-clamp-2">{p.name}</h4>
-                  <div className="flex items-baseline gap-1.5 mt-1">
-                    <p className="text-sm font-bold text-primary">{formatBRL(p.price)}</p>
-                    {p.comparePrice && p.comparePrice > p.price && (
-                      <span className="text-[10px] text-muted-foreground line-through-animated">{formatBRL(p.comparePrice)}</span>
+          {isLoadingRelated ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <ProductGridSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {similarProducts.length > 0 ? similarProducts.slice(0, 6).map((p, i) => (
+                <motion.div
+                  key={p.id}
+                  whileHover={{ y: -3 }}
+                  className="bg-card rounded-xl border border-border overflow-hidden cursor-pointer card-spotlight hover:shadow-lg transition-shadow"
+                  onClick={() => {
+                    // Fetch full product data and navigate
+                    fetch(`/api/products/${p.id}`)
+                      .then(res => res.json())
+                      .then(data => {
+                        if (data.id) {
+                          const fullProduct: ProductData = {
+                            id: data.id,
+                            storeId: data.storeId || product.storeId,
+                            storeName: data.store?.name || product.storeName,
+                            storeLogo: data.store?.logo || null,
+                            name: data.name,
+                            slug: data.slug,
+                            description: data.description,
+                            price: data.price,
+                            comparePrice: data.comparePrice,
+                            images: data.images || '[]',
+                            stock: data.stock || 0,
+                            rating: data.rating || 0,
+                            totalReviews: data.totalReviews || 0,
+                            isFeatured: data.isFeatured || false,
+                            isNew: data.isNew || false,
+                            isOffer: data.isOffer || false,
+                            tags: data.tags || '[]',
+                            variations: data.variations || null,
+                            category: data.category || product.category,
+                          }
+                          useAppStore.getState().selectProduct(fullProduct)
+                          navigate('product')
+                          window.scrollTo({ top: 0, behavior: 'smooth' })
+                        }
+                      })
+                      .catch(() => {
+                        toast.error('Erro ao carregar produto')
+                      })
+                  }}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <div className="aspect-square bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative">
+                    <CategoryIcon category={p.category} />
+                    {p.isOffer && p.comparePrice && (
+                      <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[9px] px-1.5 py-0 font-bold">
+                        -{Math.round(((p.comparePrice - p.price) / p.comparePrice) * 100)}%
+                      </Badge>
                     )}
                   </div>
-                </div>
-              </motion.div>
-            )) : (
-              <p className="text-sm text-muted-foreground col-span-2 sm:col-span-3 text-center py-4">
-                Nenhum produto similar disponível
-              </p>
-            )}
-          </div>
+                  <div className="p-2.5">
+                    <h4 className="text-xs font-semibold line-clamp-2">{p.name}</h4>
+                    <div className="flex items-baseline gap-1.5 mt-1">
+                      <p className="text-sm font-bold text-primary">{formatBRL(p.price)}</p>
+                      {p.comparePrice && p.comparePrice > p.price && (
+                        <span className="text-[10px] text-muted-foreground line-through-animated">{formatBRL(p.comparePrice)}</span>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              )) : (
+                <p className="text-sm text-muted-foreground col-span-2 sm:col-span-3 text-center py-4">
+                  Nenhum produto similar disponível
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         <Separator className="my-4" />
@@ -744,5 +872,3 @@ export function ProductDetail({ product }: ProductDetailProps) {
     </div>
   )
 }
-
-

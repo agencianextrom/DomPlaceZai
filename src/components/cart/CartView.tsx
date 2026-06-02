@@ -5,12 +5,15 @@ import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, Chevr
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
+import { resolveProductImage } from '@/lib/product-images'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
 import { PromoCodeWidget } from '@/components/promotions/PromoCodeWidget'
 import { toast } from 'sonner'
+import { getDeliveryEstimate } from '@/lib/delivery-estimate'
 import type { ProductData, CartItemData } from '@/store/useAppStore'
 
 const gradients = [
@@ -20,79 +23,115 @@ const gradients = [
 
 const icons = ['🍎', '🛒', '📦', '🎁', '🌿', '🍞']
 
-const suggestedProducts: ProductData[] = [
-  { id: 'sp1', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Açaí 500ml', slug: 'acai-500ml', description: 'Açaí cremoso feito com frutas frescas do Pará.', price: 15.00, comparePrice: 18.00, images: '[]', stock: 100, rating: 4.9, totalReviews: 89, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["300ml","500ml","700ml"]', category: 'FOOD' },
-  { id: 'sp2', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: null, name: 'Pão Francês (6 un)', slug: 'pao-frances', description: 'Pão francês fresquinho saindo do forno.', price: 6.00, comparePrice: null, images: '[]', stock: 200, rating: 4.9, totalReviews: 120, isFeatured: true, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-  { id: 'sp3', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: null, name: 'Pasta de Dente Colgate', slug: 'pasta-dente', description: 'Pasta de dente Colgate Máxima Proteção 90g.', price: 6.90, comparePrice: null, images: '[]', stock: 200, rating: 4.3, totalReviews: 11, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'HEALTH' },
-  { id: 'sp4', storeId: 's3', storeName: 'Agropecuária São Paulo', storeLogo: null, name: 'Muda de Cupuaçu', slug: 'muda-cupuacu', description: 'Muda de cupuaçuzeiro com raiz forte, pronta para plantio.', price: 25.00, comparePrice: null, images: '[]', stock: 30, rating: 4.8, totalReviews: 5, isFeatured: true, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'AGRICULTURE' },
-  { id: 'sp5', storeId: 's8', storeName: 'Salão da Bella', storeLogo: null, name: 'Manicure Completa', slug: 'manicure-completa', description: 'Manicure e pedicure completa com esmaltação.', price: 50.00, comparePrice: null, images: '[]', stock: 999, rating: 4.7, totalReviews: 54, isFeatured: false, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'BEAUTY' },
-]
-
-// Mock delivery times per store
-const storeDeliveryTimes: Record<string, string> = {
-  s1: '20-30 min',
-  s2: '15-25 min',
-  s3: '40-60 min',
-  s4: '25-35 min',
-  s5: '15-25 min',
-  s6: '25-40 min',
-  s7: '30-45 min',
-  s8: '20-35 min',
-}
-
 const LOW_STOCK_THRESHOLD = 5
 
-// Cross-sell complementary products based on cart items
-const crossSellMap: Record<string, ProductData[]> = {
-  s1: [
-    { id: 'xs-açucar', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Açúcar Cristal 1kg', slug: 'acucar', description: 'Açúcar premium.', price: 5.49, comparePrice: null, images: '[]', stock: 120, rating: 4.2, totalReviews: 18, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-    { id: 'xs-cafe', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Café Torrado 500g', slug: 'cafe', description: 'Café premium.', price: 18.90, comparePrice: 22.00, images: '[]', stock: 60, rating: 4.6, totalReviews: 32, isFeatured: true, isNew: false, isOffer: true, tags: '[]', variations: '["250g","500g"]', category: 'FOOD' },
-    { id: 'xs-leite', storeId: 's1', storeName: 'Mercado do Zé', storeLogo: null, name: 'Leite Integral 1L', slug: 'leite', description: 'Leite pasteurizado.', price: 6.90, comparePrice: 7.50, images: '[]', stock: 150, rating: 4.3, totalReviews: 41, isFeatured: false, isNew: false, isOffer: true, tags: '[]', variations: null, category: 'FOOD' },
-  ],
-  s2: [
-    { id: 'xs-granola', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Granola Artesanal 200g', slug: 'granola', description: 'Granola crocante com frutas.', price: 12.00, comparePrice: null, images: '[]', stock: 80, rating: 4.7, totalReviews: 22, isFeatured: false, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-    { id: 'xs-smoothie', storeId: 's2', storeName: 'Açaí da Boa', storeLogo: null, name: 'Smoothie de Açaí', slug: 'smoothie', description: 'Smoothie refrescante.', price: 18.00, comparePrice: null, images: '[]', stock: 40, rating: 4.8, totalReviews: 28, isFeatured: true, isNew: true, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-  ],
-  s5: [
-    { id: 'xs-bolo', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: null, name: 'Bolo de Chocolate', slug: 'bolo', description: 'Bolo fofinho de chocolate.', price: 22.00, comparePrice: null, images: '[]', stock: 30, rating: 4.6, totalReviews: 35, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-    { id: 'xs-suco', storeId: 's5', storeName: 'Padaria Pão Quente', storeLogo: null, name: 'Suco Natural 500ml', slug: 'suco', description: 'Suco natural da fruta.', price: 10.00, comparePrice: null, images: '[]', stock: 50, rating: 4.5, totalReviews: 18, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'FOOD' },
-  ],
+// Helper to map API product response to ProductData
+function mapApiProduct(p: Record<string, unknown>): ProductData {
+  return {
+    id: p.id as string,
+    storeId: p.storeId as string,
+    storeName: p.storeName as string | undefined,
+    storeLogo: (p.storeLogo as string | null) ?? null,
+    name: p.name as string,
+    slug: p.slug as string,
+    description: (p.description as string | null) ?? null,
+    price: p.price as number,
+    comparePrice: (p.comparePrice as number | null) ?? null,
+    images: (p.images as string) ?? '[]',
+    stock: (p.stock as number) ?? 0,
+    rating: (p.rating as number) ?? 0,
+    totalReviews: (p.totalReviews as number) ?? 0,
+    isFeatured: (p.isFeatured as boolean) ?? false,
+    isNew: (p.isNew as boolean) ?? false,
+    isOffer: (p.isOffer as boolean) ?? false,
+    tags: (p.tags as string) ?? '[]',
+    variations: (p.variations as string | null) ?? null,
+    category: (p.category as string) ?? 'OTHER',
+    freeDeliveryAbove: (p.freeDeliveryAbove as number | null) ?? null,
+    storeDeliveryFee: (p.storeDeliveryFee as number) ?? null,
+  }
 }
-
-const fallbackCrossSell: ProductData[] = [
-  { id: 'xs-guarana', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: null, name: 'Guaraná em Pó 500g', slug: 'guarana', description: 'Guaraná natural em pó.', price: 15.90, comparePrice: null, images: '[]', stock: 60, rating: 4.4, totalReviews: 15, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'HEALTH' },
-  { id: 'xs-maca', storeId: 's4', storeName: 'Farmácia Vida', storeLogo: null, name: 'Maca Peruana 120 cáps', slug: 'maca', description: 'Suplemento natural.', price: 32.00, comparePrice: 38.00, images: '[]', stock: 45, rating: 4.5, totalReviews: 20, isFeatured: false, isNew: true, isOffer: true, tags: '[]', variations: null, category: 'HEALTH' },
-  { id: 'xs-shampoo', storeId: 's8', storeName: 'Salão da Bella', storeLogo: null, name: 'Shampoo Hidratante 400ml', slug: 'shampoo', description: 'Shampoo profissional.', price: 28.00, comparePrice: null, images: '[]', stock: 70, rating: 4.6, totalReviews: 25, isFeatured: false, isNew: false, isOffer: false, tags: '[]', variations: null, category: 'BEAUTY' },
-]
 
 function CrossSellSection({ cartItems }: { cartItems: CartItemData[] }) {
   const { addToCart } = useAppStore()
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set())
   const [addedAll, setAddedAll] = useState(false)
+  const [crossSellProducts, setCrossSellProducts] = useState<ProductData[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   // Get unique store IDs from cart
   const cartStoreIds = useMemo(() => [...new Set(cartItems.map(item => item.product.storeId))], [cartItems])
 
-  // Find cross-sell products from the same stores or fallback
-  const crossSellProducts = useMemo(() => {
-    let suggestions: ProductData[] = []
-    for (const storeId of cartStoreIds) {
-      const storeSuggestions = crossSellMap[storeId]
-      if (storeSuggestions) {
-        // Filter out products already in cart
+  // Fetch real cross-sell products (offers from cart stores)
+  useEffect(() => {
+    if (cartStoreIds.length === 0) return
+    let cancelled = false
+    const fetchCrossSell = async () => {
+      setIsLoading(true)
+      try {
         const cartProductIds = new Set(cartItems.map(item => item.productId))
-        const filtered = storeSuggestions.filter(s => !cartProductIds.has(s.id))
-        suggestions = [...suggestions, ...filtered]
+        // Fetch offer products from the stores in the cart
+        const promises = cartStoreIds.map(storeId =>
+          fetch(`/api/products?storeId=${storeId}&isOffer=true&limit=4`).then(r => r.json())
+        )
+        const results = await Promise.allSettled(promises)
+        if (cancelled) return
+
+        let allProducts: ProductData[] = []
+        for (const result of results) {
+          if (result.status === 'fulfilled' && result.value?.products) {
+            const mapped = result.value.products.map(mapApiProduct)
+            allProducts = [...allProducts, ...mapped]
+          }
+        }
+
+        // If not enough offers from cart stores, fetch general offers
+        if (allProducts.length < 3) {
+          const res = await fetch('/api/products?isOffer=true&limit=6')
+          if (res.ok) {
+            const data = await res.json()
+            if (data.products) {
+              const generalOffers = data.products.map(mapApiProduct)
+              const existingIds = new Set(allProducts.map(p => p.id))
+              const newOffers = generalOffers.filter(p => !existingIds.has(p.id))
+              allProducts = [...allProducts, ...newOffers]
+            }
+          }
+        }
+
+        // Filter out products already in cart
+        const filtered = allProducts.filter(p => !cartProductIds.has(p.id))
+        setCrossSellProducts(filtered.slice(0, 4))
+      } catch {
+        // Silently fail — cross-sell section just won't show
+      } finally {
+        if (!cancelled) setIsLoading(false)
       }
     }
-    // If not enough suggestions, add fallback
-    if (suggestions.length < 3) {
-      const cartProductIds = new Set(cartItems.map(item => item.productId))
-      const fallbackFiltered = fallbackCrossSell.filter(s => !cartProductIds.has(s.id) && !suggestions.some(x => x.id === s.id))
-      suggestions = [...suggestions, ...fallbackFiltered]
-    }
-    return suggestions.slice(0, 4)
-  }, [cartItems, cartStoreIds])
+    fetchCrossSell()
+    return () => { cancelled = true }
+  }, [cartStoreIds, cartItems])
+
+  if (isLoading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-gradient-to-br from-primary/5 via-card to-accent/5 rounded-xl border border-primary/15 p-4 card-shine elevated-card"
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <Skeleton className="h-5 w-5 rounded-lg" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+        <div className="flex gap-3 overflow-x-auto">
+          {[1, 2, 3].map(i => (
+            <Skeleton key={i} className="shrink-0 w-[140px] h-[170px] rounded-xl" />
+          ))}
+        </div>
+      </motion.div>
+    )
+  }
 
   if (crossSellProducts.length === 0) return null
 
@@ -226,6 +265,8 @@ export function CartView() {
   const [suggestionScrollPos, setSuggestionScrollPos] = useState(0)
   const [stockMap, setStockMap] = useState<Record<string, number>>({})
   const [isLoadingStock, setIsLoadingStock] = useState(false)
+  const [suggestedProducts, setSuggestedProducts] = useState<ProductData[]>([])
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false)
 
   const groups = getCartGroupedByStore()
   const subtotal = getCartTotal()
@@ -255,6 +296,29 @@ export function CartView() {
   const freeDeliveryThreshold = lowestFreeThreshold === Infinity ? 50 : lowestFreeThreshold
   const freeDeliveryProgress = Math.min((subtotal / freeDeliveryThreshold) * 100, 100)
   const remainingForFree = Math.max(freeDeliveryThreshold - subtotal, 0)
+
+  // Fetch suggested products (featured products from API)
+  useEffect(() => {
+    let cancelled = false
+    const fetchSuggestions = async () => {
+      setIsLoadingSuggestions(true)
+      try {
+        const res = await fetch('/api/products?isFeatured=true&limit=5')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.products && !cancelled) {
+            setSuggestedProducts(data.products.map(mapApiProduct))
+          }
+        }
+      } catch {
+        // Silently fail
+      } finally {
+        if (!cancelled) setIsLoadingSuggestions(false)
+      }
+    }
+    fetchSuggestions()
+    return () => { cancelled = true }
+  }, [])
 
   // Fetch real stock from API
   const fetchStock = useCallback(async () => {
@@ -384,17 +448,25 @@ export function CartView() {
         {/* Morph blob background decoration */}
         <div className="morph-blob absolute top-1/4 -left-20 w-48 h-48 bg-primary/5" style={{ animationDelay: '-2s' }} />
         <div className="morph-blob absolute bottom-1/4 -right-16 w-36 h-36 bg-accent/5" style={{ animationDelay: '-5s' }} />
+        <div className="morph-blob absolute top-1/3 right-1/4 w-24 h-24 bg-emerald-500/5" style={{ animationDelay: '-8s' }} />
 
+        {/* Animated illustration with shopping bag */}
         <motion.div
           initial={{ scale: 0.6, opacity: 0, rotate: -10 }}
           animate={{ scale: 1, opacity: 1, rotate: 0 }}
           transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
           className="relative mb-8"
         >
+          {/* Outer glow ring */}
+          <motion.div
+            animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -inset-6 rounded-full bg-gradient-to-br from-primary/8 to-accent/8 blur-xl"
+          />
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 dark:from-primary/5 dark:to-accent/5 flex items-center justify-center shadow-inner"
+            className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 dark:from-primary/5 dark:to-accent/5 flex items-center justify-center shadow-inner relative"
           >
             <motion.div
               animate={{ y: [0, -6, 0], rotate: [0, 2, -2, 0] }}
@@ -402,8 +474,26 @@ export function CartView() {
             >
               <ShoppingBag className="h-16 w-16 text-primary/40" />
             </motion.div>
+
+            {/* Floating emoji accents */}
+            <motion.span
+              animate={{ y: [0, -8, 0], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+              className="absolute -top-2 -left-3 text-xl"
+            >🛒</motion.span>
+            <motion.span
+              animate={{ y: [0, -6, 0], opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              className="absolute -top-1 right-1 text-lg"
+            >✨</motion.span>
+            <motion.span
+              animate={{ y: [0, -7, 0], opacity: [0.5, 0.9, 0.5] }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+              className="absolute bottom-0 -left-4 text-lg"
+            >🎁</motion.span>
           </motion.div>
 
+          {/* Orbiting sparkle decorations */}
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
@@ -425,6 +515,21 @@ export function CartView() {
               <Sparkles className="h-3 w-3 text-primary/50" />
             </div>
           </motion.div>
+
+          <motion.div
+            animate={{ rotate: 240 }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+            className="absolute inset-0"
+            style={{ transformOrigin: 'center center' }}
+          >
+            <div className="absolute top-4 -left-2">
+              <motion.span
+                animate={{ scale: [0.8, 1.1, 0.8] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                className="text-base"
+              >🌿</motion.span>
+            </div>
+          </motion.div>
         </motion.div>
 
         <motion.div
@@ -437,16 +542,23 @@ export function CartView() {
           <p className="text-muted-foreground text-center mb-8 text-sm max-w-xs mx-auto leading-relaxed">
             Adicione produtos das lojas locais e aproveite as melhores ofertas de Dom Eliseu
           </p>
-          <div className="flex gap-3 justify-center">
-            <Button onClick={() => navigate('home')} variant="outline" className="h-11 px-5 hover-glow-soft">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button
+              onClick={() => navigate('home')}
+              variant="outline"
+              className="h-12 px-6 hover-glow-soft border-primary/30 hover:border-primary/50 hover:bg-primary/5"
+            >
               Explorar ofertas
             </Button>
-            <Button onClick={() => navigate('home')} className="bg-primary text-primary-foreground h-11 px-5 btn-glow btn-shine">
+            <Button
+              onClick={() => navigate('home')}
+              className="h-12 px-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-glow btn-shine shadow-lg shadow-primary/20"
+            >
               Ver lojas
               <Store className="h-4 w-4 ml-2" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground mt-4">
+          <p className="text-xs text-muted-foreground mt-5">
             <button onClick={() => navigate('home')} className="text-primary hover:underline font-medium">
               Continue comprando
             </button>
@@ -569,17 +681,23 @@ export function CartView() {
             </div>
           </div>
           <div id="suggestions-scroll" className="flex gap-3 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1">
-            {suggestedProducts.map((product, index) => (
-              <motion.div
-                key={product.id}
-                className="shrink-0 w-[150px]"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.08, duration: 0.4 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
+            {isLoadingSuggestions ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="shrink-0 w-[150px] h-[220px] rounded-xl" />
+              ))
+            ) : (
+              suggestedProducts.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  className="shrink-0 w-[150px]"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.08, duration: 0.4 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
 
@@ -598,13 +716,11 @@ export function CartView() {
                 <Store className="h-4 w-4 text-primary" />
                 <span className="font-semibold text-sm flex-1 truncate">{group.storeName}</span>
                 <span className="text-xs text-muted-foreground">{group.items.length} {group.items.length === 1 ? 'item' : 'itens'}</span>
-                {/* Delivery time badge */}
-                {storeDeliveryTimes[group.storeId] && (
-                  <Badge variant="secondary" className="text-[10px] bg-primary/5 text-primary border-0 ml-1 flex items-center gap-1">
-                    <Clock className="h-2.5 w-2.5" />
-                    {storeDeliveryTimes[group.storeId]}
-                  </Badge>
-                )}
+                {/* Delivery time badge — calculated from store hours or category defaults */}
+                <Badge variant="secondary" className="text-[10px] bg-primary/5 text-primary border-0 ml-1 flex items-center gap-1">
+                  <Clock className="h-2.5 w-2.5" />
+                  {getDeliveryEstimate(null, group.items[0]?.product?.category)}
+                </Badge>
               </div>
 
               <div className="divide-y divide-border">
@@ -615,6 +731,7 @@ export function CartView() {
                   const outOfStock = isOutOfStock(item.productId)
                   const lowStock = isLowStock(item.productId)
                   const realStock = getRealStock(item.productId)
+                  const cartImgUrl = resolveProductImage({ slug: item.product.slug, category: item.product.category, images: item.product.images })
 
                   return (
                     <motion.div
@@ -625,8 +742,11 @@ export function CartView() {
                       transition={{ delay: index * 0.06, duration: 0.35 }}
                       className={`flex gap-3 p-4 cart-item-hover hover-glow-soft ${outOfStock ? 'opacity-60' : ''}`}
                     >
-                      <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0 relative`}>
-                        {icon}
+                      <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0 relative overflow-hidden`}>
+                        {cartImgUrl ? (
+                          <img src={cartImgUrl} alt={item.product.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                        ) : null}
+                        {!cartImgUrl && icon}
                         {outOfStock && (
                           <div className="absolute inset-0 bg-background/60 rounded-lg flex items-center justify-center">
                             <span className="text-[10px] font-bold text-destructive">Esgotado</span>
@@ -719,12 +839,10 @@ export function CartView() {
               <div className="px-4 py-3 bg-secondary/20 flex justify-between items-center">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <span>Subtotal da loja</span>
-                  {storeDeliveryTimes[group.storeId] && (
-                    <span className="flex items-center gap-0.5 text-[11px] text-primary">
-                      <Clock className="h-3 w-3" />
-                      {storeDeliveryTimes[group.storeId]}
-                    </span>
-                  )}
+                  <span className="flex items-center gap-0.5 text-[11px] text-primary">
+                    <Clock className="h-3 w-3" />
+                    {getDeliveryEstimate(null, group.items[0]?.product?.category)}
+                  </span>
                 </div>
                 <span className="font-semibold">{formatBRL(group.subtotal)}</span>
               </div>

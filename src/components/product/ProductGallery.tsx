@@ -5,6 +5,7 @@ import { motion, AnimatePresence, PanInfo } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CategoryIcon } from './ProductCard'
+import { resolveProductImage, productImageMap } from '@/lib/product-images'
 
 const gradients = [
   'from-emerald-100 to-green-200 dark:from-emerald-900/30 dark:to-green-800/30',
@@ -19,19 +20,29 @@ interface ProductGalleryProps {
   productName?: string
   category?: string
   count?: number
+  productSlug?: string
 }
 
-export function ProductGallery({ images, productName, category, count = 5 }: ProductGalleryProps) {
+export function ProductGallery({ images, productName, category, count = 5, productSlug }: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(1)
   const [swipeDir, setSwipeDir] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Generate placeholder gradients if no real images
-  const galleryImages = images && images.length > 0
-    ? images
-    : Array.from({ length: count }, (_, i) => `placeholder-${i}`)
+  // Generate gallery images: real images, slug-based map, or placeholders
+  const galleryImages = (() => {
+    // 1. Real images from product.images field
+    if (images && images.length > 0) return images
+
+    // 2. Slug-based mapping from productImageMap
+    if (productSlug && productImageMap[productSlug]) {
+      return [productImageMap[productSlug]]
+    }
+
+    // 3. Fallback placeholders
+    return Array.from({ length: count }, (_, i) => `placeholder-${i}`)
+  })()
 
   const gradientForIndex = (idx: number) => gradients[idx % gradients.length]
 
@@ -93,7 +104,7 @@ export function ProductGallery({ images, productName, category, count = 5 }: Pro
     )
   }
 
-  const hasRealImages = images && images.length > 0
+  const hasRealImages = galleryImages.length > 0 && !galleryImages[0].startsWith('placeholder-')
 
   return (
     <>
@@ -142,7 +153,7 @@ export function ProductGallery({ images, productName, category, count = 5 }: Pro
               <div className="relative z-10">
                 {hasRealImages ? (
                   <img
-                    src={images[activeIndex]}
+                    src={galleryImages[activeIndex]}
                     alt={`${productName || 'Produto'} - Imagem ${activeIndex + 1}`}
                     className="w-full h-full object-contain p-4"
                   />
@@ -210,7 +221,7 @@ export function ProductGallery({ images, productName, category, count = 5 }: Pro
               <div className={`w-full h-full bg-gradient-to-br ${gradientForIndex(idx)} flex items-center justify-center`}>
                 {hasRealImages ? (
                   <img
-                    src={images[idx]}
+                    src={galleryImages[idx]}
                     alt={`Miniatura ${idx + 1}`}
                     className="w-full h-full object-cover"
                   />
@@ -291,7 +302,7 @@ export function ProductGallery({ images, productName, category, count = 5 }: Pro
                 >
                   {hasRealImages ? (
                     <img
-                      src={images[activeIndex]}
+                      src={galleryImages[activeIndex]}
                       alt={`${productName || 'Produto'} - Imagem ${activeIndex + 1}`}
                       className="max-w-full max-h-full object-contain select-none"
                       draggable={false}

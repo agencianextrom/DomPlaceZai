@@ -79,21 +79,26 @@ export function WelcomeModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [step, setStep] = useState(0)
   const [direction, setDirection] = useState(0)
-  const [isDismissed, setIsDismissed] = useState(false)
+  const [hasChecked, setHasChecked] = useState(() => {
+    if (typeof window === 'undefined') return false
+    const onboardingDone = localStorage.getItem('domplace-onboarding-done')
+    const welcomed = localStorage.getItem('domplace-welcomed')
+    return onboardingDone === 'true' || welcomed === 'true'
+  })
 
   useEffect(() => {
-    // Check if user has already seen the welcome
-    const welcomed = localStorage.getItem('domplace-welcomed')
-    if (!welcomed) {
-      // Small delay for a smooth entrance
-      const timer = setTimeout(() => setIsOpen(true), 800)
-      return () => clearTimeout(timer)
-    }
-  }, [])
+    // If already completed, skip the modal entirely
+    if (hasChecked) return
+    // Small delay for a smooth entrance
+    const timer = setTimeout(() => {
+      setIsOpen(true)
+    }, 800)
+    return () => clearTimeout(timer)
+  }, [hasChecked])
 
   const handleDismiss = useCallback(() => {
     localStorage.setItem('domplace-welcomed', 'true')
-    setIsDismissed(true)
+    localStorage.setItem('domplace-onboarding-done', 'true')
     setIsOpen(false)
   }, [])
 
@@ -124,8 +129,8 @@ export function WelcomeModal() {
     handleDismiss()
   }, [handleDismiss])
 
-  // Don't render if already dismissed or never should show
-  if (isDismissed) return null
+  // Don't render if already completed onboarding
+  if (hasChecked && !isOpen) return null
 
   const currentStep = onboardingSteps[step]
 

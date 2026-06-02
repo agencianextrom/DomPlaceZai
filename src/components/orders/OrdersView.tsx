@@ -211,26 +211,19 @@ export function OrdersView() {
     if (order.items) {
       let addedCount = 0
       let totalQty = 0
-      const warnings: string[] = []
 
       order.items.forEach(item => {
-        // Check if product might be unavailable (stock=0 in mock check)
-        const mockStock = item.price > 100 ? 0 : 10
-        if (mockStock === 0) {
-          warnings.push(item.productName)
-          return
-        }
         addToCart({
           id: `reorder-${item.productName}`,
           storeId: order.storeId,
           storeName: order.storeName,
           name: item.productName,
-          slug: item.productName.toLowerCase().replace(/\s+/g, '-'),
+          slug: item.productName?.toLowerCase().replace(/\s+/g, '-') || '',
           description: null,
           price: item.price,
           comparePrice: null,
-          images: '[]',
-          stock: mockStock,
+          images: (item as any).productImage ? JSON.stringify([(item as any).productImage]) : '[]',
+          stock: 10,
           rating: 4.5,
           totalReviews: 10,
           isFeatured: false,
@@ -247,12 +240,6 @@ export function OrdersView() {
       if (addedCount > 0) {
         toast.success(`${totalQty} itens de ${addedCount} produtos adicionados ao carrinho!`, {
           description: `Repetindo pedido #${order.orderNumber}`,
-        })
-      }
-
-      if (warnings.length > 0) {
-        toast.warning(`Alguns itens podem estar indisponíveis: ${warnings.join(', ')}`, {
-          description: 'Eles serão marcados como esgotados no carrinho.',
         })
       }
 
@@ -611,25 +598,19 @@ export function OrderDetail() {
     if (order.items) {
       let addedCount = 0
       let totalQty = 0
-      const warnings: string[] = []
 
       order.items.forEach(item => {
-        const mockStock = item.price > 100 ? 0 : 10
-        if (mockStock === 0) {
-          warnings.push(item.productName)
-          return
-        }
         addToCart({
           id: `reorder-${item.productName}`,
           storeId: order.storeId,
           storeName: order.storeName,
           name: item.productName,
-          slug: item.productName.toLowerCase().replace(/\s+/g, '-'),
+          slug: item.productName?.toLowerCase().replace(/\s+/g, '-') || '',
           description: null,
           price: item.price,
           comparePrice: null,
-          images: '[]',
-          stock: mockStock,
+          images: (item as any).productImage ? JSON.stringify([(item as any).productImage]) : '[]',
+          stock: 10,
           rating: 4.5,
           totalReviews: 10,
           isFeatured: false,
@@ -647,10 +628,6 @@ export function OrderDetail() {
         toast.success(`${totalQty} itens de ${addedCount} produtos adicionados ao carrinho!`, {
           description: `Repetindo pedido #${order.orderNumber}`,
         })
-      }
-
-      if (warnings.length > 0) {
-        toast.warning(`Alguns itens podem estar indisponíveis: ${warnings.join(', ')}`)
       }
 
       navigate('cart')

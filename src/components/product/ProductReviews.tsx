@@ -1,14 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-import { Star, ThumbsUp, Camera, CheckCircle, MessageSquare, ChevronDown, ChevronUp, Send, Shield, ImageIcon } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Star, ThumbsUp, Camera, CheckCircle, MessageSquare, ChevronDown, ChevronUp, Send, Shield, ImageIcon, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 import { motion, AnimatePresence } from 'framer-motion'
+import { toast } from 'sonner'
 
 interface ProductReviewsProps {
   productId: string
@@ -16,53 +18,23 @@ interface ProductReviewsProps {
   totalReviews: number
 }
 
-// --- Mock Data ---
-const mockReviews = [
-  {
-    id: 'r1',
-    name: 'Maria Silva',
-    rating: 5,
-    date: '2 dias atrás',
-    text: 'Produto excelente! Entrega rápida e chegou bem embalado. Super recomendo a todos!',
-    useful: 12,
-    verified: true,
-  },
-  {
-    id: 'r2',
-    name: 'João Santos',
-    rating: 4,
-    date: '1 semana atrás',
-    text: 'Boa qualidade pelo preço. A entrega demorou um pouco mais que o esperado, mas no geral estou satisfeito com o produto.',
-    useful: 8,
-    verified: true,
-  },
-  {
-    id: 'r3',
-    name: 'Ana Oliveira',
-    rating: 5,
-    date: '2 semanas atrás',
-    text: 'Sempre compro aqui. Produtos frescos e preços justos. A melhor loja de Dom Eliseu! Não troco por nada.',
-    useful: 15,
-    verified: false,
-  },
-  {
-    id: 'r4',
-    name: 'Pedro Costa',
-    rating: 3,
-    date: '3 semanas atrás',
-    text: 'Produto ok, mas esperava um pouco mais. Embalagem poderia ser melhor. Vou comprar novamente para dar outra chance.',
-    useful: 3,
-    verified: true,
-  },
-]
+// --- Types ---
+interface ReviewData {
+  id: string
+  accountName: string | null
+  accountAvatar: string | null
+  rating: number
+  comment: string | null
+  images: string | null
+  reply: string | null
+  isVerified: boolean
+  createdAt: string
+}
 
-const starBreakdown = [
-  { stars: 5, percentage: 45 },
-  { stars: 4, percentage: 30 },
-  { stars: 3, percentage: 15 },
-  { stars: 2, percentage: 7 },
-  { stars: 1, percentage: 3 },
-]
+interface RatingDistributionItem {
+  rating: number
+  count: number
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -77,14 +49,62 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } },
 }
 
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+  if (diffDays === 0) return 'Hoje'
+  if (diffDays === 1) return 'Ontem'
+  if (diffDays < 7) return `${diffDays} dias atrás`
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} semana${Math.floor(diffDays / 7) > 1 ? 's' : ''} atrás`
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} mês${Math.floor(diffDays / 30) > 1 ? 'es' : ''} atrás`
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
 export function ProductReviews({ productId, productRating, totalReviews }: ProductReviewsProps) {
-  const [reviews, setReviews] = useState(mockReviews)
+  const [reviews, setReviews] = useState<ReviewData[]>([])
+  const [ratingDistribution, setRatingDistribution] = useState<RatingDistributionItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [selectedStars, setSelectedStars] = useState(0)
   const [hoveredStar, setHoveredStar] = useState(0)
   const [reviewText, setReviewText] = useState('')
   const [usefulReviews, setUsefulReviews] = useState<Set<string>>(new Set())
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const fetchReviews = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const res = await fetch(`/api/reviews?productId=${productId}`)
+      const data = await res.json()
+      if (res.ok) {
+        setReviews(data.reviews || [])
+        setRatingDistribution(data.ratingDistribution || [])
+      }
+    } catch {
+      // Silently fail — will show empty state
+    } finally {
+      setIsLoading(false)
+    }
+  }, [productId])
+
+  useEffect(() => {
+    fetchReviews()
+  }, [fetchReviews])
+
+  // Compute star breakdown percentages from API distribution
+  const starBreakdown = ratingDistribution.length > 0
+    ? [5, 4, 3, 2, 1].map((star) => {
+        const item = ratingDistribution.find((d) => d.rating === star)
+        const count = item?.count || 0
+        const totalCount = ratingDistribution.reduce((s, d) => s + d.count, 0)
+        const percentage = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0
+        return { stars: star, percentage, count }
+      })
+    : []
 
   const handleUseful = (reviewId: string) => {
     setUsefulReviews((prev) => {
@@ -98,25 +118,43 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
     })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedStars < 1 || reviewText.trim().length < 10) return
 
-    const newReview = {
-      id: `r-new-${Date.now()}`,
-      name: 'Maria Silva',
-      rating: selectedStars,
-      date: 'Agora mesmo',
-      text: reviewText.trim(),
-      useful: 0,
-      verified: true,
-    }
+    setIsSubmitting(true)
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId,
+          rating: selectedStars,
+          comment: reviewText.trim(),
+        }),
+      })
+      const data = await res.json()
 
-    setReviews([newReview, ...reviews])
-    setSelectedStars(0)
-    setReviewText('')
-    setIsFormOpen(false)
-    setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 3000)
+      if (res.ok && data.success) {
+        setSelectedStars(0)
+        setReviewText('')
+        setIsFormOpen(false)
+        setSubmitted(true)
+        setTimeout(() => setSubmitted(false), 3000)
+        toast.success('Avaliação enviada com sucesso! 🎉')
+        // Refetch reviews to show the new one
+        fetchReviews()
+      } else {
+        toast.error(data.error || 'Erro ao enviar avaliação')
+      }
+    } catch {
+      toast.error('Erro de conexão. Tente novamente.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handlePhotoUpload = () => {
+    toast.info('Upload de fotos em breve! 📸')
   }
 
   const isFormValid = selectedStars >= 1 && reviewText.trim().length >= 10
@@ -156,23 +194,37 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
 
             {/* Star Breakdown */}
             <div className="flex-1 space-y-2">
-              {starBreakdown.map((item) => (
-                <div key={item.stars} className="flex items-center gap-2">
-                  <span className="text-xs font-medium w-8 text-right flex items-center justify-end gap-0.5">
-                    {item.stars}
-                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                  </span>
-                  <div className="flex-1 h-2.5 bg-muted rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${item.percentage}%` }}
-                      transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
-                    />
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Skeleton className="h-3 w-8" />
+                    <Skeleton className="h-2.5 flex-1 rounded-full" />
+                    <Skeleton className="h-3 w-8" />
                   </div>
-                  <span className="text-[10px] text-muted-foreground w-8">{item.percentage}%</span>
-                </div>
-              ))}
+                ))
+              ) : starBreakdown.length > 0 ? (
+                starBreakdown.map((item) => (
+                  <div key={item.stars} className="flex items-center gap-2">
+                    <span className="text-xs font-medium w-8 text-right flex items-center justify-end gap-0.5">
+                      {item.stars}
+                      <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                    </span>
+                    <div className="flex-1 h-2.5 bg-muted rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.percentage}%` }}
+                        transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground w-8">{item.percentage}%</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-muted-foreground text-center py-4">
+                  Nenhuma avaliação ainda
+                </p>
+              )}
             </div>
           </div>
         </CardContent>
@@ -269,10 +321,10 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                     </p>
                   </div>
 
-                  {/* Photo upload (UI only) */}
+                  {/* Photo upload (UI only — shows "em breve" toast) */}
                   <div>
                     <p className="text-xs text-muted-foreground mb-2">Fotos (opcional)</p>
-                    <Button variant="outline" size="sm" className="h-9 gap-2 text-xs">
+                    <Button variant="outline" size="sm" className="h-9 gap-2 text-xs" onClick={handlePhotoUpload}>
                       <Camera className="h-3.5 w-3.5" />
                       Adicionar fotos
                     </Button>
@@ -284,10 +336,14 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                       size="sm"
                       className="bg-primary text-primary-foreground gap-2 flex-1"
                       onClick={handleSubmit}
-                      disabled={!isFormValid}
+                      disabled={!isFormValid || isSubmitting}
                     >
-                      <Send className="h-3.5 w-3.5" />
-                      Enviar avaliação
+                      {isSubmitting ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Send className="h-3.5 w-3.5" />
+                      )}
+                      {isSubmitting ? 'Enviando...' : 'Enviar avaliação'}
                     </Button>
                     <Button
                       variant="ghost"
@@ -311,102 +367,119 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
           <h3 className="font-semibold text-sm">Avaliações ({reviews.length})</h3>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="space-y-3"
-        >
-          <AnimatePresence mode="popLayout">
-            {reviews.map((review) => (
-              <motion.div
-                key={review.id}
-                variants={itemVariants}
-                layout
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, x: -30, transition: { duration: 0.2 } }}
-              >
-                <Card className="border-border/50 hover:border-primary/15 hover:shadow-md transition-all">
-                  <CardContent className="p-4">
-                    {/* Header */}
-                    <div className="flex items-start gap-3">
-                      <Avatar className="h-9 w-9">
-                        <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
-                          {review.name[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="font-semibold text-sm">{review.name}</p>
-                          {review.verified && (
-                            <Badge className="text-[9px] px-1.5 py-0 gap-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/30 font-medium">
-                              <Shield className="h-2.5 w-2.5" />
-                              Compra verificada
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <div className="flex gap-0.5">
-                            {[1, 2, 3, 4, 5].map((s) => (
-                              <Star
-                                key={s}
-                                className={`h-3 w-3 ${
-                                  s <= review.rating
-                                    ? 'text-amber-500 fill-amber-500'
-                                    : 'text-amber-200 dark:text-amber-800'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-[10px] text-muted-foreground">{review.date}</span>
-                        </div>
-                      </div>
+        {isLoading ? (
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Card key={i} className="border-border/50">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <Skeleton className="h-9 w-9 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-32" />
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-3/4" />
                     </div>
-
-                  {/* Photo gallery thumbnails (decorative) */}
-                  {review.verified && review.rating >= 4 && (
-                    <div className="flex gap-1.5 mt-3">
-                      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 border border-border/50 flex items-center justify-center">
-                        <ImageIcon className="h-4 w-4 text-muted-foreground/50" />
-                      </div>
-                      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-accent/10 to-amber-100/50 dark:from-accent/10 dark:to-amber-900/20 border border-border/50 flex items-center justify-center">
-                        <ImageIcon className="h-4 w-4 text-muted-foreground/50" />
-                      </div>
-                      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-emerald-50 to-primary/10 border border-border/50 flex items-center justify-center text-[9px] font-medium text-muted-foreground">
-                        +2
-                      </div>
-                    </div>
-                  )}
-
-                    {/* Review text */}
-                    <p className="text-sm text-muted-foreground leading-relaxed">{review.text}</p>
-
-                    {/* Useful button */}
-                    <div className="flex items-center gap-4 mt-3">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={`h-8 gap-1.5 text-xs px-2 ${
-                          usefulReviews.has(review.id)
-                            ? 'text-primary hover:text-primary'
-                            : 'text-muted-foreground hover:text-muted-foreground'
-                        }`}
-                        onClick={() => handleUseful(review.id)}
-                      >
-                        <ThumbsUp className={`h-3.5 w-3.5 ${usefulReviews.has(review.id) ? 'fill-primary' : ''}`} />
-                        Útil
-                        <span className="font-medium">
-                          {review.useful + (usefulReviews.has(review.id) ? 1 : 0)}
-                        </span>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
-          </AnimatePresence>
-        </motion.div>
+          </div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-3"
+          >
+            <AnimatePresence mode="popLayout">
+              {reviews.length > 0 ? reviews.map((review) => (
+                <motion.div
+                  key={review.id}
+                  variants={itemVariants}
+                  layout
+                  initial="hidden"
+                  animate="visible"
+                  exit={{ opacity: 0, x: -30, transition: { duration: 0.2 } }}
+                >
+                  <Card className="border-border/50 hover:border-primary/15 hover:shadow-md transition-all">
+                    <CardContent className="p-4">
+                      {/* Header */}
+                      <div className="flex items-start gap-3">
+                        <Avatar className="h-9 w-9">
+                          <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
+                            {(review.accountName || 'U')[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-semibold text-sm">{review.accountName || 'Usuário'}</p>
+                            {review.isVerified && (
+                              <Badge className="text-[9px] px-1.5 py-0 gap-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/30 font-medium">
+                                <Shield className="h-2.5 w-2.5" />
+                                Compra verificada
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <div className="flex gap-0.5">
+                              {[1, 2, 3, 4, 5].map((s) => (
+                                <Star
+                                  key={s}
+                                  className={`h-3 w-3 ${
+                                    s <= review.rating
+                                      ? 'text-amber-500 fill-amber-500'
+                                      : 'text-amber-200 dark:text-amber-800'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                            <span className="text-[10px] text-muted-foreground">{formatDate(review.createdAt)}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Review text */}
+                      {review.comment && (
+                        <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
+                      )}
+
+                      {/* Useful button */}
+                      <div className="flex items-center gap-4 mt-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`h-8 gap-1.5 text-xs px-2 ${
+                            usefulReviews.has(review.id)
+                              ? 'text-primary hover:text-primary'
+                              : 'text-muted-foreground hover:text-muted-foreground'
+                          }`}
+                          onClick={() => handleUseful(review.id)}
+                        >
+                          <ThumbsUp className={`h-3.5 w-3.5 ${usefulReviews.has(review.id) ? 'fill-primary' : ''}`} />
+                          Útil
+                          {usefulReviews.has(review.id) && (
+                            <span className="font-medium">1</span>
+                          )}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-8"
+                >
+                  <MessageSquare className="h-12 w-12 mx-auto mb-3 text-muted-foreground/20" />
+                  <p className="text-sm text-muted-foreground">Nenhuma avaliação ainda</p>
+                  <p className="text-xs text-muted-foreground mt-1">Seja o primeiro a avaliar este produto!</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
       </div>
 
       {/* -- Success Toast -- */}

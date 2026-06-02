@@ -16,6 +16,21 @@ interface DeliveryTrackerProps {
   orderId?: string
 }
 
+// -- Types for real order data --
+interface OrderDriverInfo {
+  name?: string
+  phone?: string
+  vehicle?: string
+  rating?: number
+  totalDeliveries?: number
+}
+
+interface StatusHistoryEntry {
+  status: string
+  timestamp: string
+  note?: string
+}
+
 const steps = [
   { id: 'confirmed', label: 'Pedido Confirmado', icon: CheckCircle, desc: 'Seu pedido foi recebido e confirmado pela loja.' },
   { id: 'preparing', label: 'Preparando', icon: ChefHat, desc: 'A loja está preparando seus itens com carinho.' },
@@ -35,12 +50,12 @@ const statusToStep: Record<string, number> = {
 
 // Fallback driver when no tracking data is available
 const fallbackDriver = {
-  name: 'Carlos Entregas',
-  initials: 'CE',
-  phone: '(91) 99888-7766',
-  rating: 4.8,
-  totalDeliveries: 1250,
-  vehicle: 'Moto',
+  name: 'Aguardando entregador',
+  initials: '--',
+  phone: '',
+  rating: 0,
+  totalDeliveries: 0,
+  vehicle: '',
 }
 
 export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime, orderId }: DeliveryTrackerProps) {
@@ -59,17 +74,63 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
     autoStart: !!orderId,
   })
 
-  // Use real driver data or fallback
-  const driver = tracking
-    ? {
+  // -- Fetch real order detail for driver info and statusHistory --
+  const [orderDetail, setOrderDetail] = useState<{
+    driver?: OrderDriverInfo
+    statusHistory?: StatusHistoryEntry[]
+  } | null>(null)
+
+  useEffect(() => {
+    if (!orderId) return
+    const fetchOrderDetail = async () => {
+      try {
+        const res = await fetch(`/api/orders/${orderId}`)
+        if (res.ok) {
+          const data = await res.json()
+          setOrderDetail({
+            driver: data.driver ? {
+              name: data.driver.name,
+              phone: data.driver.phone,
+              vehicle: data.driver.vehicle,
+              rating: data.driver.rating,
+              totalDeliveries: data.driver.totalDeliveries,
+            } : undefined,
+            statusHistory: data.statusHistory,
+          })
+        }
+      } catch {
+        // Silently fail
+      }
+    }
+    fetchOrderDetail()
+  }, [orderId])
+
+  // Build driver data from real tracking > order detail > fallback
+  const driver = useMemo(() => {
+    // Prefer real-time tracking data
+    if (isConnected && tracking) {
+      return {
         name: tracking.driverName,
-        initials: tracking.driverName.split(' ').map((n) => n[0]).join('').slice(0, 2),
+        initials: tracking.driverName.split(' ').map((n: string) => n[0]).join('').slice(0, 2),
         phone: tracking.driverPhone,
         rating: tracking.driverRating,
         totalDeliveries: 1250,
         vehicle: tracking.driverVehicle,
       }
-    : fallbackDriver
+    }
+    // Then use order detail data
+    if (orderDetail?.driver?.name) {
+      return {
+        name: orderDetail.driver.name,
+        initials: orderDetail.driver.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2),
+        phone: orderDetail.driver.phone,
+        rating: orderDetail.driver.rating || 0,
+        totalDeliveries: orderDetail.driver.totalDeliveries || 0,
+        vehicle: orderDetail.driver.vehicle || '',
+      }
+    }
+    return fallbackDriver
+  }, [isConnected, tracking, orderDetail])
 
   // Current step: use real status from tracking when connected, otherwise from prop
   const currentStep = useMemo(() => {
@@ -104,25 +165,32 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
     }
   }
 
-  // Get step timestamp from tracking statusHistory (real data) or fallback
+  // Get step timestamp from tracking statusHistory or order detail (real data), or fallback
   const getStepTime = (stepId: string, idx: number): string | null => {
-    if (tracking && isConnected) {
-      // Map step IDs to server status names
-      const statusMap: Record<string, string> = {
-        confirmed: 'CONFIRMED',
-        preparing: 'PREPARING',
-        delivering: 'DELIVERING',
-        delivered: 'DELIVERED',
-      }
-      const serverStatus = statusMap[stepId]
-      if (serverStatus) {
-        const entry = tracking.statusHistory.find((h) => h.status === serverStatus)
-        if (entry) return formatTimestamp(entry.timestamp)
-      }
+    // Map step IDs to server status names
+    const statusMap: Record<string, string> = {
+      confirmed: 'CONFIRMED',
+      preparing: 'PREPARING',
+      delivering: 'DELIVERING',
+      delivered: 'DELIVERED',
     }
-    // Fallback times for visual effect
-    const fallbackTimes = ['14:32', '14:45', '15:02', '15:20']
-    return fallbackTimes[idx] || null
+    const serverStatus = statusMap[stepId]
+    if (!serverStatus) return null
+
+    // Try tracking statusHistory first (real-time)
+    if (tracking && isConnected) {
+      const entry = tracking.statusHistory.find((h: StatusHistoryEntry) => h.status === serverStatus)
+      if (entry) return formatTimestamp(entry.timestamp)
+    }
+
+    // Try order detail statusHistory (fetched from API)
+    if (orderDetail?.statusHistory) {
+      const entry = orderDetail.statusHistory.find((h: StatusHistoryEntry) => h.status === serverStatus)
+      if (entry) return formatTimestamp(entry.timestamp)
+    }
+
+    // No real data available — don't show fake times
+    return null
   }
 
   const effectiveEtaText = isConnected && tracking
@@ -130,6 +198,8 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
     : estimatedTime
 
   const progressPercent = isConnected && tracking ? Math.round(progress) : Math.min(95, Math.round((effectiveStep / (steps.length - 1)) * 100))
+
+  const hasDriver = driver.name && driver.name !== fallbackDriver.name
 
   return (
     <div className="space-y-4">
@@ -234,29 +304,36 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
               <div className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-lg font-bold text-white shadow-md">
                 {driver.initials}
               </div>
-              <div className={`absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full border-2 border-background flex items-center justify-center ${isConnected ? 'bg-emerald-500' : 'bg-gray-400'}`}>
-                <span className="text-[7px] text-white font-bold">{isConnected ? '🟢' : '⚫'}</span>
+              <div className={`absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full border-2 border-background flex items-center justify-center ${hasDriver ? 'bg-emerald-500' : 'bg-gray-400'}`}>
+                <span className="text-[7px] text-white font-bold">{hasDriver ? '🟢' : '⚫'}</span>
               </div>
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <p className="font-bold text-sm">{driver.name}</p>
-                <div className="flex items-center gap-0.5">
-                  <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                  <span className="text-xs font-medium">{driver.rating}</span>
-                </div>
+                {driver.rating > 0 && (
+                  <div className="flex items-center gap-0.5">
+                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                    <span className="text-xs font-medium">{driver.rating}</span>
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                <span>{driver.totalDeliveries} entregas</span>
-                <span>•</span>
-                <span>{driver.vehicle}</span>
+                {driver.totalDeliveries > 0 && <span>{driver.totalDeliveries} entregas</span>}
+                {driver.vehicle && (
+                  <>
+                    <span>•</span>
+                    <span>{driver.vehicle}</span>
+                  </>
+                )}
+                {!hasDriver && <span className="italic">Aguardando atribuicao de entregador</span>}
               </div>
             </div>
             <div className="flex gap-2">
-              <Button size="icon" variant="outline" className="h-10 w-10 rounded-full" aria-label="Ligar para entregador">
+              <Button size="icon" variant="outline" className="h-10 w-10 rounded-full" aria-label="Ligar para entregador" disabled={!hasDriver}>
                 <Phone className="h-4 w-4 text-primary" />
               </Button>
-              <Button size="icon" className="h-10 w-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white" aria-label="Chat com entregador">
+              <Button size="icon" className="h-10 w-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white" aria-label="Chat com entregador" disabled={!hasDriver}>
                 <MessageCircle className="h-4 w-4" />
               </Button>
             </div>

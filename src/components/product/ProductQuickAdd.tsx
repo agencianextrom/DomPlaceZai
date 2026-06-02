@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer'
 import { CategoryIcon, formatBRL } from './ProductCard'
+import { getDeliveryEstimate } from '@/lib/delivery-estimate'
 
 const gradients = [
   'from-emerald-100 to-green-200 dark:from-emerald-900/30 dark:to-green-800/30',
@@ -16,18 +17,6 @@ const gradients = [
   'from-teal-100 to-cyan-200 dark:from-teal-900/30 dark:to-cyan-800/30',
   'from-rose-100 to-pink-200 dark:from-rose-900/30 dark:to-pink-800/30',
 ]
-
-// Mock delivery times per store
-const storeDeliveryTimes: Record<string, string> = {
-  s1: '20-30 min',
-  s2: '15-25 min',
-  s3: '40-60 min',
-  s4: '25-35 min',
-  s5: '15-25 min',
-  s6: '25-40 min',
-  s7: '30-45 min',
-  s8: '20-35 min',
-}
 
 function QuickAddContent({ product }: { product: ProductData }) {
   const { closeQuickAdd, addToCart, toggleFavoriteProduct, navigate, selectProduct } = useAppStore()
@@ -37,7 +26,7 @@ function QuickAddContent({ product }: { product: ProductData }) {
 
   const variations = product.variations ? JSON.parse(product.variations) as string[] : []
   const gradient = gradients[Math.abs(product.name.charCodeAt(0)) % gradients.length]
-  const deliveryTime = storeDeliveryTimes[product.storeId] || '30-45 min'
+  const deliveryTime = getDeliveryEstimate(null, product.category)
 
   // Set initial variation (use lazy initializer instead of effect)
   const [selectedVariation, setSelectedVariation] = useState<string | null>(() => {

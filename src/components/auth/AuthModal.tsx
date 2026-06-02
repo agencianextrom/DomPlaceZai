@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2, Store, Truck, UserCircle, UserPlus } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2, Store, Truck, UserCircle, UserPlus, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -167,6 +167,12 @@ export function AuthModal() {
   return (
     <Dialog open={isAuthModalOpen} onOpenChange={(open) => { if (!open) closeAuthModal() }}>
       <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden max-h-[90vh] overflow-y-auto sm:rounded-2xl rounded-none sm:rounded-2xl">
+        <button
+          onClick={() => closeAuthModal()}
+          className="absolute right-3 top-3 z-50 h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+        >
+          <X className="h-4 w-4" />
+        </button>
         <Tabs defaultValue="login" className="w-full">
           {/* -- Header with gradient -- */}
           <div className="bg-gradient-to-br from-primary via-emerald-600 to-teal-600 px-6 pt-6 pb-4 sticky top-0 z-10">
