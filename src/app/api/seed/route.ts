@@ -4,6 +4,7 @@ import { hashPassword } from '@/lib/crypto'
 import { getErrorMessage } from '@/lib/api-response'
 import { rateLimit, getClientIP } from '@/lib/rate-limit'
 import { logger } from '@/lib/logger'
+import { getProductRealImages, PRODUCT_REAL_IMAGES } from '@/lib/product-real-images'
 
 export async function POST(request: NextRequest) {
   if (process.env.NODE_ENV === 'production') {
@@ -190,11 +191,14 @@ async function seedDatabase() {
       'salao-da-bella': '/images/beauty.jpg',
     }
 
+    // --- Store covers from real images ---
+    const storeCovers = (PRODUCT_REAL_IMAGES['__store_covers'] || {}) as Record<string, string>
+
     // --- Store 1: Mercado do Zé (FOOD) - 8 products ---
     const store1Data = {
       name: 'Mercado do Zé',
       slug: 'mercado-do-ze', category: 'FOOD' as const,
-      coverImage: '/images/grocery.jpg', logo: '/images/grocery.jpg',
+      coverImage: storeCovers['mercado-do-ze'] || '/images/grocery.jpg', logo: storeCovers['mercado-do-ze'] || '/images/grocery.jpg',
       description: 'O melhor mercado de Dom Eliseu com produtos frescos e preços justos. Arroz, feijão, óleo, farinha e muito mais.',
       address: 'Rua Principal, 123', neighborhood: 'Centro', phone: '(91) 99999-0001', whatsapp: '(91) 99999-0001',
       deliveryFee: 5.00, freeDeliveryAbove: 50, opensAt: '07:00', closesAt: '21:00',
@@ -245,7 +249,7 @@ async function seedDatabase() {
           isFeatured: pd.isFeatured, isNew: pd.isNew, isOffer: pd.isOffer,
           tags: pd.tags, variations: pd.variations || null,
           soldCount: Math.floor(Math.random() * 100),
-          images: JSON.stringify([storeImageMap['mercado-do-ze'] || '']),
+          images: JSON.stringify(getProductRealImages(pd.slug, storeImageMap['mercado-do-ze'] || '')),
           status: 'ACTIVE',
         },
       })
@@ -256,7 +260,7 @@ async function seedDatabase() {
     const store2Data = {
       name: 'Açaí da Boa',
       slug: 'acai-da-boa', category: 'FOOD' as const,
-      coverImage: '/images/acai.jpg', logo: '/images/acai.jpg',
+      coverImage: storeCovers['acai-da-boa'] || '/images/acai.jpg', logo: storeCovers['acai-da-boa'] || '/images/acai.jpg',
       description: 'O mais autêntico açaí paraense, feito com frutas selecionadas. Tigelas, smoothies e muito mais.',
       address: 'Av. Brasil, 456', neighborhood: 'Centro', phone: '(91) 99999-0002', whatsapp: '(91) 99999-0002',
       deliveryFee: 3.00, freeDeliveryAbove: 30, opensAt: '08:00', closesAt: '22:00',
@@ -304,7 +308,7 @@ async function seedDatabase() {
           isFeatured: pd.isFeatured, isNew: pd.isNew, isOffer: pd.isOffer,
           tags: pd.tags, variations: pd.variations || null,
           soldCount: Math.floor(Math.random() * 150),
-          images: JSON.stringify([storeImageMap['acai-da-boa'] || '']),
+          images: JSON.stringify(getProductRealImages(pd.slug, storeImageMap['acai-da-boa'] || '')),
           status: 'ACTIVE',
         },
       })
@@ -315,7 +319,7 @@ async function seedDatabase() {
     const store3Data = {
       name: 'Farmácia Vida',
       slug: 'farmacia-vida', category: 'HEALTH' as const,
-      coverImage: '/images/pharmacy.jpg', logo: '/images/pharmacy.jpg',
+      coverImage: storeCovers['farmacia-vida'] || '/images/pharmacy.jpg', logo: storeCovers['farmacia-vida'] || '/images/pharmacy.jpg',
       description: 'Sua saúde em primeiro lugar. Medicamentos, suplementos, vitaminas e atendimento farmacêutico.',
       address: 'Rua Pará, 789', neighborhood: 'Centro', phone: '(91) 99999-0004', whatsapp: '(91) 99999-0004',
       deliveryFee: 0, freeDeliveryAbove: null as number | null, opensAt: '07:00', closesAt: '22:00',
@@ -363,7 +367,7 @@ async function seedDatabase() {
           isFeatured: pd.isFeatured, isNew: pd.isNew, isOffer: pd.isOffer,
           tags: pd.tags, variations: pd.variations || null,
           soldCount: Math.floor(Math.random() * 80),
-          images: JSON.stringify([storeImageMap['farmacia-vida'] || '']),
+          images: JSON.stringify(getProductRealImages(pd.slug, storeImageMap['farmacia-vida'] || '')),
           status: 'ACTIVE',
         },
       })
@@ -427,6 +431,8 @@ async function seedDatabase() {
           data: {
             accountId: account.id,
             ...sd,
+            coverImage: storeCovers[sd.slug] || storeImageMap[sd.slug] || '',
+            logo: storeCovers[sd.slug] || storeImageMap[sd.slug] || '',
             status: 'ACTIVE',
             city: 'Dom Eliseu',
             state: 'PA',
@@ -480,7 +486,7 @@ async function seedDatabase() {
             isFeatured: pd.isFeatured, isNew: pd.isNew, isOffer: pd.isOffer,
             tags: pd.tags, variations: pd.variations || null,
             soldCount: Math.floor(Math.random() * 100),
-            images: JSON.stringify([storeImage || '']),
+            images: JSON.stringify(getProductRealImages(pd.slug, storeImage || '')),
             status: 'ACTIVE',
           },
         })
