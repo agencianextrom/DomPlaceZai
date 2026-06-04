@@ -94,7 +94,7 @@ function padTwo(n: number): string {
 
 function CountdownDisplay({ hours, minutes, seconds }: { hours: number; minutes: number; seconds: number }) {
   return (
-    <div className="flex items-center gap-1 font-mono text-sm">
+    <div className="flex items-center gap-1 font-mono text-sm r36-timer-glow">
       <span className="rounded bg-red-900/80 px-1.5 py-0.5 text-red-100">{padTwo(hours)}</span>
       <span className="text-red-400 font-bold">:</span>
       <span className="rounded bg-red-900/80 px-1.5 py-0.5 text-red-100">{padTwo(minutes)}</span>
@@ -111,9 +111,13 @@ function SpecialCard({ special, index, isDayOfDeal }: { special: WeeklySpecial; 
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -12, scale: 0.96 }}
       transition={{ type: 'spring' as const, stiffness: 340, damping: 26, delay: index * 0.08 }}
-      whileHover={{ scale: 1.02, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}
-      className="relative flex flex-col rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800 sm:p-5 r31-card-hover"
+      whileHover={{ scale: 1.02, rotateX: 2, rotateY: -2, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}
+      className="relative flex flex-col rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800 sm:p-5 r31-card-hover r36-weekly-card"
     >
+      {/* r36 shimmer sweep overlay */}
+      <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none z-10">
+        <div className="absolute inset-0 r36-weekly-shimmer" />
+      </div>
       {isDayOfDeal && index === 0 && (
         <motion.div
           initial={{ opacity: 0, x: 20 }}
@@ -124,9 +128,13 @@ function SpecialCard({ special, index, isDayOfDeal }: { special: WeeklySpecial; 
           ⭐ Oferta do dia
         </motion.div>
       )}
-      <div className="absolute -top-2 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white shadow-sm r31-badge-glow">
+      <motion.div
+        animate={{ scale: [1, 1.12, 1] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        className="absolute -top-2 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white shadow-sm r31-badge-glow r36-badge-pulse"
+      >
         -{special.discount}%
-      </div>
+      </motion.div>
       <motion.div
         initial={{ rotate: -10 }}
         animate={{ rotate: 0 }}

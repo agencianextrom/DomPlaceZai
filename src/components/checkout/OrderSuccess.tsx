@@ -250,7 +250,7 @@ function OrderProgressSteps() {
 const staggerContainer = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.12, delayChildren: 1.4 },
+    transition: { staggerChildren: 0.15, delayChildren: 1.4 },
   },
 } as const
 
@@ -462,9 +462,9 @@ export function OrderSuccess({
         {/* Main circle */}
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="relative w-24 h-24 rounded-full bg-gradient-to-br from-primary via-emerald-500 to-teal-500 flex items-center justify-center shadow-2xl r18-checkmark-circle r27-check-ring-expand"
+          animate={{ scale: [0, 1.2, 1] }}
+          transition={{ type: 'spring' as const, stiffness: 260, damping: 12 }}
+          className="relative w-24 h-24 rounded-full bg-gradient-to-br from-primary via-emerald-500 to-teal-500 flex items-center justify-center shadow-2xl r18-checkmark-circle r27-check-ring-expand r36-check-bounce"
         >
           <AnimatedCheckmark />
         </motion.div>
@@ -757,7 +757,7 @@ export function OrderSuccess({
           }}
         >
           <Button
-            className="w-full h-12 bg-primary text-primary-foreground font-semibold btn-glow btn-shine gap-2 r18-cta-shimmer"
+            className="w-full h-12 bg-primary text-primary-foreground font-semibold btn-glow btn-shine gap-2 r18-cta-shimmer r36-cta-shimmer"
             onClick={() => navigate('orders')}
           >
             <Package className="h-4 w-4" />

@@ -101,6 +101,9 @@ import { LocalProducers } from '@/components/home/LocalProducers'
 import { EcoImpactTracker } from '@/components/home/EcoImpactTracker'
 import { StoreEvents } from '@/components/home/StoreEvents'
 import { CommunityChallenge } from '@/components/home/CommunityChallenge'
+import { ProductWishTracker } from '@/components/home/ProductWishTracker'
+import { StoreAnalytics } from '@/components/store/StoreAnalytics'
+import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
 import { AIStyleAdvisor } from '@/components/product/AIStyleAdvisor'
@@ -1282,6 +1285,24 @@ export default function Home() {
                       </ScrollReveal>
                     </LazySection>
 
+                    {/* Product Wish Tracker */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <ProductWishTracker />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Store Analytics */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <StoreAnalytics />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
                     {/* Real Time Deals Ticker */}
                     <LazySection>
                       <ScrollReveal delay={0.15}>
@@ -1426,6 +1447,9 @@ export default function Home() {
         ) : currentView === 'support-center' ? (
           <motion.div key="support-center" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <SupportCenter />
+            <div className="mt-6">
+              <SupportTicketSystem />
+            </div>
           </motion.div>
         ) : currentView === 'driver-dashboard' ? (
           <motion.div key="driver-dashboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>

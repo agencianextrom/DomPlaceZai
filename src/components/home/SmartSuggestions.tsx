@@ -261,7 +261,7 @@ export function SmartSuggestions() {
             <Sparkles className="h-4 w-4 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold r17-smart-header-shimmer r28-badge-shimmer">Sugestões para Você</h2>
+            <h2 className="text-base sm:text-lg font-bold r17-smart-header-shimmer r28-badge-shimmer r36-shimmer-text">Sugestões para Você</h2>
             <p className="text-[11px] text-muted-foreground hidden sm:block">
               Produtos selecionados especialmente para você
             </p>
@@ -306,7 +306,7 @@ export function SmartSuggestions() {
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 <Card
-                  className="border-border/50 overflow-hidden cursor-pointer r17-smart-card-hover r28-smart-card-lift h-full glassmorphism-strong r17-smart-glass-card r28-smart-gradient-border"
+                  className="border-border/50 overflow-hidden cursor-pointer r17-smart-card-hover r28-smart-card-lift h-full glassmorphism-strong r17-smart-glass-card r28-smart-gradient-border r36-suggestion-card"
                   onClick={() => handleProductClick(product)}
                 >
                   {/* Image */}
@@ -380,10 +380,10 @@ export function SmartSuggestions() {
               onClick={() => { useAppStore.getState().setSearchQuery('recomendados'); useAppStore.getState().openSearch() }}
             >
               <motion.div
-                animate={{ x: [0, 3, 0] }}
+                animate={{ x: [0, 3, 0], rotate: [0, 15, 0] }}
                 transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const }}
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="h-5 w-5 r36-arrow-bounce" />
               </motion.div>
               <span className="text-xs font-semibold">Ver mais</span>
             </Button>

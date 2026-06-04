@@ -583,7 +583,8 @@ export function FlashSale() {
                             className="shrink-0 w-[155px] sm:w-[175px]"
                             initial={{ opacity: 0, y: 20, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ delay: Math.min(index * 0.1, 0.6), type: 'spring' as const, stiffness: 280, damping: 22 }}
+                            whileHover={{ scale: 1.02, y: -3 }}
+                            transition={{ delay: index * 0.08, type: 'spring' as const, stiffness: 280, damping: 22 }}
                           >
                             {/* 3. 3D Tilt Card Wrapper */}
                             <TiltCard className="h-full">
@@ -591,7 +592,11 @@ export function FlashSale() {
                                 className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow transition-all duration-300 hover:shadow-[0_0_20px_oklch(0.577_0.245_27.325/0.2),0_0_40px_oklch(0.577_0.245_27.325/0.1),0_8px_24px_oklch(0_0_0/0.1)] hover:-translate-y-1 hover:scale-[1.02] hover:border-red-400/40 dark:hover:border-red-600/40 r27-card-lift r34-flash-sale-card-glow"
                                 onClick={() => { selectProduct(product); navigate('product') }}
                               >
-                                <CardContent className="p-0 h-full flex flex-col">
+                                <CardContent className="p-0 h-full flex flex-col relative">
+                                  {/* r36 shimmer sweep overlay */}
+                                  <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none z-10">
+                                    <div className="absolute inset-0 r36-flash-shimmer" />
+                                  </div>
                                   {/* Image */}
                                   <div className={`relative aspect-square flex items-center justify-center bg-gradient-to-br ${gradient} overflow-hidden`}>
                                     {imageUrl ? (

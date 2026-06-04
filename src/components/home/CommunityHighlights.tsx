@@ -39,7 +39,7 @@ const highlights: Highlight[] = [
 const containerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.08 },
   },
 }
 
@@ -131,7 +131,7 @@ export function CommunityHighlights() {
             >
               {/* Glassmorphism card — enhanced hover glow */}
               <motion.div
-                className="relative overflow-hidden rounded-xl border border-white/20 dark:border-white/10 p-5 sm:p-6 community-highlight-card"
+                className="relative overflow-hidden rounded-xl border border-white/20 dark:border-white/10 p-5 sm:p-6 community-highlight-card r36-community-card"
                 style={{
                   backdropFilter: 'blur(16px) saturate(180%)',
                   WebkitBackdropFilter: 'blur(16px) saturate(180%)',
@@ -193,6 +193,11 @@ export function CommunityHighlights() {
                   </span>
                 </motion.div>
 
+                {/* r36 gradient overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-end justify-center pb-4 pointer-events-none z-20">
+                  <span className="text-white text-xs font-semibold r36-overlay-text">Ver mais</span>
+                </div>
+
                 {/* Story-like circular avatars at bottom */}
                 <div className="mt-3 flex items-center gap-2">
                   {[...Array(3)].map((_, i) => (
@@ -203,7 +208,7 @@ export function CommunityHighlights() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.8 + i * 0.15, type: 'spring' as const, stiffness: 400, damping: 20 }}
                     >
-                      <div className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] community-avatar-ring-${i}`}>
+                      <div className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] community-avatar-ring-${i} r36-avatar-pulse`}>
                         {['😊', '👍', '🎉'][i]}
                       </div>
                     </motion.div>
