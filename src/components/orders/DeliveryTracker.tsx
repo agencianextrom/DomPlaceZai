@@ -207,11 +207,8 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
     <div className="space-y-4">
       {/* Map placeholder / status header */}
       <div className="relative h-40 sm:h-52 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700">
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.1]" style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.2) 1px, transparent 1px)',
-          backgroundSize: '30px 30px',
-        }} />
+        {/* R39: Enhanced animated grid pattern overlay */}
+        <div className="absolute inset-0 r39-map-grid" />
 
         {/* Roads */}
         <div className="absolute inset-0">
@@ -254,17 +251,21 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
           </div>
         </motion.div>
 
-        {/* Store pin */}
+        {/* Store pin — R39: pulsing location dot */}
         <div className="absolute top-[25%] left-[15%]">
-          <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-md border-2 border-white">
-            <MapPin className="h-4 w-4 text-white" />
+          <div className="relative r39-location-pulse r39-location-ripple">
+            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-md border-2 border-white">
+              <MapPin className="h-4 w-4 text-white" />
+            </div>
           </div>
         </div>
 
-        {/* Destination pin */}
+        {/* Destination pin — R39: pulsing location dot */}
         <div className="absolute bottom-[15%] right-[25%]">
-          <div className="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center shadow-md border-2 border-white">
-            <MapPin className="h-4 w-4 text-white fill-white" />
+          <div className="relative r39-location-pulse r39-location-ripple">
+            <div className="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center shadow-md border-2 border-white">
+              <MapPin className="h-4 w-4 text-white fill-white" />
+            </div>
           </div>
         </div>
 
@@ -283,20 +284,22 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
             </motion.div>
             Previsão de entrega
           </div>
+          {/* R39: ETA with gradient text + scale pulse */}
           <motion.p
-            className="font-bold text-sm"
+            className="font-bold text-sm r39-eta-gradient"
             key={effectiveEtaText}
-            initial={{ y: 8, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            initial={{ y: 8, opacity: 0, scale: 0.9 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
           >
             {effectiveEtaText}
           </motion.p>
+          {/* R39: Animated gradient progress fill bar */}
           <motion.div
-            className="mt-1 h-1 bg-white/20 rounded-full overflow-hidden"
+            className="mt-1 h-1.5 bg-white/20 rounded-full overflow-hidden"
           >
             <motion.div
-              className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full"
+              className="h-full r39-progress-gradient rounded-full"
               animate={{ width: isDelivered ? '100%' : `${progressPercent}%` }}
               transition={{ duration: 1.5, ease: 'easeInOut' }}
               initial={{ width: '0%' }}
@@ -383,7 +386,7 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
         progress={progressPercent}
       />
 
-      {/* Driver info — enhanced glassmorphism card with gradient border */}
+      {/* Driver info — R39: glassmorphism card with animated avatar ring + hover lift */}
       <motion.div
         className="relative rounded-xl p-[1px]"
         initial={{ opacity: 0, y: 10 }}
@@ -391,15 +394,16 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
         transition={{ delay: 0.2 }}
       >
         <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/60 via-emerald-500/40 to-cyan-500/60 animate-[spin_6s_linear_infinite] blur-[1px]" style={{ margin: -1 }} />
-        <Card className="border-0 rounded-[10px] overflow-hidden bg-card/70 backdrop-blur-2xl shadow-lg shadow-primary/20 ring-2 ring-primary/30 r28-avatar-pulse">
+        <Card className="border-0 rounded-[10px] overflow-hidden r39-driver-glass">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
+              {/* R39: Avatar with animated gradient ring */}
               <motion.div
-                className="relative"
+                className="relative r39-avatar-ring"
                 whileHover={{ scale: 1.08 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
               >
-                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-lg font-bold text-white shadow-lg shadow-primary/30">
+                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-lg font-bold text-white shadow-lg shadow-primary/30 z-10 relative">
                   {driver.initials}
                 </div>
                 {/* Online status indicator with pulse rings */}
@@ -441,14 +445,15 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
                   {!hasDriver && <span className="italic">Aguardando atribuicao de entregador</span>}
                 </div>
               </div>
+              {/* R39: Contact buttons with hover scale, glow shadow, shimmer sweep */}
               <div className="flex gap-2">
-                <motion.div whileTap={{ scale: 0.9 }}>
-                  <Button size="icon" variant="outline" className="h-10 w-10 rounded-full border-primary/20 hover:border-primary/40 r28-contact-glow" aria-label="Ligar para entregador" disabled={!hasDriver}>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}>
+                  <Button size="icon" variant="outline" className="h-10 w-10 rounded-full border-primary/20 hover:border-primary/40 r39-contact-btn" aria-label="Ligar para entregador" disabled={!hasDriver}>
                     <Phone className="h-4 w-4 text-primary" />
                   </Button>
                 </motion.div>
-                <motion.div whileTap={{ scale: 0.9 }}>
-                  <Button size="icon" className="h-10 w-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/30 r28-contact-glow" aria-label="Chat com entregador" disabled={!hasDriver}>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}>
+                  <Button size="icon" className="h-10 w-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/30 r39-contact-btn" aria-label="Chat com entregador" disabled={!hasDriver}>
                     <MessageCircle className="h-4 w-4" />
                   </Button>
                 </motion.div>
@@ -458,18 +463,19 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
         </Card>
       </motion.div>
 
-      {/* Timeline — enhanced with animated pulse on current step */}
+      {/* Timeline — R39: enhanced with animated pulse on current step + glow */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <Card className="r28-step-ring">
+        <Card className="r39-step-glow">
           <CardContent className="p-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-sm">Acompanhamento em tempo real</h3>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px] font-mono r28-eta-tick">
+              {/* R39: Elapsed timer badge with pulse */}
+              <Badge variant="outline" className="text-[10px] font-mono r39-step-glow">
                 {formatElapsed(elapsed)}
               </Badge>
               {isConnected && tracking && (

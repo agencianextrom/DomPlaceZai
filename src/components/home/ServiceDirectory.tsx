@@ -279,20 +279,25 @@ export function ServiceDirectory() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
-  const [favorites, setFavorites] = useState<Set<string>>(new Set())
+  const [favorites, setFavorites] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem('domplace-svc-favorites')
+      if (stored) return new Set(JSON.parse(stored))
+    } catch { /* ignore */ }
+    return new Set()
+  })
 
   useEffect(() => {
     const t = setTimeout(() => setIsLoaded(true), 800)
     return () => clearTimeout(t)
   }, [])
 
-  // Load favorites from localStorage
+  // Persist favorites to localStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('domplace-svc-favorites')
-      if (stored) setFavorites(new Set(JSON.parse(stored)))
+      localStorage.setItem('domplace-svc-favorites', JSON.stringify(Array.from(favorites)))
     } catch { /* ignore */ }
-  }, [])
+  }, [favorites])
 
   const toggleFavorite = useCallback((id: string) => {
     setFavorites(prev => {

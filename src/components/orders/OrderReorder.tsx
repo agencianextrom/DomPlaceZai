@@ -163,19 +163,24 @@ export function OrderReorder({ order, onReorder }: OrderReorderProps) {
   const [showConfetti, setShowConfetti] = useState(false)
   const [showCartPoof, setShowCartPoof] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
-  const [reorderHistory, setReorderHistory] = useState<ReorderHistory[]>([])
+  const [reorderHistory, setReorderHistory] = useState<ReorderHistory[]>(() => {
+    try {
+      const stored = localStorage.getItem('reorder-history')
+      if (stored) return JSON.parse(stored)
+    } catch { /* ignore */ }
+    return []
+  })
 
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  // Load reorder history from localStorage
+  // Persist reorder history to localStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('reorder-history')
-      if (stored) setReorderHistory(JSON.parse(stored))
+      localStorage.setItem('reorder-history', JSON.stringify(reorderHistory))
     } catch {
       // ignore
     }
-  }, [])
+  }, [reorderHistory])
 
   const isReorderable =
     order.status === 'DELIVERED' ||

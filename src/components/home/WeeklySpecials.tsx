@@ -186,15 +186,12 @@ function LoadingSkeleton() {
 
 export function WeeklySpecials() {
   const [mounted, setMounted] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek>(0);
-  const [currentDay, setCurrentDay] = useState<DayOfWeek>(0);
-  const [countdown, setCountdown] = useState(getTimeUntilMidnight());
+  const [selectedDay, setSelectedDay] = useState<DayOfWeek>(() => getCurrentDay());
+  const [currentDay, setCurrentDay] = useState<DayOfWeek>(() => getCurrentDay());
+  const [countdown, setCountdown] = useState(() => getTimeUntilMidnight());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const day = getCurrentDay();
-    setCurrentDay(day);
-    setSelectedDay(day);
     setMounted(true);
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);

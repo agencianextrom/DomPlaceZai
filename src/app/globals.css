@@ -15407,3 +15407,1180 @@
   0%, 100% { opacity: 0.4; }
   50% { opacity: 0.6; }
 }
+
+/* ================================================================================
+   ROUND 39 — COMMUNITY POLL ENHANCED ANIMATIONS (prefers-reduced-motion safe)
+   All classes prefixed with r39-
+   ================================================================================ */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── r39-poll-card: Gradient border glow + hover lift ── */
+  .r39-poll-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.35s ease;
+  }
+  .r39-poll-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.6),
+      rgba(168, 85, 247, 0.4),
+      rgba(236, 72, 153, 0.5),
+      rgba(139, 92, 246, 0.6)
+    );
+    background-size: 300% 300%;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    animation: r39-card-border-drift 6s ease-in-out infinite;
+  }
+  .r39-poll-card:hover::before {
+    opacity: 1;
+  }
+  .r39-poll-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(139, 92, 246, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  .dark .r39-poll-card:hover {
+    box-shadow: 0 12px 32px rgba(139, 92, 246, 0.2), 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+  @keyframes r39-card-border-drift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* ── r39-poll-card-shimmer: Sweep shimmer overlay on card ── */
+  .r39-poll-card-shimmer {
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.16) 50%,
+      rgba(255, 255, 255, 0.08) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    animation: r39-card-shimmer-sweep 4s ease-in-out infinite;
+    animation-delay: 1.5s;
+  }
+  .dark .r39-poll-card-shimmer {
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.03) 40%,
+      rgba(255, 255, 255, 0.06) 50%,
+      rgba(255, 255, 255, 0.03) 60%,
+      transparent 100%
+    );
+  }
+  @keyframes r39-card-shimmer-sweep {
+    0%   { left: -75%; }
+    100% { left: 150%; }
+  }
+
+  /* ── r39-poll-option-bar: Gradient fill progress bars ── */
+  .r39-poll-option-bar {
+    position: relative;
+    overflow: hidden;
+  }
+  .r39-poll-option-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: r39-bar-shimmer 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes r39-bar-shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* ── r39-poll-option-voted-spring: Spring bounce effect on voted option ── */
+  .r39-poll-option-voted-spring {
+    animation: r39-vote-spring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes r39-vote-spring {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.03); }
+    60%  { transform: scale(0.98); }
+    100% { transform: scale(1); }
+  }
+
+  /* ── r39-poll-winner-glow: Winner option glow highlight ── */
+  .r39-poll-winner-glow {
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.25), 0 0 24px rgba(16, 185, 129, 0.1);
+    animation: r39-winner-pulse 2.5s ease-in-out infinite;
+  }
+  .dark .r39-poll-winner-glow {
+    box-shadow: 0 0 16px rgba(52, 211, 153, 0.3), 0 0 32px rgba(52, 211, 153, 0.12);
+  }
+  @keyframes r39-winner-pulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(16, 185, 129, 0.25), 0 0 24px rgba(16, 185, 129, 0.1); }
+    50%      { box-shadow: 0 0 18px rgba(16, 185, 129, 0.35), 0 0 36px rgba(16, 185, 129, 0.18); }
+  }
+  .dark .r39-poll-winner-glow {
+    animation-name: r39-winner-pulse-dark;
+  }
+  @keyframes r39-winner-pulse-dark {
+    0%, 100% { box-shadow: 0 0 16px rgba(52, 211, 153, 0.3), 0 0 32px rgba(52, 211, 153, 0.12); }
+    50%      { box-shadow: 0 0 24px rgba(52, 211, 153, 0.4), 0 0 48px rgba(52, 211, 153, 0.2); }
+  }
+
+  /* ── r39-poll-avatar-stack: Overlapping avatar stack with gradient ring ── */
+  .r39-poll-avatar-stack {
+    display: flex;
+    align-items: center;
+  }
+  .r39-poll-avatar-stack .r39-poll-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(139, 92, 246, 0.6);
+    margin-left: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));
+    box-shadow: 0 0 6px rgba(139, 92, 246, 0.2);
+    position: relative;
+  }
+  .r39-poll-avatar-stack .r39-poll-avatar:first-child {
+    margin-left: 0;
+  }
+  .dark .r39-poll-avatar-stack .r39-poll-avatar {
+    border-color: rgba(168, 85, 247, 0.5);
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.15));
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.25);
+  }
+
+  /* ── r39-poll-avatar-enter: Staggered avatar entrance animation ── */
+  .r39-poll-avatar-enter {
+    opacity: 0;
+    transform: scale(0.5) translateY(8px);
+    animation: r39-avatar-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes r39-avatar-pop {
+    0%   { opacity: 0; transform: scale(0.5) translateY(8px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* ── r39-poll-countdown-pulse: Timer pulse animation ── */
+  .r39-poll-countdown-pulse {
+    animation: r39-countdown-pulse 2s ease-in-out infinite;
+  }
+  @keyframes r39-countdown-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+
+  /* ── r39-poll-countdown-urgent: Gradient text when urgent ── */
+  .r39-poll-countdown-urgent {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.9), rgba(239, 68, 68, 0.9));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r39-urgent-pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes r39-urgent-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.7; }
+  }
+
+  /* ── r39-poll-vote-btn: Action button hover scale + shimmer sweep ── */
+  .r39-poll-vote-btn {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.25s ease;
+  }
+  .r39-poll-vote-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 40%,
+      rgba(255, 255, 255, 0.35) 50%,
+      rgba(255, 255, 255, 0.2) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .r39-poll-vote-btn:hover::before {
+    animation: r39-vote-btn-shimmer 0.6s ease-out;
+  }
+  .dark .r39-poll-vote-btn::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.14) 50%,
+      rgba(255, 255, 255, 0.08) 60%,
+      transparent 100%
+    );
+  }
+  @keyframes r39-vote-btn-shimmer {
+    0%   { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* ── r39-poll-stagger-1 through r39-poll-stagger-4: Staggered entrance delays ── */
+  .r39-poll-stagger-1 { animation-delay: 0s; }
+  .r39-poll-stagger-2 { animation-delay: 0.12s; }
+  .r39-poll-stagger-3 { animation-delay: 0.24s; }
+  .r39-poll-stagger-4 { animation-delay: 0.36s; }
+
+  /* ── r39-poll-bar-entrance: Staggered bar entrance for results ── */
+  .r39-poll-bar-entrance {
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: r39-bar-grow 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes r39-bar-grow {
+    0%   { opacity: 0; transform: scaleX(0); }
+    40%  { opacity: 1; }
+    100% { opacity: 1; transform: scaleX(1); }
+  }
+
+  /* ── r39-poll-percent-counter: Percentage counter glow entrance ── */
+  .r39-poll-percent-counter {
+    opacity: 0;
+    animation: r39-percent-fade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes r39-percent-fade {
+    0%   { opacity: 0; transform: translateY(4px) scale(0.8); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ── r39-poll-section-icon: Section header icon floating ── */
+  .r39-poll-section-icon {
+    animation: r39-icon-float 3s ease-in-out infinite;
+  }
+  @keyframes r39-icon-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-3px); }
+  }
+
+  /* ── r39-poll-header-gradient: Animated gradient on section title ── */
+  .r39-poll-header-gradient {
+    background: linear-gradient(
+      90deg,
+      rgba(139, 92, 246, 0.9),
+      rgba(168, 85, 247, 0.9),
+      rgba(236, 72, 153, 0.9),
+      rgba(139, 92, 246, 0.9)
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r39-header-shimmer 4s linear infinite;
+  }
+  @keyframes r39-header-shimmer {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* ── r39-poll-voted-overlay: Subtle overlay flash on vote ── */
+  .r39-poll-voted-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 20;
+    animation: r39-voted-flash 0.6s ease-out forwards;
+  }
+  @keyframes r39-voted-flash {
+    0%   { background: rgba(139, 92, 246, 0.15); opacity: 1; }
+    100% { background: rgba(139, 92, 246, 0.15); opacity: 0; }
+  }
+
+} /* end @media prefers-reduced-motion: no-preference Round 39 */
+
+/* ==============================
+   R39 DELIVERY TRACKER ENHANCEMENTS
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* --- R39 Step icon spring entrance --- */
+  @keyframes r39-step-icon-spring {
+    0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+    60% { transform: scale(1.15) rotate(4deg); opacity: 1; }
+    80% { transform: scale(0.95) rotate(-2deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  .r39-step-icon-enter {
+    animation: r39-step-icon-spring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* --- R39 Pulsing glow ring on active step --- */
+  @keyframes r39-step-glow-ring {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45), 0 0 12px rgba(16, 185, 129, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(16, 185, 129, 0), 0 0 24px rgba(16, 185, 129, 0.35);
+    }
+  }
+  .r39-step-glow {
+    animation: r39-step-glow-ring 2s ease-in-out infinite;
+  }
+
+  /* --- R39 Animated gradient fill for progress line --- */
+  @keyframes r39-gradient-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .r39-progress-gradient {
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.8), rgba(6, 182, 212, 0.9), rgba(16, 185, 129, 0.8), rgba(6, 182, 212, 0.9));
+    background-size: 200% 100%;
+    animation: r39-gradient-flow 3s linear infinite;
+  }
+
+  /* --- R39 Driver card glassmorphism --- */
+  .r39-driver-glass {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  }
+  .dark .r39-driver-glass {
+    background: rgba(20, 40, 35, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  .r39-driver-glass:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  .dark .r39-driver-glass:hover {
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* --- R39 Animated avatar ring gradient rotation --- */
+  @keyframes r39-ring-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .r39-avatar-ring {
+    position: relative;
+  }
+  .r39-avatar-ring::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    padding: 3px;
+    background: conic-gradient(
+      from 0deg,
+      rgba(16, 185, 129, 0.9),
+      rgba(6, 182, 212, 0.8),
+      rgba(234, 179, 8, 0.7),
+      rgba(16, 185, 129, 0.9)
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    animation: r39-ring-spin 4s linear infinite;
+    pointer-events: none;
+  }
+
+  /* --- R39 Map grid pattern overlay --- */
+  .r39-map-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    animation: r39-grid-shift 20s linear infinite;
+  }
+  @keyframes r39-grid-shift {
+    0% { background-position: 0 0; }
+    100% { background-position: 24px 24px; }
+  }
+
+  /* --- R39 Pulsing location dots --- */
+  @keyframes r39-location-ping {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+  }
+  .r39-location-pulse {
+    animation: r39-location-ping 1.8s ease-in-out infinite;
+  }
+  @keyframes r39-location-ripple {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+  .r39-location-ripple::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    animation: r39-location-ripple 2s ease-out infinite;
+    pointer-events: none;
+  }
+
+  /* --- R39 ETA gradient text --- */
+  .r39-eta-gradient {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(167, 243, 208, 1), rgba(103, 232, 249, 1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% auto;
+    animation: r39-gradient-flow 4s linear infinite;
+  }
+
+  /* --- R39 ETA scale pulse on update --- */
+  @keyframes r39-eta-bump {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.08); }
+    60% { transform: scale(0.97); }
+    100% { transform: scale(1); }
+  }
+  .r39-eta-pulse {
+    animation: r39-eta-bump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* --- R39 Contact buttons: hover scale + glow + shimmer sweep --- */
+  @keyframes r39-shimmer-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+  .r39-contact-btn {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  }
+  .r39-contact-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.25) 40%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.25) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .r39-contact-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.3), 0 0 6px rgba(16, 185, 129, 0.15);
+  }
+  .r39-contact-btn:hover::before {
+    animation: r39-shimmer-sweep 0.6s ease-out;
+  }
+  .dark .r39-contact-btn:hover::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.08) 60%,
+      transparent 100%
+    );
+  }
+
+  /* --- R39 Step completed checkmark pop --- */
+  @keyframes r39-check-pop {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+  }
+  .r39-check-pop {
+    animation: r39-check-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+} /* end @media prefers-reduced-motion */
+
+/* ==============================
+   R39 - NOTIFICATION CENTER ENHANCEMENTS
+   ============================== */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* --- Bouncing bell for empty state --- */
+  @keyframes r39-bell-bounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    15% { transform: translateY(-14px) rotate(-8deg); }
+    30% { transform: translateY(0) rotate(0deg); }
+    45% { transform: translateY(-8px) rotate(4deg); }
+    60% { transform: translateY(0) rotate(0deg); }
+  }
+  .r39-bell-bounce {
+    animation: r39-bell-bounce 2.4s ease-in-out infinite;
+  }
+
+  /* --- Floating particles for empty state --- */
+  @keyframes r39-particle-drift {
+    0% { transform: translateY(0) translateX(0) scale(0); opacity: 0; }
+    20% { opacity: 0.7; transform: scale(1); }
+    100% { transform: translateY(-60px) translateX(var(--r39-drift-x, 10px)) scale(0); opacity: 0; }
+  }
+  .r39-particles-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .r39-particle {
+    position: absolute;
+    border-radius: 50%;
+    animation: r39-particle-drift 3s ease-out infinite;
+  }
+
+  /* --- Gradient text for empty state --- */
+  @keyframes r39-gradient-text-shift {
+    0% { background-position: 0% center; }
+    50% { background-position: 100% center; }
+    100% { background-position: 0% center; }
+  }
+  .r39-gradient-text {
+    background: linear-gradient(135deg, #10b981, #f59e0b, #06b6d4, #10b981);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r39-gradient-text-shift 4s ease-in-out infinite;
+  }
+  .dark .r39-gradient-text {
+    background: linear-gradient(135deg, #34d399, #fbbf24, #22d3ee, #34d399);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r39-gradient-text-shift 4s ease-in-out infinite;
+  }
+
+  /* --- Unread indicator pulse --- */
+  @keyframes r39-unread-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+    50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+  }
+  .r39-unread-pulse {
+    animation: r39-unread-pulse 2s ease-in-out infinite;
+  }
+
+  /* --- Tab indicator animated gradient --- */
+  @keyframes r39-tab-gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .r39-tab-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #10b981, #06b6d4, #10b981);
+    background-size: 200% 100%;
+    animation: r39-tab-gradient-shift 3s ease-in-out infinite;
+    transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* --- Shimmer on active tab text --- */
+  @keyframes r39-tab-shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .r39-tab-active-text {
+    background: linear-gradient(90deg, #10b981 0%, #06b6d4 25%, #10b981 50%, #06b6d4 75%, #10b981 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r39-tab-shimmer 3s linear infinite;
+  }
+  .dark .r39-tab-active-text {
+    background: linear-gradient(90deg, #34d399 0%, #22d3ee 25%, #34d399 50%, #22d3ee 75%, #34d399 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* --- Badge counter pulse on unread --- */
+  @keyframes r39-badge-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+  .r39-badge-pulse {
+    animation: r39-badge-pulse 2s ease-in-out infinite;
+  }
+
+  /* --- Button shimmer sweep for primary actions --- */
+  @keyframes r39-btn-shimmer-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+  .r39-btn-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .r39-btn-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.25) 40%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.25) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    transition: none;
+  }
+  .r39-btn-shimmer:hover::after {
+    animation: r39-btn-shimmer-sweep 0.7s ease-out;
+  }
+  .dark .r39-btn-shimmer::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.14) 50%,
+      rgba(255, 255, 255, 0.08) 60%,
+      transparent 100%
+    );
+  }
+
+  /* --- Timestamp fade-in --- */
+  @keyframes r39-timestamp-fade {
+    0% { opacity: 0; transform: translateY(4px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .r39-timestamp-fade {
+    animation: r39-timestamp-fade 0.4s ease-out forwards;
+  }
+
+  /* --- Notification card hover glow --- */
+  .r39-notif-card {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.2s ease;
+  }
+  .r39-notif-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 0 8px rgba(16, 185, 129, 0.06);
+  }
+  .dark .r39-notif-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), 0 0 8px rgba(52, 211, 153, 0.08);
+  }
+
+  /* --- Dismiss button enhanced --- */
+  .r39-dismiss-btn {
+    transition: transform 0.2s ease, background-color 0.15s ease, opacity 0.2s ease;
+  }
+  .r39-dismiss-btn:hover {
+    transform: scale(1.15);
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+  .dark .r39-dismiss-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* --- Action button hover scale wrapper --- */
+  .r39-action-hover {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .r39-action-hover:hover {
+    transform: scale(1.05);
+  }
+
+} /* end @media (prefers-reduced-motion: no-preference) */
+
+/* ==============================
+   R39 STORE DASHBOARD ENHANCEMENTS
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* --- r39 Stat Card: animated gradient border glow on hover --- */
+  .r39-stat-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  }
+  .r39-stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(
+      135deg,
+      rgba(16, 185, 129, 0.5),
+      rgba(245, 158, 11, 0.4),
+      rgba(20, 184, 166, 0.5),
+      rgba(16, 185, 129, 0.5)
+    );
+    background-size: 300% 300%;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    animation: r39-border-glow-shift 5s ease-in-out infinite;
+  }
+  .r39-stat-card:hover::before {
+    opacity: 1;
+  }
+  .r39-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12), 0 0 40px rgba(16, 185, 129, 0.06);
+  }
+  .dark .r39-stat-card:hover {
+    box-shadow: 0 8px 24px rgba(52, 211, 153, 0.18), 0 0 40px rgba(52, 211, 153, 0.1);
+  }
+  @keyframes r39-border-glow-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* --- r39 Stat Card: shimmer overlay sweep --- */
+  .r39-stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 40%,
+      rgba(255, 255, 255, 0.25) 50%,
+      rgba(255, 255, 255, 0.15) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 3;
+    transition: none;
+  }
+  .dark .r39-stat-card::after {
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 40%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.04) 60%,
+      transparent 100%
+    );
+  }
+  .r39-stat-card:hover::after {
+    animation: r39-shimmer-sweep 0.8s ease-out;
+  }
+  @keyframes r39-shimmer-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* --- r39 Stat number count-up entrance --- */
+  .r39-stat-value {
+    animation: r39-count-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes r39-count-enter {
+    0% { opacity: 0; transform: translateY(10px) scale(0.85); }
+    60% { opacity: 1; transform: translateY(-2px) scale(1.03); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* --- r39 Chart: subtle grid pattern background --- */
+  .r39-chart-grid {
+    position: relative;
+    overflow: hidden;
+  }
+  .r39-chart-grid::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+  }
+  .dark .r39-chart-grid::before {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  }
+
+  /* --- r39 Chart: animated line drawing effect --- */
+  .r39-chart-line-draw {
+    position: absolute;
+    bottom: 52px;
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .r39-chart-line-draw::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(245, 158, 11, 0.2), rgba(20, 184, 166, 0.3));
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: r39-line-draw-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+  }
+  @keyframes r39-line-draw-in {
+    0% { transform: scaleX(0); }
+    100% { transform: scaleX(1); }
+  }
+
+  /* --- r39 Order list: staggered slide-in entrance --- */
+  .r39-order-item {
+    opacity: 0;
+    transform: translateX(-16px);
+    animation: r39-order-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .r39-order-item:nth-child(1) { animation-delay: 0.0s; }
+  .r39-order-item:nth-child(2) { animation-delay: 0.1s; }
+  .r39-order-item:nth-child(3) { animation-delay: 0.2s; }
+  .r39-order-item:nth-child(4) { animation-delay: 0.3s; }
+  .r39-order-item:nth-child(5) { animation-delay: 0.4s; }
+  .r39-order-item:nth-child(6) { animation-delay: 0.5s; }
+  .r39-order-item:nth-child(7) { animation-delay: 0.6s; }
+  .r39-order-item:nth-child(8) { animation-delay: 0.7s; }
+  .r39-order-item:nth-child(n+9) { animation-delay: 0.8s; }
+  @keyframes r39-order-slide-in {
+    0% { opacity: 0; transform: translateX(-16px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+  /* --- r39 Order: hover lift with shadow --- */
+  .r39-order-lift {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  }
+  .r39-order-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+  .dark .r39-order-lift:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /* --- r39 Status indicator: colored pulse --- */
+  .r39-status-pulse {
+    animation: r39-status-pulse-anim 2s ease-in-out infinite;
+  }
+  @keyframes r39-status-pulse-anim {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+  }
+  .r39-status-pulse-amber {
+    animation: r39-status-pulse-amber-anim 2s ease-in-out infinite;
+  }
+  @keyframes r39-status-pulse-amber-anim {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(245, 158, 11, 0); }
+  }
+  .r39-status-pulse-red {
+    animation: r39-status-pulse-red-anim 2s ease-in-out infinite;
+  }
+  @keyframes r39-status-pulse-red-anim {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+  }
+
+  /* --- r39 Nav: animated gradient active indicator --- */
+  .r39-nav-glow {
+    position: relative;
+  }
+  .r39-nav-glow[data-state="active"]::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.6), rgba(245, 158, 11, 0.5), rgba(20, 184, 166, 0.6));
+    background-size: 200% 100%;
+    animation: r39-nav-indicator-shift 3s ease-in-out infinite;
+  }
+  @keyframes r39-nav-indicator-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* --- r39 Nav: glow effect on active item --- */
+  .r39-nav-glow[data-state="active"] {
+    text-shadow: 0 0 8px rgba(16, 185, 129, 0.35);
+  }
+
+  /* --- r39 Revenue: animated counter with scale pulse --- */
+  .r39-revenue-pulse {
+    animation: r39-revenue-scale-pulse 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes r39-revenue-scale-pulse {
+    0% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.06); }
+    70% { transform: scale(0.97); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* --- r39 Revenue: gradient text effect on total --- */
+  .r39-revenue-gradient {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 1), rgba(245, 158, 11, 0.8), rgba(20, 184, 166, 1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: r39-revenue-text-shift 4s ease-in-out infinite;
+  }
+  .dark .r39-revenue-gradient {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 1), rgba(251, 191, 36, 0.8), rgba(94, 234, 212, 1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+  }
+  @keyframes r39-revenue-text-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* --- r39 Floating gradient orbs for visual depth --- */
+  .r39-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
+    z-index: 0;
+  }
+  .r39-orb-1 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%);
+    top: 5%;
+    left: 10%;
+    animation: r39-orb-float-1 18s ease-in-out infinite;
+  }
+  .dark .r39-orb-1 {
+    background: radial-gradient(circle, rgba(52, 211, 153, 0.15) 0%, transparent 70%);
+  }
+  .r39-orb-2 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.10) 0%, transparent 70%);
+    top: 40%;
+    right: 5%;
+    animation: r39-orb-float-2 22s ease-in-out infinite;
+  }
+  .dark .r39-orb-2 {
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.12) 0%, transparent 70%);
+  }
+  .r39-orb-3 {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(20, 184, 166, 0.10) 0%, transparent 70%);
+    bottom: 15%;
+    left: 40%;
+    animation: r39-orb-float-3 20s ease-in-out infinite;
+  }
+  .dark .r39-orb-3 {
+    background: radial-gradient(circle, rgba(94, 234, 212, 0.12) 0%, transparent 70%);
+  }
+  @keyframes r39-orb-float-1 {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(40px, 30px); }
+    50% { transform: translate(-20px, 50px); }
+    75% { transform: translate(30px, -20px); }
+  }
+  @keyframes r39-orb-float-2 {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-30px, 40px); }
+    50% { transform: translate(20px, -30px); }
+    75% { transform: translate(-40px, -20px); }
+  }
+  @keyframes r39-orb-float-3 {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(30px, -40px); }
+    66% { transform: translate(-30px, 20px); }
+  }
+
+}
+
+/* ==============================
+   ROUND 39 — FAVORITES VIEW ENHANCEMENTS (prefers-reduced-motion safe)
+   ============================== */
+@media prefers-reduced-motion: no-preference {
+
+  /* ---- r39-fav-shimmer-title: shimmer text gradient on "Favoritos" ---- */
+  @keyframes r39-shimmer-title {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .r39-fav-shimmer-title {
+    background: linear-gradient(
+      90deg,
+      #ef4444 0%,
+      #f97316 15%,
+      #ec4899 30%,
+      #ef4444 45%,
+      #f97316 60%,
+      #ec4899 75%,
+      #ef4444 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r39-shimmer-title 4s linear infinite;
+  }
+  .dark .r39-fav-shimmer-title {
+    background: linear-gradient(
+      90deg,
+      #f87171 0%,
+      #fb923c 15%,
+      #f472b6 30%,
+      #f87171 45%,
+      #fb923c 60%,
+      #f472b6 75%,
+      #f87171 100%
+    );
+    background-size: 200% auto;
+  }
+
+  /* ---- r39-fav-header-heart: pulsing glow on header heart icon ---- */
+  .r39-fav-header-heart {
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.3));
+  }
+  .dark .r39-fav-header-heart {
+    filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.4));
+  }
+
+  /* ---- r39-fav-empty-heart: gradient background for empty state heart circle ---- */
+  .r39-fav-empty-heart {
+    background: linear-gradient(135deg, rgba(254, 205, 211, 0.8), rgba(251, 207, 232, 0.8), rgba(253, 230, 230, 0.6));
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.15), 0 0 40px rgba(239, 68, 68, 0.08);
+  }
+  .dark .r39-fav-empty-heart {
+    background: linear-gradient(135deg, rgba(127, 29, 29, 0.3), rgba(131, 24, 67, 0.3), rgba(136, 19, 55, 0.2));
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.1), 0 0 40px rgba(239, 68, 68, 0.05);
+  }
+
+  /* ---- r39-fav-heart-icon: subtle glow on heart icon in empty state ---- */
+  .r39-fav-heart-icon {
+    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.4));
+  }
+
+  /* ---- r39-fav-glow-ring: pulsing glow ring behind empty state heart ---- */
+  .r39-fav-glow-ring {
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, transparent 70%);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.12), 0 0 60px rgba(236, 72, 153, 0.06);
+  }
+  .dark .r39-fav-glow-ring {
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.08), 0 0 60px rgba(236, 72, 153, 0.04);
+  }
+
+  /* ---- r39-fav-particle: base particle styling ---- */
+  .r39-fav-particle {
+    border-radius: 50%;
+    filter: blur(0.5px);
+  }
+
+  /* ---- r39-fav-pill: hover enhancement for filter pills ---- */
+  .r39-fav-pill {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .r39-fav-pill:active {
+    transform: scale(0.95);
+  }
+
+  /* ---- r39-fav-pill-shimmer: shimmer overlay for active filter pill (applied via framer) ---- */
+  .r39-fav-pill-shimmer {
+    pointer-events: none;
+  }
+
+  /* ---- r39-fav-pill-glow: breathing glow ring for active filter pill ---- */
+  .r39-fav-pill-glow {
+    pointer-events: none;
+  }
+
+  /* ---- r39-fav-grid-card: hover enhancement for grid cards ---- */
+  .r39-fav-grid-card {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .r39-fav-grid-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  .dark .r39-fav-grid-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ---- r39-fav-list-card: hover enhancement for list cards ---- */
+  .r39-fav-list-card {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* ---- r39-fav-sort-dropdown: dropdown styling ---- */
+  .r39-fav-sort-dropdown {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+} /* end @media prefers-reduced-motion: no-preference Round 39 r39-favorites-view classes */

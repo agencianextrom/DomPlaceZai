@@ -1165,19 +1165,13 @@ function ChallengeSkeleton() {
 
 export function CommunityChallenge() {
   const [isLoading, setIsLoading] = useState(true)
-  const [challengeState, setChallengeState] = useState<ChallengeState>({
-    progress: {},
-    completed: {},
-    lastUpdated: 0,
-  })
+  const [challengeState, setChallengeState] = useState<ChallengeState>(() => loadChallengeState())
   const [activeChallengeIndex, setActiveChallengeIndex] = useState(0)
   const [celebratingChallenge, setCelebratingChallenge] = useState<Challenge | null>(null)
   const [deadlineTimers, setDeadlineTimers] = useState<Record<string, number>>({})
 
-  // Load state from localStorage on mount
+  // Loading delay for skeleton
   useEffect(() => {
-    const state = loadChallengeState()
-    setChallengeState(state)
     const timer = setTimeout(() => setIsLoading(false), 800)
     return () => clearTimeout(timer)
   }, [])

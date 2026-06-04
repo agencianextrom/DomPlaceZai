@@ -190,15 +190,14 @@ export function StoreSubscriptionBox() {
   const [isLoading, setIsLoading] = useState(true)
   const [expandedTier, setExpandedTier] = useState<string | null>(null)
   const [subscribingTier, setSubscribingTier] = useState<string | null>(null)
-  const [subscribedTier, setSubscribedTier] = useState<string | null>(null)
+  const [subscribedTier, setSubscribedTier] = useState<string | null>(
+    () => (typeof window !== 'undefined' ? localStorage.getItem('domplace_subscription_tier') : null)
+  )
   const [hoveredTier, setHoveredTier] = useState<string | null>(null)
   const [storeCount, setStoreCount] = useState(0)
 
-  // Load store count and subscription state from localStorage
+  // Load store count from API
   useEffect(() => {
-    const savedSub = typeof window !== 'undefined' ? localStorage.getItem('domplace_subscription_tier') : null
-    if (savedSub) setSubscribedTier(savedSub)
-
     let cancelled = false
     const loadData = async () => {
       try {

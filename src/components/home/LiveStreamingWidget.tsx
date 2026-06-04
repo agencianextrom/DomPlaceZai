@@ -217,11 +217,9 @@ function formatCountdown(ms: number): string {
    ═══════════════════════════════════════════════════════════════════ */
 
 function useStreamTimer(startTime: number) {
-  const [elapsed, setElapsed] = useState(0)
+  const [elapsed, setElapsed] = useState(() => Math.max(0, Math.floor((Date.now() - startTime) / 1000)))
 
   useEffect(() => {
-    const initialElapsed = Math.max(0, Math.floor((Date.now() - startTime) / 1000))
-    setElapsed(initialElapsed)
     const interval = setInterval(() => {
       setElapsed((prev) => prev + 1)
     }, 1000)
@@ -384,6 +382,96 @@ function AnimatedViewerCount({ count }: { count: number }) {
       <Eye className="h-3.5 w-3.5" />
       <AnimatedCounter value={count} duration={1800} locale className="text-xs font-semibold" />
     </div>
+  )
+}
+
+/* ─── Upcoming Stream Card (extracted to call useReminder at top level) ─── */
+function UpcomingStreamCard({ stream, index }: { stream: StreamData; index: number }) {
+  const timeUntilStart = stream.startTime - Date.now()
+  const isLive = stream.isLive
+  const countdown = isLive ? 'AGORA' : formatCountdown(timeUntilStart)
+  const reminder = useReminder(stream.id)
+  const catKey = stream.category === 'lancamento' ? 'lancamento' : stream.category === 'tutorial' ? 'tutorial' : 'promocao'
+  const colorClass = categoryColorMap[catKey] || categoryColorMap.promocao
+
+  return (
+    <motion.div
+      key={stream.id}
+      className="relative rounded-xl overflow-hidden border border-border/40 hover:border-primary/25 transition-all cursor-pointer group r37-stream-card r37-stream-card-hover"
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -3, transition: { type: 'spring' as const, stiffness: 300, damping: 22 } }}
+      transition={{
+        delay: 0.2 + index * 0.08,
+        type: 'spring' as const,
+        stiffness: 260,
+        damping: 22,
+      }}
+    >
+      {/* Thumbnail */}
+      <div className={`relative aspect-[4/3] bg-gradient-to-br ${stream.gradient} flex items-center justify-center overflow-hidden`}>
+        <span className="text-3xl group-hover:scale-110 transition-transform duration-300">
+          {stream.storeEmoji}
+        </span>
+
+        {/* Live / countdown badge */}
+        {isLive ? (
+          <motion.div
+            className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          >
+            <LivePulseDot />
+            AGORA
+          </motion.div>
+        ) : (
+          <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/50 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm">
+            <Clock className="h-2.5 w-2.5" />
+            {countdown}
+          </div>
+        )}
+
+        {/* Category tag */}
+        <div className="absolute top-1.5 right-1.5">
+          <Badge className={`text-[8px] px-1.5 py-0 font-bold leading-tight border-0 rounded-md ${colorClass}`}>
+            {stream.categoryLabel}
+          </Badge>
+        </div>
+
+        {/* Viewer count for live streams */}
+        {isLive && (
+          <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1 bg-black/50 text-white text-[8px] font-semibold px-1.5 py-0.5 rounded-md backdrop-blur-sm">
+            <Eye className="h-2.5 w-2.5" />
+            {stream.viewers}
+          </div>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="p-2 bg-card">
+        <div className="flex items-center gap-1">
+          <span className="text-sm">{stream.streamerAvatar}</span>
+          <p className="text-[10px] text-muted-foreground font-medium truncate">{stream.storeName}</p>
+        </div>
+        <p className="text-xs font-semibold line-clamp-2 leading-tight mt-1">{stream.title}</p>
+
+        {/* Reminder toggle */}
+        <motion.div whileTap={{ scale: 0.95 }} className="mt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation()
+              reminder.toggle()
+            }}
+            className={`w-full h-7 text-[10px] gap-1 ${reminder.isSet ? 'text-primary' : 'text-muted-foreground'}`}
+          >
+            {reminder.isSet ? <BellOff className="h-3 w-3" /> : <Bell className="h-3 w-3" />}
+            {reminder.isSet ? 'Lembrete definido' : 'Lembrete'}
+          </Button>
+        </motion.div>
+      </div>
+    </motion.div>
   )
 }
 
@@ -791,94 +879,9 @@ export function LiveStreamingWidget() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            {upcomingStreams.map((stream, index) => {
-              const timeUntilStart = stream.startTime - Date.now()
-              const isLive = stream.isLive
-              const countdown = isLive ? 'AGORA' : formatCountdown(timeUntilStart)
-              const reminder = useReminder(stream.id)
-              const catKey = stream.category === 'lancamento' ? 'lancamento' : stream.category === 'tutorial' ? 'tutorial' : 'promocao'
-              const colorClass = categoryColorMap[catKey] || categoryColorMap.promocao
-
-              return (
-                <motion.div
-                  key={stream.id}
-                  className="relative rounded-xl overflow-hidden border border-border/40 hover:border-primary/25 transition-all cursor-pointer group r37-stream-card r37-stream-card-hover"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  whileHover={{ y: -3, transition: { type: 'spring' as const, stiffness: 300, damping: 22 } }}
-                  transition={{
-                    delay: 0.2 + index * 0.08,
-                    type: 'spring' as const,
-                    stiffness: 260,
-                    damping: 22,
-                  }}
-                >
-                  {/* Thumbnail */}
-                  <div className={`relative aspect-[4/3] bg-gradient-to-br ${stream.gradient} flex items-center justify-center overflow-hidden`}>
-                    <span className="text-3xl group-hover:scale-110 transition-transform duration-300">
-                      {stream.storeEmoji}
-                    </span>
-
-                    {/* Live / countdown badge */}
-                    {isLive ? (
-                      <motion.div
-                        className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md"
-                        animate={{ scale: [1, 1.05, 1] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
-                      >
-                        <LivePulseDot />
-                        AGORA
-                      </motion.div>
-                    ) : (
-                      <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/50 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm">
-                        <Clock className="h-2.5 w-2.5" />
-                        {countdown}
-                      </div>
-                    )}
-
-                    {/* Category tag */}
-                    <div className="absolute top-1.5 right-1.5">
-                      <Badge className={`text-[8px] px-1.5 py-0 font-bold leading-tight border-0 rounded-md ${colorClass}`}>
-                        {stream.categoryLabel}
-                      </Badge>
-                    </div>
-
-                    {/* Viewer count for live streams */}
-                    {isLive && (
-                      <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1 bg-black/50 text-white text-[8px] font-semibold px-1.5 py-0.5 rounded-md backdrop-blur-sm">
-                        <Eye className="h-2.5 w-2.5" />
-                        {stream.viewers}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Info */}
-                  <div className="p-2 bg-card">
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm">{stream.streamerAvatar}</span>
-                      <p className="text-[10px] text-muted-foreground font-medium truncate">{stream.storeName}</p>
-                    </div>
-                    <p className="text-xs font-semibold line-clamp-2 leading-tight mt-1">{stream.title}</p>
-
-                    {/* Reminder toggle */}
-                    <motion.div whileTap={{ scale: 0.95 }} className="mt-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          reminder.toggle()
-                        }}
-                        className={`w-full h-7 text-[10px] gap-1 ${reminder.isSet ? 'text-primary' : 'text-muted-foreground'}`}
-                      >
-                        {reminder.isSet ? <BellOff className="h-3 w-3" /> : <Bell className="h-3 w-3" />}
-                        {reminder.isSet ? 'Lembrete definido' : 'Lembrete'}
-                      </Button>
-                    </motion.div>
-                  </div>
-                </motion.div>
-              )
-            })}
+            {upcomingStreams.map((stream, index) => (
+              <UpcomingStreamCard key={stream.id} stream={stream} index={index} />
+            ))}
           </div>
         </div>
 

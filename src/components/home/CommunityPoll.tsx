@@ -133,7 +133,7 @@ function getSimulatedVotes(poll: PollData): Record<string, number> {
 const optionContainerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
   },
 }
 
@@ -144,6 +144,44 @@ const optionVariants = {
     x: 0,
     scale: 1,
     transition: { type: 'spring' as const, stiffness: 300, damping: 22 },
+  },
+}
+
+const voteSpringVariants = {
+  initial: { scale: 1 },
+  voted: {
+    scale: [1, 1.04, 0.98, 1],
+    transition: { type: 'spring' as const, stiffness: 400, damping: 14, duration: 0.6 },
+  },
+}
+
+const resultBarVariants = {
+  hidden: { scaleX: 0, opacity: 0 },
+  visible: (i: number) => ({
+    scaleX: 1,
+    opacity: 1,
+    transition: {
+      delay: 0.1 + i * 0.12,
+      duration: 0.8,
+      ease: 'easeOut' as const,
+    },
+  }),
+}
+
+const avatarStackVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.6 },
+  },
+}
+
+const avatarItemVariants = {
+  hidden: { opacity: 0, scale: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 400, damping: 18 },
   },
 }
 
@@ -226,9 +264,10 @@ function CountdownTimer({ endDate }: { endDate: string }) {
   }, [endDate])
 
   const isUrgent = timeLeft.days === 0 && timeLeft.hours < 12
+  const isVeryUrgent = timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes < 30
 
   return (
-    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+    <div className={`flex items-center gap-2 text-[10px] text-muted-foreground ${isVeryUrgent ? 'r39-poll-countdown-pulse' : ''}`}>
       <motion.div
         animate={{ rotate: [0, 360] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'linear' as const }}
@@ -239,25 +278,25 @@ function CountdownTimer({ endDate }: { endDate: string }) {
       <div className="flex items-center gap-0.5 font-mono font-bold">
         {timeLeft.days > 0 && (
           <>
-            <span className={isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{timeLeft.days}d</span>
+            <span className={isVeryUrgent ? 'r39-poll-countdown-urgent' : isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{timeLeft.days}d</span>
             <span className="mx-0.5">:</span>
           </>
         )}
-        <span className={isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{String(timeLeft.hours).padStart(2, '0')}</span>
+        <span className={isVeryUrgent ? 'r39-poll-countdown-urgent' : isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{String(timeLeft.hours).padStart(2, '0')}</span>
         <motion.span
           animate={{ opacity: [1, 0.3, 1] }}
           transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' as const }}
         >
           :
         </motion.span>
-        <span className={isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{String(timeLeft.minutes).padStart(2, '0')}</span>
+        <span className={isVeryUrgent ? 'r39-poll-countdown-urgent' : isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{String(timeLeft.minutes).padStart(2, '0')}</span>
         <motion.span
           animate={{ opacity: [1, 0.3, 1] }}
           transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
         >
           :
         </motion.span>
-        <span className={isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{String(timeLeft.seconds).padStart(2, '0')}</span>
+        <span className={isVeryUrgent ? 'r39-poll-countdown-urgent' : isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{String(timeLeft.seconds).padStart(2, '0')}</span>
       </div>
     </div>
   )
@@ -287,6 +326,7 @@ function PollOptionButton({
 }) {
   const percentage = totalVotes > 0 ? Math.round((simulatedCount / totalVotes) * 100) : 0
   const optionRef = useRef<HTMLButtonElement>(null)
+  const staggerClass = `r39-poll-stagger-${Math.min(index + 1, 4)}`
 
   // Colors per position for non-voted state
   const colorSchemes = [
@@ -302,7 +342,7 @@ function PollOptionButton({
       ref={optionRef}
       variants={optionVariants}
       whileTap={!hasVotedPoll ? { scale: 0.97 } : undefined}
-      whileHover={!hasVotedPoll ? { scale: 1.02, x: 4 } : undefined}
+      whileHover={!hasVotedPoll ? { scale: 1.02, x: 4, boxShadow: '0 4px 20px rgba(0,0,0,0.1)' } : undefined}
       onClick={() => {
         if (!hasVotedPoll) {
           onVote(option.id)
@@ -314,30 +354,35 @@ function PollOptionButton({
         }
       }}
       disabled={hasVotedPoll}
-      className={`w-full relative overflow-hidden rounded-xl border-2 transition-all text-left ${
+      className={`w-full relative overflow-hidden rounded-xl border-2 transition-all text-left r39-poll-vote-btn ${
         hasVotedPoll
           ? isVoted
-            ? 'border-primary bg-primary/5 shadow-sm'
+            ? 'border-primary bg-primary/5 shadow-sm r39-poll-option-voted-spring'
             : isWinner
-              ? 'border-emerald-400/50 bg-emerald-50/50 dark:bg-emerald-950/20'
+              ? 'border-emerald-400/50 bg-emerald-50/50 dark:bg-emerald-950/20 r39-poll-winner-glow'
               : 'border-border bg-card opacity-80'
           : `${scheme.border} ${scheme.bg} cursor-pointer`
       }`}
     >
-      {/* Vote bar fill (animated after voting) */}
+      {/* Vote bar fill (animated after voting with gradient + shimmer) */}
       {hasVotedPoll && (
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8, delay: 0.1 + index * 0.08, ease: 'easeOut' as const }}
-          className={`absolute inset-y-0 left-0 rounded-xl ${
+          transition={{ duration: 0.8, delay: 0.1 + index * 0.12, ease: 'easeOut' as const }}
+          className={`absolute inset-y-0 left-0 rounded-xl r39-poll-option-bar r39-poll-bar-entrance ${staggerClass} ${
             isVoted
-              ? 'bg-gradient-to-r from-primary/15 to-primary/5'
+              ? 'bg-gradient-to-r from-primary/20 via-primary/12 to-primary/5'
               : isWinner
-                ? 'bg-gradient-to-r from-emerald-400/15 to-emerald-400/5'
-                : 'bg-gradient-to-r from-muted/50 to-transparent'
+                ? 'bg-gradient-to-r from-emerald-400/20 via-emerald-400/12 to-emerald-400/5'
+                : 'bg-gradient-to-r from-muted/60 via-muted/40 to-transparent'
           }`}
         />
+      )}
+
+      {/* Shimmer overlay flash on vote */}
+      {isVoted && hasVotedPoll && (
+        <div className="r39-poll-voted-overlay" />
       )}
 
       <div className="relative z-10 flex items-center gap-3 px-4 py-3">
@@ -360,8 +405,8 @@ function PollOptionButton({
               <motion.span
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 + index * 0.1, type: 'spring' as const, stiffness: 400, damping: 15 }}
-                className={`text-xs font-bold tabular-nums shrink-0 ${
+                transition={{ delay: 0.3 + index * 0.12, type: 'spring' as const, stiffness: 400, damping: 15 }}
+                className={`text-xs font-bold tabular-nums shrink-0 r39-poll-percent-counter ${staggerClass} ${
                   isVoted
                     ? 'text-primary'
                     : isWinner
@@ -498,6 +543,50 @@ function PreviousPollResult({ poll }: { poll: PollData }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   VoterAvatarStack — overlapping avatar stack with gradient ring
+   ═══════════════════════════════════════════════════════════════ */
+function VoterAvatarStack({ totalVotes }: { totalVotes: number }) {
+  // Show up to 5 avatars with "+N" label
+  const avatarEmojis = ['😊', '🎉', '🛒', '👍', '💜']
+  const showCount = Math.min(Math.max(1, Math.floor(totalVotes / 50)), 5)
+
+  return (
+    <motion.div
+      className="r39-poll-avatar-stack"
+      variants={avatarStackVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {Array.from({ length: showCount }).map((_, i) => (
+        <motion.div
+          key={i}
+          variants={avatarItemVariants}
+          className="r39-poll-avatar r39-poll-avatar-enter"
+          style={{ animationDelay: `${i * 0.08}s`, zIndex: showCount - i }}
+        >
+          {avatarEmojis[i % avatarEmojis.length]}
+        </motion.div>
+      ))}
+      {totalVotes > showCount * 50 && (
+        <motion.div
+          variants={avatarItemVariants}
+          className="r39-poll-avatar r39-poll-avatar-enter"
+          style={{
+            animationDelay: `${showCount * 0.08}s`,
+            zIndex: 0,
+            fontSize: '9px',
+            fontWeight: 700,
+            color: 'rgba(139, 92, 246, 0.8)',
+          }}
+        >
+          +{Math.floor((totalVotes - showCount * 50) / 50)}
+        </motion.div>
+      )}
+    </motion.div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
    MAIN COMPONENT — CommunityPoll
    ═══════════════════════════════════════════════════════════════ */
 export function CommunityPoll() {
@@ -577,7 +666,7 @@ export function CommunityPoll() {
       {/* Section header */}
       <div className="flex items-center gap-2">
         <motion.div
-          className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center"
+          className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center r39-poll-section-icon"
           animate={{ rotate: [0, 5, -5, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
         >
@@ -585,7 +674,7 @@ export function CommunityPoll() {
         </motion.div>
         <div>
           <h2 className="text-base font-bold flex items-center gap-1.5">
-            Enquete da Comunidade
+            <span className="r39-poll-header-gradient">Enquete da Comunidade</span>
             <Badge variant="secondary" className="text-[9px] bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border-violet-200/40 font-bold">
               Semanal
             </Badge>
@@ -597,10 +686,13 @@ export function CommunityPoll() {
 
       {/* Poll card */}
       <motion.div
-        className="bg-card border border-border rounded-2xl overflow-hidden relative"
-        whileHover={{ boxShadow: '0 4px 20px rgba(139,92,246,0.08)' }}
+        className="bg-card border border-border rounded-2xl overflow-hidden relative r39-poll-card"
+        whileHover={{ boxShadow: '0 12px 32px rgba(139,92,246,0.12), 0 4px 12px rgba(0,0,0,0.08)' }}
         transition={{ duration: 0.3 }}
       >
+        {/* Shimmer overlay */}
+        <div className="r39-poll-card-shimmer" />
+
         {/* Decorative header gradient */}
         <div className="h-2 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 relative overflow-hidden">
           <motion.span
@@ -638,6 +730,8 @@ export function CommunityPoll() {
                   <Users className="h-3 w-3" />
                   <span>Votos: <strong className="text-foreground">{totalVotesWithUser}</strong></span>
                 </div>
+                {/* Voter avatar stack */}
+                <VoterAvatarStack totalVotes={totalVotesWithUser} />
                 {!hasVotedCurrentPoll && (
                   <motion.div
                     animate={{ opacity: [0.6, 1, 0.6] }}
@@ -680,7 +774,7 @@ export function CommunityPoll() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.5, type: 'spring' as const, stiffness: 200, damping: 20 }}
               className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
             >
               <div className="flex items-center gap-2">

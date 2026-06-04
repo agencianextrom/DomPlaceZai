@@ -82,9 +82,92 @@ function getNotificationIcon(type: LocalNotification['type']) {
   }
 }
 
+// Tab filter types
+type NotificationTab = 'all' | 'order' | 'promo' | 'system'
+
+const tabConfig: { key: NotificationTab; label: string }[] = [
+  { key: 'all', label: 'Todas' },
+  { key: 'order', label: 'Pedidos' },
+  { key: 'promo', label: 'Promoções' },
+  { key: 'system', label: 'Sistema' },
+]
+
+// Floating particle component for empty state
+function R39Particles() {
+  const colors = ['#10b981', '#06b6d4', '#f59e0b', '#8b5cf6', '#ec4899']
+  return (
+    <div className="r39-particles-container">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <span
+          key={i}
+          className="r39-particle"
+          style={{
+            width: `${4 + Math.random() * 6}px`,
+            height: `${4 + Math.random() * 6}px`,
+            bottom: `${10 + Math.random() * 20}%`,
+            left: `${10 + Math.random() * 80}%`,
+            backgroundColor: colors[i % colors.length],
+            '--r39-drift-x': `${(Math.random() - 0.5) * 40}px`,
+            animationDelay: `${i * 0.4}s`,
+            animationDuration: `${2.5 + Math.random() * 2}s`,
+          } as React.CSSProperties}
+        />
+      ))}
+    </div>
+  )
+}
+
+// Framer-motion variants — all boxShadow as single string with rgba/hex
+const cardVariants = {
+  hidden: { opacity: 0, x: 24, scale: 0.97 },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      delay: i * 0.06,
+      duration: 0.35,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
+  }),
+  exit: {
+    opacity: 0,
+    x: -16,
+    height: 0,
+    marginBottom: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] as const },
+  },
+}
+
+const badgeSpring = {
+  initial: { scale: 0 },
+  animate: { scale: 1 },
+  exit: { scale: 0 },
+  transition: { type: 'spring' as const, stiffness: 600, damping: 12 },
+}
+
+const headerBadgeSpring = {
+  initial: { scale: 0.5 },
+  animate: { scale: 1 },
+  transition: { type: 'spring' as const, stiffness: 500, damping: 25 },
+}
+
+const emptyStateVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
+  },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
+}
+
 export function NotificationCenter() {
   const { currentUser, navigate } = useAppStore()
   const [isOpen, setIsOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<NotificationTab>('all')
   const [notifications, setNotifications] = useState<LocalNotification[]>(() => {
     if (typeof window === 'undefined') return sampleNotifications
     try {
@@ -154,6 +237,28 @@ export function NotificationCenter() {
     toast.success('Nova notificação recebida!')
   }, [])
 
+  // Filtered notifications based on tab
+  const filteredNotifications = activeTab === 'all'
+    ? notifications
+    : notifications.filter(n => n.type === activeTab)
+
+  // Ref for tab indicator position tracking
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const [tabIndicator, setTabIndicator] = useState<{ left: number; width: number }>({ left: 0, width: 0 })
+
+  useEffect(() => {
+    const el = tabRefs.current[activeTab]
+    if (el) {
+      const parent = el.parentElement
+      if (parent) {
+        setTabIndicator({
+          left: el.offsetLeft,
+          width: el.offsetWidth,
+        })
+      }
+    }
+  }, [activeTab, isOpen])
+
   if (!isClientRef.current) {
     return (
       <Button variant="ghost" size="icon" className="relative h-10 w-10">
@@ -170,18 +275,18 @@ export function NotificationCenter() {
             <Bell className="h-5 w-5" />
           </motion.div>
 
-          {/* Unread badge */}
+          {/* Unread badge — enhanced with pulse class */}
           <AnimatePresence>
             {unreadCount > 0 && (
               <motion.div
                 key={unreadCount}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-                transition={{ type: 'spring', stiffness: 600, damping: 12 }}
+                initial={badgeSpring.initial}
+                animate={badgeSpring.animate}
+                exit={badgeSpring.exit}
+                transition={badgeSpring.transition}
                 className="absolute -top-0.5 -right-0.5"
               >
-                <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm">
+                <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm r39-badge-pulse">
                   {unreadCount > 99 ? '99+' : unreadCount}
                 </Badge>
                 <motion.span
@@ -208,67 +313,125 @@ export function NotificationCenter() {
             {unreadCount > 0 && (
               <motion.div
                 key={unreadCount}
-                initial={{ scale: 0.5 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                initial={headerBadgeSpring.initial}
+                animate={headerBadgeSpring.animate}
+                transition={headerBadgeSpring.transition}
               >
-                <Badge className="text-[10px] px-1.5 py-0 h-5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-0">
+                <Badge className="text-[10px] px-1.5 py-0 h-5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-0 r39-badge-pulse">
                   {unreadCount} nova{unreadCount > 1 ? 's' : ''}
                 </Badge>
               </motion.div>
             )}
           </div>
+          {/* Mark all as read — wrapped in motion.div */}
           <div className="flex items-center gap-1">
             {unreadCount > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs text-primary h-7 px-2 hover:bg-primary/10"
-                onClick={(e) => { e.stopPropagation(); markAllAsRead() }}
-              >
-                Marcar todas
-              </Button>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs text-primary h-7 px-2 hover:bg-primary/10"
+                  onClick={(e) => { e.stopPropagation(); markAllAsRead() }}
+                >
+                  Marcar todas
+                </Button>
+              </motion.div>
             )}
           </div>
         </div>
 
+        {/* Tab Bar with animated gradient indicator */}
+        <div className="relative border-b border-border">
+          <div className="flex px-2 pt-1" role="tablist">
+            {tabConfig.map((tab) => (
+              <button
+                key={tab.key}
+                ref={(el) => { tabRefs.current[tab.key] = el }}
+                role="tab"
+                aria-selected={activeTab === tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`relative px-3 py-2 text-xs font-medium transition-colors duration-200 shrink-0
+                  ${activeTab === tab.key
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground/70'
+                  }`}
+              >
+                {activeTab === tab.key ? (
+                  <span className="r39-tab-active-text">{tab.label}</span>
+                ) : (
+                  tab.label
+                )}
+              </button>
+            ))}
+          </div>
+          {/* Animated gradient indicator */}
+          <motion.div
+            className="r39-tab-indicator"
+            animate={{ left: tabIndicator.left, width: tabIndicator.width }}
+            transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+          />
+        </div>
+
         {/* Notifications list */}
         <div className="max-h-[320px] overflow-y-auto custom-scrollbar">
-          <AnimatePresence initial={false}>
-            {notifications.length === 0 ? (
+          <AnimatePresence initial={false} mode="popLayout">
+            {filteredNotifications.length === 0 ? (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-col items-center justify-center py-10 text-center px-4"
+                key="r39-empty"
+                variants={emptyStateVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="relative flex flex-col items-center justify-center py-12 text-center px-4"
               >
-                <Bell className="h-8 w-8 text-muted-foreground/40 mb-2" />
-                <p className="text-sm text-muted-foreground">Nenhuma notificação</p>
+                <R39Particles />
+                <div className="r39-bell-bounce">
+                  <Bell className="h-10 w-10 text-muted-foreground/30 mb-3" />
+                </div>
+                <p className="r39-gradient-text text-sm font-semibold mb-1">
+                  {activeTab === 'all'
+                    ? 'Nenhuma notificação'
+                    : activeTab === 'order'
+                      ? 'Nenhum pedido'
+                      : activeTab === 'promo'
+                        ? 'Nenhuma promoção'
+                        : 'Nenhum aviso do sistema'
+                  }
+                </p>
+                <p className="text-xs text-muted-foreground/60">
+                  {activeTab === 'all'
+                    ? 'Você está por dentro de tudo!'
+                    : 'Sem notificações nesta categoria.'
+                  }
+                </p>
               </motion.div>
             ) : (
-              notifications.map((notification) => {
+              filteredNotifications.map((notification, index) => {
                 const { icon: Icon, color, bg } = getNotificationIcon(notification.type)
                 return (
                   <motion.div
                     key={notification.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="relative group"
+                    custom={index}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="relative group r39-notif-card"
                   >
                     <button
                       onClick={() => handleNotificationClick(notification)}
-                      className={`w-full flex gap-3 px-4 py-3 hover:bg-secondary/50 transition-colors text-left relative ${
+                      className={`w-full flex gap-3 px-4 py-3 text-left relative ${
                         !notification.read
                           ? 'bg-primary/[0.03] border-l-[3px] border-l-primary'
                           : 'border-l-[3px] border-l-transparent'
                       }`}
                     >
+                      {/* Unread dot with pulse */}
                       {!notification.read && (
                         <motion.div
                           layoutId={`nc-dot-${notification.id}`}
-                          className="absolute right-7 top-3 h-2 w-2 rounded-full bg-emerald-500"
-                          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                          className="absolute right-7 top-3 h-2 w-2 rounded-full bg-emerald-500 r39-unread-pulse"
+                          transition={{ type: 'spring' as const, stiffness: 500, damping: 30 }}
                         />
                       )}
                       <div className={`h-9 w-9 rounded-full ${bg} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110`}>
@@ -281,7 +444,7 @@ export function NotificationCenter() {
                         <p className={`text-xs mt-0.5 line-clamp-2 ${!notification.read ? 'text-foreground/80' : 'text-muted-foreground'}`}>
                           {notification.description}
                         </p>
-                        <p className="text-[10px] text-muted-foreground/60 mt-1 flex items-center gap-1">
+                        <p className="text-[10px] text-muted-foreground/60 mt-1 flex items-center gap-1 r39-timestamp-fade" title={notification.time}>
                           <Clock className="h-2.5 w-2.5" />
                           {notification.time}
                         </p>
@@ -290,10 +453,10 @@ export function NotificationCenter() {
                         <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground/20 self-center shrink-0" />
                       )}
                     </button>
-                    {/* Dismiss button */}
+                    {/* Dismiss button — enhanced */}
                     <button
                       onClick={(e) => { e.stopPropagation(); dismissNotification(notification.id) }}
-                      className="absolute top-2 right-1 h-5 w-5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-muted transition-opacity"
+                      className="absolute top-2 right-1 h-5 w-5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 r39-dismiss-btn"
                       aria-label="Remover notificação"
                     >
                       <span className="text-[10px] text-muted-foreground">✕</span>
@@ -307,15 +470,21 @@ export function NotificationCenter() {
 
         <Separator />
 
-        {/* Footer */}
+        {/* Footer — action button with shimmer */}
         <div className="flex items-center gap-1">
-          <button
-            className="w-full flex items-center justify-center gap-1 px-4 py-2.5 text-sm font-medium text-primary hover:bg-secondary/50 transition-colors shrink-0"
-            onClick={() => { navigate('notifications'); setIsOpen(false) }}
+          <motion.div
+            className="w-full"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            Ver todas as notificações
-            <ChevronRight className="h-4 w-4" />
-          </button>
+            <button
+              className="w-full flex items-center justify-center gap-1 px-4 py-2.5 text-sm font-medium text-primary hover:bg-secondary/50 transition-colors shrink-0 r39-btn-shimmer"
+              onClick={() => { navigate('notifications'); setIsOpen(false) }}
+            >
+              Ver todas as notificações
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </motion.div>
         </div>
       </PopoverContent>
     </Popover>

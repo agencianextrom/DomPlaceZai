@@ -23,7 +23,7 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.06 },
+    transition: { staggerChildren: 0.08 },
   },
 }
 
@@ -45,11 +45,27 @@ const floatingHearts = [
   { emoji: '🧡', size: 14, delay: 2.4, x: 35, yRange: 55, duration: 4 },
 ]
 
+// Particle configurations for empty state
+const floatingParticles = [
+  { size: 4, delay: 0, x: 10, yRange: 80, duration: 5, color: 'rgba(239,68,68,0.4)' },
+  { size: 3, delay: 1, x: 25, yRange: 70, duration: 4.5, color: 'rgba(236,72,153,0.3)' },
+  { size: 5, delay: 2, x: 70, yRange: 90, duration: 6, color: 'rgba(239,68,68,0.3)' },
+  { size: 3, delay: 3, x: 85, yRange: 65, duration: 5.5, color: 'rgba(168,85,247,0.3)' },
+  { size: 4, delay: 1.5, x: 50, yRange: 75, duration: 4.8, color: 'rgba(251,146,60,0.3)' },
+  { size: 2, delay: 2.5, x: 40, yRange: 85, duration: 5.2, color: 'rgba(239,68,68,0.25)' },
+]
+
+// Sort option labels
+const sortLabels: Record<string, string> = {
+  recent: 'Recentes', price_asc: 'Menor preço', price_desc: 'Maior preço', rating: 'Avaliação',
+}
+
 export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
   const { selectProduct, navigate } = useAppStore()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState<'recent' | 'price_asc' | 'price_desc' | 'rating'>('recent')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [sortOpen, setSortOpen] = useState(false)
 
   const categories = useMemo(() => {
     const cats = new Set(products.map(p => p.category))
@@ -66,7 +82,9 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
     }
   }, [products, activeCategory, sortBy])
 
-  // Empty state with animated floating hearts
+  const sortOptions: Array<'recent' | 'price_asc' | 'price_desc' | 'rating'> = ['recent', 'price_asc', 'price_desc', 'rating']
+
+  // Empty state with animated floating hearts, particles, and pulsing glow ring
   if (products.length === 0) {
     return (
       <motion.div
@@ -85,19 +103,25 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
           className="flex flex-col items-center justify-center py-20 text-center"
         >
           <div className="relative">
+            {/* Pulsing glow ring behind heart */}
+            <motion.div
+              className="r39-fav-glow-ring absolute inset-0 rounded-full"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            />
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               className="r35-fav-empty-float"
             >
-              <div className="h-24 w-24 rounded-full bg-gradient-to-br from-red-100 to-rose-200 dark:from-red-900/20 dark:to-rose-800/20 flex items-center justify-center">
-                <Heart className="h-12 w-12 text-red-300 dark:text-red-700" />
+              <div className="r39-fav-empty-heart h-24 w-24 rounded-full flex items-center justify-center">
+                <Heart className="h-12 w-12 text-red-400 dark:text-red-500 r39-fav-heart-icon" />
               </div>
             </motion.div>
             {/* Animated floating heart emojis with different speeds/paths */}
             {floatingHearts.map((heart, i) => (
               <motion.div
-                key={i}
+                key={`fh-${i}`}
                 className="absolute pointer-events-none"
                 style={{ left: `${heart.x}%`, top: `${10 + (i % 3) * 20}%` }}
                 animate={{
@@ -117,6 +141,33 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
               >
                 <span style={{ fontSize: heart.size }}>{heart.emoji}</span>
               </motion.div>
+            ))}
+            {/* Floating particles */}
+            {floatingParticles.map((particle, i) => (
+              <motion.div
+                key={`fp-${i}`}
+                className="absolute pointer-events-none r39-fav-particle"
+                style={{
+                  left: `${particle.x}%`,
+                  top: `${20 + (i % 4) * 15}%`,
+                  width: particle.size,
+                  height: particle.size,
+                  backgroundColor: particle.color,
+                }}
+                animate={{
+                  y: [0, -particle.yRange, -particle.yRange * 1.2],
+                  opacity: [0, 0.7, 0],
+                  scale: [0, 1, 0.5],
+                  x: [0, (i % 2 === 0 ? 1 : -1) * 15, (i % 2 === 0 ? 1 : -1) * 30],
+                }}
+                transition={{
+                  duration: particle.duration,
+                  delay: particle.delay,
+                  repeat: Infinity,
+                  repeatDelay: 2,
+                  ease: 'easeOut',
+                }}
+              />
             ))}
             {/* Decorative orbiting ring */}
             <motion.div
@@ -149,16 +200,22 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
       exit={{ opacity: 0 }}
       className="max-w-7xl mx-auto px-4 pt-4"
     >
-      {/* Header */}
+      {/* Header with shimmer text and animated heart */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold flex items-center gap-2">
-          <Heart className="h-5 w-5 text-red-500 fill-red-500 r35-fav-heart" />
-          Favoritos
+          <motion.div
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className="r39-fav-header-heart"
+          >
+            <Heart className="h-5 w-5 text-red-500 fill-red-500 r35-fav-heart" />
+          </motion.div>
+          <span className="r39-fav-shimmer-title">Favoritos</span>
           <motion.span
             key={filtered.length}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
             className="ml-1 inline-flex"
           >
             {/* Gradient animated badge on favorites count */}
@@ -208,19 +265,58 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
               <List className="h-4 w-4" />
             </button>
           </div>
-          {/* Sort */}
-          <Button variant="outline" size="sm" className="h-8 text-xs gap-1" onClick={() => {
-            const order: Array<'recent' | 'price_asc' | 'price_desc' | 'rating'> = ['recent', 'price_asc', 'price_desc', 'rating']
-            const idx = order.indexOf(sortBy)
-            setSortBy(order[(idx + 1) % order.length])
-          }}>
-            <ArrowUpDown className="h-3 w-3" />
-            {{ recent: 'Recentes', price_asc: 'Menor preço', price_desc: 'Maior preço', rating: 'Avaliação' }[sortBy]}
-          </Button>
+          {/* Sort dropdown with smooth expand animation */}
+          <div className="relative">
+            <motion.div whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs gap-1"
+                onClick={() => setSortOpen(prev => !prev)}
+              >
+                <ArrowUpDown className="h-3 w-3" />
+                {sortLabels[sortBy]}
+              </Button>
+            </motion.div>
+            <AnimatePresence>
+              {sortOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="r39-fav-sort-dropdown absolute right-0 top-full mt-1 z-50 bg-popover border border-border rounded-lg shadow-lg overflow-hidden min-w-[140px]"
+                >
+                  {sortOptions.map((opt, i) => (
+                    <motion.button
+                      key={opt}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      className={`w-full text-left px-3 py-2 text-xs transition-colors hover:bg-accent hover:text-accent-foreground ${sortBy === opt ? 'bg-accent/50 font-semibold' : ''}`}
+                      onClick={() => {
+                        setSortBy(opt)
+                        setSortOpen(false)
+                      }}
+                    >
+                      {sortLabels[opt]}
+                    </motion.button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            {/* Close dropdown on outside click */}
+            {sortOpen && (
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setSortOpen(false)}
+              />
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Category filter pills with shimmer overlay animation */}
+      {/* Category filter pills with shimmer overlay and breathing glow ring */}
       {categories.length > 1 && (
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -232,19 +328,26 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setActiveCategory(null)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
+            className={`r39-fav-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
               !activeCategory
                 ? 'bg-primary text-primary-foreground border-primary'
                 : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
             }`}
           >
             {!activeCategory && (
-              <motion.span
-                className="absolute inset-0 rounded-full"
-                animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', backgroundSize: '200% 100%' }}
-              />
+              <>
+                <motion.span
+                  className="r39-fav-pill-shimmer absolute inset-0 rounded-full"
+                  animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', backgroundSize: '200% 100%' }}
+                />
+                <motion.span
+                  className="r39-fav-pill-glow absolute inset-0 rounded-full"
+                  animate={{ boxShadow: ['0 0 0 0 rgba(255,255,255,0)', '0 0 8px 2px rgba(255,255,255,0.15)', '0 0 0 0 rgba(255,255,255,0)'] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </>
             )}
             <span className="relative z-10">Todos ({products.length})</span>
           </motion.button>
@@ -257,19 +360,26 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.05 + i * 0.04 }}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
+              className={`r39-fav-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
                 cat === activeCategory
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
               }`}
             >
               {cat === activeCategory && (
-                <motion.span
-                  className="absolute inset-0 rounded-full"
-                  animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', backgroundSize: '200% 100%' }}
-                />
+                <>
+                  <motion.span
+                    className="r39-fav-pill-shimmer absolute inset-0 rounded-full"
+                    animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', backgroundSize: '200% 100%' }}
+                  />
+                  <motion.span
+                    className="r39-fav-pill-glow absolute inset-0 rounded-full"
+                    animate={{ boxShadow: ['0 0 0 0 rgba(255,255,255,0)', '0 0 8px 2px rgba(255,255,255,0.15)', '0 0 0 0 rgba(255,255,255,0)'] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  />
+                </>
               )}
               <span className="relative z-10">{categoryLabels[cat] || cat} ({products.filter(p => p.category === cat).length})</span>
             </motion.button>
@@ -277,13 +387,14 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
         </motion.div>
       )}
 
-      {/* Products grid with staggered entrance */}
+      {/* Products grid with staggered entrance and smooth layout transitions */}
       {filtered.length > 0 ? (
         viewMode === 'grid' ? (
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
+            key={`grid-${activeCategory || 'all'}-${sortBy}`}
             className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
           >
             <AnimatePresence mode="popLayout">
@@ -291,12 +402,12 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
                 <motion.div
                   key={p.id}
                   variants={itemVariants}
-                  whileHover={{ y: -4, boxShadow: '0 8px 25px rgba(0,0,0,0.1)' }}
+                  whileHover={{ y: -4, boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
                   layout
                   initial="hidden"
                   animate="visible"
-                  exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                  className="r35-fav-card"
+                  exit={{ opacity: 0, scale: 0.9, y: -10, transition: { duration: 0.2 } }}
+                  className="r35-fav-card r39-fav-grid-card"
                 >
                   <ProductCard product={p} />
                 </motion.div>
@@ -308,6 +419,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
+            key={`list-${activeCategory || 'all'}-${sortBy}`}
             className="space-y-2"
           >
             <AnimatePresence mode="popLayout">
@@ -317,9 +429,9 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
                   variants={itemVariants}
                   initial="hidden"
                   animate="visible"
-                  exit={{ opacity: 0, x: -30 }}
-                  whileHover={{ y: -3, boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer group r35-fav-card"
+                  exit={{ opacity: 0, x: -30, scale: 0.95, transition: { duration: 0.2 } }}
+                  whileHover={{ y: -4, boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer group r35-fav-card r39-fav-list-card"
                   onClick={() => {
                     selectProduct(p)
                     navigate('product')
@@ -341,13 +453,26 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
                       )}
                     </div>
                   </div>
+                  <motion.div
+                    whileTap={{ scale: 0.85 }}
+                    className="shrink-0"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                    }}
+                  >
+                    <Heart className="h-4 w-4 text-red-500 fill-red-500 opacity-60 group-hover:opacity-100 transition-opacity" />
+                  </motion.div>
                 </motion.div>
               ))}
             </AnimatePresence>
           </motion.div>
         )
       ) : (
-        <div className="text-center py-12 text-muted-foreground">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center py-12 text-muted-foreground"
+        >
           <p className="font-medium">Nenhum produto nesta categoria</p>
           <button
             onClick={() => setActiveCategory(null)}
@@ -355,7 +480,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
           >
             Ver todos os favoritos
           </button>
-        </div>
+        </motion.div>
       )}
     </motion.div>
   )

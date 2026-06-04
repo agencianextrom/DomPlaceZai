@@ -215,12 +215,11 @@ function getAlertLabel(type: AlertType): string {
   }
 }
 
-function getAlertIcon(type: AlertType) {
-  switch (type) {
-    case 'queda': return TrendingDown
-    case 'aumento': return TrendingUp
-    case 'flash': return Zap
-  }
+/* ── Icon lookup map (declared outside component to avoid static-components issue) ── */
+const AlertIconMap: Record<AlertType, React.ElementType> = {
+  queda: TrendingDown,
+  aumento: TrendingUp,
+  flash: Zap,
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -491,7 +490,7 @@ function EconomiaBadge({ savings, type }: { savings: number; type: AlertType }) 
    ═══════════════════════════════════════════════════════════════ */
 function PercentageBadge({ percent, type }: { percent: number; type: AlertType }) {
   const colors = getAlertColors(type)
-  const IconComp = getAlertIcon(type)
+  const IconComp = AlertIconMap[type]
   const isNegative = percent < 0
 
   return (
@@ -684,14 +683,14 @@ function AlertCard({
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 + index * 0.03 }}
             >
-              {getAlertIcon(product.alertType) && (
-                <span className="inline-block" style={{ width: 8, height: 8 }}>
-                  {(() => {
-                    const Ic = getAlertIcon(product.alertType)
-                    return <Ic className="h-2 w-2" />
-                  })()}
-                </span>
-              )}
+              {(() => {
+                const Ic = AlertIconMap[product.alertType]
+                return Ic ? (
+                  <span className="inline-block" style={{ width: 8, height: 8 }}>
+                    <Ic className="h-2 w-2" />
+                  </span>
+                ) : null
+              })()}
               {getAlertLabel(product.alertType)}
             </motion.span>
             {/* Flash deal countdown badge */}

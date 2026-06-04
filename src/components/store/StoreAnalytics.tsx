@@ -294,6 +294,75 @@ function useAnimatedCounter(target: number, duration: number = 1200) {
   return count
 }
 
+// ─── Animated Overview Card (extracted to call useAnimatedCounter at top level) ────
+
+function AnimatedOverviewCard({ card, idx }: { card: OverviewCardData; idx: number }) {
+  const animatedValue = useAnimatedCounter(card.value, 1400 + idx * 200)
+  const isPositive = card.trend >= 0
+
+  return (
+    <motion.div
+      key={card.label}
+      variants={itemVariants}
+      whileHover={{
+        y: -3,
+        boxShadow: '0 8px 30px -8px rgba(0,0,0,0.12)',
+      }}
+      transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
+      className="r36-analytics-card r36-analytics-card-hover relative bg-card rounded-xl border border-border/50 p-4 cursor-default overflow-hidden"
+    >
+      {/* Accent glow */}
+      <div
+        className="absolute -top-10 -right-10 h-20 w-20 rounded-full blur-2xl opacity-20"
+        style={{ backgroundColor: card.color }}
+      />
+
+      {/* Icon */}
+      <div
+        className="relative h-8 w-8 rounded-lg flex items-center justify-center mb-3"
+        style={{ backgroundColor: `${card.color}15`, color: card.color }}
+      >
+        {card.icon}
+      </div>
+
+      {/* Value */}
+      <motion.div className="relative">
+        <p className="text-xl font-bold tracking-tight">
+          {card.label === 'Receita Total'
+            ? formatBRL(animatedValue)
+            : card.label === 'Avaliação Média'
+              ? animatedValue.toFixed(1).replace('.', ',')
+              : animatedValue.toLocaleString('pt-BR')}
+        </p>
+      </motion.div>
+
+      {/* Label */}
+      <p className="text-xs text-muted-foreground mt-0.5 mb-2">{card.label}</p>
+
+      {/* Trend */}
+      <div className="flex items-center gap-1 mb-2">
+        {isPositive ? (
+          <ArrowUpRight className="h-3 w-3 text-emerald-500" />
+        ) : (
+          <ArrowDownRight className="h-3 w-3 text-red-500" />
+        )}
+        <span
+          className={`text-xs font-semibold ${
+            isPositive ? 'text-emerald-500' : 'text-red-500'
+          }`}
+        >
+          {isPositive ? '+' : ''}
+          {card.trend}%
+        </span>
+        <span className="text-[10px] text-muted-foreground ml-1">{card.trendLabel}</span>
+      </div>
+
+      {/* Mini Sparkline */}
+      <MiniSparkline data={card.sparkline} color={card.color} />
+    </motion.div>
+  )
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export function StoreAnalytics() {
@@ -453,72 +522,9 @@ export function StoreAnalytics() {
 
       {/* ── 2. Overview Cards ─────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {overviewCards.map((card, idx) => {
-          const animatedValue = useAnimatedCounter(card.value, 1400 + idx * 200)
-          const isPositive = card.trend >= 0
-
-          return (
-            <motion.div
-              key={card.label}
-              variants={itemVariants}
-              whileHover={{
-                y: -3,
-                boxShadow: '0 8px 30px -8px rgba(0,0,0,0.12)',
-              }}
-              transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
-              className="r36-analytics-card r36-analytics-card-hover relative bg-card rounded-xl border border-border/50 p-4 cursor-default overflow-hidden"
-            >
-              {/* Accent glow */}
-              <div
-                className="absolute -top-10 -right-10 h-20 w-20 rounded-full blur-2xl opacity-20"
-                style={{ backgroundColor: card.color }}
-              />
-
-              {/* Icon */}
-              <div
-                className="relative h-8 w-8 rounded-lg flex items-center justify-center mb-3"
-                style={{ backgroundColor: `${card.color}15`, color: card.color }}
-              >
-                {card.icon}
-              </div>
-
-              {/* Value */}
-              <motion.div className="relative">
-                <p className="text-xl font-bold tracking-tight">
-                  {card.label === 'Receita Total'
-                    ? formatBRL(animatedValue)
-                    : card.label === 'Avaliação Média'
-                      ? animatedValue.toFixed(1).replace('.', ',')
-                      : animatedValue.toLocaleString('pt-BR')}
-                </p>
-              </motion.div>
-
-              {/* Label */}
-              <p className="text-xs text-muted-foreground mt-0.5 mb-2">{card.label}</p>
-
-              {/* Trend */}
-              <div className="flex items-center gap-1 mb-2">
-                {isPositive ? (
-                  <ArrowUpRight className="h-3 w-3 text-emerald-500" />
-                ) : (
-                  <ArrowDownRight className="h-3 w-3 text-red-500" />
-                )}
-                <span
-                  className={`text-xs font-semibold ${
-                    isPositive ? 'text-emerald-500' : 'text-red-500'
-                  }`}
-                >
-                  {isPositive ? '+' : ''}
-                  {card.trend}%
-                </span>
-                <span className="text-[10px] text-muted-foreground ml-1">{card.trendLabel}</span>
-              </div>
-
-              {/* Mini Sparkline */}
-              <MiniSparkline data={card.sparkline} color={card.color} />
-            </motion.div>
-          )
-        })}
+        {overviewCards.map((card, idx) => (
+          <AnimatedOverviewCard key={card.label} card={card} idx={idx} />
+        ))}
       </div>
 
       {/* ── 3. Revenue Chart ──────────────────────────────────────────── */}

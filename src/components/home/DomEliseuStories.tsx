@@ -198,6 +198,14 @@ export function DomEliseuStories() {
     })
   }, [])
 
+  const handleClose = useCallback(() => {
+    if (activeStoryIndex !== null) {
+      markAsSeen(storyData[activeStoryIndex].id)
+    }
+    setActiveStoryIndex(null)
+    setActiveSlideIndex(0)
+  }, [activeStoryIndex, markAsSeen])
+
   const goNextSlide = useCallback(() => {
     if (activeStoryIndex === null || !currentStory) return
     if (activeSlideIndex < currentStory.slides.length - 1) {
@@ -213,7 +221,7 @@ export function DomEliseuStories() {
         handleClose()
       }
     }
-  }, [currentStory, activeSlideIndex, activeStoryIndex, markAsSeen])
+  }, [currentStory, activeSlideIndex, activeStoryIndex, markAsSeen, handleClose])
 
   const goPrevSlide = useCallback(() => {
     if (activeStoryIndex === null) return
@@ -226,20 +234,12 @@ export function DomEliseuStories() {
     }
   }, [activeSlideIndex, activeStoryIndex])
 
-  const handleClose = useCallback(() => {
-    if (activeStoryIndex !== null) {
-      markAsSeen(storyData[activeStoryIndex].id)
-    }
-    setActiveStoryIndex(null)
-    setActiveSlideIndex(0)
-  }, [activeStoryIndex, markAsSeen])
-
   const handleViewAll = useCallback(() => {
-    storyData.forEach(s => markAsSeen(s.id))
+    setSeenStories(new Set(storyData.map(s => s.id)))
     setAllViewed(true)
     setActiveStoryIndex(null)
     setActiveSlideIndex(0)
-  }, [markAsSeen])
+  }, [])
 
   useEffect(() => {
     if (activeStoryIndex === null || isPaused) {

@@ -320,9 +320,9 @@ function StatCard({
       initial="hidden"
       animate="visible"
       transition={{ delay }}
-      whileHover={{ y: -4, transition: { type: 'spring', stiffness: 400, damping: 20 } }}
+      whileHover={{ y: -4, transition: { type: 'spring' as const, stiffness: 400, damping: 20 } }}
     >
-      <Card className="border-border/50 overflow-hidden relative group hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-default">
+      <Card className="border-border/50 overflow-hidden relative group hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-default r39-stat-card">
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-emerald-400 to-accent/60 opacity-60 group-hover:opacity-100 transition-opacity" />
         <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-primary/5 via-transparent to-emerald-400/5" />
         <CardContent className="p-4 relative">
@@ -339,7 +339,7 @@ function StatCard({
             </Badge>
           </div>
           <div className="mt-3">
-            <p className="text-2xl font-bold">
+            <p className="text-2xl font-bold r39-stat-value" style={{ animationDelay: `${delay + 0.15}s` }}>
               {value}{suffix && <span className="text-sm font-normal text-muted-foreground ml-0.5">{suffix}</span>}
             </p>
             <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
@@ -1383,8 +1383,12 @@ export function StoreDashboard() {
   if (!isAuthenticated || !isStoreOwner) return <AccessDenied />
 
   return (
-    <div className="min-h-screen pb-24 relative">
+    <div className="min-h-screen pb-24 relative overflow-hidden">
       <div className="absolute inset-0 grid-pattern pointer-events-none" />
+      {/* Floating gradient orbs for visual depth */}
+      <div className="r39-orb r39-orb-1" aria-hidden="true" />
+      <div className="r39-orb r39-orb-2" aria-hidden="true" />
+      <div className="r39-orb r39-orb-3" aria-hidden="true" />
       <div className="relative">
         {/* Header */}
         <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
@@ -1408,13 +1412,13 @@ export function StoreDashboard() {
           ) : (
           <Tabs defaultValue="overview" className="w-full" onValueChange={setActiveTab}>
             <TabsList className="w-full overflow-x-auto hide-scrollbar mb-4">
-              <TabsTrigger value="overview" className="gap-1.5 text-xs sm:text-sm"><BarChart3 className="h-3.5 w-3.5" /> Visão Geral</TabsTrigger>
-              <TabsTrigger value="orders" className="gap-1.5 text-xs sm:text-sm"><ShoppingCart className="h-3.5 w-3.5" /> Pedidos</TabsTrigger>
-              <TabsTrigger value="products" className="gap-1.5 text-xs sm:text-sm"><Package className="h-3.5 w-3.5" /> Produtos</TabsTrigger>
-              <TabsTrigger value="promotions" className="gap-1.5 text-xs sm:text-sm"><Gift className="h-3.5 w-3.5" /> Promoções</TabsTrigger>
-              <TabsTrigger value="reviews" className="gap-1.5 text-xs sm:text-sm"><Star className="h-3.5 w-3.5" /> Avaliações</TabsTrigger>
-              <TabsTrigger value="settings" className="gap-1.5 text-xs sm:text-sm"><Settings className="h-3.5 w-3.5" /> Configurações</TabsTrigger>
-              <TabsTrigger value="new-product" className="gap-1.5 text-xs sm:text-sm"><Plus className="h-3.5 w-3.5" /> Novo Produto</TabsTrigger>
+              <TabsTrigger value="overview" className="gap-1.5 text-xs sm:text-sm r39-nav-glow"><BarChart3 className="h-3.5 w-3.5" /> Visão Geral</TabsTrigger>
+              <TabsTrigger value="orders" className="gap-1.5 text-xs sm:text-sm r39-nav-glow"><ShoppingCart className="h-3.5 w-3.5" /> Pedidos</TabsTrigger>
+              <TabsTrigger value="products" className="gap-1.5 text-xs sm:text-sm r39-nav-glow"><Package className="h-3.5 w-3.5" /> Produtos</TabsTrigger>
+              <TabsTrigger value="promotions" className="gap-1.5 text-xs sm:text-sm r39-nav-glow"><Gift className="h-3.5 w-3.5" /> Promoções</TabsTrigger>
+              <TabsTrigger value="reviews" className="gap-1.5 text-xs sm:text-sm r39-nav-glow"><Star className="h-3.5 w-3.5" /> Avaliações</TabsTrigger>
+              <TabsTrigger value="settings" className="gap-1.5 text-xs sm:text-sm r39-nav-glow"><Settings className="h-3.5 w-3.5" /> Configurações</TabsTrigger>
+              <TabsTrigger value="new-product" className="gap-1.5 text-xs sm:text-sm r39-nav-glow"><Plus className="h-3.5 w-3.5" /> Novo Produto</TabsTrigger>
             </TabsList>
 
             {/* ══════════ VISÃO GERAL TAB ══════════ */}
@@ -1450,7 +1454,8 @@ export function StoreDashboard() {
 
                   {/* Revenue Mini Chart (div-based for mobile) */}
                   <motion.div variants={itemVariants} transition={{ delay: 0.20 }}>
-                    <Card className="border-border/50">
+                    <Card className="border-border/50 r39-chart-grid">
+                      <div className="r39-chart-line-draw" />
                       <CardHeader className="pb-2 pt-4 px-4">
                         <CardTitle className="text-sm font-semibold flex items-center gap-2">
                           <TrendingUp className="h-4 w-4 text-primary" />
@@ -1458,7 +1463,7 @@ export function StoreDashboard() {
                         </CardTitle>
                         <CardDescription className="text-xs text-muted-foreground">Últimos 7 dias</CardDescription>
                       </CardHeader>
-                      <CardContent className="px-4 pb-4">
+                      <CardContent className="px-4 pb-4 relative z-[2]">
                         <div className="flex items-end gap-1.5 h-24">
                           {revenueChartData.map((d, i) => {
                             const maxVal = Math.max(...revenueChartData.map(r => r.valor), 1)
@@ -1470,8 +1475,8 @@ export function StoreDashboard() {
                                 <motion.div
                                   initial={{ height: 0 }}
                                   animate={{ height: `${height}%` }}
-                                  transition={{ delay: 0.3 + i * 0.06, duration: 0.5, type: 'spring' }}
-                                  className={`w-full rounded-t-md min-h-[4px] ${isToday ? 'bg-gradient-to-t from-primary via-emerald-500 to-emerald-400 shadow-[0_0_8px_oklch(0.7_0.15_155/0.3)]' : 'bg-gradient-to-t from-primary/15 to-primary/30 hover:from-primary/25 hover:to-primary/50'} transition-colors`}
+                                  transition={{ delay: 0.3 + i * 0.06, duration: 0.5, type: 'spring' as const }}
+                                  className={`w-full rounded-t-md min-h-[4px] ${isToday ? 'bg-gradient-to-t from-primary via-emerald-500 to-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.3)]' : 'bg-gradient-to-t from-primary/15 to-primary/30 hover:from-primary/25 hover:to-primary/50'} transition-colors`}
                                 />
                                 <span className={`text-[9px] ${isToday ? 'font-bold text-primary' : 'text-muted-foreground'}`}>{d.name}</span>
                               </div>
@@ -1492,7 +1497,7 @@ export function StoreDashboard() {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="px-4 pb-4">
-                          <p className="text-3xl font-bold text-primary">R$ {monthlyRevenue}</p>
+                          <p className="text-3xl font-bold r39-revenue-pulse r39-revenue-gradient">R$ {monthlyRevenue}</p>
                           <div className="flex items-center gap-1 mt-1">
                             <TrendingUp className="h-3 w-3 text-emerald-500" />
                             <span className="text-xs text-emerald-600 dark:text-emerald-400">+12% vs mês anterior</span>
@@ -1773,17 +1778,19 @@ export function StoreDashboard() {
                       <EmptyState icon={ShoppingCart} title="Nenhum pedido encontrado" description={orderFilter !== 'all' ? 'Não há pedidos com esse filtro no momento.' : 'Seus pedidos aparecerão aqui.'} action={() => setOrderFilter('all')} actionLabel={orderFilter !== 'all' ? 'Limpar filtro' : undefined} />
                     ) : (
                       <div className="space-y-2">
-                        {filteredOrders.map((order) => {
+                        {filteredOrders.map((order, orderIdx) => {
                           const actionCfg = orderActionConfig[order.status]
+                          const statusCfg = orderStatusConfig[order.status]
+                          const pulseClass = statusCfg?.dotColor?.includes('amber') ? 'r39-status-pulse-amber' : statusCfg?.dotColor?.includes('red') ? 'r39-status-pulse-red' : 'r39-status-pulse'
                           return (
-                            <Card key={order.id} className="border-border/50">
+                            <Card key={order.id} className={`border-border/50 r39-order-item r39-order-lift`}>
                               <CardContent className="p-3">
                                 <div className="flex items-start justify-between mb-2">
                                   <div className="flex items-center gap-2">
                                     <span className="text-xs font-mono text-muted-foreground">#{order.orderNumber.slice(-4)}</span>
                                     <p className="text-xs font-medium">{order.customerName}</p>
                                   </div>
-                                  <StatusBadge status={order.status} />
+                                  <div className={`${pulseClass} rounded-full`}><StatusBadge status={order.status} /></div>
                                 </div>
                                 <Separator className="my-2" />
                                 <div className="flex items-center justify-between">

@@ -1108,12 +1108,7 @@ export function StoreEventCalendar() {
   const [calYear, setCalYear] = useState(Y)
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [detailEvent, setDetailEvent] = useState<StoreEvent | null>(null)
-  const [rsvpSet, setRSVPSet] = useState<Set<string>>(new Set())
-
-  // Load RSVPs from localStorage
-  useEffect(() => {
-    setRSVPSet(loadRSVPs())
-  }, [])
+  const [rsvpSet, setRSVPSet] = useState<Set<string>>(() => loadRSVPs())
 
   // Attempt to fetch real events via cachedFetch, fall back to mock data
   useEffect(() => {

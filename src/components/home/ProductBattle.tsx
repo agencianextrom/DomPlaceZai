@@ -432,19 +432,15 @@ export function ProductBattle() {
   const [winner, setWinner] = useState<'left' | 'right' | null>(null)
   const [hasVoted, setHasVoted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
-  const [battleStats, setBattleStats] = useState<BattleStats>({
-    totalVotes: 0, currentStreak: 0, bestStreak: 0, higherRatedStreak: 0,
-  })
-  const [voteHistory, setVoteHistory] = useState<VoteRecord[]>([])
+  const [battleStats, setBattleStats] = useState<BattleStats>(() => loadBattleStats())
+  const [voteHistory, setVoteHistory] = useState<VoteRecord[]>(() => loadBattleHistory())
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [mounted, setMounted] = useState(false)
   const battleRef = useRef<HTMLDivElement>(null)
 
-  // Load stats and history on mount
+  // Mark as mounted
   useEffect(() => {
     setMounted(true)
-    setBattleStats(loadBattleStats())
-    setVoteHistory(loadBattleHistory())
   }, [])
 
   // Fetch products

@@ -42,12 +42,12 @@ export function StockUrgency({
   const resolvedMaxStock = maxStock
 
   const percentage = Math.min((stock / resolvedMaxStock) * 100, 100)
+  const isVeryLow = stock <= 5
+  const isLow = stock <= 15
+  const stockDisplay = useStockCountdown(stock)
 
   // Don't show for very high stock in card mode
   if (variant === 'card' && stock > 100) return null
-
-  const isVeryLow = stock <= 5
-  const isLow = stock <= 15
 
   // -- Card variant (compact) ------------------------------
   if (variant === 'card') {
@@ -72,7 +72,6 @@ export function StockUrgency({
     }
 
     if (isVeryLow) {
-      const stockDisplay = useStockCountdown(stock)
       return (
         <motion.div
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -135,7 +134,6 @@ export function StockUrgency({
 
   // -- Detail variant (full featured) ----------------------
   if (isVeryLow) {
-    const stockDisplay = useStockCountdown(stock)
     return (
       <motion.div
         initial={{ opacity: 0, y: 10, scale: 0.95 }}

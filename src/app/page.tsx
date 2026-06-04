@@ -107,6 +107,8 @@ import { GroupOrderCreator } from '@/components/home/GroupOrderCreator'
 import { LiveStreamingWidget } from '@/components/home/LiveStreamingWidget'
 import { DynamicPricingAlerts } from '@/components/home/DynamicPricingAlerts'
 import { StoreEventCalendar } from '@/components/store/StoreEventCalendar'
+import { ReviewSentimentAI } from '@/components/home/ReviewSentimentAI'
+import { StoreMembershipTiers } from '@/components/store/StoreMembershipTiers'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1339,6 +1341,24 @@ export default function Home() {
                       <ScrollReveal delay={0.15}>
                         <section className="mt-6">
                           <StoreEventCalendar />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Review Sentiment AI */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <ReviewSentimentAI />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Store Membership Tiers */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <StoreMembershipTiers />
                         </section>
                       </ScrollReveal>
                     </LazySection>

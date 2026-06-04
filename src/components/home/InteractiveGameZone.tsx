@@ -783,16 +783,12 @@ function GameZoneSkeleton() {
 // ==================== MAIN COMPONENT ====================
 export function InteractiveGameZone() {
   const [activeTab, setActiveTab] = useState<GameTab>('memory')
-  const [totalPoints, setTotalPoints] = useState(0)
+  const [totalPoints, setTotalPoints] = useState(() => loadGamePoints())
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     const t = setTimeout(() => setIsLoaded(true), 600)
     return () => clearTimeout(t)
-  }, [])
-
-  useEffect(() => {
-    setTotalPoints(loadGamePoints())
   }, [])
 
   // Listen for storage changes from games

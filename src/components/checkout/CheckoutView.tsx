@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { PaymentTracker } from './PaymentTracker'
 import { TaxBreakdown } from './TaxBreakdown'
+import { SplitPaymentSelector } from './SplitPaymentSelector'
 import { DeliveryScheduler } from './DeliveryScheduler'
 
 const paymentMethods = [
@@ -895,6 +896,11 @@ export function CheckoutView() {
                     toast.success('Pagamento confirmado via PIX!')
                   }
                 }} />
+              </div>
+
+              {/* Split Payment Selector */}
+              <div className="mt-4">
+                <SplitPaymentSelector orderTotal={total} />
               </div>
 
               {/* Coupon input */}

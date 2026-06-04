@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Clock, PackageX, RotateCcw, TrendingDown, AlertTriangle, HelpCircle, ChevronRight, CheckCircle2, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -63,14 +63,16 @@ export function OrderCancelModal({
   const [otherReasonText, setOtherReasonText] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
 
-  // Reset state when modal opens/closes
+  // Reset state when modal closes
+  const prevIsOpenRef = useRef(false)
   useEffect(() => {
-    if (isOpen) {
+    if (prevIsOpenRef.current && !isOpen) {
       setStep(1)
       setSelectedReason(null)
       setOtherReasonText('')
       setIsSuccess(false)
     }
+    prevIsOpenRef.current = isOpen
   }, [isOpen])
 
   const handleConfirmCancel = useCallback(() => {
