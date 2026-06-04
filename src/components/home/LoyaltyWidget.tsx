@@ -147,6 +147,7 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
     return localStorage.getItem('domplace-daily-checkin') === today
   })
   const [showRewardPreview, setShowRewardPreview] = useState(false)
+  const [pointsPulse, setPointsPulse] = useState(false)
 
   // Find current tier and next tier
   const currentTier = tiers.findLast(t => points >= t.minPoints) || tiers[0]
@@ -167,240 +168,278 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
     const bonus = 25 + Math.floor(Math.random() * 26) // 25-50 bonus points
     const newPoints = points + bonus
 
+    setPointsPulse(true)
     setShowCelebration(true)
     setCheckedInToday(true)
     localStorage.setItem('domplace-daily-checkin', new Date().toDateString())
     localStorage.setItem('domplace-loyalty-points', JSON.stringify(newPoints))
 
+    setTimeout(() => setPointsPulse(false), 600)
     setTimeout(() => setShowCelebration(false), 1500)
   }, [checkedInToday, points])
 
   return (
-    <div className={`bg-card rounded-2xl border border-border overflow-hidden ${className}`}>
-      {/* Header with gradient */}
-      <div className={`bg-gradient-to-r ${currentTier.color} p-4 relative overflow-hidden`}>
-        {/* Decorative circles */}
-        <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-white/10" />
-        <div className="absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-white/5" />
+    <div className={`r33-loyalty-border-wrap ${className}`}>
+      {/* Rotating conic-gradient border layer */}
+      <div className="r33-loyalty-border-glow" />
 
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <motion.div
-              animate={{ rotate: [0, -5, 5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <Crown className="h-5 w-5 text-white" />
-            </motion.div>
-            <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-                Programa de Fidelidade
-                <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">{currentTier.icon}</span>
-              </h3>
-              <p className="text-[10px] text-white/70">Nível {currentTier.name}</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-xl font-extrabold text-white">
-              <AnimatedCounter target={points} />
-            </div>
-            <p className="text-[10px] text-white/70">pontos acumulados</p>
-          </div>
-        </div>
-      </div>
+      <div className="bg-card rounded-2xl border border-border overflow-hidden relative">
+        {/* Header with gradient */}
+        <div className={`bg-gradient-to-r ${currentTier.color} p-4 relative overflow-hidden`}>
+          {/* Decorative circles */}
+          <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-white/10" />
+          <div className="absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-white/5" />
 
-      <CardContent className="p-4 space-y-4">
-        {/* Tier progress bar */}
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold">{currentTier.icon} {currentTier.name}</span>
-              {nextTier && (
-                <ChevronRight className="h-3 w-3 text-muted-foreground" />
-              )}
-              {nextTier && (
-                <span className="text-[10px] font-semibold">{nextTier.icon} {nextTier.name}</span>
-              )}
-            </div>
-            {nextTier && (
-              <span className="text-[10px] font-medium text-primary">
-                {nextTier.minPoints - points} pts restantes
-              </span>
-            )}
-          </div>
-          <div className="relative h-3 bg-muted rounded-full overflow-hidden">
-            {/* Animated gradient progress */}
-            <motion.div
-              className={`absolute inset-y-0 left-0 rounded-full bg-gradient-to-r ${currentTier.color}`}
-              initial={{ width: '0%' }}
-              animate={{ width: `${tierProgress}%` }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-            />
-            {/* Shimmer on progress bar */}
-            <motion.div
-              className="absolute inset-y-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-              style={{ width: '40%' }}
-              animate={{ left: ['-40%', '140%'] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            {/* Points indicator */}
-            <motion.div
-              className="absolute top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-background border-2 border-primary shadow-sm flex items-center justify-center"
-              initial={{ left: '0%' }}
-              animate={{ left: `${Math.max(0, Math.min(tierProgress, 97))}%` }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-              style={{ transform: `translateX(-50%) translateY(-50%)` }}
-            >
-              <Sparkles className="h-2.5 w-2.5 text-primary" />
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Daily check-in button */}
-        <div className="relative">
-          <motion.div whileTap={{ scale: checkedInToday ? 1 : 0.95 }}>
-            <Button
-              className={`w-full h-11 rounded-xl font-semibold text-sm gap-2 transition-all ${
-                checkedInToday
-                  ? 'bg-muted text-muted-foreground cursor-default'
-                  : 'bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-white shadow-lg shadow-primary/20'
-              }`}
-              onClick={handleCheckIn}
-              disabled={checkedInToday}
-            >
-              {checkedInToday ? (
-                <>
-                  <Check className="h-4 w-4 text-emerald-500" />
-                  Check-in feito hoje!
-                </>
-              ) : (
-                <>
-                  <motion.div
-                    animate={{ rotate: [0, 15, -15, 0] }}
-                    transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <motion.div
+                animate={{ rotate: [0, -5, 5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Crown className="h-5 w-5 text-white" />
+              </motion.div>
+              <div>
+                <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+                  Programa de Fidelidade
+                  {/* Enhanced tier badge with shimmer sweep + glow pulse */}
+                  <motion.span
+                    className={`relative text-[10px] px-1.5 py-0.5 rounded-full inline-flex items-center r33-loyalty-badge-shimmer ${
+                      points >= 2000
+                        ? 'bg-white/25 text-white'
+                        : 'bg-white/20 text-white/90'
+                    }`}
+                    animate={{
+                      boxShadow: points >= 2000
+                        ? [
+                            '0 0 4px rgba(255,255,255,0.1)',
+                            '0 0 12px rgba(255,255,255,0.3), 0 0 4px rgba(255,215,0,0.2)',
+                            '0 0 4px rgba(255,255,255,0.1)',
+                          ]
+                        : '0 0 0px rgba(255,255,255,0)',
+                    }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                   >
-                    <Gift className="h-4 w-4" />
-                  </motion.div>
-                  Check-in Diário
-                  <Badge className="bg-white/20 text-white border-0 text-[10px] h-5 px-1.5">
-                    +25~50 pts
-                  </Badge>
-                </>
-              )}
-            </Button>
-          </motion.div>
-          <CelebrationParticles active={showCelebration} />
-        </div>
-
-        {/* Next reward preview with glow */}
-        {nextReward && points < nextReward.points && (
-          <motion.div
-            className="relative"
-            onMouseEnter={() => setShowRewardPreview(true)}
-            onMouseLeave={() => setShowRewardPreview(false)}
-          >
-            <motion.div
-              animate={{
-                boxShadow: showRewardPreview
-                  ? ['0 0 0 0 rgba(16,185,129,0.2)', '0 0 0 8px rgba(16,185,129,0)', '0 0 0 0 rgba(16,185,129,0.2)']
-                  : ['0 0 0 0 rgba(16,185,129,0)', '0 0 0 0 rgba(16,185,129,0)', '0 0 0 0 rgba(16,185,129,0)'],
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="bg-gradient-to-r from-primary/5 to-emerald-500/5 rounded-xl p-3 border border-primary/10 cursor-pointer"
-            >
-              <div className="flex items-center gap-3">
-                <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="text-2xl"
-                >
-                  {nextReward.icon}
-                </motion.div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold">Próxima recompensa</p>
-                  <p className="text-[10px] text-muted-foreground">{nextReward.label}</p>
-                  <div className="relative h-1.5 bg-muted rounded-full overflow-hidden mt-1.5">
-                    <motion.div
-                      className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-emerald-400"
-                      initial={{ width: '0%' }}
-                      animate={{ width: `${rewardProgress}%` }}
-                      transition={{ duration: 1, delay: 0.3 }}
-                    />
-                  </div>
-                  <p className="text-[9px] text-muted-foreground mt-0.5">
-                    {nextReward.points - points} pts para desbloquear
-                  </p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                    {currentTier.icon}
+                    {/* Shimmer sweep pseudo-element via CSS */}
+                  </motion.span>
+                </h3>
+                <p className="text-[10px] text-white/70">Nível {currentTier.name}</p>
               </div>
-            </motion.div>
-
-            {/* Reward preview popup */}
-            <AnimatePresence>
-              {showRewardPreview && (
-                <motion.div
-                  initial={{ opacity: 0, y: -5, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -5, scale: 0.95 }}
-                  className="absolute left-0 right-0 -top-2 z-20 -translate-y-full"
-                >
-                  <div className="bg-card border border-border rounded-xl p-3 shadow-xl">
-                    <p className="text-xs font-bold mb-1.5 flex items-center gap-1">
-                      <Trophy className="h-3.5 w-3.5 text-amber-500" />
-                      Próximas Recompensas
-                    </p>
-                    <div className="space-y-1.5">
-                      {nextRewards.map(reward => {
-                        const earned = points >= reward.points
-                        return (
-                          <div key={reward.points} className="flex items-center gap-2 text-[10px]">
-                            <span className="text-base">{reward.icon}</span>
-                            <span className={`flex-1 ${earned ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-muted-foreground'}`}>
-                              {reward.label}
-                            </span>
-                            <span className={`text-[9px] ${earned ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>
-                              {reward.points} pts
-                            </span>
-                            {earned && <Check className="h-3 w-3 text-emerald-500" />}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        )}
-
-        {/* Points history mini chart */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
-              <TrendingUp className="h-3 w-3" />
-              Últimos 7 dias
-            </p>
-            <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
-              +{mockWeeklyPoints.reduce((a, b) => a + b, 0)} pts
-            </p>
-          </div>
-          <PointsMiniChart data={mockWeeklyPoints} />
-        </div>
-
-        {/* Quick stats row */}
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { icon: <Star className="h-3.5 w-3.5 text-amber-500" />, label: 'Mês atual', value: `${Math.floor(points / 3)} pts`, color: 'text-amber-600 dark:text-amber-400' },
-            { icon: <Flame className="h-3.5 w-3.5 text-orange-500" />, label: 'Sequência', value: '5 dias', color: 'text-orange-600 dark:text-orange-400' },
-            { icon: <Gift className="h-3.5 w-3.5 text-primary" />, label: 'Resgates', value: '2', color: 'text-primary' },
-          ].map(stat => (
-            <div key={stat.label} className="text-center bg-secondary/30 rounded-lg p-2">
-              <div className="flex justify-center mb-1">{stat.icon}</div>
-              <p className={`text-xs font-bold ${stat.color}`}>{stat.value}</p>
-              <p className="text-[8px] text-muted-foreground">{stat.label}</p>
             </div>
-          ))}
+            {/* Points counter with glow + scale pulse */}
+            <div className="text-right relative">
+              {/* Glow behind the number */}
+              <div
+                className="absolute -inset-3 -z-10 rounded-full blur-xl opacity-0 transition-opacity duration-500"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.35)',
+                  opacity: pointsPulse ? 0.5 : 0,
+                }}
+              />
+              <motion.div
+                className="text-xl font-extrabold text-white relative"
+                animate={pointsPulse ? { scale: [1, 1.15, 1] } : {}}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 15, duration: 0.6 }}
+              >
+                <AnimatedCounter target={points} />
+              </motion.div>
+              <p className="text-[10px] text-white/70">pontos acumulados</p>
+            </div>
+          </div>
         </div>
-      </CardContent>
+
+        <CardContent className="p-4 space-y-4">
+          {/* Tier progress bar with shimmer on fill */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-semibold">{currentTier.icon} {currentTier.name}</span>
+                {nextTier && (
+                  <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                )}
+                {nextTier && (
+                  <span className="text-[10px] font-semibold">{nextTier.icon} {nextTier.name}</span>
+                )}
+              </div>
+              {nextTier && (
+                <span className="text-[10px] font-medium text-primary">
+                  {nextTier.minPoints - points} pts restantes
+                </span>
+              )}
+            </div>
+            <div className="relative h-3 bg-muted rounded-full overflow-hidden">
+              {/* Animated gradient progress */}
+              <motion.div
+                className={`absolute inset-y-0 left-0 rounded-full bg-gradient-to-r ${currentTier.color}`}
+                initial={{ width: '0%' }}
+                animate={{ width: `${tierProgress}%` }}
+                transition={{ duration: 1, ease: 'easeOut' }}
+              />
+              {/* Shimmer sweep overlay on the progress fill */}
+              <div className="r33-loyalty-progress-shimmer" />
+              {/* Points indicator */}
+              <motion.div
+                className="absolute top-1/2 h-5 w-5 rounded-full bg-background border-2 border-primary shadow-sm flex items-center justify-center"
+                initial={{ left: '0%' }}
+                animate={{ left: `${Math.max(0, Math.min(tierProgress, 97))}%` }}
+                transition={{ duration: 1, ease: 'easeOut' }}
+                style={{ transform: 'translate(-50%, -50%)' }}
+              >
+                <Sparkles className="h-2.5 w-2.5 text-primary" />
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Daily check-in button with shimmer sweep + ripple */}
+          <div className="relative">
+            <motion.div whileTap={{ scale: checkedInToday ? 1 : 0.95 }}>
+              <Button
+                className={`w-full h-11 rounded-xl font-semibold text-sm gap-2 transition-all ${
+                  checkedInToday
+                    ? 'bg-muted text-muted-foreground cursor-default'
+                    : 'bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-white shadow-lg r33-loyalty-btn-shimmer r33-loyalty-btn-ripple'
+                }`}
+                onClick={handleCheckIn}
+                disabled={checkedInToday}
+                style={checkedInToday ? {} : {
+                  boxShadow: '0 4px 14px rgba(16, 185, 129, 0.25)',
+                }}
+              >
+                {checkedInToday ? (
+                  <>
+                    <Check className="h-4 w-4 text-emerald-500" />
+                    Check-in feito hoje!
+                  </>
+                ) : (
+                  <>
+                    <motion.div
+                      animate={{ rotate: [0, 15, -15, 0] }}
+                      transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
+                    >
+                      <Gift className="h-4 w-4" />
+                    </motion.div>
+                    Check-in Diário
+                    <Badge className="bg-white/20 text-white border-0 text-[10px] h-5 px-1.5">
+                      +25~50 pts
+                    </Badge>
+                  </>
+                )}
+              </Button>
+            </motion.div>
+            <CelebrationParticles active={showCelebration} />
+          </div>
+
+          {/* Next reward preview with glow */}
+          {nextReward && points < nextReward.points && (
+            <motion.div
+              className="relative"
+              onMouseEnter={() => setShowRewardPreview(true)}
+              onMouseLeave={() => setShowRewardPreview(false)}
+            >
+              <motion.div
+                animate={{
+                  boxShadow: showRewardPreview
+                    ? '0 0 0 0 rgba(16,185,129,0.2), 0 0 0 8px rgba(16,185,129,0), 0 0 0 0 rgba(16,185,129,0.2)'
+                    : '0 0 0 0 rgba(16,185,129,0), 0 0 0 0 rgba(16,185,129,0), 0 0 0 0 rgba(16,185,129,0)',
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="bg-gradient-to-r from-primary/5 to-emerald-500/5 rounded-xl p-3 border border-primary/10 cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <motion.div
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                    className="text-2xl"
+                  >
+                    {nextReward.icon}
+                  </motion.div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold">Próxima recompensa</p>
+                    <p className="text-[10px] text-muted-foreground">{nextReward.label}</p>
+                    <div className="relative h-1.5 bg-muted rounded-full overflow-hidden mt-1.5">
+                      <motion.div
+                        className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-emerald-400"
+                        initial={{ width: '0%' }}
+                        animate={{ width: `${rewardProgress}%` }}
+                        transition={{ duration: 1, delay: 0.3 }}
+                      />
+                    </div>
+                    <p className="text-[9px] text-muted-foreground mt-0.5">
+                      {nextReward.points - points} pts para desbloquear
+                    </p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                </div>
+              </motion.div>
+
+              {/* Reward preview popup */}
+              <AnimatePresence>
+                {showRewardPreview && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                    className="absolute left-0 right-0 -top-2 z-20 -translate-y-full"
+                  >
+                    <div className="bg-card border border-border rounded-xl p-3 shadow-xl">
+                      <p className="text-xs font-bold mb-1.5 flex items-center gap-1">
+                        <Trophy className="h-3.5 w-3.5 text-amber-500" />
+                        Próximas Recompensas
+                      </p>
+                      <div className="space-y-1.5">
+                        {nextRewards.map(reward => {
+                          const earned = points >= reward.points
+                          return (
+                            <div key={reward.points} className="flex items-center gap-2 text-[10px]">
+                              <span className="text-base">{reward.icon}</span>
+                              <span className={`flex-1 ${earned ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-muted-foreground'}`}>
+                                {reward.label}
+                              </span>
+                              <span className={`text-[9px] ${earned ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>
+                                {reward.points} pts
+                              </span>
+                              {earned && <Check className="h-3 w-3 text-emerald-500" />}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+
+          {/* Points history mini chart */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                <TrendingUp className="h-3 w-3" />
+                Últimos 7 dias
+              </p>
+              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                +{mockWeeklyPoints.reduce((a, b) => a + b, 0)} pts
+              </p>
+            </div>
+            <PointsMiniChart data={mockWeeklyPoints} />
+          </div>
+
+          {/* Quick stats row */}
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { icon: <Star className="h-3.5 w-3.5 text-amber-500" />, label: 'Mês atual', value: `${Math.floor(points / 3)} pts`, color: 'text-amber-600 dark:text-amber-400' },
+              { icon: <Flame className="h-3.5 w-3.5 text-orange-500" />, label: 'Sequência', value: '5 dias', color: 'text-orange-600 dark:text-orange-400' },
+              { icon: <Gift className="h-3.5 w-3.5 text-primary" />, label: 'Resgates', value: '2', color: 'text-primary' },
+            ].map(stat => (
+              <div key={stat.label} className="text-center bg-secondary/30 rounded-lg p-2">
+                <div className="flex justify-center mb-1">{stat.icon}</div>
+                <p className={`text-xs font-bold ${stat.color}`}>{stat.value}</p>
+                <p className="text-[8px] text-muted-foreground">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </div>
     </div>
   )
 }

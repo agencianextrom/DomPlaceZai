@@ -109,11 +109,24 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
 
   return (
     <section className="space-y-4">
+      {/* Title with shimmer text + floating search icon */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
-          <Store className="h-5 w-5 text-primary" />
-          Encontrar Lojas
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+            <Store className="h-5 w-5 text-primary" />
+            <span className="r33-store-search-shimmer-title">
+              Encontrar Lojas
+            </span>
+          </h2>
+          {/* Floating search icon - gently bobs up/down */}
+          <motion.div
+            className="r33-store-search-float-icon"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <Search className="h-3.5 w-3.5 text-primary/60" />
+          </motion.div>
+        </div>
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowFilters(!showFilters)}
@@ -124,15 +137,26 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
         </motion.button>
       </div>
 
-      {/* Search input with glassmorphism */}
+      {/* Search input with animated glow ring */}
       <motion.div
-        className="relative glassmorphism-strong rounded-xl overflow-hidden"
-        animate={{ boxShadow: isSearchFocused
-          ? '0 0 0 3px oklch(0.45 0.1 155 / 0.2), 0 8px 24px oklch(0 0 0 / 0.08)'
-          : '0 2px 8px oklch(0 0 0 / 0.04)'
+        className="relative rounded-xl overflow-hidden"
+        animate={{
+          boxShadow: isSearchFocused
+            ? '0 0 0 3px rgba(16, 185, 129, 0.25), 0 0 20px rgba(16, 185, 129, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08)'
+            : '0 2px 8px rgba(0, 0, 0, 0.04)'
         }}
         transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
       >
+        {/* Pulsing glow ring overlay when focused */}
+        {isSearchFocused && (
+          <motion.div
+            className="absolute inset-0 rounded-xl pointer-events-none z-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.4, 0.8, 0.4] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ boxShadow: '0 0 0 3px rgba(16, 185, 129, 0.35), 0 0 28px rgba(16, 185, 129, 0.2)' }}
+          />
+        )}
         {/* Pulsing search icon with gradient ring */}
         <motion.div
           className="absolute left-3 top-1/2 -translate-y-1/2 z-10"
@@ -150,21 +174,23 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 2.2, opacity: 0 }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
-                style={{ background: 'conic-gradient(from 0deg, oklch(0.45 0.1 155 / 0.3), oklch(0.78 0.16 70 / 0.3), oklch(0.45 0.1 155 / 0.3))' }}
+                style={{ background: 'conic-gradient(from 0deg, rgba(16, 185, 129, 0.3), rgba(217, 119, 6, 0.3), rgba(16, 185, 129, 0.3))' }}
               />
             )}
           </div>
         </motion.div>
-        <Input
-          placeholder="Buscar por nome, categoria ou bairro..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setIsSearchFocused(true)}
-          onBlur={() => setIsSearchFocused(false)}
-          className="pl-10 h-10 bg-transparent border-0 focus-visible:ring-0 store-search-expand store-search-shimmer"
-        />
+        <div className="relative z-[1] glassmorphism-strong">
+          <Input
+            placeholder="Buscar por nome, categoria ou bairro..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setIsSearchFocused(true)}
+            onBlur={() => setIsSearchFocused(false)}
+            className="pl-10 h-10 bg-transparent border-0 focus-visible:ring-0"
+          />
+        </div>
         {query && (
-          <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+          <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
@@ -180,24 +206,30 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
             className="overflow-hidden"
           >
             <div className="p-3 rounded-xl bg-card border border-border/50 space-y-3">
-              {/* Category filters */}
+              {/* Category filters with staggered entrance */}
               <div>
                 <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Categorias</p>
                 <div className="flex gap-1.5 flex-wrap">
-                  <button
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.05 * 0, type: 'spring' as const, stiffness: 350, damping: 20 }}
                     onClick={() => setActiveCategory(null)}
-                    className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all ${!activeCategory ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/30'}`}
+                    className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all r33-store-search-chip ${!activeCategory ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/30'}`}
                   >
                     Todas ({stores.length})
-                  </button>
-                  {categories.map(cat => (
-                    <button
+                  </motion.button>
+                  {categories.map((cat, catIdx) => (
+                    <motion.button
                       key={cat}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.05 + catIdx * 0.05, type: 'spring' as const, stiffness: 350, damping: 20 }}
                       onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all ${cat === activeCategory ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/30'}`}
+                      className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all r33-store-search-chip ${cat === activeCategory ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/30'}`}
                     >
                       {categoryLabels[cat] || cat} ({stores.filter(s => s.category === cat).length})
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               </div>
@@ -256,7 +288,7 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
         </motion.p>
       </div>
 
-      {/* Store list */}
+      {/* Store list with enhanced result cards */}
       {filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.map((store, i) => {
@@ -267,8 +299,9 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
-                whileHover={{ y: -2 }}
-                className="p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer group card-premium-hover"
+                whileHover={{ y: -3, scale: 1.01 }}
+                className="relative p-3 rounded-xl bg-card border border-border/50 cursor-pointer group r33-store-search-result-card"
+                style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)' }}
                 onClick={() => {
                   useAppStore.getState().selectStore(store)
                   useAppStore.getState().navigate('store')

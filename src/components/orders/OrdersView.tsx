@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff, Truck, MapPin, Filter, ArrowUpDown, X, Loader2, RefreshCw, PackageCheck, AlertTriangle, Ban, Undo2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
@@ -102,18 +101,26 @@ function getSortFn(sortValue: string): ((a: OrderData, b: OrderData) => number) 
   }
 }
 
-// Status-based left border color
-function getStatusBorderColor(status: string): string {
+// Status-based gradient left border (inline style object, no oklch)
+function getStatusBorderGradient(status: string): string {
   switch (status) {
-    case 'DELIVERED': return 'border-l-4 border-l-emerald-500'
-    case 'DELIVERING': return 'border-l-4 border-l-blue-500'
-    case 'CONFIRMED': return 'border-l-4 border-l-yellow-500'
-    case 'PREPARING': return 'border-l-4 border-l-orange-500'
-    case 'CANCELLED': return 'border-l-4 border-l-red-500'
-    case 'READY': return 'border-l-4 border-l-emerald-400'
-    case 'PENDING': return 'border-l-4 border-l-amber-400'
-    default: return 'border-l-4 border-l-gray-300'
+    case 'DELIVERED': return 'linear-gradient(180deg, rgba(16, 185, 129, 1), rgba(52, 211, 153, 0.5))'
+    case 'CONFIRMED': return 'linear-gradient(180deg, rgba(59, 130, 246, 1), rgba(96, 165, 250, 0.5))'
+    case 'DELIVERING': return 'linear-gradient(180deg, rgba(245, 158, 11, 1), rgba(251, 191, 36, 0.5))'
+    case 'CANCELLED': return 'linear-gradient(180deg, rgba(239, 68, 68, 1), rgba(248, 113, 113, 0.5))'
+    case 'PREPARING': return 'linear-gradient(180deg, rgba(251, 146, 60, 1), rgba(253, 186, 116, 0.5))'
+    case 'READY': return 'linear-gradient(180deg, rgba(52, 211, 153, 1), rgba(110, 231, 183, 0.5))'
+    case 'PENDING': return 'linear-gradient(180deg, rgba(251, 191, 36, 1), rgba(252, 211, 77, 0.5))'
+    default: return 'linear-gradient(180deg, rgba(156, 163, 175, 1), rgba(209, 213, 219, 0.5))'
   }
+}
+
+function isActiveStatus(status: string): boolean {
+  return !['DELIVERED', 'CANCELLED'].includes(status)
+}
+
+function isCompletedStatus(status: string): boolean {
+  return status === 'DELIVERED'
 }
 
 // Loading skeleton for orders
@@ -426,15 +433,45 @@ export function OrdersView() {
           )}
         </AnimatePresence>
 
-        <Tabs value={selectedOrderTab} onValueChange={(v) => setSelectedOrderTab(v)}>
-          <TabsList className="w-full bg-secondary/50 rounded-lg mb-4">
-            <TabsTrigger value="ongoing" className="flex-1 rounded-md">Em Andamento</TabsTrigger>
-            <TabsTrigger value="completed" className="flex-1 rounded-md">Concluídos</TabsTrigger>
-            <TabsTrigger value="cancelled" className="flex-1 rounded-md">Cancelados</TabsTrigger>
-          </TabsList>
+        {/* Animated filter tabs with sliding underline */}
+        <div className="relative mb-4">
+          <div className="flex w-full bg-secondary/50 rounded-lg p-1 gap-1">
+            {([
+              { value: 'ongoing', label: 'Em Andamento' },
+              { value: 'completed', label: 'Concluídos' },
+              { value: 'cancelled', label: 'Cancelados' },
+            ] as const).map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => setSelectedOrderTab(tab.value)}
+                className={`relative flex-1 rounded-md py-2 text-xs font-semibold transition-colors z-10 ${
+                  selectedOrderTab === tab.value
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {selectedOrderTab === tab.value && (
+                  <motion.div
+                    layoutId="r33-orders-tab-indicator"
+                    className="absolute inset-0 bg-background rounded-md shadow-sm"
+                    style={{ boxShadow: '0 0 12px rgba(16, 185, 129, 0.15)' }}
+                    transition={{ type: 'spring' as const, stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
-          {['ongoing', 'completed', 'cancelled'].map((tab) => (
-            <TabsContent key={tab} value={tab}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedOrderTab}
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              transition={{ duration: 0.25 }}
+            >
               {/* Loading state */}
               {isLoading && <OrdersSkeleton />}
 
@@ -450,38 +487,35 @@ export function OrdersView() {
                 </div>
               )}
 
-              {/* Empty state with floating emoji animations */}
+              {/* Empty state with floating icons and animated gradient bg */}
               {!isLoading && !error && filteredOrders.length === 0 && (
-                <div className="text-center py-16 text-muted-foreground relative overflow-hidden">
-                  {/* Floating emoji keyframes */}
-                  <style>{`
-                    @keyframes orders-float-1 {
-                      0%, 100% { transform: translateY(0px) rotate(0deg); }
-                      50% { transform: translateY(-12px) rotate(10deg); }
-                    }
-                    @keyframes orders-float-2 {
-                      0%, 100% { transform: translateY(0px) rotate(0deg); }
-                      50% { transform: translateY(-8px) rotate(-8deg); }
-                    }
-                    @keyframes orders-float-3 {
-                      0%, 100% { transform: translateY(0px) scale(1); }
-                      50% { transform: translateY(-15px) scale(1.1); }
-                    }
-                    @keyframes orders-pulse-cta {
-                      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-                      50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-                    }
-                    .orders-cta-pulse {
-                      animation: orders-pulse-cta 2s ease-in-out infinite;
-                    }
-                  `}</style>
-
-                  {/* Floating emoji decorations */}
-                  <span className="absolute top-6 left-[15%] text-2xl pointer-events-none select-none" style={{ animation: 'orders-float-1 3s ease-in-out infinite' }}>📦</span>
-                  <span className="absolute top-12 right-[20%] text-3xl pointer-events-none select-none" style={{ animation: 'orders-float-2 3.5s ease-in-out 0.5s infinite' }}>🛒</span>
-                  <span className="absolute bottom-16 left-[25%] text-2xl pointer-events-none select-none" style={{ animation: 'orders-float-3 4s ease-in-out 1s infinite' }}>🎁</span>
-                  <span className="absolute bottom-20 right-[15%] text-xl pointer-events-none select-none" style={{ animation: 'orders-float-1 3.2s ease-in-out 1.5s infinite' }}>✨</span>
-                  <span className="absolute top-20 left-[45%] text-lg pointer-events-none select-none" style={{ animation: 'orders-float-2 2.8s ease-in-out 0.8s infinite' }}>🏷️</span>
+                <div className="r33-orders-empty-state text-center py-16 text-muted-foreground relative overflow-hidden rounded-xl">
+                  {/* Floating icon decorations */}
+                  <motion.span
+                    className="absolute top-6 left-[15%] text-2xl pointer-events-none select-none"
+                    animate={{ y: [0, -12, 0], rotate: [0, 10, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  >📦</motion.span>
+                  <motion.span
+                    className="absolute top-12 right-[20%] text-3xl pointer-events-none select-none"
+                    animate={{ y: [0, -8, 0], rotate: [0, -8, 0] }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                  >🛒</motion.span>
+                  <motion.span
+                    className="absolute bottom-16 left-[25%] text-2xl pointer-events-none select-none"
+                    animate={{ y: [0, -15, 0], scale: [1, 1.1, 1] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                  >🎁</motion.span>
+                  <motion.span
+                    className="absolute bottom-20 right-[15%] text-xl pointer-events-none select-none"
+                    animate={{ y: [0, -12, 0], rotate: [0, 10, 0] }}
+                    transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+                  >✨</motion.span>
+                  <motion.span
+                    className="absolute top-20 left-[45%] text-lg pointer-events-none select-none"
+                    animate={{ y: [0, -8, 0], rotate: [0, -8, 0] }}
+                    transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+                  >🏷️</motion.span>
 
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -509,7 +543,7 @@ export function OrdersView() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        <Button onClick={() => navigate('home')} size="sm" className="gap-1.5 orders-cta-pulse">
+                        <Button onClick={() => navigate('home')} size="sm" className="gap-1.5 r33-orders-cta-pulse">
                           <Store className="h-3.5 w-3.5" />
                           Explorar lojas
                         </Button>
@@ -533,33 +567,37 @@ export function OrdersView() {
                   {filteredOrders.map((order, idx) => {
                     const config = statusConfig[order.status] || statusConfig.PENDING
                     const StatusIcon = config.icon
+                    const isOrderActive = isActiveStatus(order.status)
+                    const isOrderCompleted = isCompletedStatus(order.status)
                     return (
                       <motion.div
                         key={order.id}
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
-                          delay: idx * 0.1,
-                          duration: 0.5,
-                          ease: [0.25, 0.46, 0.45, 0.94],
+                          type: 'spring' as const,
+                          delay: idx * 0.08,
+                          stiffness: 120,
+                          damping: 14,
                         }}
-                        whileHover={{ y: -3, scale: 1.01, transition: { duration: 0.2 } }}
-                        className={`w-full bg-card rounded-xl border border-border p-4 hover:shadow-lg hover:border-primary/20 transition-all order-card-enhanced hover-glow-soft ${getStatusBorderColor(order.status)}`}
+                        whileHover={{ y: -3, scale: 1.01, transition: { type: 'spring' as const, stiffness: 400, damping: 25 } }}
+                        className={`w-full bg-card rounded-xl border border-border p-4 hover:shadow-lg hover:border-primary/20 transition-all r33-orders-card ${getStatusBorderGradient(order.status) ? '' : ''}`}
+                        style={{
+                          borderLeft: `4px solid transparent`,
+                          borderImage: getStatusBorderGradient(order.status),
+                          borderImageSlice: 1,
+                        }}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2 min-w-0">
                             <Store className="h-4 w-4 text-primary shrink-0" />
                             <span className="font-semibold text-sm truncate">{order.storeName}</span>
                           </div>
-                          <Badge className={`${config.gradient} border-0 text-[10px] font-semibold shrink-0 ml-2`}>
-                            <motion.span
-                              animate={{ scale: [1, 1.15, 1] }}
-                              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.15 }}
-                              className="inline-flex items-center"
-                            >
+                          <Badge className={`${config.gradient} border-0 text-[10px] font-semibold shrink-0 ml-2 ${isOrderActive ? 'r33-orders-badge-pulse' : ''} ${isOrderCompleted ? 'r33-orders-badge-shimmer' : ''}`}>
+                            <span className="inline-flex items-center">
                               <StatusIcon className="h-3 w-3 mr-1" />
                               {config.label}
-                            </motion.span>
+                            </span>
                           </Badge>
                         </div>
 
@@ -647,7 +685,7 @@ export function OrdersView() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="h-8 text-xs gap-1"
+                                  className="h-8 text-xs gap-1 r33-orders-reorder-btn relative overflow-hidden"
                                   onClick={() => handleReorder(order)}
                                 >
                                   <PackageCheck className="h-3 w-3" />
@@ -706,9 +744,8 @@ export function OrdersView() {
                   })}
                 </div>
               )}
-            </TabsContent>
-          ))}
-        </Tabs>
+            </motion.div>
+          </AnimatePresence>
       </div>
 
       {/* Rate Order Modal */}
