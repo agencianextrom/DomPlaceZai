@@ -1,6 +1,8 @@
 // Simple request deduplication + short cache with size limit
-const cache = new Map<string, { data: unknown; ts: number }>()
-const inflight = new Map<string, Promise<unknown>>()
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const cache = new Map<string, { data: any; ts: number }>()
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const inflight = new Map<string, Promise<any>>()
 const CACHE_TTL = 30000 // 30 seconds
 const MAX_CACHE_ENTRIES = 100
 
@@ -14,7 +16,8 @@ function evictOldest() {
   }
 }
 
-export async function cachedFetch<T = unknown>(url: string, options?: RequestInit): Promise<T> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function cachedFetch<T = any>(url: string, options?: RequestInit): Promise<T> {
   const now = Date.now()
   const cached = cache.get(url)
   if (cached && now - cached.ts < CACHE_TTL) return cached.data as T

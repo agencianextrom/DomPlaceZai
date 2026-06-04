@@ -231,14 +231,14 @@ export function QuickInfo() {
     setStatsError(false)
     try {
       const [productsRes, storesRes, offersRes] = await Promise.all([
-        cachedFetch<{ total?: number }>('/api/products?isOffer=true&limit=1'),
-        cachedFetch<{ total?: number }>('/api/stores?limit=1'),
-        cachedFetch<{ total?: number; products?: unknown[] }>('/api/products?isOffer=true&limit=100'),
+        cachedFetch('/api/products?isOffer=true&limit=1'),
+        cachedFetch('/api/stores?limit=1'),
+        cachedFetch('/api/products?isOffer=true&limit=100'),
       ])
 
-      let productTotal = Number((productsRes as Record<string, unknown>).total) || 0
-      let storeTotal = Number((storesRes as Record<string, unknown>).total) || 0
-      let offerCount = Number((offersRes as Record<string, unknown>).total) || ((offersRes as Record<string, unknown>).products as unknown[] || []).length
+      let productTotal = productsRes?.total || 0
+      let storeTotal = storesRes?.total || 0
+      let offerCount = offersRes?.total || (offersRes?.products || []).length
 
       setStats({ productCount: productTotal, storeCount: storeTotal, offerCount })
     } catch {
@@ -253,7 +253,7 @@ export function QuickInfo() {
     setOrdersLoading(true)
     setOrdersError(false)
     try {
-      const data = await cachedFetch<{ orders?: ApiOrder[] }>('/api/orders?limit=3')
+      const data = await cachedFetch('/api/orders?limit=3')
       setRecentOrders(data?.orders || [])
     } catch {
       setOrdersError(true)
@@ -268,7 +268,7 @@ export function QuickInfo() {
     setPromotionsError(false)
     try {
       const data = await cachedFetch('/api/promotions')
-      setPromotions(data.promotions || [])
+      setPromotions(data?.promotions || [])
     } catch {
       setPromotionsError(true)
     } finally {
