@@ -138,6 +138,26 @@ function SubscriptionBoxSkeleton() {
   )
 }
 
+/* ── r37 animated price counter ── */
+function R37PriceCounter({ value, delay }: { value: number; delay: number }) {
+  const [display, setDisplay] = useState(0)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const duration = 800
+      const start = Date.now()
+      const tick = () => {
+        const progress = Math.min((Date.now() - start) / duration, 1)
+        const eased = 1 - Math.pow(1 - progress, 3)
+        setDisplay(eased * value)
+        if (progress < 1) requestAnimationFrame(tick)
+      }
+      tick()
+    }, delay)
+    return () => clearTimeout(timer)
+  }, [value, delay])
+  return <span>R$ {display.toFixed(2).replace('.', ',')}</span>
+}
+
 /* ── Animated checkmark for subscribed state ── */
 function AnimatedCheckmark() {
   return (
@@ -307,7 +327,7 @@ export function StoreSubscriptionBox() {
 
               {/* Card */}
               <motion.div
-                className={`relative rounded-xl bg-card border ${isSubscribed ? 'border-emerald-400/50 dark:border-emerald-600/50' : 'border-border'} p-4 overflow-hidden`}
+                className={`relative rounded-xl bg-card border r37-sub-card ${isSubscribed ? 'border-emerald-400/50 dark:border-emerald-600/50' : 'border-border'} p-4 overflow-hidden`}
                 animate={{
                   y: isHovered ? -4 : 0,
                   boxShadow: isHovered
@@ -344,9 +364,14 @@ export function StoreSubscriptionBox() {
 
                 {/* Price */}
                 <div className="mb-2">
-                  <span className="text-xl font-bold text-primary">
-                    R$ {tier.price.toFixed(2).replace('.', ',')}
-                  </span>
+                  <motion.span
+                    className="text-xl font-bold text-primary inline-block"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + i * 0.08, type: 'spring' as const, stiffness: 300, damping: 20 }}
+                  >
+                    <R37PriceCounter value={tier.price} delay={300 + i * 80} />
+                  </motion.span>
                   <span className="text-xs text-muted-foreground">{tier.period}</span>
                 </div>
 
@@ -366,7 +391,7 @@ export function StoreSubscriptionBox() {
                       className="flex items-center gap-2"
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.08 + pIdx * 0.05 }}
+                      transition={{ delay: i * 0.08 + pIdx * 0.06, type: 'spring' as const, stiffness: 300, damping: 20 }}
                     >
                       <span className="text-sm">{p.emoji}</span>
                       <div className="min-w-0">
@@ -450,8 +475,16 @@ export function StoreSubscriptionBox() {
                         size="sm"
                         onClick={() => handleSubscribe(tier.id)}
                         disabled={isSubscribing}
-                        className="w-full h-10 text-xs bg-primary hover:bg-primary/90 text-primary-foreground btn-glow gap-1.5"
+                        className="w-full h-10 text-xs bg-primary hover:bg-primary/90 text-primary-foreground btn-glow gap-1.5 r37-sub-cta relative overflow-hidden"
                       >
+                        {!isSubscribing && (
+                          <motion.span
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent r37-sub-shimmer"
+                            animate={{ x: ['-100%', '200%'] }}
+                            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 }}
+                          />
+                        )}
+                        <span className="relative z-10">
                         {isSubscribing ? (
                           <>
                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -462,6 +495,7 @@ export function StoreSubscriptionBox() {
                             Assinar Agora
                           </>
                         )}
+                        </span>
                       </Button>
                     </motion.div>
                   )}

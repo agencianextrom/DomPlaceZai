@@ -125,11 +125,23 @@ export function NeighborhoodMarketplace() {
       {/* Header */}
       <div className="p-4 pb-3">
         <div className="flex items-center gap-2 mb-1">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md">
+          <motion.div
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+            className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md"
+            style={{ boxShadow: '0 4px 16px rgba(139,92,246,0.3)' }}
+          >
             <Users className="h-5 w-5 text-white" />
-          </div>
+          </motion.div>
           <div>
-            <h3 className="font-bold text-base">Vizinhos Vendem</h3>
+            <motion.h3
+              className="font-bold text-base r37-shimmer-text"
+              animate={{ backgroundPosition: ['0% 50%', '200% 50%'] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              style={{ background: 'linear-gradient(90deg, #8b5cf6, #c4b5fd, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundSize: '200% 100%' }}
+            >
+              Vizinhos Vendem
+            </motion.h3>
             <p className="text-xs text-muted-foreground">Marketplace comunitário do seu bairro</p>
           </div>
         </div>
@@ -250,7 +262,7 @@ export function NeighborhoodMarketplace() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       transition={{ delay: idx * 0.06, type: 'spring' as const, stiffness: 300, damping: 25 }}
                       whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}
-                      className="rounded-xl border border-border/50 overflow-hidden bg-card hover:border-primary/20 transition-colors"
+                      className="rounded-xl border border-border/50 overflow-hidden bg-card hover:border-primary/20 transition-colors r37-market-card"
                     >
                       {/* Product Image */}
                       <div className={`h-28 bg-gradient-to-br ${item.gradient} flex items-center justify-center relative`}>
@@ -261,12 +273,16 @@ export function NeighborhoodMarketplace() {
                         >
                           {item.emoji}
                         </motion.span>
-                        <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 bg-white/80 dark:bg-black/40 rounded-full px-1.5 py-0.5 text-[9px] font-medium">
+                        <motion.div
+                          animate={{ boxShadow: ['0 0 0 rgba(139,92,246,0)', '0 0 8px rgba(139,92,246,0.3)', '0 0 0 rgba(139,92,246,0)'] }}
+                          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: idx * 0.2 }}
+                          className="absolute top-1.5 right-1.5 flex items-center gap-0.5 bg-white/80 dark:bg-black/40 rounded-full px-1.5 py-0.5 text-[9px] font-medium"
+                        >
                           <MapPin className="h-2.5 w-2.5 text-primary" />
                           {item.distance}
-                        </div>
+                        </motion.div>
                         <div className="absolute top-1.5 left-1.5">
-                          <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px] font-bold shadow-sm">
+                          <div className="h-6 w-6 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center text-[10px] font-bold shadow-sm r37-seller-avatar-ring" style={{ boxShadow: '0 0 0 2px rgba(139,92,246,0.3), 0 0 8px rgba(139,92,246,0.2)' }}>
                             {item.sellerInitial}
                           </div>
                         </div>
@@ -323,11 +339,11 @@ export function NeighborhoodMarketplace() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05, type: 'spring' as const, stiffness: 300, damping: 25 }}
                       whileHover={{ x: 4, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
-                      className="flex items-center gap-3 p-3 rounded-xl border border-border/50 hover:border-primary/20 transition-colors cursor-pointer"
+                      className="flex items-center gap-3 p-3 rounded-xl border border-border/50 hover:border-primary/20 transition-colors cursor-pointer r37-market-card"
                     >
                       <div className={`h-14 w-14 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center shrink-0 relative`}>
                         <span className="text-2xl">{item.emoji}</span>
-                        <div className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[8px] font-bold border-2 border-background">
+                        <div className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center text-[8px] font-bold border-2 border-background r37-seller-avatar-ring" style={{ boxShadow: '0 0 0 2px rgba(139,92,246,0.3)' }}>
                           {item.sellerInitial}
                         </div>
                       </div>

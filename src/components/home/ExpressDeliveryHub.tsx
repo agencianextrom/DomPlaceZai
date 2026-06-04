@@ -218,7 +218,7 @@ export function ExpressDeliveryHub() {
               whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}
               whileTap={{ scale: 0.97 }}
               onClick={() => handleSelect(option.id)}
-              className={`relative cursor-pointer rounded-xl border-2 transition-all overflow-hidden ${
+              className={`relative cursor-pointer rounded-xl border-2 transition-all overflow-hidden r37-express-card ${
                 isSelected
                   ? 'border-primary shadow-lg'
                   : 'border-border hover:border-primary/30'
@@ -263,7 +263,13 @@ export function ExpressDeliveryHub() {
 
                 {/* Time + Price */}
                 <div className="flex items-center justify-between mt-2">
-                  <span className="text-xs font-semibold text-primary">{option.time}</span>
+                  <motion.span
+                    className="text-xs font-semibold text-primary r37-timer-glow inline-flex items-center"
+                    animate={{ filter: ['drop-shadow(0 0 2px rgba(59,130,246,0.2))', 'drop-shadow(0 0 8px rgba(59,130,246,0.5))', 'drop-shadow(0 0 2px rgba(59,130,246,0.2))'] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                  >
+                    {option.time}
+                  </motion.span>
                   <span className={`text-xs font-bold ${option.price === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'}`}>
                     {formatPrice(option.price)}
                   </span>
@@ -271,9 +277,15 @@ export function ExpressDeliveryHub() {
 
                 {/* Badge */}
                 {option.badge && (
-                  <Badge className="absolute top-2 left-2 text-[9px] px-1.5 py-0 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-0 font-bold">
-                    {option.badge}
-                  </Badge>
+                  <motion.div
+                    animate={{ scale: [1, 1.06, 1], opacity: [0.85, 1, 0.85] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                    style={{ boxShadow: '0 0 10px rgba(245,158,11,0.25)' }}
+                  >
+                    <Badge className="absolute top-2 left-2 text-[9px] px-1.5 py-0 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-0 font-bold">
+                      {option.badge}
+                    </Badge>
+                  </motion.div>
                 )}
               </div>
             </motion.div>
@@ -301,7 +313,17 @@ export function ExpressDeliveryHub() {
                 </div>
 
                 {/* Route visualization */}
-                <div className="relative h-16 r32-tracking-route">
+                <div className="relative h-16 r32-tracking-route r37-map-grid">
+                  {/* Animated grid pattern overlay */}
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none opacity-[0.08]"
+                    animate={{ backgroundPosition: ['0 0', '20px 20px'] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: 'linear' as const }}
+                    style={{
+                      backgroundImage: 'linear-gradient(rgba(139,92,246,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.5) 1px, transparent 1px)',
+                      backgroundSize: '20px 20px',
+                    }}
+                  />
                   {/* Route line */}
                   <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 60" preserveAspectRatio="none">
                     <path

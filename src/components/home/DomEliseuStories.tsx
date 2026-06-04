@@ -286,19 +286,20 @@ export function DomEliseuStories() {
             return (
               <motion.button
                 key={story.id}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.08, y: -4 }}
                 whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
                 onClick={() => {
                   setActiveStoryIndex(idx)
                   setActiveSlideIndex(0)
                   setIsPaused(false)
                 }}
-                className="flex flex-col items-center gap-1 shrink-0"
+                className="flex flex-col items-center gap-1 shrink-0 r37-story-card"
               >
                 {/* Story circle with gradient ring */}
                 <div className="relative">
                   <div
-                    className="h-16 w-16 rounded-full p-[2.5px]"
+                    className="h-16 w-16 rounded-full p-[2.5px] r37-story-ring"
                     style={{
                       background: isSeen
                         ? 'rgba(128,128,128,0.3)'
@@ -384,7 +385,15 @@ export function DomEliseuStories() {
                         ? { duration: SLIDE_DURATION / 1000, ease: 'linear' as const }
                         : { duration: 0.3 }
                     }
-                  />
+                  >
+                    {slideIdx === activeSlideIndex && !isPaused && (
+                      <motion.span
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent r37-story-shimmer"
+                        animate={{ x: ['-100%', '200%'] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                      />
+                    )}
+                  </motion.div>
                 </div>
               ))}
             </div>
@@ -392,18 +401,24 @@ export function DomEliseuStories() {
             {/* Header */}
             <div className="absolute top-6 left-0 right-0 z-10 flex items-center justify-between px-4">
               <div className="flex items-center gap-2">
-                <div
-                  className="h-8 w-8 rounded-full p-[1.5px]"
+                <motion.div
+                  className="h-8 w-8 rounded-full p-[1.5px] r37-story-active-ring"
+                  animate={{ boxShadow: [`0 0 6px ${currentStory!.gradientFrom}50`, `0 0 16px ${currentStory!.gradientTo}60`, `0 0 6px ${currentStory!.gradientFrom}50`] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
                   style={{
                     background: `linear-gradient(135deg, ${currentStory!.gradientFrom}, ${currentStory!.gradientTo})`,
                   }}
                 >
-                  <div className="h-full w-full rounded-full bg-black/80 flex items-center justify-center">
+                  <motion.div
+                    animate={{ scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                    className="h-full w-full rounded-full bg-black/80 flex items-center justify-center"
+                  >
                     <span className={`h-6 w-6 rounded-full bg-gradient-to-br ${currentStory!.avatarBg} flex items-center justify-center text-white font-bold text-[10px]`}>
                       {currentStory!.initial}
                     </span>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
                 <div>
                   <p className="text-white text-xs font-semibold">{currentStory!.name}</p>
                   <p className="text-white/60 text-[9px]">{currentStory!.categoryLabel}</p>

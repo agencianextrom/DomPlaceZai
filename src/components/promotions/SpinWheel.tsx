@@ -189,16 +189,16 @@ export function SpinWheel() {
   }, [isSpinning, canSpin, rotation])
 
   return (
-    <div className="w-full max-w-sm mx-auto">
+    <div className="w-full max-w-sm mx-auto r37-wheel-container" style={{ filter: 'drop-shadow(0 0 24px rgba(251,191,36,0.25))' }}>
       {/* Wheel container */}
       <div className="relative">
         {/* Pointer/arrow at top */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-20">
           <motion.div
-            animate={isSpinning ? { y: [0, 4, 0] } : {}}
-            transition={{ duration: 0.3, repeat: Infinity }}
-            className="w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-t-[24px] border-t-red-500 drop-shadow-lg"
-            style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+            animate={isSpinning ? { y: [0, 4, 0] } : { scale: [1, 1.12, 1], y: [0, 2, 0] }}
+            transition={{ duration: isSpinning ? 0.3 : 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            className="w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-t-[24px] border-t-red-500 drop-shadow-lg r37-wheel-pointer"
+            style={{ filter: 'drop-shadow(0 2px 8px rgba(239,68,68,0.5))' }}
           />
         </div>
 
@@ -356,9 +356,9 @@ export function SpinWheel() {
           >
             {canSpin && !isSpinning && (
               <motion.span
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent"
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent r37-spin-shimmer"
                 animate={{ x: ['-100%', '200%'] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.5 }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 0.5 }}
               />
             )}
             <span className="relative z-10">
@@ -442,8 +442,8 @@ export function SpinWheel() {
               <div className="relative z-10 pt-4">
                 <motion.div
                   initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: 'spring', stiffness: 300 }}
+                  animate={{ scale: [0, 1.15, 1] }}
+                  transition={{ delay: 0.2, type: 'spring' as const, stiffness: 400, damping: 12 }}
                   className={`h-20 w-20 rounded-full mx-auto mb-4 flex items-center justify-center shadow-xl ${
                     wonPrize.label !== 'Tente novamente'
                       ? 'bg-gradient-to-br from-amber-400 to-orange-500'
