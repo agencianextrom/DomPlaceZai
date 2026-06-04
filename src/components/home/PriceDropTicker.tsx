@@ -87,7 +87,7 @@ export function PriceDropTicker() {
     let cancelled = false
     const fetchOffers = async () => {
       try {
-        const data = await cachedFetch('/api/products?isOffer=true&limit=20')
+        const data = await cachedFetch('/api/products?isOffer=true&limit=20') as { products?: ProductData[] }
         const products: ProductData[] = data.products || []
         if (!cancelled) {
           const tickerItems = products

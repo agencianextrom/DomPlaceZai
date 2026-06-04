@@ -395,7 +395,7 @@ export function CartSuggestions() {
     const fetchSuggestions = async () => {
       setIsLoading(true)
       try {
-        const data = await cachedFetch('/api/products?limit=12&isFeatured=true')
+        const data = await cachedFetch('/api/products?limit=12&isFeatured=true') as { products?: any[] }
         if (cancelled) return
 
         const products: ProductData[] = (data.products ?? []).map(mapApiProduct)

@@ -191,7 +191,7 @@ export function WeatherWidget() {
     fetch('/api/weather')
       .then((r) => {
         if (!r.ok) throw new Error('Weather API failed')
-        return r.json()
+        return r.json() as Promise<Partial<WeatherData> & { error?: string }>
       })
       .then((data) => {
         if (cancelled) return

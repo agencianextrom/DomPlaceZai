@@ -843,7 +843,7 @@ export function CartView() {
                       exit={{ opacity: 0, x: -60, transition: { duration: 0.25 } }}
                       whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(16,185,129,0.12), 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(16,185,129,0.08)' }}
                       transition={{ delay: index * 0.06, type: 'spring' as const, stiffness: 350, damping: 25 }}
-                      className={`flex gap-3 p-4 rounded-lg r42-cart-item-hover r38-cart-item-hover r38-cart-swipe-hint ${outOfStock ? 'opacity-60' : ''}`}
+                      className={`flex gap-3 p-4 rounded-lg r42-cart-item-hover r38-cart-item-hover r38-cart-swipe-hint r60-card-enter ${outOfStock ? 'opacity-60' : ''}`}
                     >
                       <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0 relative overflow-hidden r38-cart-img-hover`}>
                         {cartImgUrl ? (
@@ -1006,7 +1006,7 @@ export function CartView() {
           pointer-events: none;
         }
       `}</style>
-      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 px-4 py-4 pb-20 md:pb-4">
+      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 px-4 py-4 pb-20 md:pb-4" style={{ paddingBottom: 'max(80px, calc(80px + env(safe-area-inset-bottom)))' }}>
         {/* Gradient border wrapper */}
         <div className="max-w-3xl mx-auto relative">
           {/* Gradient border accents */}

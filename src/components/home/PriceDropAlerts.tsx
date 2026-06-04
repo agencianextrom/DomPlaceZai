@@ -479,7 +479,7 @@ export function PriceDropAlerts() {
     else setIsLoading(true)
 
     try {
-      const data = await cachedFetch('/api/products?limit=50')
+      const data = await cachedFetch('/api/products?limit=50') as { products?: ProductData[] }
       const products: ProductData[] = data.products || []
 
       // Filter products with comparePrice > price (price drops)

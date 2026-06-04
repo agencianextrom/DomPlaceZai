@@ -142,7 +142,7 @@ export function DealOfTheDay() {
     const fetchProducts = async () => {
       setIsLoading(true)
       try {
-        const data = await cachedFetch('/api/products?limit=100')
+        const data = await cachedFetch('/api/products?limit=100') as { products?: ProductData[] }
         if (!cancelled) {
           const prods: ProductData[] = data.products || []
           setProducts(prods)

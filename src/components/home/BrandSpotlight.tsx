@@ -221,7 +221,7 @@ export function BrandSpotlight() {
     setMounted(true)
     async function fetchStores() {
       try {
-        const data = await cachedFetch('/api/stores?limit=20')
+        const data = await cachedFetch('/api/stores?limit=20') as { stores?: FeaturedStore[] }
         const apiStores = (data.stores || []) as FeaturedStore[]
         if (apiStores.length > 0) {
           setStores(apiStores)

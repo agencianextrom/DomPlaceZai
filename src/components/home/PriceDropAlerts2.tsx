@@ -641,7 +641,7 @@ export function PriceDropAlerts2() {
   const fetchAlerts = useCallback(async () => {
     setIsLoading(true)
     try {
-      const data = await cachedFetch('/api/products?limit=50')
+      const data = await cachedFetch('/api/products?limit=50') as { products?: ProductData[] }
       const products: ProductData[] = data.products || []
 
       // Filter products with comparePrice > price (actual price drops)

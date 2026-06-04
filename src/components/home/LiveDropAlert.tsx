@@ -264,7 +264,7 @@ export function LiveDropAlert() {
 
     const fetchDrops = async () => {
       try {
-        const data = await cachedFetch('/api/products?limit=50')
+        const data = await cachedFetch('/api/products?limit=50') as { products?: ProductData[] }
         if (cancelled || !data.products) return
 
         const products: ProductData[] = data.products

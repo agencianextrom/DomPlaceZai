@@ -35,6 +35,7 @@ import { SmartSuggestions } from '@/components/home/SmartSuggestions'
 import { RecentOrders } from '@/components/home/RecentOrders'
 import { FeedActivity } from '@/components/home/FeedActivity'
 import { NeighborhoodFeed } from '@/components/home/NeighborhoodFeed'
+import { NeighborhoodHub } from '@/components/home/NeighborhoodHub'
 import { StoreReviews } from '@/components/home/StoreReviews'
 import { RecipeSuggestions } from '@/components/home/RecipeSuggestions'
 import { CommunityHighlights } from '@/components/home/CommunityHighlights'
@@ -59,6 +60,7 @@ import { OrderTimeline as ProfileOrderTimeline } from '@/components/profile/Orde
 import { OrderTimeline } from '@/components/orders/OrderTimeline'
 import { OrderRatingPrompt } from '@/components/orders/OrderRatingPrompt'
 import { SpinWheel } from '@/components/promotions/SpinWheel'
+import { CouponClaimBanner } from '@/components/promotions/CouponClaimBanner'
 import { DailyRewards as PromotionsDailyRewards } from '@/components/promotions/DailyRewards'
 import { DailyRewards } from '@/components/home/DailyRewards'
 import { StoreDirectory } from '@/components/store/StoreDirectory'
@@ -68,6 +70,7 @@ import { PromoBanner } from '@/components/home/PromoBanner'
 import { TopRatedPicks } from '@/components/home/TopRatedPicks'
 import { GiftGuide } from '@/components/home/GiftGuide'
 import { WeatherWidget } from '@/components/home/WeatherWidget'
+import { ProductSpotlight } from '@/components/home/ProductSpotlight'
 import { ComboBuilder } from '@/components/home/ComboBuilder'
 import { ProductBundlesSlider } from '@/components/product/ProductBundlesSlider'
 import { DeliveryFeeCalculator } from '@/components/home/DeliveryFeeCalculator'
@@ -190,6 +193,7 @@ import { ARVirtualTryOn } from '@/components/product/ARVirtualTryOn'
 import { DynamicPricingEngine } from '@/components/product/DynamicPricingEngine'
 import { InteractiveProductTour } from '@/components/home/InteractiveProductTour'
 import { MobileQuickActions } from '@/components/home/MobileQuickActions'
+import { MobileOrderTracker } from '@/components/orders/MobileOrderTracker'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -726,8 +730,8 @@ export default function Home() {
       setIsLoading(true)
       try {
         const [productsData, storesData] = await Promise.all([
-          cachedFetch('/api/products?limit=50'),
-          cachedFetch('/api/stores?limit=20'),
+          cachedFetch('/api/products?limit=50') as Promise<{ products?: ProductData[] }>,
+          cachedFetch('/api/stores?limit=20') as Promise<{ stores?: StoreData[] }>,
         ])
         if (!cancelled) {
           setApiProducts(productsData.products || [])
@@ -772,6 +776,9 @@ export default function Home() {
       {/* Cart Recovery Banner - shows above main content */}
       <CartRecoveryBanner />
 
+      {/* Mobile Order Tracker - floating card for active deliveries */}
+      <MobileOrderTracker />
+
       <AnimatePresence mode="wait">
         {isSearchOpen ? (
           <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -812,6 +819,13 @@ export default function Home() {
                     <section className="mt-3">
                       <WeatherWidget />
                     </section>
+
+                    {/* Product Spotlight — Produto em Destaque */}
+                    <LazySection>
+                      <section className="mt-3">
+                        <ProductSpotlight />
+                      </section>
+                    </LazySection>
 
                     {/* Price Drop Ticker */}
                     <section className="mt-3 rounded-xl overflow-hidden">
@@ -943,6 +957,15 @@ export default function Home() {
                       <ScrollReveal delay={0.2}>
                         <section className="mt-4">
                           <ProductBattle />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Coupon Claim Banner — Resgatar Cupons */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-3">
+                          <CouponClaimBanner />
                         </section>
                       </ScrollReveal>
                     </LazySection>
@@ -1644,6 +1667,15 @@ export default function Home() {
                       <ScrollReveal delay={0.3}>
                         <section>
                           <NeighborhoodFeed />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Neighborhood Hub — R60 */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section className="mt-6">
+                          <NeighborhoodHub />
                         </section>
                       </ScrollReveal>
                     </LazySection>

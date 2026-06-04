@@ -1,4 +1,253 @@
 ---
+Task ID: R60-StylingEnhance5Components
+Agent: General-Purpose Agent
+Task: Add mobile-responsive styling enhancements to 5 existing components
+
+Work Log:
+
+**1. StoreProfile.tsx — Mobile grid, touch feedback, stars glow**
+- Product grid skeleton: added `lg:grid-cols-4` to `grid-cols-2 sm:grid-cols-3` → `grid-cols-2 sm:grid-cols-3 lg:grid-cols-4`
+- Product grid (loaded): same `lg:grid-cols-4` breakpoint added for consistent 4-col on desktop
+- Rating display: added `r60-stars-glow` class to star rating wrapper for animated amber glow
+- Tab buttons: added `active:scale-95 transition-transform` for mobile tap feedback
+- Follow/Seguir button: added `active:scale-95 transition-transform`
+- WhatsApp button: added `active:scale-95 transition-transform`
+- Product card wrappers: added `active:scale-95 transition-transform` for tappable feedback
+- Description toggle: added `active:scale-95 transition-transform`
+
+**2. Footer.tsx — Safe-area padding, touch feedback, 44px touch targets**
+- Footer element: added explicit `pb-[max(16px,env(safe-area-inset-bottom))]` safe-area bottom padding
+- Inner container: removed redundant `pb-24 md:pb-8` (safe-area now on footer element)
+- Social icons (WhatsApp, Instagram, Facebook): changed from `h-9 w-9` (36px) to `h-11 w-11 min-h-[44px] min-w-[44px]` for 44px minimum touch targets
+- Social icons: added `r60-touch-feedback` class for tap ripple effect
+- Sobre column links: added `r60-touch-feedback`
+- Categorias links: added `r60-touch-feedback`
+- Para Lojistas column links: added `r60-touch-feedback`, added `r43-footer-link-anim r46-footer-link` for consistent styling
+- Suporte column links: added `r60-touch-feedback`, added `r43-footer-link-anim r46-footer-link` for consistent styling
+- Back-to-top button: added `min-h-[44px] min-w-[44px]` and `r60-touch-feedback`
+
+**3. FavoritesView.tsx — Card entrance animation**
+- Product card grid items: added `r60-card-enter` class for smooth slide-up entrance animation
+- Grid already uses `grid-cols-2 sm:grid-cols-3 lg:grid-cols-4` (already mobile-first)
+- Empty state already has animated floating hearts/particles (no changes needed)
+
+**4. OrdersView.tsx — Stars glow, prominent reorder, full-width cards**
+- Rate button (Avaliar): added `r60-stars-glow` class for animated amber glow on star icon
+- Reorder button (Repetir): made more prominent on mobile with `h-9 sm:h-8`, `font-semibold`, `border-2 border-primary text-primary bg-primary/5 sm:bg-transparent`
+- Order cards: improved mobile spacing with `p-4 sm:p-5` (more padding on desktop)
+
+**5. AuthModal.tsx — Touch feedback on submit buttons**
+- Login submit button wrapper: added `r60-touch-feedback` to the motion.div container
+- Register submit button wrapper: added `r60-touch-feedback` to the motion.div container
+- (Form inputs already have `min-h-12`, close button already `h-11 w-11`, safe-area already on TabsContent)
+
+**CSS classes used (already existed in globals.css):**
+- `r60-stars-glow`: animated drop-shadow glow on rating stars (amber)
+- `r60-touch-feedback`: tap ripple effect using radial-gradient pseudo-element
+- `r60-card-enter`: smooth slide-up entrance animation
+
+**Rules followed:**
+- Mobile-first approach (80% users on smartphones)
+- Edit tool only (no Write)
+- All new CSS classes use r60-* prefix
+- No oklch() colors used in new classes (only rgba/hex)
+- `'spring' as const` for framer-motion types (already present in files)
+
+---
+Task ID: R60-MobileOrderTracker
+Agent: Feature Agent
+Task: Create mobile-first floating order tracking widget
+
+Work Log:
+
+**Created `src/components/orders/MobileOrderTracker.tsx`** (NEW — 433 lines)
+- Mobile-optimized floating order tracking card for active deliveries
+- Fixed position below header (top-14/16), hidden on desktop (lg:hidden)
+- Proper TypeScript interfaces: `OrderStep`, `ActiveOrder`, `OrdersResponse`, `MobileOrderTrackerProps`
+- No `any` types — all data typed with explicit interfaces
+- Named export only: `MobileOrderTracker`
+
+**Features:**
+- Collapsed header: progress ring (SVG circle with framer-motion), order number, store name, active step label
+- Expandable panel: 5-step timeline (confirmed → preparing → ready → delivering → delivered)
+- Step nodes: completed (emerald CheckCircle), active (indigo ring with pulse animation), pending (gray)
+- Step progress connectors: animated emerald fill bars between steps
+- Step labels row: truncated label text color-coded by state
+- ETA card: indigo-50 background, Clock icon, dynamic eta text, estimated minutes badge
+- Driver info strip (when delivering): initials avatar, name, vehicle, Navigation icon
+- 3 action buttons (44px min-height): Ligar (emerald), Chat (indigo), Mapa (gray)
+- Order total footer with BRL formatting
+- Last-refreshed timestamp indicator
+- Dismiss button: absolute positioned X button with shadow
+
+**Data Fetching:**
+- Primary: `cachedFetch('/api/orders?status=DELIVERING&limit=1')` via api-cache
+- Fallback: checks PREPARING and READY statuses via `Promise.allSettled`
+- Props: optional `orderId` for direct order fetch
+- localStorage fallback: `r60-active-order` key
+- Auto-refresh every 30 seconds with interval cleanup
+
+**UX and Accessibility:**
+- Mobile-first: 44px minimum touch targets (`min-h-[44px]` on all action buttons)
+- `active:scale-95 transition-transform` tap feedback on all buttons
+- `active:scale-[0.98]` on header expand/collapse button
+- `active:scale-90` on dismiss button
+- `aria-expanded` + `aria-controls` on expand button
+- `role="status"` + `aria-label` on tracker container
+- `aria-current="step"` on active step node
+- `aria-label` on all action buttons (Ligar, Chat, Mapa, Fechar rastreador)
+- `aria-hidden="true"` on emoji step icons
+
+**Animation:**
+- Framer Motion AnimatePresence: slide-down entrance (y: -120 → 0), spring (stiffness: 300, damping: 25)
+- Progress ring: `motion.circle` with animated `strokeDashoffset` (circumference-based)
+- Active step pulse: `scale: [1, 1.15, 1]` repeat Infinity
+- ChevronDown rotation: 180° on expand
+- Expanded panel: `height: 0 → auto` with opacity
+- String boxShadow: `0 4px 24px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.06)`
+- `'spring' as const` type assertion on all spring transitions
+- `'easeOut' as const` and `'easeInOut' as const` on easing values
+
+**CSS prefix:** `r60-order-tracker-card`, `r60-step-node`
+
+**Integration: src/app/page.tsx** (+4 lines)
+- Added import for MobileOrderTracker from '@/components/orders/MobileOrderTracker'
+- Placed `<MobileOrderTracker />` after CartRecoveryBanner, before AnimatePresence main content
+- Floating position means it overlays content without affecting layout
+
+Stage Summary:
+- 2 files changed: MobileOrderTracker.tsx (new, 433 lines), page.tsx (+4 lines)
+- Mobile-first floating order tracking widget with 5-step timeline
+- r60-* CSS prefix for component classes
+- Zero `any` types, named export only, `'spring' as const` throughout
+- All touch targets 44px minimum, tap feedback on all buttons
+- prefers-reduced-motion: respected via framer-motion defaults
+- Portuguese Brazilian UI text throughout
+
+---
+Task ID: R60-SmartSearchSuggestions
+Agent: Feature Agent
+Task: Create AI-powered search suggestions component
+
+Work Log:
+
+**Created `src/components/search/SmartSearchSuggestions.tsx`** (NEW — 508 lines)
+- AI-powered search suggestions dropdown with trending, recent, product, and category suggestions
+- Proper TypeScript interfaces: `SuggestionItem`, `ProductsApiResponse`, `SmartSearchSuggestionsProps`
+- No `any` types — uses `cachedFetch<ProductsApiResponse>` with explicit product shape
+- Named export only: `SmartSearchSuggestions`
+- Props: `query`, `onSelect`, `isOpen`, `onClose`
+
+**Features:**
+- Empty query: trending items (6 emoji-tagged terms) + recent searches from localStorage (`r60-recent-searches`)
+- Active query: product name/category matches (up to 8) + category matches + recent query matches
+- Text highlighting: matched substring wrapped in bold indigo `<span>`
+- Grouped rendering with section labels (Em Alta, Recentes, Produtos, Categorias)
+- Loading skeleton (4 animated pulse rows) while fetching products
+- AI result badge showing match count for active queries
+- "Buscar" footer CTA button for full search execution
+- Empty state with animated search icon
+
+**UX and Accessibility:**
+- Mobile-first: 44px minimum touch targets (`min-h-[44px]` on all interactive items)
+- `active:scale-95 transition-transform` tap feedback on all buttons
+- Escape key closes dropdown via useEffect keydown listener
+- Click-outside closes dropdown via mousedown event on document
+- `role="listbox"` and `role="option"` ARIA attributes
+- `aria-label` on close button ("Fechar sugestoes")
+
+**Animation:**
+- Framer Motion AnimatePresence with spring entrance/exit (spring, stiffness: 400, damping: 30)
+- Staggered item entrance (delay: i * 0.03)
+- String boxShadow: `0 25px 50px -12px rgba(0, 0, 0, 0.25)`
+- `'spring' as const` type assertion on all spring transitions
+
+**CSS prefix:** All classes use `r60-*` prefix (r60-suggestions-panel, r60-suggestions-header, r60-suggestions-badge, r60-suggestions-list, r60-suggestions-empty, r60-suggestion-item, r60-suggestions-footer, r60-suggestions-search-btn)
+
+**State management:**
+- Integrates with `useAppStore.addRecentSearch` for global state
+- Local `r60-recent-searches` localStorage for component-scoped persistence
+- Products fetched via `cachedFetch('/api/products?limit=50')` with cancellation support
+
+Stage Summary:
+- 1 file created: `src/components/search/SmartSearchSuggestions.tsx` (508 lines)
+- No page.tsx modifications (component ready for future integration)
+- TypeScript: passes `tsc --noEmit` with zero errors
+- All rules followed: named export, no `any`, `'spring' as const`, string boxShadow, no oklch, mobile-first, `active:scale-95`
+
+---
+Task ID: R60-NeighborhoodHub
+Agent: Feature Agent
+Task: Create NeighborhoodHub community widget component
+
+Work Log:
+
+**New Component: src/components/home/NeighborhoodHub.tsx** (~515 lines)
+- Community-oriented widget showing nearby stores, recent activity, and local tips
+- 3-tab layout: "Lojas" (stores grid), "Atividades" (activity feed), "Dicas" (local tips)
+- Stats summary bar: total stores, online count, new this week, avg rating (4-column grid)
+- Store cards: emoji icon, online pulse dot, rating stars, delivery time + fee, category badge
+- Activity feed: type-coded items (new_product, promo, review, milestone) with emoji and timestamp
+- Local tips: expandable cards with like counts, curated community content
+- API data via cachedFetch('/api/stores') and cachedFetch('/api/products')
+- Fallback data for 6 stores, 4 activities, 2 tips when API is unavailable
+- Animated tab switcher with AnimatePresence crossfade transitions
+- Staggered spring entrance animations on all cards ('spring' as const)
+- Mobile-first responsive grid: grid-cols-2 on mobile, sm:grid-cols-3 on tablet+
+- Loading skeleton state with pulse animations
+- r60-online-dot pulse animation, r60-store-glow hover overlay
+- Portuguese Brazilian UI text throughout
+- Named export only, zero `any` types, string boxShadow values, no oklch
+- Integrated into page.tsx in LazySection after NeighborhoodFeed
+
+**CSS: globals.css** (+26 lines)
+- @keyframes r60-dot-pulse: green emerald pulsing glow ring animation
+- .r60-online-dot: online status indicator with 2s ease-in-out infinite pulse
+- .r60-store-glow: radial gradient hover overlay on store cards
+- Added .r60-online-dot to prefers-reduced-motion disable list
+
+**Integration: src/app/page.tsx** (+2 lines)
+- Added import for NeighborhoodHub
+- Added LazySection + ScrollReveal wrapper after NeighborhoodFeed, before StoreReviews
+
+Stage Summary:
+- 3 files changed: NeighborhoodHub.tsx (new), globals.css (+26 lines), page.tsx (+9 lines)
+- Mobile-first community hub with stores, activities, and tips
+- r60-* CSS prefix for all new animations
+- prefers-reduced-motion respected
+- Zero `any` types, named exports only
+- Build status: pending verification
+
+**Task 1: SearchView.tsx Enhancements**
+- Line 443: Added `min-h-12` to search input for comfortable mobile typing (prevents keyboard push shrinking)
+- Line 505: Added `r60-touch-feedback` class to Cancelar button for mobile touch press visual feedback
+- Line 528: Added `flex-nowrap` to category pills container ensuring horizontal scroll without wrapping on mobile
+- Lines 750: Added `r60-skeleton` class to skeleton loading card wrappers for shimmer loading animation
+- Line 836: Added `r60-heading-shimmer` to "Lojas" section heading for animated gradient text effect
+- Line 860: Added `r60-heading-shimmer` to "Produtos" section heading for animated gradient text effect
+- Line 1074: Added `r60-heading-shimmer` to "Buscas recentes" heading for animated gradient text effect
+- Note: Search results grid already single-column on mobile (`grid-cols-1 sm:grid-cols-2`)
+
+**Task 2: CartView.tsx Enhancements**
+- Line 846: Added `r60-card-enter` class to cart item cards for entrance animation (slide-up with spring easing)
+- Line 1009: Added `env(safe-area-inset-bottom)` padding to sticky checkout bar for notched devices (iPhone X+)
+- Note: Quantity buttons already have `min-h-11 min-w-11` (44px) meeting touch target requirements
+- Note: No rating/stars display in cart items — r60-stars-glow not applicable
+
+**Task 3: globals.css Check**
+- Confirmed r60-skeleton class already exists (line 44552)
+- Confirmed r60-heading-shimmer class already exists (line 44559)
+- Confirmed r60-touch-feedback class already exists (line 44521)
+- Confirmed r60-card-enter class already exists (line 44539)
+- Confirmed r60-stars-glow class already exists (line 44492)
+- No new CSS additions needed
+
+Stage Summary:
+- 2 files changed: SearchView.tsx (+7 classes), CartView.tsx (+2 enhancements)
+- All r60-* prefix classes used (no new CSS needed, all pre-existing)
+- No breaking changes to existing functionality
+- Mobile-first: safe-area, touch targets, horizontal scroll, entrance animations
+---
 Task ID: R59 (Round 59 - Mobile CSS Foundation)
 Agent: Main Agent
 Task: Fix mobile CSS foundation for DomPlace marketplace
@@ -4156,3 +4405,170 @@ Stage Summary:
 - 14 new r59-* utility classes and animations
 - 8 new @keyframes definitions
 - Mobile-first, accessible, no-breaking-changes
+
+---
+Task ID: R60 - ProductSpotlight
+Agent: Feature Agent
+Task: Create mobile-optimized ProductSpotlight component ("Produto em Destaque")
+
+Work Log:
+
+**Created: src/components/home/ProductSpotlight.tsx (~210 lines)**
+- Mobile-first "Produto em Destaque" hero card showcasing a single featured product
+- Fetches featured products via `cachedFetch('/api/products?isFeatured=true&limit=10')`
+- Auto-rotates every 8 seconds through the product list
+- Full-screen-like gradient hero card with AnimatePresence transitions
+- 8 rotating gradient backgrounds (violet, amber, emerald, blue, rose, lime, sky, orange)
+- Decorative emoji per product slot (10 emojis cycling)
+- White noise texture overlay via `r60-spotlight-noise` CSS class
+- 5 floating animated particles (y-axis bob + opacity pulse)
+- "Destaque" sparkles badge + discount percentage badge (with Tag icon) + "Novo" badge
+- Product info: name (line-clamp-2), store name, star rating with review count
+- Price display: current price (extrabold 2xl/3xl) + strikethrough compare price
+- Action buttons: "Adicionar" cart button (full-width) + heart favorite toggle (filled when active)
+- Bottom CTA: "Ver detalhes do produto" with eye icon → navigates to product view
+- Dot indicators (max 5) with active state animation (pill shape)
+- All handlers memoized with useCallback for performance
+- Cancellation guard on fetch useEffect
+- Named export: `ProductSpotlight`
+- Framer Motion: spring transitions, `as const` type assertions, ease: 'easeInOut' as const
+- Mobile-first: `text-lg sm:text-xl`, full-width buttons, `py-3` touch targets
+- `active:scale-95 transition-transform` tap feedback on all buttons
+- ARIA labels on interactive elements
+
+**Modified: src/app/page.tsx**
+- Added import for `ProductSpotlight` from `@/components/home/ProductSpotlight`
+- Added `<ProductSpotlight />` inside a `<LazySection>` after WeatherWidget, before PriceDropTicker
+- Wrapped in `<section className="mt-3">` for consistent spacing
+
+**Modified: src/app/globals.css (+10 lines)**
+- Added `.r60-spotlight-noise` CSS class
+- Uses inline SVG data URI with fractalNoise filter for white noise texture
+- Background-repeat: repeat, size: 128px 128px
+- mix-blend-mode: overlay for subtle texture on gradient backgrounds
+
+Stage Summary:
+- 3 files changed: ProductSpotlight.tsx (new), page.tsx (+5 lines), globals.css (+10 lines)
+- New mobile-optimized ProductSpotlight component with hero card carousel
+- CSS prefix: r60-* (r60-spotlight-noise)
+- Named export only, 'spring' as const, string boxShadow, no oklch
+- Mobile-first with tap feedback, lazy-loaded via IntersectionObserver
+
+---
+
+## R60: Styling Enhancements — 5 Components
+
+Date: $(date -u '+%Y-%m-%d %H:%M UTC')
+Files changed: 1 (globals.css append-only)
+
+### New r60-* Classes (14 total)
+
+| Class | Component / Use |
+|---|---|
+| `.r60-online-dot` | Online status dot pulse animation |
+| `.r60-order-tracker-card` | Order tracker card glassmorphism |
+| `.r60-step-active` | Step active glow animation |
+| `.r60-spotlight-noise` | Spotlight noise SVG texture overlay |
+| `.r60-heading-shimmer` | Shimmer heading text effect |
+| `.r60-border-glow` | Card border glow shimmer on scroll |
+| `.r60-badge-bounce` | Floating badge bounce animation |
+| `.r60-stars-glow` | Rating stars glow animation |
+| `.r60-price-reveal` | Price counter reveal animation |
+| `.r60-gradient-text` | Gradient text for headings |
+| `.r60-touch-feedback` | Touch feedback ripple effect |
+| `.r60-card-enter` | Smooth card entrance slide-up |
+| `.r60-skeleton` | Skeleton gradient for loading states |
+
+### Keyframes (10)
+`r60-online-pulse`, `r60-step-glow`, `r60-heading-shimmer`, `r60-border-shimmer`,
+`r60-badge-bounce`, `r60-stars-glow`, `r60-price-reveal`, `r60-gradient-shift`,
+`r60-card-slide-up`, `r60-skeleton-load`
+
+### Quality Checks
+- No oklch() colors (only rgba/hex) ✓
+- All animations wrapped in prefers-reduced-motion:reduce ✓
+- All classes use r60-* prefix ✓
+- Append-only, no existing CSS modified ✓
+- Existing r59 closing brace at line 44417 intact ✓
+
+### Line Count
+- globals.css: 44417 → 44565 (+148 lines)
+---
+Task ID: R60-coupon-banner
+Agent: Feature Agent
+Task: Create CouponClaimBanner promotional component
+
+Work Log:
+
+**New Feature: CouponClaimBanner**
+- Created `src/components/promotions/CouponClaimBanner.tsx` (351 lines)
+  - Mobile-first promotional banner with one-tap coupon claiming
+  - 4 default coupons: BEMVINDO (15%), FRETEZERO (free delivery), DESCONTO10 (R$10 off), COMBO20 (20%)
+  - Rotating gradient backgrounds cycling through 4 themes (indigo/purple/pink, amber/orange/red, emerald/teal/cyan, rose/fuchsia/violet)
+  - Auto-rotate every 5s through unclaimed coupons
+  - Claim state persisted to localStorage (key: r60-claimed-coupons)
+  - Copies coupon code to clipboard on claim with toast notification
+  - Animated floating particles (5) and decorative dashed circle border
+  - Coupon code display with dashed border card
+  - Previous/next navigation buttons + pagination dots
+  - Spring entrance/exit animations via Framer Motion
+  - Type-specific icon mapping (Tag for percentage, Sparkles for fixed, Gift for free_delivery)
+  - `active:scale-95 transition-transform` tap feedback on all buttons
+  - String boxShadow, `'spring' as const` for all transitions
+  - Named export only: `CouponClaimBanner`
+  - Portuguese Brazilian UI text throughout
+
+**Integration:**
+- Added import for CouponClaimBanner in `src/app/page.tsx`
+- Placed in LazySection after ProductBattle section (before PRIORITY 3 lazy sections)
+- ScrollReveal wrapper with 0.15s delay
+
+Stage Summary:
+- 2 files changed: CouponClaimBanner.tsx (NEW, 351 lines), page.tsx (+9 lines)
+- Named export, mobile-first, string boxShadow, 'spring' as const, no oklch
+- CSS prefix r60-* on localStorage key
+- No globals.css changes needed (all styles via Tailwind classes)
+---
+Task ID: R60-FixTSUnknownErrors
+Agent: General Agent
+Task: Fix TypeScript `unknown` type errors across the codebase (TS18046, TS2339)
+
+Work Log:
+
+**Root Cause:** `cachedFetch<T = unknown>` returns `Promise<unknown>` when no type parameter is provided. All `await cachedFetch(...)` results were typed as `unknown`, causing TS18046/TS2339 errors when accessing `.products`, `.stores`, `.reviews`, `.orders`, etc. Additionally, raw `fetch().then(r => r.json())` calls also returned `unknown`.
+
+**Fix Pattern Applied:** Added `as { property?: type }` type assertions to every `cachedFetch` and `r.json()` call that accessed properties on the result.
+
+**Files Fixed (18 total):**
+
+1. `src/app/page.tsx` (lines 730-731) — `Promise<{ products?: ProductData[] }>` and `Promise<{ stores?: StoreData[] }>`
+2. `src/components/cart/CartSuggestions.tsx` (line 398) — `as { products?: any[] }`
+3. `src/components/home/BrandSpotlight.tsx` (line 224) — `as { stores?: FeaturedStore[] }`
+4. `src/components/home/ComboBuilder.tsx` (line 352) — `as Promise<{ products?: ProductData[] }>`
+5. `src/components/home/CustomerReviewsHighlight.tsx` (line 468) — `as { reviews?: Record<string, unknown>[] }`
+6. `src/components/home/DealOfTheDay.tsx` (line 145) — `as { products?: ProductData[] }`
+7. `src/components/home/DynamicPricingAlerts.tsx` (line 962) — `as { products?: any[] }`
+8. `src/components/home/FlashSale.tsx` (line 376) — `as { products?: any[] }`
+9. `src/components/home/GiftGuide.tsx` (line 167) — `as Promise<{ products?: ProductData[] }>`
+10. `src/components/home/LiveDropAlert.tsx` (line 267) — `as { products?: ProductData[] }`
+11. `src/components/home/MysteryDealBox.tsx` (line 369) — `as { stores?: any[] }`
+12. `src/components/home/NeighborhoodFeed.tsx` (lines 202-203) — `as { products?: any[] }` and `as { stores?: any[] }`
+13. `src/components/home/PriceDropAlerts.tsx` (line 482) — `as { products?: ProductData[] }`
+14. `src/components/home/PriceDropAlerts2.tsx` (line 644) — `as { products?: ProductData[] }`
+15. `src/components/home/PriceDropTicker.tsx` (line 90) — `as { products?: ProductData[] }`
+16. `src/components/home/WeatherWidget.tsx` (line 194) — `r.json() as Promise<Partial<WeatherData> & { error?: string }>`
+17. `src/components/orders/OrdersView.tsx` (line 197) — `as { orders?: any[]; error?: string }`
+18. `src/components/product/ProductComparison.tsx` (line 99) — `r.json() as Promise<any>`
+
+**Files Inspected — No Issues Found:**
+- `src/components/home/StoreReviews.tsx` — no `cachedFetch` or `r.json()` calls
+- `src/components/home/TopRatedPicks.tsx` — no `cachedFetch` or `r.json()` calls
+- `src/components/orders/OrderTimeline.tsx` — no `cachedFetch` or `r.json()` calls
+
+**Verification:** `npx tsc --noEmit` — zero TS18046/TS2339 errors remaining.
+
+Stage Summary:
+- 18 files changed with type assertions added
+- Zero TS18046/TS2339 errors after fix
+- No logic changes — purely type annotations
+- Pattern: `as { property?: type }` on fetch results

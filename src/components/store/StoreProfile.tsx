@@ -413,7 +413,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     ? '0 0 14px rgba(251,191,36,0.3), 0 0 4px rgba(251,191,36,0.15)'
                     : '0 0 0px rgba(251,191,36,0)' }}
                   transition={{ duration: 2.5, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
-                  className={store.rating > 0 ? 'rating-star-glow rounded-lg r34-store-profile-star-pulse r38-store-star-glow r42-rating-glow r46-rating-star-glow' : 'rounded-lg'}
+                  className={store.rating > 0 ? 'rating-star-glow rounded-lg r34-store-profile-star-pulse r38-store-star-glow r42-rating-glow r46-rating-star-glow r60-stars-glow' : 'rounded-lg'}
                 >
                   <StarRating rating={store.rating} size="sm" showCount count={store.totalReviews} />
                 </motion.div>
@@ -505,7 +505,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
             onClick={() => toggleFavoriteStore(store.id)}
-            className={`relative overflow-hidden h-11 px-5 rounded-xl font-semibold text-sm flex items-center gap-2 r34-store-profile-follow-btn r35-store-follow-btn r46-follow-btn-gradient ${isFav ? 'bg-primary text-primary-foreground r38-store-follow-active is-following' : 'bg-secondary text-secondary-foreground border border-border'}`}
+            className={`relative overflow-hidden h-11 px-5 rounded-xl font-semibold text-sm flex items-center gap-2 r34-store-profile-follow-btn r35-store-follow-btn r46-follow-btn-gradient active:scale-95 transition-transform ${isFav ? 'bg-primary text-primary-foreground r38-store-follow-active is-following' : 'bg-secondary text-secondary-foreground border border-border'}`}
           >
             <Heart className={`h-4 w-4 ${isFav ? 'fill-current' : ''}`} />
             {isFav ? 'Seguindo' : 'Seguir loja'}
@@ -513,7 +513,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
           </motion.button>
           {(store.whatsapp || store.phone) && (
             <Button 
-              className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white btn-glow rounded-xl r38-store-contact-btn r42-contact-shimmer"
+              className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white btn-glow rounded-xl r38-store-contact-btn r42-contact-shimmer active:scale-95 transition-transform"
               onClick={handleWhatsApp}
             >
               <MessageCircle className="h-4 w-4 mr-2" />
@@ -558,7 +558,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
             {store.description.length > 100 && (
               <button 
                 onClick={() => setShowFullDescription(!showFullDescription)}
-                className="text-sm text-primary hover:underline mt-1 flex items-center gap-1"
+                className="text-sm text-primary hover:underline mt-1 flex items-center gap-1 active:scale-95 transition-transform"
               >
                 {showFullDescription ? 'Ver menos' : 'Ver mais'}
                 {showFullDescription ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -580,7 +580,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                 <button
                   key={tab.value}
                   onClick={() => setActiveTab(tab.value)}
-                  className={`flex-1 relative flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs sm:text-sm font-medium transition-colors ${
+                  className={`flex-1 relative flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs sm:text-sm font-medium transition-colors active:scale-95 transition-transform ${
                     isActive 
                       ? 'text-primary-foreground' 
                       : 'text-muted-foreground hover:text-foreground'
@@ -615,7 +615,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
               className="mt-4"
             >
               {loading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} className="space-y-2">
                       <div className="aspect-square rounded-xl loading-skeleton" />
@@ -626,7 +626,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                 </div>
               ) : products.length > 0 ? (
                 <motion.div
-                  className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"
+                  className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
                   variants={{
                     hidden: {},
                     visible: {
@@ -656,7 +656,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                       }}
                       whileHover={{ scale: 1.02, y: -2 }}
                     >
-                      <div className="product-card-hover-enhanced r28-grid-hover-shine r35-store-product-hover r38-store-product-card r42-product-hover r46-product-card-hover">
+                      <div className="product-card-hover-enhanced r28-grid-hover-shine r35-store-product-hover r38-store-product-card r42-product-hover r46-product-card-hover active:scale-95 transition-transform">
                         <ProductCard product={p} />
                       </div>
                     </motion.div>

@@ -194,7 +194,7 @@ export function OrdersView() {
       }
 
       const response = await fetch(`/api/orders?${params.toString()}`)
-      const data = await response.json()
+      const data = await response.json() as { orders?: any[]; error?: string }
 
       if (!response.ok) {
         throw new Error(data.error || 'Erro ao carregar pedidos')
@@ -613,7 +613,7 @@ export function OrdersView() {
                           damping: 14,
                         }}
                         whileHover={{ y: -2, scale: 1.005, transition: { type: 'spring' as const, stiffness: 400, damping: 25 }, boxShadow: '0 8px 24px rgba(16,185,129,0.12), 0 0 40px rgba(16,185,129,0.06)' }}
-                        className={`w-full bg-card rounded-xl border border-border p-4 transition-all r42-orders-card ${getStatusBorderGradient(order.status) ? '' : ''}`}
+                        className={`w-full bg-card rounded-xl border border-border p-4 sm:p-5 transition-all r42-orders-card ${getStatusBorderGradient(order.status) ? '' : ''}`}
                         style={{
                           borderLeft: `4px solid transparent`,
                           borderImage: getStatusBorderGradient(order.status),
@@ -734,7 +734,7 @@ export function OrdersView() {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="h-8 text-xs gap-1 r42-orders-reorder-btn relative overflow-hidden"
+                                    className="h-9 sm:h-8 text-xs gap-1 r42-orders-reorder-btn relative overflow-hidden font-semibold border-2 border-primary text-primary bg-primary/5 sm:bg-transparent"
                                   onClick={() => handleReorder(order)}
                                 >
                                   <PackageCheck className="h-3 w-3" />
@@ -743,7 +743,7 @@ export function OrdersView() {
                                 </motion.div>
                                 <Button
                                   size="sm"
-                                  className="h-8 text-xs gap-1 bg-amber-500 hover:bg-amber-600 text-white"
+                                  className="h-8 text-xs gap-1 bg-amber-500 hover:bg-amber-600 text-white r60-stars-glow"
                                   onClick={() => handleRateOrder(order)}
                                 >
                                   <Star className="h-3 w-3" />

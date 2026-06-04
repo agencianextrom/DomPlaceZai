@@ -96,7 +96,7 @@ export function ProductComparison() {
     const fetchProducts = async () => {
       setIsLoading(true)
       try {
-        const promises = compareProductIds.map(id => fetch(`/api/products/${id}`).then(r => r.json()).catch(() => null))
+        const promises = compareProductIds.map(id => fetch(`/api/products/${id}`).then(r => r.json() as Promise<any>).catch(() => null))
         const results = await Promise.all(promises)
         if (!cancelled) {
           const valid = results.filter(Boolean)

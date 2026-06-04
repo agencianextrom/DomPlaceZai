@@ -410,7 +410,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
                   initial="hidden"
                   animate="visible"
                   exit={{ opacity: 0, scale: 0.9, y: -10, transition: { duration: 0.2 } }}
-                  className="r35-fav-card r39-fav-grid-card r43-fav-grid-card r43-fav-card-shine rounded-xl"
+                  className="r35-fav-card r39-fav-grid-card r43-fav-grid-card r43-fav-card-shine rounded-xl r60-card-enter"
                 >
                   <ProductCard product={p} />
                 </motion.div>

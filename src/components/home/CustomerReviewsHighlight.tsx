@@ -465,7 +465,7 @@ export function CustomerReviewsHighlight() {
     let cancelled = false
     const loadReviews = async () => {
       try {
-        const data = await cachedFetch('/api/reviews?limit=10&featured=true')
+        const data = await cachedFetch('/api/reviews?limit=10&featured=true') as { reviews?: Record<string, unknown>[] }
         const apiReviews = data?.reviews || []
         if (apiReviews.length > 0 && !cancelled) {
           setReviews(

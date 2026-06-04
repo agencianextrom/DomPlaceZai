@@ -164,7 +164,7 @@ export function GiftGuide() {
 
   useEffect(() => {
     let cancelled = false
-    cachedFetch('/api/products?limit=50&sort=popular')
+    cachedFetch<{ products?: ProductData[] }>('/api/products?limit=50&sort=popular')
       .then((data) => {
         if (cancelled) return
         const all = (data?.products ?? []) as ProductData[]

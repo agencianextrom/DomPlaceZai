@@ -373,7 +373,7 @@ export function FlashSale() {
     setIsLoading(true)
     setError(null)
     try {
-      const data = await cachedFetch('/api/products?isOffer=true&limit=6&sort=popular')
+      const data = await cachedFetch('/api/products?isOffer=true&limit=6&sort=popular') as { products?: any[] }
       const flashProducts = (data.products || []).map(mapApiToFlashProduct)
       setProducts(flashProducts)
     } catch {

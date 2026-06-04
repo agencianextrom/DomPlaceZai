@@ -349,7 +349,7 @@ export function ComboBuilder() {
 
   useEffect(() => {
     let cancelled = false
-    cachedFetch('/api/products?limit=50')
+    cachedFetch<{ products?: ProductData[] }>('/api/products?limit=50')
       .then((data) => {
         if (cancelled) return
         setProducts(data?.products ?? [])

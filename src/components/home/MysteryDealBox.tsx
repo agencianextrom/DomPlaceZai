@@ -366,7 +366,7 @@ export function MysteryDealBox() {
     let cancelled = false
     async function fetchStores() {
       try {
-        const data = await cachedFetch('/api/stores?limit=6')
+        const data = await cachedFetch('/api/stores?limit=6') as { stores?: any[] }
         if (!cancelled && data?.stores) {
           setStores(data.stores)
         }

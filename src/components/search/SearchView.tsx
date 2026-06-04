@@ -440,7 +440,7 @@ export function SearchView() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsInputFocused(true)}
               onBlur={() => setIsInputFocused(false)}
-              className={`relative z-10 pl-9 pr-20 h-12 text-base rounded-xl border-2 transition-all duration-300 ${
+              className={`relative z-10 pl-9 pr-20 h-12 min-h-12 text-base rounded-xl border-2 transition-all duration-300 ${
                 isInputFocused
                   ? 'border-transparent shadow-[0_0_0_4px_rgba(16,185,129,0.2),0_0_28px_rgba(16,185,129,0.12),0_0_56px_rgba(16,185,129,0.04)] search-input-glow search-input-focused-animated'
                   : 'border-input hover:border-primary/30'
@@ -502,7 +502,7 @@ export function SearchView() {
               </motion.span>
             )}
           </Button>
-          <Button variant="ghost" size="sm" onClick={closeSearch} className="h-12 shrink-0 text-sm">
+          <Button variant="ghost" size="sm" onClick={closeSearch} className="h-12 shrink-0 text-sm r60-touch-feedback">
             Cancelar
           </Button>
         </div>
@@ -525,7 +525,7 @@ export function SearchView() {
         </AnimatePresence>
 
         {/* Category filter pills with stagger entrance animation */}
-        <div className="flex gap-2 mt-2.5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2.5">
+        <div className="flex flex-nowrap gap-2 mt-2.5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2.5">
           <motion.button
             custom={0}
             variants={categoryPillVariants}
@@ -747,7 +747,7 @@ export function SearchView() {
             {/* Store result skeletons */}
             <div className="space-y-3">
               {Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/50">
+                <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/50 r60-skeleton">
                   <div className="h-12 w-12 rounded-xl bg-muted animate-pulse shrink-0" />
                   <div className="flex-1 space-y-2">
                     <div className="h-3.5 w-3/4 rounded bg-muted animate-pulse" />
@@ -833,7 +833,7 @@ export function SearchView() {
                     animate="visible"
                     className="mb-4"
                   >
-                    <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center gap-1.5 r60-heading-shimmer">
                       <Store className="h-3.5 w-3.5" />
                       Lojas ({stores.length})
                     </h3>
@@ -857,7 +857,7 @@ export function SearchView() {
                     initial="hidden"
                     animate="visible"
                   >
-                    <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-1.5 r60-heading-shimmer">
                       <Package className="h-3.5 w-3.5" />
                       Produtos ({mixedResults.length})
                     </h3>
@@ -1071,7 +1071,7 @@ export function SearchView() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-1.5">
                     <Clock className="h-4 w-4 text-muted-foreground" />
-                    <h3 className="text-sm font-semibold">Buscas recentes</h3>
+                    <h3 className="text-sm font-semibold r60-heading-shimmer">Buscas recentes</h3>
                     <span className="text-[10px] text-muted-foreground bg-muted rounded-full px-1.5 py-0.5">
                       {recentSearches.length}
                     </span>

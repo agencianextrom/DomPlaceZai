@@ -391,7 +391,7 @@ export function AuthModal() {
                 </p>
               )}
 
-              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer r46-submit-glow">
+              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer r46-submit-glow r60-touch-feedback">
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent r41-shimmer-sweep"
                   animate={{ translateX: ['100%', '-100%'] }}
@@ -673,7 +673,7 @@ export function AuthModal() {
                 </label>
               </div>
 
-              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer r46-submit-glow">
+              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer r46-submit-glow r60-touch-feedback">
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent r41-shimmer-sweep"
                   animate={{ translateX: ['100%', '-100%'] }}

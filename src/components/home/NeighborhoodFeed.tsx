@@ -199,8 +199,8 @@ export function NeighborhoodFeed() {
     setError(false)
     try {
       const [productsRes, storesRes] = await Promise.all([
-        cachedFetch('/api/products?sort=newest&limit=5'),
-        cachedFetch('/api/stores?limit=5&sort=rating'),
+        cachedFetch('/api/products?sort=newest&limit=5') as { products?: any[] },
+        cachedFetch('/api/stores?limit=5&sort=rating') as { stores?: any[] },
       ])
 
       const items: FeedItem[] = []
