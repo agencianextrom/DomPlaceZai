@@ -449,8 +449,8 @@ export function ProductBattle() {
     const fetchProducts = async () => {
       setIsLoading(true)
       try {
-        const data = await cachedFetch('/api/products?limit=100')
-        if (!cancelled && data.products) {
+        const data = await cachedFetch<{ products?: ProductData[] }>('/api/products?limit=100')
+        if (!cancelled && data?.products) {
           setAllProducts(data.products)
         }
       } catch {

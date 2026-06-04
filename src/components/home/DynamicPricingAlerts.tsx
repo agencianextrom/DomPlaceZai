@@ -959,10 +959,11 @@ export function DynamicPricingAlerts() {
       // Attempt API call, fallback to mock data
       let products: PriceAlertProduct[] | null = null
       try {
-        const data = await cachedFetch('/api/products?limit=20') as { products?: any[] }
-        if (data?.products?.length > 0) {
+        const data = await cachedFetch<{ products?: any[] }>('/api/products?limit=20')
+        const productList = data?.products ?? []
+        if (productList.length > 0) {
           // Transform API products into alert format if they have price changes
-          products = data.products
+          products = productList
             .filter((p: any) => p.comparePrice && p.comparePrice !== p.price)
             .slice(0, 12)
             .map((p: any, idx: number) => {

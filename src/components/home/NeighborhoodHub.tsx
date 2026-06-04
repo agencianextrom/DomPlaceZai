@@ -125,8 +125,9 @@ export function NeighborhoodHub() {
         cachedFetch('/api/products?limit=8'),
       ]);
 
-      if (storesData && 'stores' in storesData && Array.isArray(storesData.stores)) {
-        const mapped = storesData.stores.slice(0, 6).map((s: Record<string, unknown>) => ({
+      if (storesData && typeof storesData === 'object' && 'stores' in storesData && Array.isArray((storesData as Record<string, unknown>).stores)) {
+        const stores = (storesData as Record<string, unknown>).stores as Record<string, unknown>[];
+        const mapped = stores.slice(0, 6).map((s: Record<string, unknown>) => ({
           id: String(s.id ?? ''),
           name: String(s.name ?? 'Loja'),
           category: String(s.category ?? 'OTHER'),
@@ -138,16 +139,17 @@ export function NeighborhoodHub() {
         }));
         setStores(mapped);
         setStats({
-          totalStores: storesData.stores.length,
+          totalStores: stores.length,
           onlineStores: mapped.filter((s: StoreCard) => s.isOnline).length,
-          newThisWeek: Math.min(storesData.stores.length, 3),
+          newThisWeek: Math.min(stores.length, 3),
           avgRating:
             mapped.reduce((sum: number, s: StoreCard) => sum + s.rating, 0) / (mapped.length || 1),
         });
       }
 
-      if (productsData && 'products' in productsData && Array.isArray(productsData.products)) {
-        const mockActivities: ActivityItem[] = productsData.products.slice(0, 5).map(
+      if (productsData && typeof productsData === 'object' && 'products' in productsData && Array.isArray((productsData as Record<string, unknown>).products)) {
+        const prods = (productsData as Record<string, unknown>).products as Record<string, unknown>[];
+        const mockActivities: ActivityItem[] = prods.slice(0, 5).map(
           (p: Record<string, unknown>, i: number) => ({
             id: `act-${i}`,
             type: ACTIVITY_TYPES[i % 4],
