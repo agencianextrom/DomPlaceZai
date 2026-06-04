@@ -40,6 +40,7 @@ import { ARProductPreview } from './ARProductPreview'
 import { CrossSellEngine } from './CrossSellEngine'
 import { ProductOriginTracker } from './ProductOriginTracker'
 import { ProductRecipes } from './ProductRecipes'
+import { ProductQAForum } from './ProductQAForum'
 import { ProductSpecsTable } from './ProductSpecsTable'
 import { QuantityStepper } from '@/components/ui/QuantityStepper'
 import { QuantityStepperEnhanced } from '@/components/product/QuantityStepper'
@@ -713,6 +714,21 @@ export function ProductDetail({ product }: ProductDetailProps) {
           className="mt-4"
         >
           <ProductOriginTracker />
+        </motion.div>
+
+        {/* Product QA Forum — Perguntas e Respostas */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductQAForum
+            productId={product?.id}
+            productName={product?.name}
+            category={product?.category}
+          />
         </motion.div>
 
         {/* Product Specs Table — Especificações Técnicas */}

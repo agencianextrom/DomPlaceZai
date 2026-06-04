@@ -105,6 +105,8 @@ import { ProductWishTracker } from '@/components/home/ProductWishTracker'
 import { StoreAnalytics } from '@/components/store/StoreAnalytics'
 import { GroupOrderCreator } from '@/components/home/GroupOrderCreator'
 import { LiveStreamingWidget } from '@/components/home/LiveStreamingWidget'
+import { DynamicPricingAlerts } from '@/components/home/DynamicPricingAlerts'
+import { StoreEventCalendar } from '@/components/store/StoreEventCalendar'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1319,6 +1321,24 @@ export default function Home() {
                       <ScrollReveal delay={0.15}>
                         <section className="mt-6">
                           <LiveStreamingWidget />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Dynamic Pricing Alerts */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <DynamicPricingAlerts />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Store Event Calendar */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <StoreEventCalendar />
                         </section>
                       </ScrollReveal>
                     </LazySection>

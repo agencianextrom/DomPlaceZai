@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, ShoppingCart, Search, User, Menu, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, LogOut, Star, X, Sun, Moon } from 'lucide-react'
+import { MapPin, ShoppingCart, Search, User, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, LogOut, Star, X, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -135,8 +135,14 @@ export function Header() {
   return (
     <>
       <ScrollProgress />
-      <header
-        className={`sticky top-0 z-50 transition-colors duration-300 safe-top ${isScrolled ? 'bg-background/95 shadow-md shadow-black/[0.03]' : 'bg-background/70'} relative`}
+      <motion.header
+        animate={{
+          boxShadow: isScrolled
+            ? '0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)'
+            : '0 0 0 rgba(0,0,0,0)',
+        }}
+        transition={{ duration: 0.35, ease: 'easeOut' as const }}
+        className={`sticky top-0 z-50 transition-colors duration-300 safe-top ${isScrolled ? 'bg-background/95' : 'bg-background/70'} relative`}
         style={{
           backdropFilter: `blur(${blurAmount}px)`,
           WebkitBackdropFilter: `blur(${blurAmount}px)`,
@@ -147,7 +153,7 @@ export function Header() {
           initial={{ opacity: 0, scaleY: 1 }}
           animate={{ opacity: isScrolled ? 1 : 0, scaleY: isScrolled ? 1 : 0.5 }}
           transition={{ duration: 0.3 }}
-          className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none"
+          className="absolute inset-x-0 bottom-0 h-[2px] r38-header-gradient-border pointer-events-none"
           style={{ originY: 1 }}
         />
         {/* Subtle gradient glow on scroll */}
@@ -165,7 +171,11 @@ export function Header() {
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="md:hidden shrink-0 h-10 w-10">
-                    <Menu className="h-5 w-5" />
+                    <span className={`r38-header-hamburger ${mobileMenuOpen ? 'r38-header-hamburger-active' : ''}`}>
+                      <span className="r38-header-hamburger-line" />
+                      <span className="r38-header-hamburger-line" />
+                      <span className="r38-header-hamburger-line" />
+                    </span>
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-80 p-0">
@@ -298,7 +308,7 @@ export function Header() {
                     alt="DomPlace"
                     className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg shrink-0 transition-transform duration-200 group-hover:scale-105"
                   />
-                  <span className="font-bold text-lg sm:text-xl text-primary gradient-text">DomPlace</span>
+                  <span className="font-bold text-lg sm:text-xl text-primary r38-header-logo-text">DomPlace</span>
                 </motion.button>
               )}
               
@@ -318,10 +328,10 @@ export function Header() {
             
             {/* Search bar - hidden on mobile, always visible on desktop */}
             <motion.form
-              className="hidden md:flex flex-1 mx-4 card-shine"
+              className="hidden md:flex flex-1 mx-4 card-shine r38-header-search-shimmer r38-header-search-glow r38-header-glass-search"
               initial={{ maxWidth: 0 }}
               animate={{ maxWidth: isSearchFocused ? 580 : 448 }}
-              transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+              transition={{ type: 'spring' as const, stiffness: 350, damping: 28 }}
               onSubmit={handleDesktopSearchSubmit}
             >
               <div className="relative w-full">
@@ -362,7 +372,7 @@ export function Header() {
                       initial={{ scale: 0, rotate: -90, opacity: 0 }}
                       animate={{ scale: 1, rotate: 0, opacity: 1 }}
                       exit={{ scale: 0, rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.25, type: 'spring', stiffness: 300, damping: 20 }}
+                      transition={{ duration: 0.25, type: 'spring' as const, stiffness: 300, damping: 20 }}
                     >
                       {theme === 'dark' ? (
                         <Sun className="h-5 w-5 text-amber-400" />
@@ -395,7 +405,7 @@ export function Header() {
                       animate={{ scale: [0, 1.35, 0.85, 1.1, 1], y: 0 }}
                       exit={{ scale: 0, y: 10 }}
                       transition={{ duration: 0.5, ease: 'easeOut' as const }}
-                      className={`absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-2 border-background rounded-full font-bold shadow-sm ${cartCount > 0 ? 'breathe' : ''}`}
+                      className={`absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] r38-header-cart-badge rounded-full font-bold ${cartCount > 0 ? 'breathe' : ''}`}
                     >
                       {cartCount > 99 ? '99+' : cartCount}
                       {/* Ping animation when count changes */}
@@ -440,14 +450,16 @@ export function Header() {
                     className="flex items-center gap-2 h-10 px-2 hover:bg-secondary/50"
                     onClick={() => navigate('profile')}
                   >
-                    <Avatar className="h-7 w-7 border border-primary/20">
-                      {currentUser.avatar ? (
-                        <AvatarImage src={currentUser.avatar} alt={currentUser.name || 'Usuário'} />
-                      ) : null}
-                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
-                        {userInitials || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
+                    <span className="r38-header-avatar-ring">
+                      <Avatar className="h-7 w-7 border border-background">
+                        {currentUser.avatar ? (
+                          <AvatarImage src={currentUser.avatar} alt={currentUser.name || 'Usuário'} />
+                        ) : null}
+                        <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                          {userInitials || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </span>
                     <span className="text-sm font-medium max-w-[100px] truncate">{currentUser.name || 'Usuário'}</span>
                   </Button>
                 ) : (
@@ -481,7 +493,7 @@ export function Header() {
                         navigate(item.id as 'home' | 'orders' | 'favorites' | 'profile')
                       }
                     }}
-                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-200 ${
+                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-200 r38-header-nav-link ${
                       isActive 
                         ? 'text-primary bg-primary/10'
                         : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
@@ -493,7 +505,7 @@ export function Header() {
                       <motion.div
                         layoutId="desktop-nav-underline"
                         className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r from-primary via-primary/70 to-transparent"
-                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                        transition={{ type: 'spring' as const, stiffness: 380, damping: 30 }}
                       />
                     )}
                   </button>
@@ -503,7 +515,7 @@ export function Header() {
               {/* Cart in desktop nav */}
               <button
                 onClick={() => navigate('cart')}
-                className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 whitespace-nowrap ${
+                className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 whitespace-nowrap r38-header-nav-link ${
                   currentView === 'cart'
                     ? 'text-primary bg-primary/10'
                     : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
@@ -515,14 +527,14 @@ export function Header() {
                   <motion.div
                     layoutId="desktop-nav-underline"
                     className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r from-primary via-primary/70 to-transparent"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    transition={{ type: 'spring' as const, stiffness: 380, damping: 30 }}
                   />
                 )}
                 {cartCount > 0 && (
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                    transition={{ type: 'spring' as const, stiffness: 500, damping: 20 }}
                     className="h-5 min-w-5 px-1.5 flex items-center justify-center text-[10px] font-bold bg-primary text-primary-foreground rounded-full"
                   >
                     {cartCount > 99 ? '99+' : cartCount}
@@ -532,7 +544,7 @@ export function Header() {
             </nav>
           </div>
         </div>
-      </header>
+      </motion.header>
       
       {/* Mobile Navigation */}
       <MobileNav />

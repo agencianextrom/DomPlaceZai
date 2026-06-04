@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff, Truck, MapPin, Filter, ArrowUpDown, X, Loader2, RefreshCw, PackageCheck, AlertTriangle, Ban, Undo2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -78,6 +78,19 @@ const paymentLabels: Record<string, string> = {
   DEBIT_CARD: 'Cartão de Débito',
   BOLETO: 'Boleto',
   CASH_ON_DELIVERY: 'Dinheiro na Entrega',
+}
+
+// Format date for grouping
+function formatOrderDate(dateStr: string): string {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const orderDay = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const diffDays = Math.floor((today.getTime() - orderDay.getTime()) / 86400000)
+  if (diffDays === 0) return 'Hoje'
+  if (diffDays === 1) return 'Ontem'
+  if (diffDays < 7) return `Há ${diffDays} dias`
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
 }
 
 function getDateFilterFn(dateValue: string): ((date: string) => boolean) | null {
@@ -376,7 +389,7 @@ export function OrdersView() {
                         onClick={() => setActiveStatusFilter(filter.value)}
                         className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                           activeStatusFilter === filter.value
-                            ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                            ? 'bg-primary text-primary-foreground border-primary shadow-sm r38-orders-pill-active'
                             : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
                         }`}
                       >
@@ -397,7 +410,7 @@ export function OrdersView() {
                         onClick={() => setActiveDateFilter(filter.value)}
                         className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                           activeDateFilter === filter.value
-                            ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                            ? 'bg-primary text-primary-foreground border-primary shadow-sm r38-orders-pill-active'
                             : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
                         }`}
                       >
@@ -418,7 +431,7 @@ export function OrdersView() {
                         onClick={() => setActiveSort(opt.value)}
                         className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                           activeSort === opt.value
-                            ? 'bg-amber-500 text-white border-amber-500 shadow-sm'
+                            ? 'bg-amber-500 text-white border-amber-500 shadow-sm r38-orders-pill-active'
                             : 'bg-card text-muted-foreground border-border hover:border-amber-300 hover:text-foreground'
                         }`}
                       >
@@ -525,10 +538,15 @@ export function OrdersView() {
                   >
                     <div className="relative inline-block">
                       <motion.div
-                        animate={{ y: [0, -6, 0] }}
-                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                        animate={{ y: [0, -10, 0] }}
+                        transition={{ type: 'spring' as const, stiffness: 300, damping: 10, repeat: Infinity, repeatDelay: 0.5 }}
+                        className="r38-orders-empty-float"
                       >
-                        <Package className="h-14 w-14 mx-auto mb-3 text-muted-foreground/25" />
+                        <motion.span
+                          className="block text-5xl"
+                          animate={{ rotate: [0, -8, 8, -8, 0] }}
+                          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                        >📦</motion.span>
                       </motion.div>
                     </div>
                     <p className="font-medium text-base">Nenhum pedido encontrado</p>
@@ -569,7 +587,21 @@ export function OrdersView() {
                     const StatusIcon = config.icon
                     const isOrderActive = isActiveStatus(order.status)
                     const isOrderCompleted = isCompletedStatus(order.status)
+                    const currentStepIdx = statusTimeline.indexOf(order.status)
+                    const progressPercent = Math.min(100, Math.round(((currentStepIdx + 1) / statusTimeline.length) * 100))
+
+                    // Date separator: show when date changes
+                    const prevOrder = idx > 0 ? filteredOrders[idx - 1] : null
+                    const showDateSep = !prevOrder || new Date(order.createdAt).toDateString() !== new Date(prevOrder.createdAt).toDateString()
+                    const dateLabel = formatOrderDate(order.createdAt)
+
                     return (
+                      <React.Fragment key={order.id}>
+                        {showDateSep && (
+                          <div className="r38-orders-date-line">
+                            <span className="r38-orders-date-label">{dateLabel}</span>
+                          </div>
+                        )}
                       <motion.div
                         key={order.id}
                         initial={{ opacity: 0, y: 35 }}
@@ -580,8 +612,8 @@ export function OrdersView() {
                           stiffness: 120,
                           damping: 14,
                         }}
-                        whileHover={{ y: -3, scale: 1.01, transition: { type: 'spring' as const, stiffness: 400, damping: 25 } }}
-                        className={`w-full bg-card rounded-xl border border-border p-4 hover:shadow-lg hover:border-primary/20 transition-all r33-orders-card r35-order-card ${getStatusBorderGradient(order.status) ? '' : ''}`}
+                        whileHover={{ y: -2, scale: 1.005, transition: { type: 'spring' as const, stiffness: 400, damping: 25 }, boxShadow: '0 8px 24px rgba(16,185,129,0.12), 0 0 40px rgba(16,185,129,0.06)' }}
+                        className={`w-full bg-card rounded-xl border border-border p-4 hover:shadow-lg hover:border-primary/20 transition-all r33-orders-card r35-order-card r38-orders-card-glow ${getStatusBorderGradient(order.status) ? '' : ''}`}
                         style={{
                           borderLeft: `4px solid transparent`,
                           borderImage: getStatusBorderGradient(order.status),
@@ -591,9 +623,9 @@ export function OrdersView() {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2 min-w-0">
                             <Store className="h-4 w-4 text-primary shrink-0" />
-                            <span className="font-semibold text-sm truncate">{order.storeName}</span>
+                            <span className="font-semibold text-sm truncate r38-orders-store-name">{order.storeName}</span>
                           </div>
-                          <Badge className={`${config.gradient} border-0 text-[10px] font-semibold shrink-0 ml-2 ${isOrderActive ? 'r33-orders-badge-pulse' : ''} ${isOrderCompleted ? 'r33-orders-badge-shimmer' : ''}`}>
+                          <Badge className={`${config.gradient} border-0 text-[10px] font-semibold shrink-0 ml-2 ${isOrderActive ? 'r33-orders-badge-pulse r38-orders-badge-glow' : ''} ${isOrderCompleted ? 'r33-orders-badge-shimmer' : ''} ${order.status === 'CANCELLED' ? 'r38-orders-badge-glow-red' : ''} ${order.status === 'PREPARING' || order.status === 'PENDING' ? 'r38-orders-badge-glow-amber' : ''}`}>
                             <span className="inline-flex items-center">
                               <StatusIcon className="h-3 w-3 mr-1" />
                               {config.label}
@@ -621,48 +653,64 @@ export function OrdersView() {
 
                         {/* Mini timeline for active orders */}
                         {!['DELIVERED', 'CANCELLED'].includes(order.status) && (
-                          <div className="flex items-center gap-1 mb-3 px-1">
-                            {statusTimeline.slice(0, 4).map((s, i) => {
-                              const stepIdx = statusTimeline.indexOf(order.status)
-                              const isActive = i <= stepIdx
-                              const isCurrent = s === order.status
-                              const StepConfig = statusConfig[s]
-                              const StepIcon = StepConfig.icon
-                              return (
-                                <div key={s} className="flex items-center flex-1">
-                                  <motion.div
-                                    animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
-                                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                                    className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 r35-order-status-dot ${
-                                      isActive
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-muted text-muted-foreground'
-                                    } ${isCurrent ? 'ring-[3px] ring-primary/20 neon-glow-primary' : ''}`}
-                                  >
-                                    <StepIcon className="h-2.5 w-2.5" />
-                                  </motion.div>
-                                  {i < 3 && (
+                          <div className="mb-3 px-1">
+                            <div className="flex items-center gap-1 mb-2">
+                              {statusTimeline.slice(0, 4).map((s, i) => {
+                                const stepIdx = statusTimeline.indexOf(order.status)
+                                const isActive = i <= stepIdx
+                                const isCurrent = s === order.status
+                                const StepConfig = statusConfig[s]
+                                const StepIcon = StepConfig.icon
+                                return (
+                                  <div key={s} className="flex items-center flex-1">
                                     <motion.div
-                                      className={`h-[2px] flex-1 rounded-full overflow-hidden r35-order-timeline-line ${i < stepIdx ? 'bg-gradient-to-r from-primary to-emerald-400' : 'bg-muted'}`}
-                                      initial={{ scaleX: 0 }}
-                                      animate={{ scaleX: 1 }}
-                                      transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}
-                                    />
-                                  )}
-                                </div>
-                              )
-                            })}
+                                      animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
+                                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                                      className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 r35-order-status-dot ${
+                                        isActive
+                                          ? 'bg-primary text-primary-foreground'
+                                          : 'bg-muted text-muted-foreground'
+                                      } ${isCurrent ? 'ring-[3px] ring-primary/20 neon-glow-primary' : ''}`}
+                                    >
+                                      <StepIcon className="h-2.5 w-2.5" />
+                                    </motion.div>
+                                    {i < 3 && (
+                                      <motion.div
+                                        className={`h-[2px] flex-1 rounded-full overflow-hidden r35-order-timeline-line r38-orders-timeline-connector ${i < stepIdx ? 'bg-gradient-to-r from-primary to-emerald-400' : 'bg-muted'}`}
+                                        initial={{ scaleX: 0 }}
+                                        animate={{ scaleX: 1 }}
+                                        transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}
+                                      />
+                                    )}
+                                  </div>
+                                )
+                              })}
+                            </div>
+                            {/* Delivery progress bar */}
+                            <div className="r38-orders-progress-track">
+                              <motion.div
+                                className="r38-orders-progress-fill"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progressPercent}%` }}
+                                transition={{ type: 'spring' as const, stiffness: 120, damping: 20, delay: 0.3 + idx * 0.12 }}
+                              />
+                            </div>
                           </div>
                         )}
 
                         {order.items && (
-                          <div className="text-sm text-muted-foreground">
-                            {order.items.slice(0, 2).map((item, i) => (
-                              <span key={i}>
-                                {item.quantity}x {item.productName}{i < Math.min(order.items!.length, 2) - 1 ? ', ' : ''}
-                              </span>
-                            ))}
-                            {order.items.length > 2 && ` e mais ${order.items.length - 2}`}
+                          <div className="text-sm text-muted-foreground flex items-center gap-2">
+                            {order.items.slice(0, 2).map((item, i) => {
+                              const img = (item as any).productImage
+                              return img ? (
+                                <span key={i} className="r38-orders-item-img-wrap inline-block h-8 w-8 flex-shrink-0">
+                                  <img src={img} alt={item.productName} className="h-full w-full object-cover rounded-md" />
+                                </span>
+                              ) : (
+                                <span key={i}>{item.quantity}x {item.productName}{i < Math.min(order.items!.length, 2) - 1 ? ', ' : ''}</span>
+                              )
+                            })}
+                            {order.items.length > 2 && <span className="text-xs">e mais {order.items.length - 2}</span>}
                           </div>
                         )}
 
@@ -682,15 +730,17 @@ export function OrdersView() {
                                     Devolver
                                   </Button>
                                 </motion.div>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-8 text-xs gap-1 r33-orders-reorder-btn relative overflow-hidden"
+                                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }}>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 text-xs gap-1 r33-orders-reorder-btn relative overflow-hidden r38-orders-reorder-btn"
                                   onClick={() => handleReorder(order)}
                                 >
                                   <PackageCheck className="h-3 w-3" />
                                   Repetir
                                 </Button>
+                                </motion.div>
                                 <Button
                                   size="sm"
                                   className="h-8 text-xs gap-1 bg-amber-500 hover:bg-amber-600 text-white"
@@ -740,6 +790,7 @@ export function OrdersView() {
                           </div>
                         </div>
                       </motion.div>
+                      </React.Fragment>
                     )
                   })}
                 </div>

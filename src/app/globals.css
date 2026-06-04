@@ -14231,4 +14231,1179 @@
   .r37-timer-glow { animation: r37-timer-glow-anim 2s ease-in-out infinite; }
   @keyframes r37-timer-glow-anim { 0%, 100% { filter: drop-shadow(0 0 2px rgba(59,130,246,0.2)); } 50% { filter: drop-shadow(0 0 8px rgba(59,130,246,0.4)); } }
 
-} /* end @media prefers-reduced-motion: no-preference Round 36 r37- classes */
+  /* ===== Round 38 r38-store-profile CSS classes ===== */
+
+  /* r38-store-cover-shimmer: Shimmer overlay for store cover image */
+  .r38-store-cover-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .r38-store-cover-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 30%,
+      rgba(255,255,255,0.08) 45%,
+      rgba(255,255,255,0.14) 50%,
+      rgba(255,255,255,0.08) 55%,
+      transparent 70%
+    );
+    background-size: 300% 100%;
+    animation: r38-cover-shimmer-slide 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 2;
+  }
+  @keyframes r38-cover-shimmer-slide {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+
+  /* r38-store-avatar-ring: Animated rotating conic-gradient ring */
+  .r38-store-avatar-ring {
+    position: relative;
+  }
+  .r38-store-avatar-ring::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from 0deg,
+      #10b981,
+      #f59e0b,
+      #10b981,
+      #06b6d4,
+      #10b981
+    );
+    animation: r38-avatar-ring-spin 3s linear infinite;
+    z-index: -1;
+  }
+  .r38-store-avatar-ring::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from 0deg,
+      #10b981,
+      #f59e0b,
+      #10b981,
+      #06b6d4,
+      #10b981
+    );
+    animation: r38-avatar-ring-spin 3s linear infinite;
+    filter: blur(6px);
+    opacity: 0.45;
+    z-index: -2;
+  }
+  @keyframes r38-avatar-ring-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* r38-store-name-gradient: Animated gradient text for store name in info card */
+  .r38-store-name-gradient {
+    background: linear-gradient(
+      90deg,
+      #10b981 0%,
+      #f59e0b 25%,
+      #10b981 50%,
+      #06b6d4 75%,
+      #10b981 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r38-name-gradient-flow 3s linear infinite;
+  }
+  @keyframes r38-name-gradient-flow {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* r38-store-star-glow: CSS drop-shadow pulse for rating stars */
+  .r38-store-star-glow {
+    animation: r38-star-glow-pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes r38-star-glow-pulse {
+    0%, 100% { filter: drop-shadow(0 0 2px rgba(251,191,36,0.3)); }
+    50% { filter: drop-shadow(0 0 8px rgba(251,191,36,0.7)) drop-shadow(0 0 16px rgba(251,191,36,0.3)); }
+  }
+
+  /* r38-store-tab-glow: Enhanced glow for tab indicator */
+  .r38-store-tab-glow {
+    box-shadow: 0 0 20px rgba(16,185,129,0.5), 0 0 40px rgba(16,185,129,0.15), 0 2px 10px rgba(16,185,129,0.25);
+  }
+
+  /* r38-store-product-card: Enhanced hover for product grid */
+  .r38-store-product-card {
+    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
+  }
+  .r38-store-product-card:hover {
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .dark .r38-store-product-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  /* r38-store-follow-active: Gradient bg + pulse glow when following */
+  .r38-store-follow-active {
+    background: linear-gradient(135deg, #10b981, #06b6d4) !important;
+    position: relative;
+    animation: r38-follow-glow-pulse 2s ease-in-out infinite;
+  }
+  @keyframes r38-follow-glow-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(16,185,129,0.3), 0 0 16px rgba(16,185,129,0.1); }
+    50% { box-shadow: 0 0 16px rgba(16,185,129,0.5), 0 0 32px rgba(16,185,129,0.2), 0 0 48px rgba(6,182,212,0.1); }
+  }
+  .r38-store-follow-active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      rgba(255,255,255,0.12) 45%,
+      rgba(255,255,255,0.2) 50%,
+      rgba(255,255,255,0.12) 55%,
+      transparent 65%
+    );
+    background-size: 250% 100%;
+    animation: r38-follow-shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes r38-follow-shimmer {
+    0% { background-position: 150% 0; }
+    100% { background-position: -50% 0; }
+  }
+
+  /* r38-store-stat-counter: Spring scale appearance for stat numbers */
+  .r38-store-stat-counter {
+    animation: r38-stat-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes r38-stat-pop {
+    0% { opacity: 0; transform: scale(0.5) translateY(6px); }
+    60% { transform: scale(1.1) translateY(0); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* r38-store-info-glass: Glassmorphism card with backdrop-blur */
+  .r38-store-info-glass {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.35);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.4);
+    animation: r38-glass-reveal 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .dark .r38-store-info-glass {
+    background: rgba(30,30,30,0.65);
+    border-color: rgba(255,255,255,0.06);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  @keyframes r38-glass-reveal {
+    0% { opacity: 0; transform: translateY(16px) scale(0.97); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* r38-store-contact-btn: Hover scale + gradient glow for contact buttons */
+  .r38-store-contact-btn {
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .r38-store-contact-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px rgba(16,185,129,0.4), 0 4px 12px rgba(16,185,129,0.15);
+  }
+  .r38-store-contact-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.1));
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+  .r38-store-contact-btn:hover::after {
+    opacity: 1;
+  }
+  .dark .r38-store-contact-btn:hover {
+    box-shadow: 0 0 22px rgba(16,185,129,0.3), 0 4px 12px rgba(16,185,129,0.12);
+  }
+
+/* ===== Round 38 r38-profile- CSS classes ===== */
+
+/* r38-profile-avatar-ring: Animated conic-gradient rotating ring */
+.r38-profile-avatar-ring {
+  position: relative;
+  border-radius: 16px;
+  padding: 3px;
+  background: conic-gradient(
+    from 0deg,
+    oklch(0.55 0.12 155),
+    oklch(0.78 0.16 70),
+    oklch(0.55 0.08 140),
+    oklch(0.60 0.12 90),
+    oklch(0.55 0.12 155)
+  );
+  background-size: 100% 100%;
+  animation: r38-avatar-ring-spin 3s linear infinite;
+}
+@keyframes r38-avatar-ring-spin {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* r38-profile-stat-card: Enhanced hover with scale + glow + gradient border */
+.r38-profile-stat-card {
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+.r38-profile-stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, oklch(0.45 0.1 155 / 0.3), oklch(0.78 0.16 70 / 0.2), oklch(0.55 0.08 140 / 0.3));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.r38-profile-stat-card:hover {
+  transform: scale(1.06) translateY(-4px);
+  box-shadow: 0 12px 32px oklch(0.45 0.1 155 / 0.15), 0 0 20px oklch(0.45 0.1 155 / 0.08);
+}
+.r38-profile-stat-card:hover::before {
+  opacity: 1;
+}
+.dark .r38-profile-stat-card:hover {
+  box-shadow: 0 12px 32px oklch(0.55 0.12 155 / 0.2), 0 0 20px oklch(0.55 0.12 155 / 0.1);
+}
+
+/* r38-profile-menu-item: Animated gradient left border + slide-in */
+.r38-profile-menu-item {
+  position: relative;
+  border-left: 3px solid transparent;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.r38-profile-menu-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, oklch(0.45 0.1 155), oklch(0.78 0.16 70), oklch(0.55 0.08 140));
+  border-radius: 0 3px 3px 0;
+  transform: scaleY(0);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.r38-profile-menu-item:hover {
+  border-left-color: transparent;
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px oklch(0.45 0.1 155 / 0.1), 0 2px 4px oklch(0 0 0 / 0.05);
+}
+.r38-profile-menu-item:hover::after {
+  transform: scaleY(1);
+}
+.dark .r38-profile-menu-item:hover {
+  box-shadow: 0 4px 16px oklch(0.55 0.12 155 / 0.15), 0 2px 4px oklch(0 0 0 / 0.15);
+}
+
+/* r38-profile-section-title: Shimmer text effect */
+.r38-profile-section-title {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    oklch(0.18 0.02 150) 0%,
+    oklch(0.45 0.1 155) 20%,
+    oklch(0.78 0.16 70) 40%,
+    oklch(0.45 0.1 155) 60%,
+    oklch(0.78 0.16 70) 80%,
+    oklch(0.18 0.02 150) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: r38-shimmer-title 3s linear infinite;
+}
+.dark .r38-profile-section-title {
+  background: linear-gradient(
+    90deg,
+    oklch(0.95 0.01 120) 0%,
+    oklch(0.55 0.12 155) 20%,
+    oklch(0.85 0.14 70) 40%,
+    oklch(0.65 0.12 155) 60%,
+    oklch(0.85 0.14 70) 80%,
+    oklch(0.95 0.01 120) 100%
+  );
+  background-size: 200% auto;
+}
+@keyframes r38-shimmer-title {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* r38-profile-edit-btn: Gradient background with shimmer sweep */
+.r38-profile-edit-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, oklch(0.45 0.1 155), oklch(0.55 0.08 140));
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.r38-profile-edit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.3) 40%,
+    oklch(1 0 0 / 0.5) 50%,
+    oklch(1 0 0 / 0.3) 60%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+  z-index: 1;
+}
+.r38-profile-edit-btn:hover::before {
+  animation: r38-btn-shimmer 0.7s ease-out;
+}
+.r38-profile-edit-btn:hover {
+  box-shadow: 0 4px 16px oklch(0.45 0.1 155 / 0.3), 0 0 8px oklch(0.45 0.1 155 / 0.15);
+  transform: scale(1.04);
+}
+@keyframes r38-btn-shimmer {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* r38-profile-toggle: Animated thumb slide + color transition for Switch wrapper */
+.r38-profile-toggle-card {
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.r38-profile-toggle-card:hover {
+  background: oklch(0.45 0.1 155 / 0.04);
+  border-color: oklch(0.45 0.1 155 / 0.2);
+  box-shadow: 0 2px 8px oklch(0.45 0.1 155 / 0.08);
+}
+.dark .r38-profile-toggle-card:hover {
+  background: oklch(0.55 0.12 155 / 0.08);
+  border-color: oklch(0.55 0.12 155 / 0.2);
+  box-shadow: 0 2px 8px oklch(0.55 0.12 155 / 0.12);
+}
+
+/* r38-profile-logout: Animated red gradient on hover */
+.r38-profile-logout {
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s ease, background 0.3s ease, transform 0.2s ease;
+}
+.r38-profile-logout::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, oklch(0.577 0.245 27.325 / 0.08), oklch(0.65 0.2 25 / 0.12), oklch(0.577 0.245 27.325 / 0.08));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+.r38-profile-logout:hover::before {
+  opacity: 1;
+}
+.r38-profile-logout:hover {
+  color: oklch(0.577 0.245 27.325);
+  transform: translateX(4px);
+}
+.dark .r38-profile-logout::before {
+  background: linear-gradient(135deg, oklch(0.704 0.191 22.216 / 0.12), oklch(0.65 0.17 24 / 0.15), oklch(0.704 0.191 22.216 / 0.12));
+}
+.dark .r38-profile-logout:hover {
+  color: oklch(0.80 0.15 22);
+}
+
+/* r38-profile-member-badge: Animated pulse glow */
+.r38-profile-member-badge {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+.r38-profile-member-badge::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, oklch(0.45 0.1 155 / 0.3), oklch(0.78 0.16 70 / 0.2));
+  opacity: 0;
+  animation: r38-badge-pulse-glow 2.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+@keyframes r38-badge-pulse-glow {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.06); }
+}
+.dark .r38-profile-member-badge::before {
+  background: linear-gradient(135deg, oklch(0.55 0.12 155 / 0.4), oklch(0.72 0.16 70 / 0.25));
+}
+
+/* r38-profile-progress-ring: Animated SVG progress ring */
+.r38-profile-progress-ring circle.progress-fill {
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  animation: r38-ring-fill 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+  transform-origin: center;
+  transform: rotate(-90deg);
+}
+@keyframes r38-ring-fill {
+  to { stroke-dashoffset: var(--ring-offset, 85); }
+}
+.r38-profile-progress-ring circle.progress-bg {
+  stroke: oklch(0.92 0.015 120);
+}
+.dark .r38-profile-progress-ring circle.progress-bg {
+  stroke: oklch(0.30 0.02 150);
+}
+.r38-profile-progress-ring circle.progress-fill {
+  stroke: url(#r38-ring-gradient);
+}
+
+/* r38-profile-activity-item: Animated entrance + hover lift */
+.r38-profile-activity-item {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.r38-profile-activity-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px oklch(0.18 0.02 150 / 0.08), 0 2px 4px oklch(0.18 0.02 150 / 0.04);
+}
+.dark .r38-profile-activity-item:hover {
+  box-shadow: 0 8px 20px oklch(0 0 0 / 0.2), 0 2px 4px oklch(0 0 0 / 0.12);
+}
+
+  /* ===== Round 38 r38-cart-* CSS classes ===== */
+
+  /* 1. Cart item card — enhanced hover translateY + glow shadow */
+  .r38-cart-item-hover {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  }
+  .r38-cart-item-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(16,185,129,0.12), 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(16,185,129,0.08);
+  }
+  .dark .r38-cart-item-hover:hover {
+    box-shadow: 0 8px 24px rgba(16,185,129,0.18), 0 2px 8px rgba(0,0,0,0.15), 0 0 0 1px rgba(16,185,129,0.12);
+  }
+
+  /* 2. Remover button — animated scale + red tint on hover */
+  .r38-cart-remove-btn {
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .r38-cart-remove-btn:hover {
+    transform: scale(1.15);
+    background-color: rgba(239,68,68,0.12);
+    box-shadow: 0 0 12px rgba(239,68,68,0.2);
+  }
+  .dark .r38-cart-remove-btn:hover {
+    background-color: rgba(239,68,68,0.15);
+    box-shadow: 0 0 12px rgba(239,68,68,0.25);
+  }
+
+  /* 3. Quantity stepper — animated pulse on +/- button press */
+  .r38-cart-qty-pulse {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .r38-cart-qty-pulse:active {
+    animation: r38-qty-pop 0.3s ease-out;
+  }
+  @keyframes r38-qty-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.82); box-shadow: 0 0 0 5px rgba(16,185,129,0.3); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  }
+
+  /* 4. Cart total section — animated gradient background + shimmer */
+  .r38-cart-total-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(16,185,129,0.03) 0%, rgba(245,158,11,0.03) 50%, rgba(16,185,129,0.03) 100%);
+    background-size: 200% 200%;
+    animation: r38-total-gradient-shift 4s ease-in-out infinite;
+  }
+  .r38-cart-total-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    transform: skewX(-20deg);
+    animation: r38-total-shimmer-sweep 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .dark .r38-cart-total-shimmer {
+    background: linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(245,158,11,0.06) 50%, rgba(16,185,129,0.06) 100%);
+    background-size: 200% 200%;
+  }
+  .dark .r38-cart-total-shimmer::before {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+  }
+  @keyframes r38-total-gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes r38-total-shimmer-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* 6. Finalizar Compra button — gradient shimmer sweep + glow */
+  .r38-cart-checkout-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .r38-cart-checkout-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transform: skewX(-20deg);
+    animation: r38-checkout-sweep 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+  @keyframes r38-checkout-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+  .r38-cart-checkout-glow {
+    box-shadow: 0 0 16px rgba(16,185,129,0.3), 0 4px 12px rgba(16,185,129,0.15);
+    transition: box-shadow 0.3s ease;
+  }
+  .r38-cart-checkout-glow:hover {
+    box-shadow: 0 0 24px rgba(16,185,129,0.4), 0 4px 16px rgba(16,185,129,0.2), 0 0 48px rgba(16,185,129,0.1);
+  }
+
+  /* 7. Cart item image — subtle scale on hover */
+  .r38-cart-img-hover {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .r38-cart-img-hover:hover {
+    transform: scale(1.08);
+  }
+
+  /* 8. Swipe-to-delete visual hint (translateX on hover, reveal delete icon) */
+  .r38-cart-swipe-hint {
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .r38-cart-swipe-hint:hover {
+    transform: translateX(-6px);
+  }
+  .r38-cart-swipe-delete-icon {
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%) translateX(120%);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .r38-cart-swipe-hint:hover .r38-cart-swipe-delete-icon {
+    transform: translateY(-50%) translateX(-8px);
+    opacity: 1;
+  }
+
+  /* 9. Delivery estimate badge — animated countdown appearance */
+  .r38-cart-delivery-badge {
+    overflow: hidden;
+  }
+  .r38-cart-delivery-animate {
+    animation: r38-delivery-count-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes r38-delivery-count-in {
+    0% { transform: scale(0.5) translateY(-4px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  /* 10. Coupon input — animated border glow on focus */
+  .r38-cart-coupon-glow {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .r38-cart-coupon-glow:focus-within {
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.15), 0 0 16px rgba(16,185,129,0.1);
+    border-color: rgba(16,185,129,0.4);
+  }
+  .dark .r38-cart-coupon-glow:focus-within {
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.2), 0 0 16px rgba(16,185,129,0.15);
+    border-color: rgba(16,185,129,0.5);
+  }
+
+  /* ==============================
+     ROUND 38 — HEADER STYLING ENHANCEMENTS
+     ============================== */
+
+  /* 1. Animated gradient border on header (subtle bottom glow sweep) */
+  @keyframes r38-header-gradient-border-sweep {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+  .r38-header-gradient-border {
+    background: linear-gradient(90deg, transparent 0%, rgba(16,185,129,0.35) 25%, rgba(59,130,246,0.3) 50%, rgba(16,185,129,0.35) 75%, transparent 100%) !important;
+    background-size: 200% 100% !important;
+    animation: r38-header-gradient-border-sweep 4s ease-in-out infinite !important;
+  }
+  .dark .r38-header-gradient-border {
+    background: linear-gradient(90deg, transparent 0%, rgba(52,211,153,0.45) 25%, rgba(96,165,250,0.4) 50%, rgba(52,211,153,0.45) 75%, transparent 100%) !important;
+    background-size: 200% 100% !important;
+  }
+
+  /* 2. Search bar shimmer sweep on focus + glow ring */
+  .r38-header-search-shimmer {
+    position: relative;
+    overflow: hidden;
+    border-radius: 9999px;
+  }
+  .r38-header-search-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 40%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.12) 60%, transparent 100%);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 9999px;
+  }
+  .r38-header-search-shimmer:focus-within::after {
+    opacity: 1;
+    animation: r38-header-search-shimmer-sweep 1.8s ease-in-out infinite;
+  }
+  @keyframes r38-header-search-shimmer-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+  .r38-header-search-glow:focus-within {
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.15), 0 0 16px rgba(16,185,129,0.1), 0 0 4px rgba(16,185,129,0.08);
+    transition: box-shadow 0.3s ease;
+  }
+  .dark .r38-header-search-glow:focus-within {
+    box-shadow: 0 0 0 3px rgba(52,211,153,0.2), 0 0 20px rgba(52,211,153,0.15), 0 0 6px rgba(52,211,153,0.1);
+  }
+
+  /* 3. Cart gradient badge */
+  .r38-header-cart-badge {
+    background: linear-gradient(135deg, rgba(16,185,129,0.92), rgba(5,150,105,0.96)) !important;
+    color: white !important;
+    border: 2px solid rgba(255,255,255,0.92) !important;
+    box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+  }
+  .dark .r38-header-cart-badge {
+    background: linear-gradient(135deg, rgba(52,211,153,0.92), rgba(16,185,129,0.96)) !important;
+    border-color: rgba(15,23,42,0.85) !important;
+    box-shadow: 0 2px 8px rgba(52,211,153,0.25);
+  }
+
+  /* 4. Notification bell shake animation */
+  @keyframes r38-header-bell-shake {
+    0%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(14deg); }
+    20% { transform: rotate(-12deg); }
+    30% { transform: rotate(10deg); }
+    40% { transform: rotate(-8deg); }
+    50% { transform: rotate(6deg); }
+    60% { transform: rotate(-4deg); }
+    70% { transform: rotate(2deg); }
+    80% { transform: rotate(0deg); }
+  }
+  .r38-header-bell-shake {
+    animation: r38-header-bell-shake 0.7s ease-in-out;
+  }
+
+  /* 5. Logo animated gradient text */
+  @keyframes r38-header-logo-gradient-sweep {
+    0% { background-position: 0% center; }
+    50% { background-position: 100% center; }
+    100% { background-position: 0% center; }
+  }
+  .r38-header-logo-text {
+    background: linear-gradient(90deg, #10b981 0%, #f59e0b 25%, #10b981 50%, #f59e0b 75%, #10b981 100%) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    animation: r38-header-logo-gradient-sweep 4s ease-in-out infinite;
+  }
+
+  /* 6. Navigation links animated underline slide-in on hover */
+  .r38-header-nav-link {
+    position: relative;
+    overflow: hidden;
+  }
+  .r38-header-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(16,185,129,0.7), rgba(59,130,246,0.6));
+    border-radius: 1px;
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .r38-header-nav-link:hover::after {
+    width: calc(100% - 20px);
+    left: 10px;
+  }
+
+  /* 7. Hamburger-to-X animated transition */
+  .r38-header-hamburger {
+    position: relative;
+    width: 20px;
+    height: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .r38-header-hamburger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+  }
+  .r38-header-hamburger-line:nth-child(1) { transform: translateY(0) rotate(0deg); }
+  .r38-header-hamburger-line:nth-child(2) { opacity: 1; transform: scaleX(1); }
+  .r38-header-hamburger-line:nth-child(3) { transform: translateY(0) rotate(0deg); }
+
+  /* Hamburger active (X) state */
+  .r38-header-hamburger-active .r38-header-hamburger-line:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .r38-header-hamburger-active .r38-header-hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .r38-header-hamburger-active .r38-header-hamburger-line:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* 9. User avatar rotating gradient ring border */
+  @keyframes r38-header-avatar-ring-rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .r38-header-avatar-ring {
+    position: relative;
+    display: inline-flex;
+    border-radius: 50%;
+    padding: 2px;
+    isolation: isolate;
+  }
+  .r38-header-avatar-ring::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #10b981, #3b82f6, #f59e0b, #a855f7, #10b981);
+    animation: r38-header-avatar-ring-rotate 6s linear infinite;
+    z-index: -1;
+  }
+  .dark .r38-header-avatar-ring::before {
+    background: conic-gradient(from 0deg, #34d399, #60a5fa, #fbbf24, #c084fc, #34d399);
+  }
+
+  /* 10. Search glassmorphism backdrop with blur */
+  .r38-header-glass-search {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .r38-header-glass-search:hover {
+    border-color: rgba(16,185,129,0.2);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06), 0 0 0 1px rgba(16,185,129,0.08);
+  }
+  .r38-header-glass-search:focus-within {
+    background: rgba(255,255,255,0.7);
+    border-color: rgba(16,185,129,0.3);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08), 0 0 0 3px rgba(16,185,129,0.1);
+  }
+  .dark .r38-header-glass-search {
+    background: rgba(15,23,42,0.55);
+    border-color: rgba(255,255,255,0.08);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .dark .r38-header-glass-search:hover {
+    border-color: rgba(52,211,153,0.25);
+  }
+  .dark .r38-header-glass-search:focus-within {
+    background: rgba(15,23,42,0.7);
+    border-color: rgba(52,211,153,0.35);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 3px rgba(52,211,153,0.12);
+  }
+
+
+  /* ==============================
+     Round 38 r38-orders-* classes
+     ============================== */
+
+  /* 1. Order card: gradient border glow on hover */
+  .r38-orders-card-glow {
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  }
+  .r38-orders-card-glow::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.6), rgba(52,211,153,0.3), rgba(59,130,246,0.4));
+    background-size: 200% 200%;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    animation: r38-border-glow-shift 4s ease-in-out infinite;
+  }
+  .r38-orders-card-glow:hover::after { opacity: 1; }
+  @keyframes r38-border-glow-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* 2. Status badge: animated pulse glow matching status color */
+  .r38-orders-badge-glow { animation: r38-badge-pulse-glow 2s ease-in-out infinite; }
+  @keyframes r38-badge-pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.3), 0 0 4px rgba(16,185,129,0.1); }
+    50% { box-shadow: 0 0 0 4px rgba(16,185,129,0), 0 0 12px rgba(16,185,129,0.25); }
+  }
+  .r38-orders-badge-glow-amber { animation-name: r38-badge-pulse-amber; }
+  @keyframes r38-badge-pulse-amber {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.3), 0 0 4px rgba(245,158,11,0.1); }
+    50% { box-shadow: 0 0 0 4px rgba(245,158,11,0), 0 0 12px rgba(245,158,11,0.25); }
+  }
+  .r38-orders-badge-glow-red { animation-name: r38-badge-pulse-red; }
+  @keyframes r38-badge-pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.3), 0 0 4px rgba(239,68,68,0.1); }
+    50% { box-shadow: 0 0 0 4px rgba(239,68,68,0), 0 0 12px rgba(239,68,68,0.25); }
+  }
+
+  /* 3. Filter pills: animated gradient bg on active + shimmer */
+  .r38-orders-pill-active {
+    background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(52,211,153,0.08));
+    position: relative;
+    overflow: hidden;
+  }
+  .r38-orders-pill-active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 40%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.15) 60%, transparent 100%);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    animation: r38-pill-shimmer 3s ease-in-out infinite;
+  }
+  @keyframes r38-pill-shimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+  .dark .r38-orders-pill-active {
+    background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(52,211,153,0.12));
+  }
+
+  /* 4. Order item images: overflow hidden wrapper for scale */
+  .r38-orders-item-img-wrap {
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .r38-orders-item-img-wrap:hover { transform: scale(1.02); }
+
+  /* 5. Reorder button: gradient shimmer + scale on hover */
+  .r38-orders-reorder-btn {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  }
+  .r38-orders-reorder-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(16,185,129,0.15) 40%, rgba(52,211,153,0.3) 50%, rgba(16,185,129,0.15) 60%, transparent 100%);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .r38-orders-reorder-btn:hover::before { animation: r38-reorder-shimmer 0.8s ease-out; }
+  .r38-orders-reorder-btn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 4px 16px rgba(16,185,129,0.2), 0 0 8px rgba(16,185,129,0.1);
+  }
+  @keyframes r38-reorder-shimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* 6. Timeline: animated connecting lines */
+  .r38-orders-timeline-connector {
+    position: relative;
+    overflow: hidden;
+  }
+  .r38-orders-timeline-connector::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+    animation: r38-timeline-line-flow 2s ease-in-out infinite;
+  }
+  @keyframes r38-timeline-line-flow {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* 7. Empty state: floating bounce (CSS fallback) */
+  .r38-orders-empty-float {
+    animation: r38-empty-float 3s ease-in-out infinite;
+  }
+  @keyframes r38-empty-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-10px) rotate(3deg); }
+    50% { transform: translateY(-4px) rotate(-2deg); }
+    75% { transform: translateY(-12px) rotate(1deg); }
+  }
+
+  /* 8. Date separator: animated gradient accent line */
+  .r38-orders-date-line {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0 8px;
+  }
+  .r38-orders-date-line::before,
+  .r38-orders-date-line::after {
+    content: '';
+    flex: 1;
+    height: 1.5px;
+    border-radius: 1px;
+    background: linear-gradient(90deg, transparent, rgba(16,185,129,0.3), rgba(52,211,153,0.15), transparent);
+    background-size: 200% 100%;
+    animation: r38-date-line-shimmer 3s linear infinite;
+  }
+  @keyframes r38-date-line-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .r38-orders-date-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(16,185,129,0.7);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+  .dark .r38-orders-date-label { color: rgba(52,211,153,0.6); }
+
+  /* 9. Delivery progress bar: animated gradient fill with shimmer */
+  .r38-orders-progress-track {
+    position: relative;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(16,185,129,0.1);
+    overflow: hidden;
+  }
+  .dark .r38-orders-progress-track { background: rgba(16,185,129,0.15); }
+  .r38-orders-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, rgba(16,185,129,0.8), rgba(52,211,153,0.6), rgba(16,185,129,0.8));
+    background-size: 200% 100%;
+    position: relative;
+    animation: r38-progress-fill-anim 2s linear infinite;
+  }
+  .r38-orders-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: r38-progress-shimmer 1.5s ease-in-out infinite;
+  }
+  @keyframes r38-progress-fill-anim {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes r38-progress-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* 10. Store name: gradient text effect */
+  .r38-orders-store-name {
+    background: linear-gradient(135deg, #059669, #10b981, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+  .dark .r38-orders-store-name {
+    background: linear-gradient(135deg, #34d399, #6ee7b7, #67e8f9);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+} /* end @media prefers-reduced-motion: no-preference Round 37 r38-header classes */
+
+/* ==============================
+   R38-STORE-EVENT-CALENDAR ANIMATIONS
+   ============================== */
+@keyframes r38-event-shimmer-sweep {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.r38-event-btn-shimmer {
+  animation: r38-event-shimmer-sweep 2.5s ease-in-out infinite;
+}
+.r38-event-type-badge {
+  transition: transform 0.2s ease;
+}
+.r38-event-type-badge:hover {
+  transform: scale(1.05);
+}
+.r38-event-attendee-stack {
+  transition: transform 0.3s ease;
+}
+.r38-event-attendee-stack:hover {
+  transform: translateX(4px);
+}
+.r38-event-participar-btn {
+  position: relative;
+  overflow: hidden;
+}
+.r38-event-participar-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  transition: none;
+}
+.r38-event-participar-btn:hover::after {
+  animation: btn-shine-sweep 0.6s ease-out;
+}
+.r38-event-dot {
+  transition: transform 0.2s ease;
+}
+.r38-event-dot:hover {
+  transform: scale(1.5);
+}
+.r38-event-day-cell {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+.r38-event-day-cell:hover {
+  z-index: 2;
+}
+.r38-event-nav-arrow {
+  transition: all 0.2s ease;
+}
+.r38-event-calendar {
+  transition: box-shadow 0.3s ease;
+}
+.r38-event-calendar:hover {
+  box-shadow: 0 6px 32px oklch(0 0 0 / 0.08);
+}
+.r38-event-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.r38-event-card:hover {
+  transform: translateY(-2px);
+}
+.r38-event-stat-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r38-event-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.06);
+}
+.r38-event-map-placeholder {
+  transition: background-color 0.3s ease;
+}
+.r38-event-map-placeholder:hover {
+  background-color: oklch(0.95 0.005 120);
+}
+.dark .r38-event-map-placeholder:hover {
+  background-color: oklch(0.22 0.02 150);
+}
+.r38-event-modal {
+  max-height: 85vh;
+}
+.r38-event-strip {
+  scroll-snap-type: x mandatory;
+}
+.r38-event-strip-card {
+  scroll-snap-align: start;
+}
+.r38-event-empty-hint {
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+.r38-event-empty-hint:hover {
+  opacity: 0.8;
+}
+.r38-event-empty-day {
+  opacity: 0.4;
+  animation: r38-event-empty-pulse 3s ease-in-out infinite;
+}
+@keyframes r38-event-empty-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.6; }
+}

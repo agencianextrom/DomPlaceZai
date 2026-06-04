@@ -279,7 +279,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
       <div ref={bannerRef} className="relative h-56 sm:h-72 -mx-4 -mt-4 overflow-hidden">
         {/* Animated gradient background with parallax zoom */}
         <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700 r28-ken-burns r34-store-profile-cover-zoom r35-store-cover-zoom"
+          className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700 r28-ken-burns r34-store-profile-cover-zoom r35-store-cover-zoom r38-store-cover-shimmer"
           style={{ y: bannerY, scale: bannerScale }}
         />
         <motion.div 
@@ -380,7 +380,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, type: 'spring', stiffness: 300, damping: 25 }}
-          className="mb-5 p-5 rounded-2xl bg-card/80 backdrop-blur-lg border border-border/50 shadow-xl r28-store-gradient-border"
+          className="mb-5 p-5 rounded-2xl bg-card/80 backdrop-blur-lg border border-border/50 shadow-xl r28-store-gradient-border r38-store-info-glass"
         >
           <div className="flex items-end gap-4">
             {/* Avatar */}
@@ -388,7 +388,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
               initial={{ scale: 0.6 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25, delay: 0.1 }}
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-primary/20 to-emerald-600/20 border-2 border-background shadow-xl flex items-center justify-center text-2xl sm:text-3xl font-bold text-primary gradient-border shrink-0"
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-primary/20 to-emerald-600/20 border-2 border-background shadow-xl flex items-center justify-center text-2xl sm:text-3xl font-bold text-primary gradient-border shrink-0 r38-store-avatar-ring"
             >
               {store.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
             </motion.div>
@@ -397,7 +397,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-xl sm:text-2xl font-bold text-shadow-lg r28-store-name-shimmer"
+                className="text-xl sm:text-2xl font-bold text-shadow-lg r28-store-name-shimmer r38-store-name-gradient"
               >
                 {store.name}
               </motion.h2>
@@ -413,7 +413,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     ? '0 0 14px rgba(251,191,36,0.3), 0 0 4px rgba(251,191,36,0.15)'
                     : '0 0 0px rgba(251,191,36,0)' }}
                   transition={{ duration: 2.5, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
-                  className={store.rating > 0 ? 'rating-star-glow rounded-lg r34-store-profile-star-pulse' : 'rounded-lg'}
+                  className={store.rating > 0 ? 'rating-star-glow rounded-lg r34-store-profile-star-pulse r38-store-star-glow' : 'rounded-lg'}
                 >
                   <StarRating rating={store.rating} size="sm" showCount count={store.totalReviews} />
                 </motion.div>
@@ -438,7 +438,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
               <Card className={`border-0 ${stat.bg} transition-colors cursor-default card-premium-hover`}>
                 <CardContent className="p-3 text-center">
                   <stat.icon className={`h-5 w-5 mx-auto mb-1 ${stat.iconColor}`} />
-                  <p className="text-lg font-bold animate-count-up">{stat.value}</p>
+                  <p className="text-lg font-bold animate-count-up r38-store-stat-counter">{stat.value}</p>
                   <p className="text-[10px] text-muted-foreground">{stat.label}</p>
                 </CardContent>
               </Card>
@@ -505,7 +505,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
             onClick={() => toggleFavoriteStore(store.id)}
-            className={`relative overflow-hidden h-11 px-5 rounded-xl font-semibold text-sm flex items-center gap-2 r34-store-profile-follow-btn r35-store-follow-btn ${isFav ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
+            className={`relative overflow-hidden h-11 px-5 rounded-xl font-semibold text-sm flex items-center gap-2 r34-store-profile-follow-btn r35-store-follow-btn ${isFav ? 'bg-primary text-primary-foreground r38-store-follow-active' : 'bg-secondary text-secondary-foreground border border-border'}`}
           >
             <Heart className={`h-4 w-4 ${isFav ? 'fill-current' : ''}`} />
             {isFav ? 'Seguindo' : 'Seguir loja'}
@@ -513,7 +513,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
           </motion.button>
           {(store.whatsapp || store.phone) && (
             <Button 
-              className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white btn-glow rounded-xl"
+              className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white btn-glow rounded-xl r38-store-contact-btn"
               onClick={handleWhatsApp}
             >
               <MessageCircle className="h-4 w-4 mr-2" />
@@ -521,7 +521,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
             </Button>
           )}
           {store.phone && (
-            <Button variant="outline" className="h-11 px-4" onClick={() => {
+            <Button variant="outline" className="h-11 px-4 r38-store-contact-btn" onClick={() => {
               window.open(`tel:${store.phone!.replace(/\D/g, '')}`, '_self')
             }}>
               <Phone className="h-4 w-4" />
@@ -590,8 +590,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     <>
                       <motion.div
                         layoutId="store-tab-bg"
-                        className="absolute inset-0 bg-primary rounded-lg r34-store-profile-tab-glow r35-store-tab-indicator"
-                        style={{ boxShadow: '0 0 18px rgba(16,185,129,0.4), 0 2px 8px rgba(16,185,129,0.2)' }}
+                        className="absolute inset-0 bg-primary rounded-lg r34-store-profile-tab-glow r35-store-tab-indicator r38-store-tab-glow"
                         transition={{ type: 'spring' as const, stiffness: 420, damping: 28, mass: 0.8 }}
                       />
                     </>
@@ -657,7 +656,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                       }}
                       whileHover={{ scale: 1.02, y: -2 }}
                     >
-                      <div className="product-card-hover-enhanced r28-grid-hover-shine r35-store-product-hover">
+                      <div className="product-card-hover-enhanced r28-grid-hover-shine r35-store-product-hover r38-store-product-card">
                         <ProductCard product={p} />
                       </div>
                     </motion.div>

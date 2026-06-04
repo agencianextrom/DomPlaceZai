@@ -404,7 +404,7 @@ export function ProfileView() {
             { label: 'Modo escuro', desc: 'Ativar tema escuro no aplicativo', icon: Moon, value: darkModeEnabled, onToggle: () => setDarkModeEnabled(v => !v) },
             { label: 'Localização', desc: 'Permitir acesso à localização para entregas', icon: MapPinned, value: locationEnabled, onToggle: () => setLocationEnabled(v => !v) },
           ].map((setting) => (
-            <Card key={setting.label} className="border-border/50">
+            <Card key={setting.label} className="border-border/50 r38-profile-toggle-card">
               <CardContent className="p-4 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center shrink-0">
                   <setting.icon className="h-5 w-5 text-primary" />
@@ -533,8 +533,8 @@ export function ProfileView() {
                     transition={{ delay: 0.2, type: 'spring' as const, stiffness: 300, damping: 25 }}
                     className="relative"
                   >
-                    <div className="avatar-rotating-ring">
-                      <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
+                    <div className="r38-profile-avatar-ring">
+                      <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-[13px] bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
                         <User className="h-10 w-10 sm:h-12 sm:w-12 text-white/70" />
                       </div>
                     </div>
@@ -612,13 +612,13 @@ export function ProfileView() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.25 + idx * 0.06 }}
-                  whileHover={{ x: 3, y: -3, boxShadow: '0 4px 16px oklch(0.45 0.1 155 / 0.12), 0 2px 4px oklch(0 0 0 / 0.06)' }}
+                  whileHover={{ x: 3, y: -3, boxShadow: '0 4px 16px rgba(16,185,129,0.12), 0 2px 4px rgba(0,0,0,0.06)' }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     toast.info('Faça login para acessar esta funcionalidade')
                     useAppStore.getState().openAuthModal()
                   }}
-                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group profile-menu-item"
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group r38-profile-menu-item"
                 >
                   <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                     <item.icon className="h-5 w-5 text-primary" />
@@ -664,15 +664,15 @@ export function ProfileView() {
                 transition={{ delay: 0.2, type: 'spring' as const, stiffness: 300, damping: 25 }}
                 className="relative"
               >
-                <div className="avatar-rotating-ring">
+                <div className="r38-profile-avatar-ring">
                   {profile?.avatar ? (
                     <img
                       src={profile.avatar}
                       alt={displayName}
-                      className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl object-cover border-2 border-white/30 shadow-lg"
+                      className="h-22 w-22 sm:h-26 sm:w-26 rounded-[13px] object-cover border-2 border-white/30 shadow-lg"
                     />
                   ) : (
-                    <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
+                    <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-[13px] bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
                       {avatarInitial}
                     </div>
                   )}
@@ -683,10 +683,15 @@ export function ProfileView() {
               <div className="flex-1 pb-1">
                 <h1 className="text-xl sm:text-2xl font-bold text-shadow-lg">{displayName}</h1>
                 <p className="text-sm text-white/70 mt-0.5">{displayEmail}</p>
+                {profile?.createdAt && (
+                  <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-white/10 text-white/80 text-[10px] font-medium r38-profile-member-badge">
+                    Membro desde {new Date(profile.createdAt).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
+                  </span>
+                )}
               </div>
               <Button 
                 size="sm" 
-                className="bg-white/15 hover:bg-white/25 text-white border border-white/20 text-sm backdrop-blur-sm shrink-0"
+                className="r38-profile-edit-btn text-white border border-white/20 text-sm backdrop-blur-sm shrink-0"
                 onClick={() => {
                   setEditName(profile?.name || '')
                   setEditPhone(profile?.phone || '')
@@ -714,7 +719,7 @@ export function ProfileView() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.3, type: 'spring' as const, stiffness: 260, damping: 20 }}
-              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm card-premium-hover"
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card"
             >
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
                 <ShoppingBag className="h-4 w-4 text-primary" />
@@ -726,7 +731,7 @@ export function ProfileView() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.4, type: 'spring' as const, stiffness: 260, damping: 20 }}
-              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm card-premium-hover"
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card"
             >
               <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Heart className="h-4 w-4 text-red-500" />
@@ -738,7 +743,7 @@ export function ProfileView() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.5, type: 'spring' as const, stiffness: 260, damping: 20 }}
-              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm card-premium-hover"
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card"
             >
               <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Award className="h-4 w-4 text-amber-500" />
@@ -750,6 +755,34 @@ export function ProfileView() {
         </div>
       </motion.div>
       </div>
+
+      {/* Profile completion ring */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.35, type: 'spring' as const, stiffness: 200, damping: 22 }}
+        className="mb-6 flex items-center gap-3"
+      >
+        <div className="relative h-14 w-14 shrink-0 r38-profile-progress-ring">
+          <svg viewBox="0 0 100 100" className="h-full w-full">
+            <defs>
+              <linearGradient id="r38-ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#10b981" />
+                <stop offset="100%" stopColor="#f59e0b" />
+              </linearGradient>
+            </defs>
+            <circle className="progress-bg" cx="50" cy="50" r="45" fill="none" strokeWidth="6" />
+            <circle className="progress-fill" cx="50" cy="50" r="45" fill="none" strokeWidth="6" strokeLinecap="round" style={{ '--ring-offset': 85 } as React.CSSProperties} />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-xs font-bold text-primary">70%</span>
+          </div>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-sm">Perfil 70% completo</p>
+          <p className="text-xs text-muted-foreground">Adicione mais detalhes para aproveitar ao máximo</p>
+        </div>
+      </motion.div>
 
       {/* Loyalty Tier Card */}
       <motion.div
@@ -802,7 +835,7 @@ export function ProfileView() {
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-sm">Pedidos recentes</h2>
+          <h2 className="font-semibold text-sm r38-profile-section-title">Pedidos recentes</h2>
           <button 
             onClick={() => navigate('orders')}
             className="text-xs text-primary hover:underline"
@@ -816,7 +849,13 @@ export function ProfileView() {
               const statusInfo = formatStatus(order.status)
               const itemCount = order.items?.length ?? 0
               return (
-                <Card key={order.id} className="cursor-pointer hover:shadow-sm transition-shadow" onClick={() => navigate('orders')}>
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, type: 'spring' as const, stiffness: 200, damping: 22 }}
+                >
+                <Card className="cursor-pointer r38-profile-activity-item" onClick={() => navigate('orders')}>
                   <CardContent className="p-3 flex items-center gap-3">
                     <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                       <Package className="h-5 w-5 text-primary" />
@@ -837,6 +876,7 @@ export function ProfileView() {
                     </div>
                   </CardContent>
                 </Card>
+                </motion.div>
               )
             })}
           </div>
@@ -859,8 +899,8 @@ export function ProfileView() {
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-sm flex items-center gap-1.5">
-            <Ticket className="h-4 w-4 text-primary" />
+          <h2 className="font-semibold text-sm flex items-center gap-1.5 r38-profile-section-title">
+            <Ticket className="h-4 w-4" />
             Meus Cupons
           </h2>
           <button 
@@ -897,7 +937,7 @@ export function ProfileView() {
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-sm">Lojas favoritas</h2>
+          <h2 className="font-semibold text-sm r38-profile-section-title">Lojas favoritas</h2>
           <button 
             onClick={() => navigate('favorites')}
             className="text-xs text-primary hover:underline"
@@ -983,7 +1023,7 @@ export function ProfileView() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.32 + idx * 0.05, type: 'spring' as const, stiffness: 200, damping: 22 }}
-              whileHover={{ x: 3, y: -3, boxShadow: '0 4px 16px oklch(0.45 0.1 155 / 0.12), 0 2px 4px oklch(0 0 0 / 0.06)' }}
+              whileHover={{ x: 3, y: -3, boxShadow: '0 4px 16px rgba(16,185,129,0.12), 0 2px 4px rgba(0,0,0,0.06)' }}
               whileTap={{ scale: 0.98 }}
               onClick={() => {
                 if (item.id === 'orders') {
@@ -1010,7 +1050,7 @@ export function ProfileView() {
                   setActiveSection('spin-wheel')
                 }
               }}
-              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group profile-menu-item"
+              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group r38-profile-menu-item"
             >
               <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                 <item.icon className="h-5 w-5 text-primary" />
@@ -1028,7 +1068,7 @@ export function ProfileView() {
       <Separator className="my-3 section-divider" />
       
       {/* Logout */}
-      <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 h-12" onClick={handleLogout}>
+      <Button variant="ghost" className="w-full justify-start text-destructive h-12 r38-profile-logout" onClick={handleLogout}>
         <LogOut className="h-5 w-5 mr-2" />
         Sair da conta
       </Button>

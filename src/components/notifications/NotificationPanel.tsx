@@ -510,7 +510,7 @@ export function NotificationPanel() {
       <div className="hidden lg:block">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative h-10 w-10">
+            <Button variant="ghost" size="icon" className={`relative h-10 w-10 ${unreadCount > 0 ? 'r38-header-bell-shake' : ''}`}>
               <Bell className="h-5 w-5" />
               {unreadCount > 0 && (
                 <motion.div
@@ -545,7 +545,7 @@ export function NotificationPanel() {
         <Button
           variant="ghost"
           size="icon"
-          className="relative h-10 w-10"
+          className={`relative h-10 w-10 ${unreadCount > 0 ? 'r38-header-bell-shake' : ''}`}
           onClick={handleOpenMobile}
         >
           <Bell className="h-5 w-5" />

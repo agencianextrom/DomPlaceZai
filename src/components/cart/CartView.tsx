@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper, Heart, Edit3, Share2, Clock, AlertTriangle, Loader2, Check } from 'lucide-react'
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Store, ChevronLeft, ChevronRight, Sparkles, Truck, PartyPopper, Heart, Edit3, Share2, Clock, AlertTriangle, Loader2, Check, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -492,34 +492,34 @@ export function CartView() {
           }
         `}</style>
 
-        {/* Floating emoji elements — 6 items with different paths and speeds */}
+        {/* Floating emoji elements — 6 items with enhanced organic paths and scale */}
         <motion.span
-          animate={{ y: [0, -30, 0], x: [0, 12, 0], rotate: [0, 20, 0] }}
+          animate={{ y: [0, -30, -10, -30, 0], x: [0, 12, 4, -8, 0], rotate: [0, 20, -5, 15, 0], scale: [1, 1.1, 0.95, 1.05, 1] }}
           transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0 }}
           className="absolute top-[12%] left-[8%] text-3xl pointer-events-none select-none"
         >🍎</motion.span>
         <motion.span
-          animate={{ y: [0, -25, 0], x: [0, -15, 0], rotate: [0, -18, 0] }}
+          animate={{ y: [0, -25, -5, -25, 0], x: [0, -15, -5, 10, 0], rotate: [0, -18, 5, -10, 0], scale: [1, 1.05, 0.9, 1.1, 1] }}
           transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
           className="absolute top-[18%] right-[12%] text-2xl pointer-events-none select-none"
         >🛒</motion.span>
         <motion.span
-          animate={{ y: [0, -35, 0], x: [0, 8, 0], rotate: [0, 12, 0] }}
+          animate={{ y: [0, -35, -12, -35, 0], x: [0, 8, 2, -6, 0], rotate: [0, 12, -8, 6, 0], scale: [1, 1.12, 0.92, 1.08, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }}
           className="absolute bottom-[38%] left-[18%] text-xl pointer-events-none select-none"
         >📦</motion.span>
         <motion.span
-          animate={{ y: [0, -20, 0], x: [0, -10, 0], rotate: [0, -15, 0] }}
+          animate={{ y: [0, -20, -8, -20, 0], x: [0, -10, 2, 8, 0], rotate: [0, -15, 10, -5, 0], scale: [1, 1.08, 0.94, 1.06, 1] }}
           transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 2.1 }}
           className="absolute bottom-[42%] right-[8%] text-2xl pointer-events-none select-none"
         >🎁</motion.span>
         <motion.span
-          animate={{ y: [0, -28, 0], x: [0, 14, 0], rotate: [0, 22, 0] }}
+          animate={{ y: [0, -28, -6, -28, 0], x: [0, 14, 6, -8, 0], rotate: [0, 22, -12, 10, 0], scale: [1, 1.1, 0.88, 1.12, 1] }}
           transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
           className="absolute top-[40%] left-[5%] text-xl pointer-events-none select-none"
         >🌿</motion.span>
         <motion.span
-          animate={{ y: [0, -22, 0], x: [0, -12, 0], rotate: [0, -10, 0] }}
+          animate={{ y: [0, -22, -4, -22, 0], x: [0, -12, -3, 9, 0], rotate: [0, -10, 8, -6, 0], scale: [1, 1.15, 0.85, 1.1, 1] }}
           transition={{ duration: 3.3, repeat: Infinity, ease: 'easeInOut', delay: 1.8 }}
           className="absolute top-[55%] right-[15%] text-lg pointer-events-none select-none"
         >🍞</motion.span>
@@ -748,7 +748,7 @@ export function CartView() {
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+              transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
               className="h-9 w-9 rounded-full bg-emerald-500/15 flex items-center justify-center shrink-0"
             >
               <PartyPopper className="h-5 w-5 text-emerald-600" />
@@ -812,10 +812,17 @@ export function CartView() {
                 <Store className="h-4 w-4 text-primary" />
                 <span className="font-semibold text-sm flex-1 truncate">{group.storeName}</span>
                 <span className="text-xs text-muted-foreground">{group.items.length} {group.items.length === 1 ? 'item' : 'itens'}</span>
-                {/* Delivery time badge — calculated from store hours or category defaults */}
-                <Badge variant="secondary" className="text-[10px] bg-primary/5 text-primary border-0 ml-1 flex items-center gap-1">
+                {/* Delivery time badge — animated countdown appearance */}
+                <Badge variant="secondary" className="text-[10px] bg-primary/5 text-primary border-0 ml-1 flex items-center gap-1 r38-cart-delivery-badge">
                   <Clock className="h-2.5 w-2.5" />
-                  {getDeliveryEstimate(null, group.items[0]?.product?.category)}
+                  <motion.span
+                    key={group.storeId}
+                    initial={{ scale: 0.5, y: -4, opacity: 0 }}
+                    animate={{ scale: 1, y: 0, opacity: 1 }}
+                    transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
+                  >
+                    {getDeliveryEstimate(null, group.items[0]?.product?.category)}
+                  </motion.span>
                 </Badge>
               </div>
 
@@ -835,11 +842,11 @@ export function CartView() {
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, x: -60, transition: { duration: 0.25 } }}
-                      whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(16, 185, 129, 0.12), 0 2px 4px rgba(0, 0, 0, 0.06)' }}
+                      whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(16,185,129,0.12), 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(16,185,129,0.08)' }}
                       transition={{ delay: index * 0.06, type: 'spring' as const, stiffness: 350, damping: 25 }}
-                      className={`flex gap-3 p-4 cart-item-hover hover-glow-soft rounded-lg ${outOfStock ? 'opacity-60' : ''}`}
+                      className={`flex gap-3 p-4 cart-item-hover hover-glow-soft rounded-lg r38-cart-item-hover r38-cart-swipe-hint ${outOfStock ? 'opacity-60' : ''}`}
                     >
-                      <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0 relative overflow-hidden`}>
+                      <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0 relative overflow-hidden r38-cart-img-hover`}>
                         {cartImgUrl ? (
                           <img src={cartImgUrl} alt={item.product.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                         ) : null}
@@ -849,6 +856,10 @@ export function CartView() {
                             <span className="text-[10px] font-bold text-destructive">Esgotado</span>
                           </div>
                         )}
+                      </div>
+                      {/* r38: Swipe-to-delete visual hint icon */}
+                      <div className="r38-cart-swipe-delete-icon h-8 w-8 rounded-lg bg-red-500/90 flex items-center justify-center shadow-lg">
+                        <XCircle className="h-4 w-4 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
@@ -889,7 +900,7 @@ export function CartView() {
                               whileTap={{ scale: 0.88 }}
                               onClick={() => updateCartQuantity(item.productId, item.quantity - 1)}
                               disabled={outOfStock}
-                              className="qty-control-btn disabled:opacity-40"
+                              className="qty-control-btn r38-cart-qty-pulse disabled:opacity-40"
                             >
                               <Minus className="h-3 w-3" />
                             </motion.button>
@@ -911,7 +922,7 @@ export function CartView() {
                                 updateCartQuantity(item.productId, item.quantity + 1)
                               }}
                               disabled={outOfStock || item.quantity >= realStock}
-                              className="qty-control-btn disabled:opacity-40"
+                              className="qty-control-btn r38-cart-qty-pulse disabled:opacity-40"
                             >
                               <Plus className="h-3 w-3" />
                             </motion.button>
@@ -920,8 +931,9 @@ export function CartView() {
                             <span className="text-sm font-semibold">{formatBRL(item.product.price * item.quantity)}</span>
                             <motion.button
                               whileTap={{ scale: 0.85 }}
+                              whileHover={{ scale: 1.15 }}
                               onClick={() => removeFromCart(item.productId)}
-                              className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                              className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors r38-cart-remove-btn"
                             >
                               <Trash2 className="h-4 w-4" />
                             </motion.button>
@@ -947,8 +959,10 @@ export function CartView() {
           ))}
         </AnimatePresence>
 
-        {/* Promo code widget */}
-        <PromoCodeWidget />
+        {/* Promo code widget — r38: coupon input glow on focus */}
+        <div className="r38-cart-coupon-glow rounded-xl border border-primary/10">
+          <PromoCodeWidget />
+        </div>
 
         {/* Smart Cross-Sell: "Complete seu pedido" */}
         {cartItems.length > 0 && (
@@ -1000,7 +1014,7 @@ export function CartView() {
           <div className="absolute -top-px left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent rounded-full" />
           <div className="absolute -left-px top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/40 via-primary to-primary/40 rounded-full" />
           <div className="absolute -right-px top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/40 via-primary to-primary/40 rounded-full" />
-          <div className="bg-background/98 backdrop-blur-xl border border-primary/10 rounded-xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)] px-4 py-4">
+          <div className="bg-background/98 backdrop-blur-xl border border-primary/10 rounded-xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)] px-4 py-4 r38-cart-total-shimmer">
           <div className="space-y-1.5 text-sm">
             <div className="flex justify-between text-muted-foreground">
               <span>Subtotal</span>
@@ -1071,14 +1085,14 @@ export function CartView() {
               </Button>
             </motion.div>
             <Button
-              className="flex-1 h-12 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl shadow-lg shadow-primary/20 checkout-shimmer-btn r34-cart-checkout-shimmer"
+              className="flex-1 h-12 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl shadow-lg shadow-primary/20 checkout-shimmer-btn r34-cart-checkout-shimmer r38-cart-checkout-shimmer r38-cart-checkout-glow"
               onClick={handleCheckout}
               disabled={hasOutOfStock}
             >
               <motion.span
                 className="flex items-center justify-center gap-2"
                 whileHover={{ x: 4 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
               >
                 <span>{hasOutOfStock ? 'Remover itens indisponíveis' : 'Finalizar Compra'}</span>
                 {!hasOutOfStock && <ArrowRight className="h-5 w-5" />}
