@@ -409,7 +409,7 @@ export function ReviewPhotoGallery({ photos, onUpload, compact = false }: Review
                         : 'border-white/30 opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={photo.url} alt="" className="h-full w-full object-cover" />
+                    <img src={photo.url} alt="Foto da avaliação" className="h-full w-full object-cover" />
                   </motion.button>
                 ))}
               </div>

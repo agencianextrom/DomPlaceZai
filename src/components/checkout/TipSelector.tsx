@@ -124,7 +124,7 @@ export function TipSelector() {
       </div>
 
       {/* Preset Tips */}
-      <div className="grid grid-cols-4 gap-3 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
         {tipOptions.map((tip, idx) => {
           const isSelected = selectedTip === tip.value
           return (

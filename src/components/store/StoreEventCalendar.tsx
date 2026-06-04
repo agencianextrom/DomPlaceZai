@@ -922,7 +922,7 @@ function CalendarGrid({
       </div>
 
       {/* Weekday headers */}
-      <div className="grid grid-cols-7 px-3 pt-3 bg-muted/20">
+      <div className="hidden md:grid md:grid-cols-7 px-3 pt-3 bg-muted/20">
         {WEEKDAYS.map(w => (
           <div key={w} className="text-center text-[10px] font-semibold text-muted-foreground py-1.5">
             {w}
@@ -931,7 +931,7 @@ function CalendarGrid({
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 px-3 pb-3 gap-1">
+      <div className="hidden md:grid md:grid-cols-7 px-3 pb-3 gap-1">
         {calendarDays.map((dayObj, idx) => (
           <motion.button
             key={idx}

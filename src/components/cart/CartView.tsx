@@ -167,7 +167,7 @@ function CrossSellSection({ cartItems }: { cartItems: CartItemData[] }) {
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+          <div className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-lg bg-primary/10 flex items-center justify-center">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
           </div>
           <div>
@@ -178,7 +178,7 @@ function CrossSellSection({ cartItems }: { cartItems: CartItemData[] }) {
         {!allAdded && (
           <Button
             size="sm"
-            className="h-7 text-[10px] bg-primary hover:bg-primary/90 text-primary-foreground gap-1 rounded-full px-3"
+            className="min-h-[44px] text-[10px] bg-primary hover:bg-primary/90 text-primary-foreground gap-1 rounded-full px-3 active:scale-95 transition-transform"
             onClick={handleAddAll}
           >
             <Plus className="h-3 w-3" />
@@ -648,7 +648,7 @@ export function CartView() {
             </Button>
             <Button
               onClick={() => navigate('home')}
-              className="h-12 px-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-glow btn-shine shadow-lg shadow-primary/20 cart-cta-gradient-pulse"
+              className="h-12 px-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-glow btn-shine shadow-lg shadow-primary/20 cart-cta-gradient-pulse r62-touch-ripple"
             >
               Ver lojas
               <Store className="h-4 w-4 ml-2" />
@@ -674,7 +674,7 @@ export function CartView() {
       {/* Header */}
       <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-bold flex items-center gap-2 text-shadow-sm">
+          <h1 className="text-lg font-bold flex items-center gap-2 text-shadow-sm r62-heading-gradient">
             Carrinho
             <Badge variant="secondary" className="text-xs">{cartItems.length} {cartItems.length === 1 ? 'item' : 'itens'}</Badge>
           </h1>
@@ -767,15 +767,15 @@ export function CartView() {
               <span className="text-sm font-semibold">Adicione mais itens</span>
             </div>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => scrollSuggestions('left')}>
+              <Button variant="ghost" size="icon" className="h-7 w-7 min-h-[44px] min-w-[44px] active:scale-95 transition-transform" onClick={() => scrollSuggestions('left')}>
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => scrollSuggestions('right')}>
+              <Button variant="ghost" size="icon" className="h-7 w-7 min-h-[44px] min-w-[44px] active:scale-95 transition-transform" onClick={() => scrollSuggestions('right')}>
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
-          <div id="suggestions-scroll" className="flex gap-3 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1">
+          <div id="suggestions-scroll" className="flex gap-3 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1 r62-scroll-snap">
             {isLoadingSuggestions ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton key={i} className="shrink-0 w-[150px] h-[220px] rounded-xl" />
@@ -784,7 +784,7 @@ export function CartView() {
               suggestedProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
-                  className="shrink-0 w-[150px]"
+                  className="shrink-0 w-[150px] r62-card-lift"
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.08, duration: 0.4 }}
@@ -868,16 +868,18 @@ export function CartView() {
                             <motion.button
                               whileTap={{ scale: 0.85 }}
                               onClick={() => handleMoveToFavorites(item)}
-                              className="h-7 w-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                              className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-md flex items-center justify-center text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
                               title="Mover para favoritos"
+                              aria-label="Mover para favoritos"
                             >
                               <Heart className={`h-3.5 w-3.5 ${isFav ? 'fill-red-500 text-red-500' : ''}`} />
                             </motion.button>
                             <motion.button
                               whileTap={{ scale: 0.85 }}
                               onClick={() => handleEditItem(item)}
-                              className="h-7 w-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                              className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-md flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                               title="Editar item"
+                              aria-label="Editar item"
                             >
                               <Edit3 className="h-3.5 w-3.5" />
                             </motion.button>
@@ -1006,7 +1008,7 @@ export function CartView() {
           pointer-events: none;
         }
       `}</style>
-      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 px-4 py-4 pb-20 md:pb-4" style={{ paddingBottom: 'max(80px, calc(80px + env(safe-area-inset-bottom)))' }}>
+      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 px-4 py-4 pb-20 md:pb-4 r62-bottom-safe" style={{ paddingBottom: 'max(80px, calc(80px + env(safe-area-inset-bottom)))' }}>
         {/* Gradient border wrapper */}
         <div className="max-w-3xl mx-auto relative">
           {/* Gradient border accents */}
@@ -1107,7 +1109,7 @@ export function CartView() {
         </div>
       </div>
       {/* Mobile sticky checkout bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 p-3 flex items-center justify-between lg:hidden" style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
+      <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 p-3 flex items-center justify-between lg:hidden r62-bottom-safe" style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
         <div>
           <span className="text-xs text-gray-500">{cartItems.length} {cartItems.length === 1 ? 'item' : 'itens'}</span>
           <span className="text-lg font-bold text-gray-900 ml-2">R$ {total.toFixed(2)}</span>

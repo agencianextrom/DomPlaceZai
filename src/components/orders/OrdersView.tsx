@@ -318,14 +318,14 @@ export function OrdersView() {
     <div className="min-h-screen pb-24 md:pb-6">
       <div className="px-4 pt-4">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold flex items-center gap-2">
+          <h1 className="text-xl font-bold flex items-center gap-2 r62-heading-gradient">
             <span className="w-1 h-6 rounded-full bg-primary" />
             Meus Pedidos
           </h1>
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 text-xs gap-1"
+            className="min-h-[44px] text-xs gap-1 active:scale-95 transition-transform"
             onClick={() => fetchOrders(true)}
             disabled={isRefreshing}
           >
@@ -340,7 +340,7 @@ export function OrdersView() {
             <Button
               variant={showFilters ? 'default' : 'outline'}
               size="sm"
-              className="h-8 text-xs gap-1.5"
+              className="min-h-[44px] text-xs gap-1.5 active:scale-95 transition-transform"
               onClick={() => setShowFilters(!showFilters)}
             >
               <Filter className="h-3 w-3" />
@@ -716,14 +716,14 @@ export function OrdersView() {
 
                         <div className="flex items-center justify-between mt-3">
                           <span className="font-bold text-primary text-gradient-primary text-lg">{formatBRL(order.total)}</span>
-                          <div className="flex gap-2">
+                          <div className="flex flex-wrap gap-2">
                             {order.status === 'DELIVERED' && (
                               <>
                                 <motion.div whileTap={{ scale: 0.95 }}>
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="h-8 text-xs gap-1 border-orange-300 text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:border-orange-800 dark:hover:bg-orange-900/20"
+                                    className="min-h-[44px] text-xs gap-1 border-orange-300 text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:border-orange-800 dark:hover:bg-orange-900/20"
                                     onClick={() => setReturnOrder(order)}
                                   >
                                     <Undo2 className="h-3 w-3" />
@@ -734,7 +734,7 @@ export function OrdersView() {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="h-9 sm:h-8 text-xs gap-1 r42-orders-reorder-btn relative overflow-hidden font-semibold border-2 border-primary text-primary bg-primary/5 sm:bg-transparent"
+                                    className="h-9 sm:h-8 text-xs gap-1 r42-orders-reorder-btn r62-touch-ripple relative overflow-hidden font-semibold border-2 border-primary text-primary bg-primary/5 sm:bg-transparent"
                                   onClick={() => handleReorder(order)}
                                 >
                                   <PackageCheck className="h-3 w-3" />
@@ -743,7 +743,7 @@ export function OrdersView() {
                                 </motion.div>
                                 <Button
                                   size="sm"
-                                  className="h-8 text-xs gap-1 bg-amber-500 hover:bg-amber-600 text-white r60-stars-glow"
+                                  className="min-h-[44px] text-xs gap-1 bg-amber-500 hover:bg-amber-600 text-white r60-stars-glow"
                                   onClick={() => handleRateOrder(order)}
                                 >
                                   <Star className="h-3 w-3" />
@@ -756,7 +756,7 @@ export function OrdersView() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="h-8 text-xs gap-1 border-red-300 text-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/20"
+                                  className="min-h-[44px] text-xs gap-1 border-red-300 text-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/20"
                                   onClick={() => setCancelOrder(order)}
                                 >
                                   <Ban className="h-3 w-3" />
@@ -768,7 +768,7 @@ export function OrdersView() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="h-8 text-xs gap-1 border-primary/30 text-primary hover:bg-primary/5"
+                                className="min-h-[44px] text-xs gap-1 border-primary/30 text-primary hover:bg-primary/5"
                                 onClick={() => setInvoiceOrder(order)}
                               >
                                 <ClipboardList className="h-3 w-3" />
@@ -778,7 +778,7 @@ export function OrdersView() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8 text-xs"
+                              className="min-h-[44px] text-xs"
                               onClick={() => {
                                 selectOrder(order)
                                 navigate('order-detail')

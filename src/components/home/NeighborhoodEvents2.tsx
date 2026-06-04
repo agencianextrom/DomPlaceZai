@@ -561,7 +561,7 @@ function EventCard({ event, index }: { event: NeighborhoodEvent; index: number }
           {/* Cover image / emoji fallback */}
           <div className="r44-cover-image relative h-32 rounded-t-xl overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5">
             {event.coverImage ? (
-              <img src={event.coverImage} alt="" className="w-full h-full object-cover" />
+              <img src={event.coverImage} alt="Imagem do evento" className="w-full h-full object-cover" />
             ) : (
               <div className="r44-emoji-fallback w-full h-full flex items-center justify-center">
                 <motion.span

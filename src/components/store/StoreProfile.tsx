@@ -423,7 +423,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
         </motion.div>
         
         {/* Store stats cards — premium hover */}
-        <div className="grid grid-cols-3 gap-3 mt-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
           {[
             { icon: ShoppingBag, label: 'Produtos', value: products.length || 0, bg: 'bg-primary/5 hover:bg-primary/10', iconColor: 'text-primary' },
             { icon: Star, label: 'Avaliação', value: store.rating.toFixed(1), bg: 'bg-amber-50 dark:bg-amber-900/10 hover:bg-amber-100 dark:hover:bg-amber-900/20', iconColor: 'text-amber-500 fill-amber-500' },
@@ -438,7 +438,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
               <Card className={`border-0 ${stat.bg} transition-colors cursor-default card-premium-hover r42-stats-glow r46-stats-card`}>
                 <CardContent className="p-3 text-center">
                   <stat.icon className={`h-5 w-5 mx-auto mb-1 ${stat.iconColor}`} />
-                  <p className="text-lg font-bold animate-count-up r38-store-stat-counter r46-stats-counter-animate">{stat.value}</p>
+                  <p className="text-lg font-bold animate-count-up r38-store-stat-counter r46-stats-counter-animate r62-counter-animate">{stat.value}</p>
                   <p className="text-[10px] text-muted-foreground">{stat.label}</p>
                 </CardContent>
               </Card>
@@ -447,7 +447,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
         </div>
 
         {/* Store info cards — trust badges */}
-        <div className="grid grid-cols-3 gap-2 mt-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3">
           {storeInfoCards.map((info, i) => (
             <motion.div
               key={info.label}

@@ -916,7 +916,7 @@ export function StoreMembershipTiers() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ type: 'spring' as const, stiffness: 250, damping: 22 }}
-                className="grid grid-cols-3 gap-3"
+                className="grid grid-cols-2 sm:grid-cols-3 gap-3"
               >
                 {tiers.map((tier, ti) => {
                   const saving = savingsData[selectedCalcFrequency][

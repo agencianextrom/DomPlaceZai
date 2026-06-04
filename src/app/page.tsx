@@ -179,7 +179,8 @@ import { SmartMealPrep } from '@/components/home/SmartMealPrep'
 import { SocialCommerceHub } from '@/components/home/SocialCommerceHub'
 import { StoreEventHub } from '@/components/home/StoreEventHub'
 import { SubscriptionBoxBuilder } from '@/components/home/SubscriptionBoxBuilder'
-// SustainabilityTracker removed - incomplete from R57
+// SustainabilityTracker removed - incomplete from R57 — replaced by EcoImpactWidget
+import { EcoImpactWidget } from '@/components/home/EcoImpactWidget'
 import { MysteryDealBox } from '@/components/home/MysteryDealBox'
 import { StoreLoyaltyPassport } from '@/components/home/StoreLoyaltyPassport'
 import { QuickMealFinder } from '@/components/home/QuickMealFinder'
@@ -1797,6 +1798,7 @@ export default function Home() {
               {/* Desktop sidebar - Quick Info panel */}
               <QuickInfo />
               <ScanToShop />
+              <LazySection><ScrollReveal><EcoImpactWidget /></ScrollReveal></LazySection>
             </div>
           </motion.div>
         ) : currentView === 'product' ? (

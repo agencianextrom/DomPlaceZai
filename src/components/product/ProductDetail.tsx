@@ -552,6 +552,9 @@ export function ProductDetail({ product }: ProductDetailProps) {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setSelectedVariation(v)}
+                    role="radio"
+                    aria-checked={isSelected}
+                    aria-label={`Variação: ${v}`}
                     className={`relative px-4 py-2 rounded-full text-sm font-medium border-2 transition-all duration-200 ${
                       isSelected
                         ? 'border-primary bg-primary text-primary-foreground shadow-md'
