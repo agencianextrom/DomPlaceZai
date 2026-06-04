@@ -178,7 +178,6 @@ interface AppState {
   
   // Product comparison
   compareProductIds: string[]
-  comparisonIds: string[]
 
   // Recently viewed (persisted)
   recentlyViewed: ProductData[]
@@ -218,7 +217,9 @@ interface AppState {
   removeFromCart: (productId: string) => void
   updateCartQuantity: (productId: string, quantity: number) => void
   clearCart: () => void
+  /** @deprecated Use as imperative call `store.getCartTotal()`, NOT as a selector `useAppStore(s => s.getCartTotal)`. */
   getCartTotal: () => number
+  /** @deprecated Use as imperative call `store.getCartItemCount()`, NOT as a selector `useAppStore(s => s.getCartItemCount)`. */
   getCartItemCount: () => number
   getCartGroupedByStore: () => { storeId: string; storeName: string; items: CartItemData[]; subtotal: number }[]
   
@@ -263,8 +264,6 @@ interface AppState {
   toggleCompareProduct: (productId: string) => void
   clearComparison: () => void
   isComparing: (productId: string) => boolean
-  addToComparison: (id: string) => void
-  removeFromComparison: (id: string) => void
 
   // Recently viewed actions
   addRecentlyViewed: (product: ProductData) => void
@@ -317,7 +316,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   
   // Product comparison
   compareProductIds: [],
-  comparisonIds: [],
 
   // Recently viewed (loaded from localStorage on client)
   recentlyViewed: loadFromStorage<ProductData[]>('domplace-recently-viewed', []),
@@ -521,24 +519,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   toggleCompareProduct: (productId) => set((state) => {
     const exists = state.compareProductIds.includes(productId)
     if (exists) {
-      const updated = state.compareProductIds.filter(id => id !== productId)
-      return { compareProductIds: updated, comparisonIds: updated }
+      return { compareProductIds: state.compareProductIds.filter(id => id !== productId) }
     }
     if (state.compareProductIds.length >= 4) return state
-    const updated = [...state.compareProductIds, productId]
-    return { compareProductIds: updated, comparisonIds: updated }
+    return { compareProductIds: [...state.compareProductIds, productId] }
   }),
-  clearComparison: () => set({ compareProductIds: [], comparisonIds: [] }),
+  clearComparison: () => set({ compareProductIds: [] }),
   isComparing: (productId) => get().compareProductIds.includes(productId),
-  addToComparison: (id) => set((state) => {
-    if (state.comparisonIds.includes(id) || state.comparisonIds.length >= 4) return state
-    const updated = [...state.comparisonIds, id]
-    return { comparisonIds: updated, compareProductIds: updated }
-  }),
-  removeFromComparison: (id) => set((state) => {
-    const updated = state.comparisonIds.filter(cid => cid !== id)
-    return { comparisonIds: updated, compareProductIds: updated }
-  }),
 
   // Recently viewed actions
   addRecentlyViewed: (product) => {

@@ -266,7 +266,7 @@ export function OrdersView() {
           description: null,
           price: item.price,
           comparePrice: null,
-          images: (item as any).productImage ? JSON.stringify([(item as any).productImage]) : '[]',
+          images: item.productImage ? JSON.stringify([item.productImage]) : '[]',
           stock: 10,
           rating: 4.5,
           totalReviews: 10,
@@ -315,7 +315,7 @@ export function OrdersView() {
   }
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-24 md:pb-6">
       <div className="px-4 pt-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold flex items-center gap-2">
@@ -701,7 +701,7 @@ export function OrdersView() {
                         {order.items && (
                           <div className="text-sm text-muted-foreground flex items-center gap-2">
                             {order.items.slice(0, 2).map((item, i) => {
-                              const img = (item as any).productImage
+                              const img = item.productImage
                               return img ? (
                                 <span key={i} className="r38-orders-item-img-wrap inline-block h-8 w-8 flex-shrink-0">
                                   <img src={img} alt={item.productName} className="h-full w-full object-cover rounded-md" />
@@ -849,7 +849,7 @@ export function OrdersView() {
           name: item.productName,
           price: item.price,
           qty: item.quantity,
-          image: (item as any).productImage || undefined,
+          image: item.productImage || undefined,
         }))}
         isOpen={!!returnOrder}
         onClose={() => setReturnOrder(null)}
@@ -891,7 +891,7 @@ export function OrderDetail() {
           description: null,
           price: item.price,
           comparePrice: null,
-          images: (item as any).productImage ? JSON.stringify([(item as any).productImage]) : '[]',
+          images: item.productImage ? JSON.stringify([item.productImage]) : '[]',
           stock: 10,
           rating: 4.5,
           totalReviews: 10,

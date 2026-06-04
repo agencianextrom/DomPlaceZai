@@ -189,6 +189,7 @@ import { LiveOrderChat } from '@/components/orders/LiveOrderChat'
 import { ARVirtualTryOn } from '@/components/product/ARVirtualTryOn'
 import { DynamicPricingEngine } from '@/components/product/DynamicPricingEngine'
 import { InteractiveProductTour } from '@/components/home/InteractiveProductTour'
+import { MobileQuickActions } from '@/components/home/MobileQuickActions'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -378,7 +379,7 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
       <motion.div 
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }} 
-        className="max-w-7xl mx-auto px-4 pt-4"
+        className="max-w-7xl mx-auto px-4 pt-4 pb-24 md:pb-6"
       >
         <h1 className="text-xl font-bold mb-4 flex items-center gap-2">
           <Heart className="h-5 w-5 text-red-500" />
@@ -452,7 +453,7 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       exit={{ opacity: 0 }}
-      className="max-w-7xl mx-auto px-4 pt-4"
+      className="max-w-7xl mx-auto px-4 pt-4 pb-24 md:pb-6"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
@@ -695,7 +696,7 @@ function StoreQuickViewWrapper() {
 }
 
 export default function Home() {
-  const { currentView, isSearchOpen, activeCategory, cartItems, currentUser } = useAppStore()
+  const { currentView, isSearchOpen, activeCategory, cartItems, currentUser, navigate, toggleChat } = useAppStore()
   const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0)
 
   // Analytics page view tracking
@@ -1757,7 +1758,7 @@ export default function Home() {
                   </>
                 )}
                 
-                <div className="h-4" />
+                <div className="h-20 md:h-4" />
               </div>
 
               {/* Desktop sidebar - Quick Info panel */}
@@ -1893,6 +1894,14 @@ export default function Home() {
 
       {/* Order Rating Prompt */}
       <OrderRatingPrompt />
+
+      {/* Mobile Quick Actions FAB */}
+      <MobileQuickActions
+        onSearch={() => navigate('search')}
+        onCart={() => navigate('cart')}
+        onChat={() => toggleChat()}
+        onScan={() => navigate('search')}
+      />
     </div>
   )
 }

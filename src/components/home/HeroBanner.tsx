@@ -384,7 +384,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
           {/* =====================================================
               4. FLOATING DECORATIVE ELEMENTS (pure CSS keyframes)
               ===================================================== */}
-          {floatingShapes.map((shape, i) => (
+          <div className="hidden md:block">{floatingShapes.map((shape, i) => (
             <div
               key={`float-${i}`}
               className={`hero-float-shape ${shape.className} ${shape.bg}`}
@@ -395,15 +395,15 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                 right: shape.right,
               }}
             />
-          ))}
+          ))}</div>
 
           {/* =====================================================
               6. TEXT ENTRANCE with stagger + spring physics
               ===================================================== */}
           {/* =====================================================
-              7. FLOATING GRADIENT BLOBS (slow multi-axis float)
+              7. FLOATING GRADIENT BLOBS (slow multi-axis float) — hidden on mobile
               ===================================================== */}
-          {floatingBlobs.map((blob, i) => (
+          <div className="hidden md:block">{floatingBlobs.map((blob, i) => (
             <motion.div
               key={`blob-${i}`}
               className={`absolute rounded-full ${blob.color} blur-3xl pointer-events-none ${i % 2 === 0 ? 'r28-hero-blob-1' : 'r28-hero-blob-2'}`}
@@ -416,10 +416,10 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                 ease: 'easeInOut',
               }}
             />
-          ))}
+          ))}</div>
 
           <motion.div
-            className="relative z-10 p-5 sm:p-8 max-w-lg"
+            className="relative z-10 max-w-lg p-4 sm:p-6 lg:p-8"
             style={{ y: textParallaxY }}
             variants={staggerContainer}
             initial="hidden"
@@ -437,7 +437,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
 
             <motion.h2
               variants={staggerItem}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer r41-hero-title-enhanced r43-hero-heading-mega r58-hero-shimmer-text"
+              className="text-xl sm:text-2xl lg:text-3xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer r41-hero-title-enhanced r43-hero-heading-mega r58-hero-shimmer-text"
               style={{
                 textShadow: '0 2px 12px rgba(0,0,0,0.2)',
                 backgroundImage: headingBg,
@@ -527,7 +527,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               >
                 <Button
                   onClick={handleVerOfertas}
-                  className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-5 sm:px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer r41-hero-cta-primary r43-cta-shimmer-multi"
+                  className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg min-h-11 sm:min-h-12 px-5 sm:px-6 active:scale-95 transition-transform animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer r41-hero-cta-primary r43-cta-shimmer-multi"
                 >
                   <span className="ripple-effect absolute inset-0 rounded-lg" />
                   <span className="r34-hero-cta-sweep absolute inset-0 rounded-lg" />
@@ -544,7 +544,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               >
                 <Button
                   onClick={handleComprarAgora}
-                  className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 font-semibold h-10 sm:h-11 px-5 sm:px-6 press-effect relative overflow-hidden transition-all duration-300 r41-hero-cta-secondary r43-cta-secondary-glow"
+                  className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 font-semibold min-h-11 sm:min-h-12 px-5 sm:px-6 press-effect relative overflow-hidden transition-all duration-300 active:scale-95 r41-hero-cta-secondary r43-cta-secondary-glow"
                 >
                   <span className="ripple-effect absolute inset-0 rounded-lg" />
                   <span className="r41-hero-cta-shimmer-sweep absolute inset-0 rounded-lg" />
@@ -630,8 +630,8 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             </motion.div>
           </motion.div>
 
-          {/* Floating product images */}
-          {floatingProducts.map((fp, i) => (
+          {/* Floating product images — hidden on mobile */}
+          <div className="hidden sm:block">{floatingProducts.map((fp, i) => (
             <motion.div
               key={`fp-${i}`}
               className={`absolute ${fp.anim} pointer-events-none select-none`}
@@ -645,10 +645,10 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             >
               <span className="drop-shadow-lg opacity-50" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))' }}>{fp.emoji}</span>
             </motion.div>
-          ))}
+          ))}</div>
 
-          {/* r58-hero: Floating price tag / badge parallax decorations */}
-          {r58FloatingBadges.map((badge, i) => (
+          {/* r58-hero: Floating price tag / badge parallax decorations — hidden on mobile */}
+          <div className="hidden md:block">{r58FloatingBadges.map((badge, i) => (
             <motion.div
               key={`r58-badge-${i}`}
               className="absolute pointer-events-none select-none"
@@ -672,10 +672,10 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                 </span>
               </span>
             </motion.div>
-          ))}
+          ))}</div>
 
-          {/* r43-hero: Enhanced particle field (22 particles) */}
-          <div className="r43-hero-particle-field absolute inset-0 pointer-events-none" aria-hidden="true">
+          {/* r43-hero: Enhanced particle field (22 particles) — hidden on mobile for perf */}
+          <div className="r43-hero-particle-field absolute inset-0 pointer-events-none hidden md:block" aria-hidden="true">
             {r43ParticleField.map((p) => (
               <motion.div
                 key={`r43-field-${p.id}`}
@@ -701,8 +701,8 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             ))}
           </div>
 
-          {/* r43-hero: Floating emoji orbs with parallax depth layers */}
-          {r43EmojiOrbs.map((orb, i) => (
+          {/* r43-hero: Floating emoji orbs — hidden on mobile for perf */}
+          <div className="hidden md:block">{r43EmojiOrbs.map((orb, i) => (
             <motion.div
               key={`r43-emoji-orb-${i}`}
               className={`r43-hero-emoji-orb r43-emoji-orb-layer-${orb.layer} absolute pointer-events-none select-none`}
@@ -725,10 +725,10 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             >
               <span className="r43-emoji-orb-inner drop-shadow-lg">{orb.emoji}</span>
             </motion.div>
-          ))}
+          ))}</div>
 
-          {/* r34 floating particles */}
-          {heroParticles.map((p) => (
+          {/* r34 floating particles — hidden on mobile for perf */}
+          <div className="hidden sm:block">{heroParticles.map((p) => (
             <motion.div
               key={`hero-particle-${p.id}`}
               className="absolute rounded-full pointer-events-none"
@@ -748,7 +748,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                 ease: 'easeInOut',
               }}
             />
-          ))}
+          ))}</div>
 
           {/* SVG Wave bottom edge */}
           <svg className="absolute bottom-0 left-0 right-0 z-10" viewBox="0 0 1440 50" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">

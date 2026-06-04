@@ -233,13 +233,13 @@ export function AuthModal() {
 
   return (
     <Dialog open={isAuthModalOpen} onOpenChange={(open) => { if (!open) closeAuthModal() }}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden max-h-[90vh] overflow-y-auto sm:rounded-2xl rounded-none sm:rounded-2xl r41-modal-card r43-modal-entrance r46-modal-border-glow">
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-y-auto inset-0 rounded-none sm:rounded-2xl sm:inset-auto sm:max-h-[90vh] r41-modal-card r43-modal-entrance r46-modal-border-glow">
         <motion.button
           onClick={() => closeAuthModal()}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
-          className="absolute right-3 top-3 z-50 r43-modal-close r46-close-btn h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+          className="absolute right-3 top-3 z-50 r43-modal-close r46-close-btn h-11 w-11 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
         >
           <X className="h-4 w-4" />
         </motion.button>
@@ -299,7 +299,7 @@ export function AuthModal() {
                     Acesse sua conta ou cadastre-se
                   </DialogDescription>
                 </DialogHeader>
-                <TabsList className="mt-4 bg-white/20 h-10 p-0.5 rounded-lg w-full relative">
+                <TabsList className="mt-4 bg-white/20 min-h-11 p-0.5 rounded-lg w-full relative">
                   <motion.div
                     className="absolute top-0.5 bottom-0.5 rounded-md r41-tab-indicator r46-tab-bar-indicator"
                     animate={{ left: activeTab === 'login' ? '2px' : 'calc(50%)', width: 'calc(50% - 2px)' }}
@@ -317,7 +317,7 @@ export function AuthModal() {
           </div>
 
           {/* -- Login Tab -- */}
-          <TabsContent value="login" className="p-6 mt-0">
+          <TabsContent value="login" className="p-6 mt-0" style={{ paddingBottom: 'max(24px, calc(16px + env(safe-area-inset-bottom)))' }}>
             <AnimatePresence mode="wait">
             <motion.form
               key="login-form"
@@ -338,7 +338,7 @@ export function AuthModal() {
                     placeholder="seu@email.com"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
-                    className="pl-9 h-11 r41-input-field r46-input-glow"
+                    className="pl-9 min-h-12 r41-input-field r46-input-glow w-full"
                     autoComplete="email"
                   />
                 </div>
@@ -359,7 +359,7 @@ export function AuthModal() {
                     placeholder="Sua senha"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="pl-9 pr-10 h-11 r41-input-field r46-input-glow"
+                    className="pl-9 pr-10 min-h-12 r41-input-field r46-input-glow w-full"
                     autoComplete="current-password"
                   />
                   <button
@@ -399,7 +399,7 @@ export function AuthModal() {
                 />
                 <Button
                   type="submit"
-                  className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60 relative"
+                  className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60 relative active:scale-95 transition-transform min-h-12"
                   disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
@@ -441,7 +441,7 @@ export function AuthModal() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google r43-social-google r46-social-btn"
+                  className="w-full min-h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google r43-social-google r46-social-btn min-h-12"
                   disabled={!isGoogleConfigured}
                   onClick={isGoogleConfigured ? handleGoogleSignIn : undefined}
                 >
@@ -462,7 +462,7 @@ export function AuthModal() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook r46-social-btn"
+                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook r46-social-btn min-h-12"
                     onClick={handleFacebookSignIn}
                   >
                     <FacebookIcon />
@@ -475,7 +475,7 @@ export function AuthModal() {
           </TabsContent>
 
           {/* -- Register Tab -- */}
-          <TabsContent value="register" className="p-6 mt-0">
+          <TabsContent value="register" className="p-6 mt-0" style={{ paddingBottom: 'max(24px, calc(16px + env(safe-area-inset-bottom)))' }}>
             <AnimatePresence mode="wait">
             <motion.form
               key="register-form"
@@ -529,7 +529,7 @@ export function AuthModal() {
                       placeholder="Maria Silva"
                       value={regName}
                       onChange={(e) => setRegName(e.target.value)}
-                      className="pl-9 h-11 r41-input-field r46-input-glow"
+                      className="pl-9 min-h-12 r41-input-field r46-input-glow w-full"
                     />
                   </div>
                 </div>
@@ -544,7 +544,7 @@ export function AuthModal() {
                       placeholder="seu@email.com"
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
-                      className="pl-9 h-11 r41-input-field r46-input-glow"
+                      className="pl-9 min-h-12 r41-input-field r46-input-glow w-full"
                       autoComplete="email"
                     />
                   </div>
@@ -561,7 +561,7 @@ export function AuthModal() {
                     placeholder="(91) 99999-0000"
                     value={regPhone}
                     onChange={(e) => setRegPhone(e.target.value)}
-                    className="pl-9 h-11 r41-input-field r46-input-glow"
+                    className="pl-9 min-h-12 r41-input-field r46-input-glow w-full"
                   />
                 </div>
               </div>
@@ -577,13 +577,13 @@ export function AuthModal() {
                       placeholder="Mínimo 6 caracteres"
                       value={regPassword}
                       onChange={(e) => setRegPassword(e.target.value)}
-                      className="pl-9 pr-10 h-11 r41-input-field r46-input-glow"
+                      className="pl-9 pr-10 min-h-12 r41-input-field r46-input-glow w-full"
                       autoComplete="new-password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground r46-pw-toggle"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground r46-pw-toggle min-w-11 min-h-11 flex items-center justify-center"
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -600,13 +600,13 @@ export function AuthModal() {
                       placeholder="Repita a senha"
                       value={regConfirmPassword}
                       onChange={(e) => setRegConfirmPassword(e.target.value)}
-                      className="pl-9 pr-10 h-11 r41-input-field r46-input-glow"
+                      className="pl-9 pr-10 min-h-12 r41-input-field r46-input-glow w-full"
                       autoComplete="new-password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground r46-pw-toggle"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground r46-pw-toggle min-w-11 min-h-11 flex items-center justify-center"
                     >
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -681,7 +681,7 @@ export function AuthModal() {
                 />
                 <Button
                   type="submit"
-                  className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60 relative"
+                  className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60 relative active:scale-95 transition-transform min-h-12"
                   disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
@@ -744,7 +744,7 @@ export function AuthModal() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook r46-social-btn"
+                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook r46-social-btn min-h-12"
                     onClick={handleFacebookSignIn}
                   >
                     <FacebookIcon />

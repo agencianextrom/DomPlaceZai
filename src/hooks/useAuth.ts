@@ -29,12 +29,12 @@ export function useAuth() {
 
   const user: AuthUser | null = session?.user
     ? {
-        id: (session.user as any).id,
+        id: session.user.id,
         email: session.user.email,
         name: session.user.name,
-        role: (session.user as any).role,
-        avatar: (session.user as any).avatar,
-        phone: (session.user as any).phone,
+        role: session.user.role,
+        avatar: session.user.avatar,
+        phone: session.user.phone,
       }
     : null
 
@@ -55,11 +55,11 @@ export function useAuth() {
         // Update Zustand store with user data
         if (result?.ok && session?.user) {
           setCurrentUser({
-            id: (session.user as any).id,
+            id: session.user.id,
             email: session.user.email,
             name: session.user.name,
-            role: (session.user as any).role,
-            avatar: (session.user as any).avatar,
+            role: session.user.role,
+            avatar: session.user.avatar,
           })
         }
 

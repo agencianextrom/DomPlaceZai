@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, Fragment } from 'react'
 import { X, Star, TrendingDown, Package, Clock, Check, ChevronRight, Share2, Trophy, Award, Trash2, ShoppingCart, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -341,8 +341,101 @@ export function ProductComparison() {
                 })}
               </div>
 
-              {/* Detailed Comparison Table */}
-              <Card className="overflow-hidden">
+              {/* Detailed Comparison Table — desktop: table, mobile: card stack */}
+              {/* Mobile: horizontal scrollable comparison cards */}
+              <div className="lg:hidden">
+                <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2 snap-x snap-mandatory -mx-4 px-4">
+                  {products.map((product, i) => {
+                    const gradient = gradients[i % gradients.length]
+                    const imgUrl = resolveProductImage({ slug: product.slug, category: product.category, images: product.images })
+                    return (
+                      <Fragment key={product.id}>
+                        {/* VS badge between cards */}
+                        {i > 0 && (
+                          <div className="flex flex-col items-center justify-center shrink-0 pt-8">
+                            <VsBadge />
+                          </div>
+                        )}
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: i * 0.15, type: 'spring' as const, stiffness: 320, damping: 22 }}
+                          className="flex-shrink-0 w-[80vw] max-w-[280px] snap-start"
+                        >
+                          <Card className="overflow-hidden">
+                            <div className={`aspect-[3/4] flex items-center justify-center bg-gradient-to-br ${gradient} relative`}>
+                              {imgUrl ? (
+                                <img src={imgUrl} alt={product.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                              ) : (
+                                <div className="h-14 w-14 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm">
+                                  <Package className="h-8 w-8 text-primary/60" />
+                                </div>
+                              )}
+                              {product.comparePrice && (
+                                <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[9px] px-1.5 py-0 z-10">
+                                  <TrendingDown className="h-2.5 w-2.5 mr-0.5" />
+                                  -{Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}%
+                                </Badge>
+                              )}
+                              {/* Best value indicators */}
+                              {product.price === lowestPrice && products.length > 1 && (
+                                <div className="absolute top-2 right-2 z-10">
+                                  <BestIndicator label="Menor preço" />
+                                </div>
+                              )}
+                              {product.rating === highestRating && products.length > 1 && (
+                                <div className="absolute top-8 right-2 z-10">
+                                  <BestIndicator label="Mais bem avaliado" />
+                                </div>
+                              )}
+                            </div>
+                            <CardContent className="p-3 space-y-2">
+                              <p className="text-[10px] text-primary font-medium truncate">{product.storeName}</p>
+                              <p className="text-xs font-semibold line-clamp-2">{product.name}</p>
+                              <div className="flex items-baseline gap-1.5">
+                                <span className="text-lg font-bold text-primary">{formatBRL(product.price)}</span>
+                                {product.comparePrice && (
+                                  <span className="text-[10px] text-muted-foreground line-through">{formatBRL(product.comparePrice)}</span>
+                                )}
+                              </div>
+                              {/* Compact specs */}
+                              <div className="space-y-1.5 text-[10px]">
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Avaliação</span>
+                                  <span className="font-bold flex items-center gap-0.5">
+                                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                                    {product.rating} ({product.totalReviews})
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Estoque</span>
+                                  <span className={`font-bold ${getStockColor(product.stock)}`}>{getStockLabel(product.stock)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Entrega</span>
+                                  <span className="font-bold">{getDeliveryLabel(product)}</span>
+                                </div>
+                              </div>
+                              <motion.div whileTap={{ scale: 0.95 }}>
+                                <Button
+                                  size="sm"
+                                  className="w-full h-11 text-xs bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 active:scale-95 transition-transform"
+                                  onClick={(e) => { e.stopPropagation(); handleAddToCart(product) }}
+                                >
+                                  <ShoppingCart className="h-3.5 w-3.5" />
+                                  Adicionar ao Carrinho
+                                </Button>
+                              </motion.div>
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      </Fragment>
+                    )
+                  })}
+                </div>
+              </div>
+              {/* Desktop: table comparison */}
+              <Card className="overflow-hidden hidden lg:block">
                 <CardContent className="p-0 overflow-x-auto">
                   <div className="min-w-[400px]">
                     {/* Table header */}
@@ -454,10 +547,10 @@ export function ProductComparison() {
                             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                               <Button
                                 size="sm"
-                                className="h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
+                                className="min-h-[44px] text-xs bg-primary hover:bg-primary/90 text-primary-foreground gap-1 active:scale-95 transition-transform"
                                 onClick={(e) => { e.stopPropagation(); handleAddToCart(p) }}
                               >
-                                <ShoppingCart className="h-3 w-3" />
+                                <ShoppingCart className="h-3.5 w-3.5" />
                                 Adicionar
                               </Button>
                             </motion.div>

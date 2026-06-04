@@ -108,8 +108,8 @@ export function CategoryBar() {
 
   return (
     <div className="w-full relative r42-catbar-container" ref={containerRef}>
-      <div className="w-full overflow-x-auto hide-scrollbar -mx-4 px-4 r42-catbar-scroll-wrapper">
-        <div ref={scrollRef} className="flex gap-3 py-2 min-w-max relative r42-catbar-track">
+      <div className="w-full overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-4 px-4 r42-catbar-scroll-wrapper">
+        <div ref={scrollRef} className="flex gap-3 py-2 flex-nowrap relative r42-catbar-track">
           {/* Animated gradient border glow container */}
           <div className="absolute inset-x-0 -top-1 bottom-1 bg-gradient-to-r from-transparent via-primary/5 to-transparent rounded-lg pointer-events-none r42-catbar-glow-bg" />
 
@@ -130,7 +130,7 @@ export function CategoryBar() {
                   stiffness: 260,
                   damping: 24,
                 }}
-                className="flex flex-col items-center gap-1 min-w-[68px] group relative r39-category-btn r42-catbar-pill"
+                className="flex flex-col items-center gap-1 min-w-[68px] min-h-[48px] justify-center snap-start group relative r39-category-btn r42-catbar-pill"
                 onClick={(e) => handleCategoryClick(cat.id, isActive, e)}
                 onMouseEnter={() => setHoveredId(cat.id)}
                 onMouseLeave={() => setHoveredId(null)}
@@ -331,8 +331,8 @@ export function CategoryBar() {
       </div>
 
       {/* ── Scroll gradient fade edges ── */}
-      <div className="absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-background via-background/60 to-transparent pointer-events-none z-10 r42-catbar-fade-left" />
-      <div className="absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-background via-background/60 to-transparent pointer-events-none z-10 r42-catbar-fade-right" />
+      <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background via-background/80 to-transparent pointer-events-none z-10 r42-catbar-fade-left" />
+      <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background via-background/80 to-transparent pointer-events-none z-10 r42-catbar-fade-right" />
 
       {/* ── Animated scroll indicator arrows ── */}
       <AnimatePresence>

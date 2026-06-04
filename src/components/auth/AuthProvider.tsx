@@ -12,11 +12,11 @@ function AuthSync() {
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
       setCurrentUser({
-        id: (session.user as any).id,
+        id: session.user.id,
         email: session.user.email,
         name: session.user.name,
-        role: (session.user as any).role,
-        avatar: (session.user as any).avatar,
+        role: session.user.role,
+        avatar: session.user.avatar,
       })
     } else if (status === 'unauthenticated') {
       logoutUser()

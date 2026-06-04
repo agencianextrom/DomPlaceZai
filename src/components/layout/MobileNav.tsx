@@ -98,6 +98,7 @@ function NavButton({
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void
   registerRef: (el: HTMLButtonElement | null) => void
 }) {
+  const ariaLabel = isActive ? `${item.label} (página atual)` : `Ir para ${item.label}`
   // Small dot indicator below active tab
   const [dotWidth, setDotWidth] = useState(0)
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -134,8 +135,10 @@ function NavButton({
     <button
       ref={(el) => { registerRef(el); btnRef.current = el }}
       onClick={handleClick}
-      className="relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[44px] rounded-xl overflow-hidden select-none active:scale-95 transition-transform duration-150"
+      className="relative flex flex-col items-center justify-center gap-0.5 min-w-[52px] min-h-[48px] rounded-xl overflow-hidden select-none active:scale-95 transition-transform duration-150"
       aria-current={isActive ? 'page' : undefined}
+      aria-label={ariaLabel}
+      role="tab"
     >
       {/* Ripple layer */}
       {ripples.map((r) => (
@@ -187,6 +190,19 @@ function NavButton({
 export function MobileNav() {
   const { currentView, navigate, cartItems } = useAppStore()
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+  // Track cart count changes for pulse animation
+  const [prevCartCount, setPrevCartCount] = useState(cartCount)
+  const [cartPulse, setCartPulse] = useState(false)
+  useEffect(() => {
+    if (cartCount > prevCartCount) {
+      setCartPulse(true)
+      setPrevCartCount(cartCount)
+      const timer = setTimeout(() => setCartPulse(false), 600)
+      return () => clearTimeout(timer)
+    } else {
+      setPrevCartCount(cartCount)
+    }
+  }, [cartCount, prevCartCount])
   const { theme, setTheme } = useTheme()
   const mounted = useRef(false)
   const [activeTabX, setActiveTabX] = useState<number | undefined>(undefined)
@@ -230,6 +246,8 @@ export function MobileNav() {
       initial="hidden"
       animate="visible"
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+      role="tablist"
+      aria-label="Navegação principal"
     >
       {/* ── Top gradient accents ── */}
       <div className="absolute inset-x-0 -top-3 h-3 bg-gradient-to-b from-transparent to-black/[0.04] pointer-events-none dark:from-transparent dark:to-black/10 r44-mobnav-fade-top" />
@@ -242,8 +260,8 @@ export function MobileNav() {
           <motion.button
             whileTap={{ scale: 0.85 }}
             onClick={() => navigate('notifications')}
-            className="absolute -top-12 right-14 z-10 h-10 w-10 rounded-full bg-card/80 backdrop-blur-md border border-border/50 shadow-md flex items-center justify-center transition-colors hover:bg-secondary"
-            aria-label="Notificações"
+            className="absolute -top-12 right-14 z-10 h-10 w-10 rounded-full bg-card/80 backdrop-blur-md border border-border/50 shadow-md flex items-center justify-center transition-colors hover:bg-secondary active:scale-95"
+            aria-label="Abrir notificações"
           >
             <Bell className="h-4 w-4 text-muted-foreground" />
           </motion.button>
@@ -254,7 +272,7 @@ export function MobileNav() {
           <motion.button
             whileTap={{ scale: 0.85 }}
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="absolute -top-12 right-3 z-10 h-10 w-10 rounded-full bg-card/80 backdrop-blur-md border border-border/50 shadow-md flex items-center justify-center transition-colors hover:bg-secondary"
+            className="absolute -top-12 right-3 z-10 h-10 w-10 rounded-full bg-card/80 backdrop-blur-md border border-border/50 shadow-md flex items-center justify-center transition-colors hover:bg-secondary active:scale-95"
             aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
           >
             <AnimatePresence mode="wait">
@@ -315,6 +333,7 @@ export function MobileNav() {
             onClick={() => navigate('cart')}
             ref={registerCartRef}
             className="relative flex flex-col items-center justify-center -mt-5 min-w-[52px]"
+            aria-label={cartCount > 0 ? `Carrinho (${cartCount} itens)` : 'Carrinho vazio'}
           >
             <motion.div
               animate={{
@@ -340,6 +359,15 @@ export function MobileNav() {
                     className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-accent text-accent-foreground rounded-full shadow-sm border-2 border-background cart-badge-glow r44-mobnav-cart-glow"
                   >
                     {cartCount > 99 ? '99' : cartCount}
+                    {/* Pulse ring animation when count increases */}
+                    {cartPulse && (
+                      <motion.span
+                        initial={{ scale: 1, opacity: 0.7 }}
+                        animate={{ scale: 2.5, opacity: 0 }}
+                        transition={{ duration: 0.55, ease: 'easeOut' as const }}
+                        className="absolute inset-0 rounded-full bg-accent"
+                      />
+                    )}
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -377,7 +405,10 @@ export function MobileNav() {
         </div>
 
         {/* ── Safe area padding for iOS notch / home indicator ── */}
-        <div className="r44-mobnav-safe-area" />
+        <div
+          className="r44-mobnav-safe-area"
+          style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
+        />
       </div>
     </motion.nav>
   )

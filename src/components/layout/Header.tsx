@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, ShoppingCart, Search, User, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, LogOut, Star, X, Sun, Moon } from 'lucide-react'
+import { MapPin, ShoppingCart, Search, User, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, LogOut, Star, X, Sun, Moon, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -142,7 +142,7 @@ export function Header() {
             : '0 0 0 rgba(0,0,0,0)',
         }}
         transition={{ duration: 0.35, ease: 'easeOut' as const }}
-        className={`sticky top-0 z-50 transition-colors duration-300 safe-top r44-header-glass ${isScrolled ? 'r44-header-scrolled' : ''} relative`}
+        className={`sticky top-0 z-50 transition-colors duration-300 safe-top r44-header-glass ${isScrolled ? 'r44-header-scrolled' : ''} relative overflow-hidden`}
         style={{
           backdropFilter: `blur(${blurAmount}px)`,
           WebkitBackdropFilter: `blur(${blurAmount}px)`,
@@ -354,6 +354,41 @@ export function Header() {
                 <Search className="h-5 w-5" />
               </Button>
               
+              {/* Mobile share button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden h-10 w-10 active:scale-95 transition-transform"
+                onClick={async () => {
+                  const shareData: { title: string; text?: string; url: string } = {
+                    title: 'DomPlace - Marketplace de Dom Eliseu',
+                    url: typeof window !== 'undefined' ? window.location.href : 'https://domplace.com',
+                  }
+                  const selectedProduct = useAppStore.getState().selectedProduct
+                  const selectedStore = useAppStore.getState().selectedStore
+                  if (selectedProduct) {
+                    shareData.title = `${selectedProduct.name} - DomPlace`
+                    shareData.text = `${selectedProduct.name} por R$ ${selectedProduct.price.toFixed(2)}`
+                  } else if (selectedStore) {
+                    shareData.title = `${selectedStore.name} - DomPlace`
+                    shareData.text = selectedStore.description || `Loja no DomPlace`
+                  }
+                  if (typeof navigator !== 'undefined' && navigator.share) {
+                    try {
+                      await navigator.share(shareData)
+                    } catch {
+                      // User cancelled share
+                    }
+                  } else {
+                    // Fallback: copy to clipboard
+                    await navigator.clipboard.writeText(shareData.url)
+                  }
+                }}
+                aria-label="Compartilhar"
+              >
+                <Share2 className="h-[18px] w-[18px]" />
+              </Button>
+
               {/* Notifications */}
               <NotificationPanel />
               

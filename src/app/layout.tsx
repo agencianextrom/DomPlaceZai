@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -36,6 +36,15 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+  themeColor: '#6366f1',
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -69,7 +78,7 @@ export default function RootLayout({
             <div className="min-h-screen flex flex-col relative">
               <CursorGlow />
               <Header />
-              <main className="flex-1">
+              <main className="flex-1 pb-20 md:pb-4">
                 {children}
               </main>
               <BackToTop />

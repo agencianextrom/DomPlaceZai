@@ -11,11 +11,11 @@ interface ProductShareBarProps {
 }
 
 export function ProductShareBar({ product }: ProductShareBarProps) {
-  const { toggleFavoriteProduct, isFavoriteProduct, addToComparison, comparisonIds, navigate } = useAppStore()
+  const { toggleFavoriteProduct, isFavoriteProduct, toggleCompareProduct, compareProductIds, navigate } = useAppStore()
   const [linkCopied, setLinkCopied] = useState(false)
 
   const isFav = isFavoriteProduct(product.id)
-  const isComparing = comparisonIds.includes(product.id)
+  const isComparing = compareProductIds.includes(product.id)
 
   const heartBounce = isFav ? { scale: [1, 1.4, 0.9, 1.15, 1], transition: { duration: 0.6, type: 'spring' as const, stiffness: 400, damping: 10 } } : {}
 
@@ -76,11 +76,11 @@ export function ProductShareBar({ product }: ProductShareBarProps) {
       toast.info('Produto já está na comparação')
       return
     }
-    if (comparisonIds.length >= 4) {
+    if (compareProductIds.length >= 4) {
       toast.error('Máximo de 4 produtos para comparar')
       return
     }
-    addToComparison(product.id)
+    toggleCompareProduct(product.id)
     toast.success('Adicionado à comparação')
   }
 

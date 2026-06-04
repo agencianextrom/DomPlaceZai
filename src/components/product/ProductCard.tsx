@@ -423,6 +423,9 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 }}
                 onError={() => setImgError(true)}
                 loading="lazy"
+                decoding="async"
+                width={400}
+                height={400}
               />
               {/* Gradient overlay on image for better badge readability */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-[1]" />
@@ -572,10 +575,10 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             </div>
           )}
           
-          {/* Favorite button — top right, always visible */}
+          {/* Favorite button — top right, always visible — 44px touch target on mobile */}
           <button
             onClick={handleFavoriteClick}
-            className={`absolute z-10 h-7 w-7 rounded-full bg-white/80 dark:bg-black/40 flex items-center justify-center hover:bg-white dark:hover:bg-black/60 transition-colors heart-tap r44-heart-burst r44-heart-btn ${isFav ? 'is-fav' : ''} ${
+            className={`absolute z-10 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:h-7 sm:w-7 rounded-full bg-white/80 dark:bg-black/40 flex items-center justify-center hover:bg-white dark:hover:bg-black/60 transition-colors heart-tap r44-heart-burst r44-heart-btn active:scale-95 transition-transform ${isFav ? 'is-fav' : ''} ${
               showFreeShipping && !product.isOffer && discount === 0 ? 'top-12 left-2' : 'top-2 right-2'
             }`}
             aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
@@ -817,7 +820,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             {/* Large, bold price — with spring bounce animation on mount + shimmer */}
             <div className={`flex items-baseline gap-1.5 relative overflow-hidden rounded${product.comparePrice && product.comparePrice > product.price ? ' r33-product-card-price-flash' : ''}`}>
               <motion.span
-                className="text-base font-extrabold text-primary leading-none relative r41-price-gradient r44-price-gradient" 
+                className="text-base sm:text-lg font-extrabold text-primary leading-none relative r41-price-gradient r44-price-gradient" 
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: 'spring' as const, stiffness: 300, damping: 15, delay: Math.min(index * 0.05 + 0.3, 0.7) }}
@@ -833,7 +836,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             
             {/* Rating stars + review count — with shimmer */}
             {product.rating > 0 && (
-              <div className="flex items-center gap-1 mt-1">
+              <div className="flex items-center gap-1 mt-1 min-h-[44px] -ml-1 pl-1 sm:min-h-0 sm:ml-0 sm:pl-0">
                 <StarRating rating={product.rating} />
                 <span className="text-[10px] text-muted-foreground ml-0.5">
                   ({product.totalReviews})
@@ -876,7 +879,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={handleFavoriteClick}
-              className="h-7 w-7 rounded-lg flex items-center justify-center bg-muted/60 hover:bg-muted transition-colors"
+              className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:h-7 sm:w-7 rounded-lg flex items-center justify-center bg-muted/60 hover:bg-muted transition-colors"
               aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
             >
               <Heart className={`h-3.5 w-3.5 transition-colors ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
@@ -884,7 +887,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={handleQuickView}
-              className="h-7 w-7 rounded-lg flex items-center justify-center bg-muted/60 hover:bg-muted transition-colors"
+              className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:h-7 sm:w-7 rounded-lg flex items-center justify-center bg-muted/60 hover:bg-muted transition-colors"
               aria-label="Visualização rápida"
             >
               <Eye className="h-3.5 w-3.5 text-muted-foreground" />
@@ -892,11 +895,15 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={handleAddToCart}
-              className="h-7 w-7 rounded-lg flex items-center justify-center bg-muted/60 hover:bg-muted transition-colors"
+              className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:h-7 sm:w-7 rounded-lg flex items-center justify-center bg-muted/60 hover:bg-muted transition-colors"
               aria-label="Adicionar ao carrinho"
             >
               <ShoppingCart className="h-3.5 w-3.5 text-muted-foreground" />
             </motion.button>
+            {/* Swipe-to-add hint (mobile only) */}
+            <span className="ml-auto text-[9px] text-muted-foreground/50 lg:hidden select-none">
+              deslize para adicionar
+            </span>
           </div>
         </div>
 

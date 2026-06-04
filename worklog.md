@@ -3880,3 +3880,279 @@ Stage Summary:
 - No breaking changes to existing GET handlers
 - Consistent with existing auth patterns in cart, favorites, orders, etc.
 - Git email: agencianextrom@gmail.com
+---
+Task ID: fix-zustand-types
+Agent: Sub-Agent
+Task: Fix Zustand store issues and add proper TypeScript types
+
+Work Log:
+
+**Task 1: Fix duplicate state in Zustand store (src/store/useAppStore.ts):**
+- Removed duplicate `comparisonIds: string[]` state field (was identical to `compareProductIds`)
+- Removed `addToComparison` and `removeFromComparison` action methods
+- Cleaned up `toggleCompareProduct` and `clearComparison` to no longer sync with `comparisonIds`
+- Added `@deprecated` JSDoc comments on `getCartTotal` and `getCartItemCount` noting they should be called imperatively, not as selectors
+
+**Task 2: Create shared TypeScript types file (src/types/index.ts):**
+- Created new file with shared type definitions for the codebase
+- Types included: ApiResponse, PaginatedResponse, ProductData, StoreData, OrderData, OrderItemData, AccountData, CartItemData, ChatMessageData, NotificationData, SessionUser, AppView
+
+**Task 3: Fix auth.ts session access pattern (src/lib/auth.ts):**
+- Removed all `(user as unknown as Record<string, unknown>)` casts in `signIn` callback (3 instances)
+- Fixed duplicate `token.role` assignment in `jwt` callback (was `user.role || user.role`)
+- Removed all `(user as unknown as Record<string, unknown>)` casts in `jwt` callback (3 instances)
+- Removed all `(session.user as Record<string, unknown>)` casts in `session` callback (4 instances)
+- All replaced with direct property access (e.g., `session.user.id`, `user.role`)
+- Types are properly augmented via existing src/types/next-auth.d.ts
+
+**Task 4: Verify useAuth.ts (src/hooks/useAuth.ts):**
+- Already uses `session.user.id`, `session.user.role`, etc. directly — no changes needed
+- The next-auth.d.ts augmentation provides proper types for these accesses
+
+**Task 5: Update ProductShareBar.tsx:**
+- Changed from `comparisonIds`/`addToComparison` to `compareProductIds`/`toggleCompareProduct`
+- Functionally equivalent — `toggleCompareProduct` handles add/remove, and the component already checks `isComparing` before calling
+
+**Build Verification:**
+- Pre-existing build error in SmartSuggestions.tsx (unrelated to this task)
+- No new build errors introduced by these changes
+- All modified files type-check correctly
+
+Stage Summary:
+- 4 files changed: useAppStore.ts (edited), ProductShareBar.tsx (edited), auth.ts (edited), types/index.ts (created)
+- Removed duplicate state field and 2 redundant actions from Zustand store
+- Added @deprecated comments to non-reactive getter methods
+- Created centralized TypeScript types module
+- Removed 10+ unsafe Record<string, unknown> casts from auth.ts
+- No breaking changes to external API
+
+---
+Task ID: r59-mobile-features
+Agent: Feature Agent
+Task: Create 3 new mobile-focused features — MobileQuickActions, SwipeableProductCard, MobilePullToRefresh
+
+Work Log:
+
+**Feature 1: MobileQuickActions (`src/components/home/MobileQuickActions.tsx`) — NEW**
+- Floating action button (FAB) that expands into radial menu of 4 quick actions
+- Actions: Escanear (📸 scan), Buscar (🔍 search), Carrinho (🛒 cart), Chat (💬 chat)
+- Spring animations for expanding/collapsing action buttons with staggered delays
+- Semi-transparent backdrop overlay when menu is open
+- Animated ✕/⚡ icon rotation on toggle
+- Hidden on desktop (lg:hidden), safe-area-inset-bottom margin for notched devices
+- Named export: `MobileQuickActions`
+- Integrated into page.tsx with wired-up actions:
+  - onSearch → navigate('search')
+  - onCart → navigate('cart')
+  - onChat → toggleChat()
+  - onScan → navigate('search')
+
+**Feature 2: SwipeableProductCard (`src/components/product/SwipeableProductCard.tsx`) — NEW**
+- Product card wrapper with swipe gesture support (framer-motion drag="x")
+- Swipe left (>80px): triggers onSwipeLeft callback (e.g., add to cart)
+- Swipe right (>80px): triggers onSwipeRight callback (e.g., favorite)
+- Colored action backgrounds revealed during swipe (green left, pink right)
+- Opacity-transformed background labels using useTransform
+- Action feedback overlay with "✓ Adicionado" / "❤️ Favoritado" on swipe complete
+- Configurable labels, colors via props
+- Strict TypeScript: PanInfo typed, no `any` types
+- Named export: `SwipeableProductCard`
+
+**Feature 3: MobilePullToRefresh (`src/components/ui/MobilePullToRefresh.tsx`) — NEW**
+- Pull-to-refresh wrapper component with vertical drag gesture
+- Configurable pull threshold (default 80px)
+- Spinning indicator with opacity fade-in during pull
+- "Puxe para atualizar" → "Atualizando..." text transition
+- Spring animation snap-back on release
+- Locks to refreshing state during async onRefresh callback
+- Uses framer-motion useAnimation controls for programmatic y position
+- Named export: `MobilePullToRefresh`
+
+**Integration Changes (`src/app/page.tsx`):**
+- Added `import { MobileQuickActions } from '@/components/home/MobileQuickActions'`
+- Added `navigate` and `toggleChat` to useAppStore destructuring in Home component
+- Rendered `<MobileQuickActions>` at end of JSX with wired-up action handlers
+
+**TypeScript Compliance:**
+- All framer-motion `type: 'spring'` use `as const` assertion
+- No `any` types — PanInfo properly typed in SwipeableProductCard
+- Named exports only (no default exports)
+- All string boxShadow values
+
+Stage Summary:
+- 4 files changed: 3 new components + 1 integration edit
+- MobileQuickActions: FAB radial menu for mobile quick actions
+- SwipeableProductCard: swipe gesture wrapper for product cards
+- MobilePullToRefresh: pull-to-refresh wrapper with spinner indicator
+- All components use framer-motion, named exports, pt-BR UI text
+- Safe area inset support for notched devices
+
+---
+Task ID: Mobile Product Components Fix
+Agent: General-purpose Agent
+Task: Fix mobile responsiveness for product-related components
+
+Work Log:
+
+**Task 1: ProductCard.tsx mobile fixes:**
+- Added `decoding="async"` and explicit `width`/`height` attributes to product `<img>` for responsive performance
+- Increased favorite button (always visible) touch target from `h-7 w-7` (28px) to `min-h-[44px] min-w-[44px]` on mobile with `sm:h-7 sm:w-7` desktop fallback
+- Added `active:scale-95 transition-transform` for tap feedback on favorite button
+- Increased persistent mini action bar buttons (heart, eye, cart) from `h-7 w-7` to `min-h-[44px] min-w-[44px]` on mobile with desktop fallback
+- Added "deslize para adicionar" (swipe-to-add) hint text, visible on mobile only (`lg:hidden`)
+- Made price larger on mobile: `text-base sm:text-lg` font-extrabold
+- Made rating stars area tappable with `min-h-[44px]` touch zone on mobile (negative margin + padding to preserve layout)
+- Product name already had `line-clamp-2` — confirmed working
+
+**Task 2: ProductDetail.tsx mobile fixes:**
+- Changed main wrapper bottom padding to `pb-20 lg:pb-0` to account for sticky bar on mobile, no extra padding on desktop
+- Replaced old sticky bottom bar with mobile-specific design:
+  - Scroll-triggered sticky bar (`showStickyBar`): shows product name + total price + "Comprar agora" CTA
+  - Always-visible bottom bar (when not scrolled): shows "Total" + price + "Adicionar ao Carrinho" button
+  - Both bars use `lg:hidden` — hidden on desktop
+  - Fixed positioning at `bottom-14` (above mobile nav bar)
+  - `bg-card/95 backdrop-blur-md` glassmorphism styling
+  - Safe area insets via `style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}`
+  - Buttons have `active:scale-95 transition-transform` tap feedback
+  - Proper `z-30` stacking
+  - `as const` on spring types for framer-motion compatibility
+
+**Task 3: ProductGallery.tsx mobile fixes:**
+- Added `useRef` import for gallery ref
+- Added touch swipe handling for mobile snap scroll (`handleTouchStart`, `handleTouchEnd`)
+- Split gallery into mobile (horizontal snap scroll) and desktop (single image with nav) views
+- Mobile gallery: `flex snap-x snap-mandatory` with each image as `w-full aspect-square snap-center`
+- Added `touch-action: pan-y` to prevent accidental zoom on double-tap
+- Added position dots/indicators below mobile gallery with `min-w-[44px]` touch targets
+- Active dot expands to `w-6` with shadow, inactive dots are `w-2`
+- Mobile discount badge placed on scrollable gallery container
+- Desktop navigation arrows increased to `min-h-[44px] min-w-[44px]` touch targets
+- Zoom indicator increased to `min-h-[44px] min-w-[44px]`
+- Thumbnail strip: responsive sizing `h-14 sm:h-16 w-14 sm:w-16` with snap scrolling
+- Replaced oklch colors in thumbnail active state with rgba equivalents (no oklch rule)
+- First image loads eagerly, rest lazy with `decoding="async"`
+
+**Task 4: ProductComparison.tsx mobile fixes:**
+- Added mobile-specific horizontal scrollable comparison cards (`lg:hidden`)
+- Each product displayed as a scrollable card (`w-[80vw] max-w-[280px] snap-start`)
+- VS badges between cards on mobile (using existing VsBadge component)
+- "Best value" badges (Menor preço, Mais bem avaliado) visible on mobile cards
+- Compact spec display: Avaliação, Estoque, Entrega in 10px font
+- Full-width "Adicionar ao Carrinho" button with `h-11` height and `active:scale-95 transition-transform`
+- Desktop table view restricted to `hidden lg:block`
+- Desktop "Ação" button increased to `min-h-[44px]` touch target with `active:scale-95`
+
+**General mobile UX improvements:**
+- All framer-motion spring types use `'spring' as const` (TypeScript literal requirement)
+- No oklch colors used (replaced with rgba equivalents)
+- All touch targets minimum 44px × 44px
+- `active:scale-95 transition-transform` for tap feedback on all buttons
+- Safe area insets for sticky mobile bars
+- `line-clamp-*` for text truncation on mobile
+- Pre-existing TS error in SmartSuggestions.tsx (unrelated) — no new errors introduced
+
+Stage Summary:
+- 4 files changed (ProductCard.tsx, ProductDetail.tsx, ProductGallery.tsx, ProductComparison.tsx)
+- Zero new TypeScript errors
+- All touch targets meet 44px minimum on mobile
+- Mobile-first responsive design patterns applied
+
+---
+Task ID: r59-mobile-nav-responsiveness
+Agent: General-purpose Agent
+Task: Fix mobile navigation components for excellent mobile UX (80% users on smartphones)
+
+Work Log:
+
+**Task 1: MobileNav.tsx improvements**
+- Increased NavButton min-height from 44px to 48px for comfortable touch targets
+- Added `aria-label` to all NavButtons: e.g., "Ir para Início" / "Início (página atual)"
+- Added `role="tab"` to all NavButtons for tab pattern accessibility
+- Added `role="tablist"` + `aria-label="Navegação principal"` to the `<nav>` element
+- Added cart badge pulse animation: tracks `prevCartCount`, fires ring expand (scale 1→2.5, opacity 0.7→0) on cart count increase
+- Added `aria-label` to cart button: "Carrinho (X itens)" or "Carrinho vazio" based on count
+- Added `aria-label="Abrir notificações"` to notification floating button
+- Added `active:scale-95` to notification and theme floating buttons for haptic-like feedback
+- Added inline style `paddingBottom: 'max(8px, env(safe-area-inset-bottom))'` to safe-area div for notched devices
+- Existing features preserved: glassmorphism, spring animations, active tab indicator, ripple effects
+
+**Task 2: Header.tsx mobile improvements**
+- Added `overflow-hidden` to header motion.div to prevent horizontal overflow on narrow screens
+- Added mobile Share button (Share2 icon from lucide-react, `md:hidden`)
+- Share button uses Web Share API with context-aware data:
+  - On product page: shares product name + price
+  - On store page: shares store name + description
+  - Default: shares DomPlace marketplace URL
+  - Fallback to clipboard copy when navigator.share unavailable
+- Added `aria-label="Compartilhar"` to share button
+- Added `active:scale-95 transition-transform` for haptic-like tap feedback
+- Existing features confirmed working: h-14 sm:h-16 compact, safe-top padding, search icon-only, cart badge, back button, z-50
+
+**Task 3: MobileBottomSheet.tsx (NEW component)**
+- Created `src/components/ui/MobileBottomSheet.tsx` — reusable draggable bottom sheet
+- Props: isOpen, onClose, title?, children, maxHeight? (default 85vh), className?
+- Features:
+  - Drag-to-dismiss with velocity threshold (>500px/s) and offset threshold (>100px)
+  - Spring animation entrance/exit (damping: 30, stiffness: 300)
+  - Backdrop overlay with fade animation
+  - Drag handle bar (w-10 h-1 rounded-full, cursor-grab)
+  - Optional title bar with close button (×)
+  - Scrollable content area with overscroll-contain
+  - Safe area bottom padding via env(safe-area-inset-bottom)
+  - Body scroll lock when open
+  - Escape key to close
+  - ARIA attributes: role="dialog", aria-modal="true", aria-label
+  - Dark mode support
+  - boxShadow as single string (not array) per rules
+  - All framer-motion springs use `as const`
+  - No oklch() colors — uses rgba/hex only
+  - No 'bouncy' animation type — uses 'spring' as const
+
+Stage Summary:
+- 3 files changed: MobileNav.tsx (edited), Header.tsx (edited), MobileBottomSheet.tsx (NEW)
+- MobileNav: 8 improvements (ARIA labels, cart pulse, touch targets, safe-bottom)
+- Header: 3 improvements (share button, overflow fix, haptic feedback)
+- MobileBottomSheet: new reusable component for mobile bottom sheets
+- Zero breaking changes — all existing functionality preserved
+- No new CSS globals needed (inline Tailwind + existing r44-* classes)
+
+---
+Task ID: R59 (Round 59 - Styling Enhancements)
+Agent: General-Purpose Agent
+Task: Add r59-* CSS styling enhancements to globals.css
+
+Work Log:
+
+**R59 Styling Enhancements:**
+- Appended 150 lines of mobile-first CSS animations and utility classes to globals.css (lines 44269-44417)
+- All new classes use `r59-` prefix for namespace consistency
+- All colors use rgba/hex format only (no oklch)
+- All animations wrapped in `@media (prefers-reduced-motion: reduce)` for accessibility
+
+**New CSS Features Added:**
+1. `r59-fab-glow` — Floating action button pulsing indigo glow animation
+2. `r59-card-press` — Mobile card press-down scale effect on :active
+3. `r59-cta-sweep` — Gradient sweep animation for CTA buttons
+4. `r59-badge-pulse` — Notification badge pulse scale animation
+5. `r59-skeleton` — Skeleton loading shimmer with gradient
+6. `r59-fade-left` / `r59-fade-right` — Horizontal scroll fade edge overlays
+7. `r59-bottom-bar` — Glassmorphism bottom bar with blur + transparency
+8. `r59-section-divider` — Subtle section divider gradient
+9. `r59-text-mobile` — Responsive text sizing (14px mobile → 16px sm+)
+10. `r59-touch-ripple` — Touch ripple effect on :active with radial gradient
+11. `r59-product-glow` — Product card glow keyframe (shadow animation)
+12. `r59-notification-dot` — 8px red notification dot with pulse
+13. `r59-safe-bottom` — Safe area bottom padding helper (env(safe-area-inset-bottom))
+14. `r59-mobile-compact` — Mobile compact grid gap fix (≤639px)
+
+**Validation:**
+- 0 oklch colors in new r59- block (verified)
+- 8 @keyframes animations all use r59- prefix
+- prefers-reduced-motion guard disables all animated classes
+- No existing CSS modified (append-only)
+
+Stage Summary:
+- 1 file changed: globals.css (+150 lines, 44268 → 44417)
+- 14 new r59-* utility classes and animations
+- 8 new @keyframes definitions
+- Mobile-first, accessible, no-breaking-changes

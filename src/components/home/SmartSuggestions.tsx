@@ -413,6 +413,7 @@ export function SmartSuggestions() {
             </div>
           </motion.div>
         </motion.div>
+        </div>
       )}
     </section>
   )

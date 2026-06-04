@@ -227,7 +227,7 @@ export function Footer() {
       {/* ──────────────────────────────────────
           FEATURE 2: Animated Gradient Mesh Background
           ────────────────────────────────────── */}
-      <footer className="footer-glass relative footer-gradient-mesh r43-footer-glass-enhanced">
+      <footer className="footer-glass relative footer-gradient-mesh r43-footer-glass-enhanced r59-safe-bottom">
         {/* Animated gradient orbs */}
         <div className="footer-mesh-orb footer-mesh-orb-1" />
         {/* Floating gradient orbs */}

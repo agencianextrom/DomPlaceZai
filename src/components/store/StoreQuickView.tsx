@@ -61,7 +61,7 @@ const particles = [
 ]
 
 // Animated counter component for stats
-function AnimatedStatCounter({ target, label, icon: Icon }: { target: number; label: string; icon: any }) {
+function AnimatedStatCounter({ target, label, icon: Icon }: { target: number; label: string; icon: React.ComponentType<{ className?: string }> }) {
   const [count, setCount] = useState(0)
 
   useEffect(() => {

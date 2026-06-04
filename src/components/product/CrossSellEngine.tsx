@@ -132,10 +132,9 @@ const connectorVariants = {
   },
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const priceAnimate: any = {
+const priceAnimate = {
   scale: [1, 1.08, 1],
-  transition: { duration: 0.4, ease: 'easeInOut' },
+  transition: { duration: 0.4, ease: 'easeInOut' as const },
 }
 
 const shimmerKeyframes = {

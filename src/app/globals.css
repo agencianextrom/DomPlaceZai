@@ -115,12 +115,21 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
+    -webkit-overflow-scrolling: touch;
   }
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overscroll-behavior-y: contain;
   }
 }
 
@@ -44079,5 +44088,330 @@
   }
   .r59-rating-milestone-reached {
     animation: r59-milestone-glow 2.5s ease-in-out infinite;
+  }
+}
+
+/* ===== R59: Mobile-First Responsive Utilities ===== */
+
+/* Ensure main content is never hidden behind fixed MobileNav (64px + safe area) */
+@media (max-width: 767px) {
+  .r59-mob-content-pad {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px) !important;
+  }
+}
+
+/* Prevent horizontal overflow on mobile */
+.r59-mob-overflow-wrap {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Touch-friendly minimum sizing */
+.r59-touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Safe area for bottom fixed elements */
+.r59-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ===== R59: Mobile-First Responsive Utilities ===== */
+@layer utilities {
+  /* Safe area padding for notched devices */
+  .safe-top { padding-top: env(safe-area-inset-top, 0px); }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .safe-left { padding-left: env(safe-area-inset-left, 0px); }
+  .safe-right { padding-right: env(safe-area-inset-right, 0px); }
+  .safe-all { 
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* Touch-friendly tap targets (min 44px) */
+  .tap-target {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide scrollbar but keep scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Prevent text selection on interactive elements */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Mobile text truncation */
+  .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* Mobile container padding */
+  .mobile-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  @media (min-width: 640px) {
+    .mobile-container { padding-left: 24px; padding-right: 24px; }
+  }
+  @media (min-width: 1024px) {
+    .mobile-container { padding-left: 32px; padding-right: 32px; max-width: 1280px; margin: 0 auto; }
+  }
+
+  /* Glassmorphism mobile card */
+  .glass-card-mobile {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* Mobile bottom sheet */
+  .bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    border-radius: 20px 20px 0 0;
+    max-height: 85vh;
+    max-height: 85dvh;
+    overflow-y: auto;
+    background: white;
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Bottom sheet drag handle */
+  .bottom-sheet-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: #d1d5db;
+    margin: 8px auto 0;
+  }
+
+  /* Responsive grid for mobile-first */
+  .grid-mobile {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 640px) {
+    .grid-mobile { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  }
+  @media (min-width: 1024px) {
+    .grid-mobile { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  }
+  @media (min-width: 1280px) {
+    .grid-mobile { grid-template-columns: repeat(5, 1fr); gap: 24px; }
+  }
+}
+
+/* R59: Mobile Swipe & Gesture Animations */
+@keyframes r59-slide-up-mobile {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes r59-slide-down-mobile {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100%); opacity: 0; }
+}
+@keyframes r59-slide-left-mobile {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes r59-slide-right-mobile {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes r59-pulse-touch {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+}
+@keyframes r59-ripple {
+  0% { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(4); opacity: 0; }
+}
+@keyframes r59-shake-mobile {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.r59-slide-up { animation: r59-slide-up-mobile 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
+.r59-slide-down { animation: r59-slide-down-mobile 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
+.r59-slide-left { animation: r59-slide-left-mobile 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
+.r59-slide-right { animation: r59-slide-right-mobile 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
+.r59-pulse-touch:active { animation: r59-pulse-touch 0.15s ease; }
+.r59-shake { animation: r59-shake-mobile 0.5s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .r59-slide-up, .r59-slide-down, .r59-slide-left, .r59-slide-right,
+  .r59-pulse-touch:active, .r59-shake {
+    animation: none !important;
+  }
+}
+
+/* ===== R59: Mobile-First Styling Enhancements ===== */
+
+/* Floating action button glow */
+@keyframes r59-fab-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.4), 0 4px 15px rgba(0, 0, 0, 0.15); }
+  50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.6), 0 4px 20px rgba(0, 0, 0, 0.2); }
+}
+.r59-fab-glow { animation: r59-fab-glow 2s ease-in-out infinite; }
+
+/* Mobile card press effect */
+@keyframes r59-card-press {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.97); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+  100% { transform: scale(1); }
+}
+.r59-card-press:active { animation: r59-card-press 0.2s ease; }
+
+/* Gradient sweep for mobile CTA buttons */
+@keyframes r59-cta-sweep {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.r59-cta-sweep {
+  background-size: 200% 100%;
+  background-image: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+  animation: r59-cta-sweep 3s ease-in-out infinite;
+}
+
+/* Badge pulse for mobile notifications */
+@keyframes r59-badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+.r59-badge-pulse { animation: r59-badge-pulse 1.5s ease-in-out infinite; }
+
+/* Skeleton shimmer for mobile loading */
+@keyframes r59-skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.r59-skeleton {
+  background: linear-gradient(90deg, rgba(0,0,0,0.04) 25%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 75%);
+  background-size: 200% 100%;
+  animation: r59-skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* Horizontal scroll fade edges */
+.r59-fade-left,
+.r59-fade-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  z-index: 2;
+  pointer-events: none;
+}
+.r59-fade-left {
+  left: 0;
+  background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+}
+.r59-fade-right {
+  right: 0;
+  background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+}
+
+/* Mobile bottom bar glassmorphism */
+.r59-bottom-bar {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Mobile section divider */
+.r59-section-divider {
+  height: 8px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.03), transparent);
+}
+
+/* Responsive text sizing */
+.r59-text-mobile {
+  font-size: 14px;
+  line-height: 1.5;
+}
+@media (min-width: 640px) {
+  .r59-text-mobile { font-size: 16px; line-height: 1.6; }
+}
+
+/* Touch ripple effect */
+@keyframes r59-touch-ripple {
+  0% { transform: scale(0); opacity: 0.4; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+.r59-touch-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+.r59-touch-ripple:active::after {
+  animation: r59-touch-ripple 0.4s ease-out;
+}
+
+/* Product card mobile hover/press glow */
+@keyframes r59-product-glow {
+  0%, 100% { box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  50% { box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15); }
+}
+
+/* Mobile notification dot */
+.r59-notification-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: r59-badge-pulse 1.5s ease-in-out infinite;
+}
+
+/* Safe area bottom padding helper */
+.r59-safe-bottom {
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+}
+
+/* Mobile grid gap fix */
+@media (max-width: 639px) {
+  .r59-mobile-compact {
+    gap: 8px;
+    padding: 12px;
+  }
+}
+
+/* Wrapping animations in prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .r59-fab-glow,
+  .r59-card-press:active,
+  .r59-cta-sweep,
+  .r59-badge-pulse,
+  .r59-skeleton,
+  .r59-touch-ripple::after,
+  .r59-product-glow,
+  .r59-notification-dot {
+    animation: none !important;
   }
 }

@@ -1290,7 +1290,7 @@ function RecipeDetailModal({
                   Nutrition Facts
                   <span className="text-[10px] font-normal text-muted-foreground">(per serving)</span>
                 </h3>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                   {[
                     { label: 'Calories', value: recipe.nutrition.calories, unit: 'kcal', color: '#f97316' },
                     { label: 'Protein', value: recipe.nutrition.protein, unit: 'g', color: '#3b82f6' },

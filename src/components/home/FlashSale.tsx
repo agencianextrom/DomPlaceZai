@@ -214,7 +214,7 @@ function useFlashCountdown() {
 
 function FlashSaleCardSkeleton() {
   return (
-    <div className="shrink-0 w-[155px] sm:w-[175px]">
+    <div className="shrink-0 w-[200px] sm:w-[220px]">
       <Card className="overflow-hidden h-full">
         <CardContent className="p-0 h-full flex flex-col">
           <Skeleton className="aspect-square w-full" />
@@ -424,8 +424,8 @@ export function FlashSale() {
       <div className="absolute inset-0 gradient-mesh opacity-50 pointer-events-none" />
       <div className="relative">
         <div className="bg-gradient-to-r from-red-50 via-orange-50 to-amber-50 dark:from-red-900/10 dark:via-orange-900/10 dark:to-amber-900/10 rounded-2xl border border-red-200/50 dark:border-red-800/30 overflow-hidden glass-card-hover r17-flash-glow-border r27-gradient-border">
-          {/* ── r39 animated fire/torch effect behind header ── */}
-          <div className="absolute top-0 left-0 right-0 h-16 overflow-hidden pointer-events-none r39-fire-torch-effect" />
+          {/* ── r39 animated fire/torch effect behind header — hidden on mobile ── */}
+          <div className="absolute top-0 left-0 right-0 h-16 overflow-hidden pointer-events-none r39-fire-torch-effect hidden sm:block" />
 
           {/* Header */}
           <div className="flex items-center justify-between px-4 pt-4 pb-3">
@@ -563,7 +563,7 @@ export function FlashSale() {
                       </Button>
                     </div>
                   ) : (
-                    <div id="flash-sale-scroll" className="flex gap-3 overflow-x-auto hide-scrollbar px-4 pb-4 r44-scroll-fade-edges r44-scroll-snap">
+                    <div id="flash-sale-scroll" className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-4 pb-4 r44-scroll-fade-edges r44-scroll-snap">
                       {/* Loading skeletons */}
                       {isLoading && (
                         <>
@@ -590,7 +590,7 @@ export function FlashSale() {
                         return (
                           <motion.div
                             key={product.id}
-                            className="shrink-0 w-[155px] sm:w-[175px]"
+                            className="shrink-0 w-[200px] sm:w-[220px] snap-start"
                             /* ── Enhanced stagger animations (increased delay) ── */
                             initial={{ opacity: 0, y: 24, scale: 0.92 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -607,8 +607,8 @@ export function FlashSale() {
                                   {/* r36 shimmer sweep overlay */}
                                   <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none z-10">
                                     <div className="absolute inset-0 r36-flash-shimmer" />
-                                    {/* r58 scanning line effect */}
-                                    <div className="absolute inset-0 r58-flash-scan-line" />
+                                    {/* r58 scanning line effect — hidden on mobile */}
+                                    <div className="absolute inset-0 r58-flash-scan-line hidden sm:block" />
                                   </div>
                                   {/* Image */}
                                   <div className={`relative aspect-square flex items-center justify-center bg-gradient-to-br ${gradient} overflow-hidden`}>

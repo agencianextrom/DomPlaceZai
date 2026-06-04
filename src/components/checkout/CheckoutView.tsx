@@ -106,7 +106,21 @@ export function CheckoutView() {
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
   const [couponError, setCouponError] = useState('')
-  const [createdOrder, setCreatedOrder] = useState<any>(null)
+  const [createdOrder, setCreatedOrder] = useState<{
+    id: string
+    orderNumber: string
+    storeId: string
+    storeName: string
+    status: string
+    subtotal: number
+    deliveryFee: number
+    discount: number
+    total: number
+    paymentMethod: string
+    deliveryType: string
+    createdAt: string
+    items?: { productName: string; quantity: number; price: number; total: number; productImage?: string | null }[]
+  } | null>(null)
   const [pixQrCode, setPixQrCode] = useState<string | null>(null)
   const [pixQrCodeText, setPixQrCodeText] = useState<string | null>(null)
   const [cepLoading, setCepLoading] = useState(false)
@@ -225,7 +239,22 @@ export function CheckoutView() {
         ? `${address.street}, ${address.number}${address.complement ? ` - ${address.complement}` : ''}, ${address.neighborhood}, ${address.city} - ${address.state}${address.zip ? ` (${address.zip})` : ''}${address.reference ? ` [${address.reference}]` : ''}`
         : null
 
-      const requestBody: any = {
+      const requestBody: {
+        storeId: string
+        items: Array<{
+          productId: string
+          productName?: string
+          productImage?: string | null
+          price: number
+          quantity: number
+        }>
+        deliveryType: string
+        deliveryAddress: string | null
+        paymentMethod: string
+        notes: string
+        discount: number
+        accountId?: string
+      } = {
         storeId: primaryGroup.storeId,
         items: orderItems,
         deliveryType,
@@ -466,7 +495,7 @@ export function CheckoutView() {
             >
               <p className="text-xs text-muted-foreground mb-2">{createdOrder.storeName}</p>
               <div className="space-y-1.5 text-sm">
-                {createdOrder.items?.map((item: any, idx: number) => (
+                {createdOrder.items?.map((item, idx: number) => (
                   <div key={idx} className="flex justify-between">
                     <span className="text-muted-foreground">{item.quantity}x {item.productName}</span>
                     <span className="font-medium">{formatBRL(item.total)}</span>
@@ -508,7 +537,7 @@ export function CheckoutView() {
   }
 
   return (
-    <div className="min-h-screen pb-28 md:pb-4">
+    <div className="min-h-screen pb-24 lg:pb-0">
       {/* Header */}
       <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-strong border-b border-border/50 -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center gap-3">
@@ -588,7 +617,7 @@ export function CheckoutView() {
                     onClick={() => setDeliveryType('DELIVERY')}
                     className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                       deliveryType === 'DELIVERY'
-                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]'
+                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_rgba(16,185,129,0.12)]'
                         : 'border-border hover:border-primary/30 hover:shadow-sm'
                     }`}
                   >
@@ -613,7 +642,7 @@ export function CheckoutView() {
                     onClick={() => setDeliveryType('PICKUP')}
                     className={`p-4 rounded-xl border-2 text-left transition-all duration-200 relative ${
                       deliveryType === 'PICKUP'
-                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]'
+                        ? 'border-primary bg-primary/5 shadow-[0_2px_12px_rgba(16,185,129,0.12)]'
                         : 'border-border hover:border-primary/30 hover:shadow-sm'
                     }`}
                   >
@@ -696,7 +725,7 @@ export function CheckoutView() {
                             placeholder="Ex: Rua Principal"
                             value={address.street}
                             onChange={(e) => setAddress({...address, street: e.target.value})}
-                            className="mt-1"
+                            className="mt-1 min-h-12"
                           />
                         </div>
                         <div>
@@ -705,7 +734,7 @@ export function CheckoutView() {
                             placeholder="Ex: 123"
                             value={address.number}
                             onChange={(e) => setAddress({...address, number: e.target.value})}
-                            className="mt-1"
+                            className="mt-1 min-h-12"
                           />
                         </div>
                         <div>
@@ -714,7 +743,7 @@ export function CheckoutView() {
                             placeholder="Ex: Apt 4B"
                             value={address.complement}
                             onChange={(e) => setAddress({...address, complement: e.target.value})}
-                            className="mt-1"
+                            className="mt-1 min-h-12"
                           />
                         </div>
                         <div>
@@ -723,7 +752,7 @@ export function CheckoutView() {
                             placeholder="Ex: Centro"
                             value={address.neighborhood}
                             onChange={(e) => setAddress({...address, neighborhood: e.target.value})}
-                            className="mt-1"
+                            className="mt-1 min-h-12"
                           />
                         </div>
                         <div>
@@ -755,7 +784,7 @@ export function CheckoutView() {
                           <Input
                             value={address.city}
                             onChange={(e) => setAddress({...address, city: e.target.value})}
-                            className="mt-1"
+                            className="mt-1 min-h-12"
                           />
                         </div>
                         <div>
@@ -763,7 +792,7 @@ export function CheckoutView() {
                           <Input
                             value={address.state}
                             onChange={(e) => setAddress({...address, state: e.target.value})}
-                            className="mt-1"
+                            className="mt-1 min-h-12"
                           />
                         </div>
                         <div className="sm:col-span-2">
@@ -772,7 +801,7 @@ export function CheckoutView() {
                             placeholder="Ex: Próximo ao mercado"
                             value={address.reference}
                             onChange={(e) => setAddress({...address, reference: e.target.value})}
-                            className="mt-1"
+                            className="mt-1 min-h-12"
                           />
                         </div>
                       </div>
@@ -820,7 +849,7 @@ export function CheckoutView() {
                           onClick={() => setDeliveryTime(option.id)}
                           className={`p-3 rounded-xl border-2 text-left transition-all duration-200 relative ${
                             deliveryTime === option.id
-                              ? 'border-primary bg-primary/5 shadow-[0_2px_12px_oklch(0.45_0.1_155/0.12)]'
+                              ? 'border-primary bg-primary/5 shadow-[0_2px_12px_rgba(16,185,129,0.12)]'
                               : 'border-border hover:border-primary/30 hover:shadow-sm'
                           }`}
                         >
@@ -862,7 +891,7 @@ export function CheckoutView() {
                     whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(16,185,129,0.2)' }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r42-payment-card-hover r42-payment-card-shimmer r39-payment-glow r58-checkout-payment-glow ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r42-payment-card-hover r42-payment-card-shimmer r39-payment-glow r58-checkout-payment-glow min-h-[56px] ${
                       payment === method.id
                         ? 'border-primary bg-primary/5 r39-payment-glow-active'
                         : 'border-border hover:border-primary/30'
@@ -1146,7 +1175,7 @@ export function CheckoutView() {
 
       {/* Bottom summary bar for mobile */}
       {(step as string) !== 'confirmation' && (
-        <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-strong border-t px-4 py-3" style={{ borderTop: '1px solid transparent', backgroundImage: 'linear-gradient(90deg, transparent, oklch(0.45 0.1 155 / 0.3), oklch(0.78 0.16 70 / 0.3), transparent)', backgroundOrigin: 'top', backgroundRepeat: 'no-repeat', backgroundSize: '100% 1px' }}>
+        <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-strong border-t px-4 py-3" style={{ borderTop: '1px solid rgba(16,185,129,0.2)', paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground r32-total-pop">Total</p>
@@ -1157,7 +1186,6 @@ export function CheckoutView() {
               Compra segura
             </div>
           </div>
-          <div className="h-[env(safe-area-inset-bottom)] md:hidden" />
         </div>
       )}
     </div>

@@ -670,7 +670,7 @@ export function CartView() {
   const hasQuantityIssues = cartItems.some(item => item.quantity > getRealStock(item.productId))
 
   return (
-    <div className="min-h-screen pb-48">
+    <div className="min-h-screen pb-24 lg:pb-0">
       {/* Header */}
       <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center justify-between">
@@ -700,7 +700,7 @@ export function CartView() {
         </div>
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-4 pb-24 lg:pb-0">
         {/* Stock warning banner */}
         {hasOutOfStock && (
           <motion.div
@@ -899,7 +899,7 @@ export function CartView() {
                               whileTap={{ scale: 0.88 }}
                               onClick={() => updateCartQuantity(item.productId, item.quantity - 1)}
                               disabled={outOfStock}
-                              className="r42-cart-qty-btn qty-control-btn disabled:opacity-40"
+                              className="r42-cart-qty-btn qty-control-btn disabled:opacity-40 min-h-11 min-w-11"
                             >
                               <Minus className="h-3 w-3" />
                             </motion.button>
@@ -921,7 +921,7 @@ export function CartView() {
                                 updateCartQuantity(item.productId, item.quantity + 1)
                               }}
                               disabled={outOfStock || item.quantity >= realStock}
-                              className="r42-cart-qty-btn qty-control-btn disabled:opacity-40"
+                              className="r42-cart-qty-btn qty-control-btn disabled:opacity-40 min-h-11 min-w-11"
                             >
                               <Plus className="h-3 w-3" />
                             </motion.button>
@@ -932,7 +932,7 @@ export function CartView() {
                               whileTap={{ scale: 0.85 }}
                               whileHover={{ scale: 1.15 }}
                               onClick={() => removeFromCart(item.productId)}
-                              className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors r38-cart-remove-btn"
+                              className="h-10 w-10 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors r38-cart-remove-btn active:scale-95 transition-transform"
                             >
                               <Trash2 className="h-4 w-4" />
                             </motion.button>
@@ -1105,6 +1105,16 @@ export function CartView() {
           </p>
           </div>
         </div>
+      </div>
+      {/* Mobile sticky checkout bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 p-3 flex items-center justify-between lg:hidden" style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
+        <div>
+          <span className="text-xs text-gray-500">{cartItems.length} {cartItems.length === 1 ? 'item' : 'itens'}</span>
+          <span className="text-lg font-bold text-gray-900 ml-2">R$ {total.toFixed(2)}</span>
+        </div>
+        <button className="bg-indigo-600 text-white px-5 py-3 rounded-xl font-semibold active:scale-95 transition-transform" onClick={handleCheckout}>
+          Finalizar Compra
+        </button>
       </div>
     </div>
   )

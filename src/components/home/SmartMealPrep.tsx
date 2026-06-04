@@ -1347,6 +1347,8 @@ export function SmartMealPrep() {
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
               >
+                <div className="overflow-x-auto">
+                <div className="min-w-[600px]">
                 {/* Day headers */}
                 <div className="px-4 mb-2">
                   <div className="grid grid-cols-8 gap-1">
@@ -1479,6 +1481,8 @@ export function SmartMealPrep() {
                     </motion.div>
                   ))}
                 </div>
+                </div>{/* end r59-mob: overflow-x-auto */}
+                </div>{/* end r59-mob: min-w-[600px] */}
 
                 {/* Weekly Nutrition Summary */}
                 <div className="px-4 mt-4">

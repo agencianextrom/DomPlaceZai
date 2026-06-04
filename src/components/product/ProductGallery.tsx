@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { ChevronLeft, ChevronRight, ZoomIn, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { resolveProductImage } from '@/lib/product-images'
@@ -49,6 +49,20 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
     return () => window.removeEventListener('keydown', handleKey)
   }, [isZoomed, handlePrev, handleNext])
 
+  // Touch swipe handling for mobile snap scroll
+  const galleryRef = useRef<HTMLDivElement>(null)
+  const touchStartX = useRef<number>(0)
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }, [])
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    const diff = touchStartX.current - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) handleNext()
+      else handlePrev()
+    }
+  }, [handleNext, handlePrev])
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isZoomed) return
     const rect = e.currentTarget.getBoundingClientRect()
@@ -77,18 +91,75 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
   }
 
   return (
-    <div className="space-y-3 relative">
+    <div className="space-y-3 relative" ref={galleryRef}>
       {/* 4 floating ambient particles */}
       <motion.div className="absolute top-2 right-6 w-1.5 h-1.5 rounded-full bg-primary/20 pointer-events-none z-20" animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0], scale: [0.5, 1, 0.3] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0 }} />
       <motion.div className="absolute top-8 left-4 w-1 h-1 rounded-full bg-accent/25 pointer-events-none z-20" animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.8 }} />
       <motion.div className="absolute bottom-12 right-10 w-2 h-2 rounded-full bg-primary/15 pointer-events-none z-20" animate={{ y: [0, -8, -18], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.2] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeOut' as const, delay: 1.5 }} />
       <motion.div className="absolute bottom-20 left-8 w-1 h-1 rounded-full bg-accent/20 pointer-events-none z-20" animate={{ y: [0, -14, -28], opacity: [0, 0.5, 0], scale: [0.4, 0.8, 0] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 2.2 }} />
 
-      {/* Main image container */}
+      {/* Main image container — mobile: horizontal snap scroll, desktop: single with nav */}
+      {/* Mobile: horizontal snap scrollable gallery */}
+      <div
+        className="lg:hidden relative"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        style={{ touchAction: 'pan-y' }}
+      >
+        <div className="flex snap-x snap-mandatory gap-0 overflow-x-auto hide-scrollbar scrollbar-none">
+          {allImages.map((img, idx) => (
+            <div
+              key={idx}
+              className="flex-shrink-0 w-full aspect-square snap-center relative"
+              onClick={() => { setActiveIndex(idx); onImageClick?.() }}
+            >
+              <img
+                src={img}
+                alt={`${product.name} - Imagem ${idx + 1}`}
+                className="w-full h-full object-cover rounded-2xl"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none'
+                }}
+                loading={idx === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            </div>
+          ))}
+        </div>
+        {/* Position dots/indicators */}
+        {allImages.length > 1 && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
+            {allImages.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveIndex(idx)}
+                className={`h-2 rounded-full transition-all duration-200 min-w-[44px] flex items-center justify-center ${
+                  idx === activeIndex
+                    ? 'bg-white w-6 shadow-sm'
+                    : 'bg-white/50 w-2'
+                }`}
+                aria-label={`Ir para imagem ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
+        {/* Discount badge (mobile) */}
+        {product.comparePrice && (
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
+            className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg z-10"
+          >
+            -{Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}%
+          </motion.div>
+        )}
+      </div>
+      {/* Desktop: single image with zoom and navigation arrows */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative aspect-square rounded-2xl overflow-hidden bg-muted/30 cursor-zoom-in group"
+        className="hidden lg:block relative aspect-square rounded-2xl overflow-hidden bg-muted/30 cursor-zoom-in group"
         onClick={() => { setIsZoomed(true); onImageClick?.() }}
         onMouseMove={handleMouseMove}
       >
@@ -116,7 +187,7 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
         {/* Gradient overlay for visual depth */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
 
-        {/* Navigation arrows */}
+        {/* Navigation arrows — always visible on desktop */}
         {allImages.length > 1 && (
           <>
             <motion.button
@@ -125,7 +196,7 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={(e) => { e.stopPropagation(); handlePrev() }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 r17-gallery-arrow-glow"
+              className="absolute left-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 r17-gallery-arrow-glow"
             >
               <ChevronLeft className="h-4 w-4" />
             </motion.button>
@@ -135,7 +206,7 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={(e) => { e.stopPropagation(); handleNext() }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 r17-gallery-arrow-glow"
+              className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 r17-gallery-arrow-glow"
             >
               <ChevronRight className="h-4 w-4" />
             </motion.button>
@@ -155,7 +226,7 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
 
         {/* Zoom indicator */}
         <motion.div
-          className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          className="absolute top-2 right-2 min-h-[44px] min-w-[44px] rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
           whileHover={{ scale: 1.1 }}
         >
           <ZoomIn className="h-4 w-4 text-white" />
@@ -174,7 +245,7 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
         )}
       </motion.div>
 
-      {/* Thumbnail strip */}
+      {/* Thumbnail strip — mobile: compact with snap, desktop: larger */}
       <AnimatePresence>
         {showThumbnails && allImages.length > 1 && (
           <motion.div
@@ -183,14 +254,14 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+            <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1 snap-x snap-mandatory">
               {allImages.map((img, idx) => (
                 <motion.button
                   key={idx}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveIndex(idx)}
-                  className={`relative h-16 w-16 rounded-xl overflow-hidden shrink-0 border-2 transition-all r42-thumb-zoom ${
+                  className={`relative h-14 sm:h-16 w-14 sm:w-16 rounded-xl overflow-hidden shrink-0 border-2 transition-all r42-thumb-zoom snap-start ${
                     idx === activeIndex
                       ? 'border-primary shadow-lg shadow-primary/20 ring-2 ring-primary/20'
                       : 'border-transparent opacity-60 hover:opacity-100'
@@ -209,8 +280,7 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
                       layoutId="active-thumb"
                       className="absolute inset-0 bg-primary/20 rounded-xl ring-2 ring-primary/30"
                       transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
-                      animate={{ boxShadow: '0 0 12px oklch(0.45 0.1 155 / 0.3), 0 0 24px oklch(0.45 0.1 155 / 0.15)' }}
-                      style={{ boxShadow: '0 0 12px oklch(0.45 0.1 155 / 0.3), 0 0 24px oklch(0.45 0.1 155 / 0.15)' }}
+                      style={{ boxShadow: '0 0 12px rgba(16,185,129,0.3), 0 0 24px rgba(16,185,129,0.15)' }}
                     />
                   )}
                 </motion.button>

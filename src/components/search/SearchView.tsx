@@ -406,7 +406,7 @@ export function SearchView() {
   const hasQuery = searchQuery.length > 0
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="min-h-screen pb-24 md:pb-6 bg-background relative">
       {/* Subtle gradient mesh background behind search area */}
       <div className="gradient-mesh-bg absolute inset-0 -z-10" />
       {/* Inject search glow keyframes */}
@@ -525,7 +525,7 @@ export function SearchView() {
         </AnimatePresence>
 
         {/* Category filter pills with stagger entrance animation */}
-        <div className="flex gap-2 mt-2.5 overflow-x-auto hide-scrollbar pb-2.5">
+        <div className="flex gap-2 mt-2.5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2.5">
           <motion.button
             custom={0}
             variants={categoryPillVariants}
@@ -534,7 +534,7 @@ export function SearchView() {
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.08, y: -1 }}
             onClick={() => setActiveCategory(null)}
-            className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border transition-all overflow-hidden relative ${
+            className={`shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium border transition-all overflow-hidden relative min-h-[36px] ${
               !activeCategory
                 ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/25 search-filter-pill-active'
                 : 'bg-secondary/70 text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground hover:border-border/50'
@@ -561,7 +561,7 @@ export function SearchView() {
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.08, y: -1 }}
               onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
-              className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border transition-all overflow-hidden relative ${
+              className={`shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium border transition-all overflow-hidden relative min-h-[36px] ${
                 activeCategory === cat.id
                   ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/25 search-filter-pill-active'
                   : 'bg-secondary/70 text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground hover:border-border/50'
@@ -590,7 +590,7 @@ export function SearchView() {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="flex gap-2 mt-1 overflow-x-auto hide-scrollbar pb-2">
+              <div className="flex gap-2 mt-1 overflow-x-auto scrollbar-hide pb-2">
                 {sortFilters.map((f, index) => {
                   const FilterIcon = f.icon
                   return (
@@ -861,7 +861,7 @@ export function SearchView() {
                       <Package className="h-3.5 w-3.5" />
                       Produtos ({mixedResults.length})
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                       {mixedResults.map((item, index) => (
                         <motion.div
                           key={item.type === 'product' ? item.data.id : `store-${item.data.id}`}

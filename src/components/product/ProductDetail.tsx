@@ -255,7 +255,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
   }
   
   return (
-    <div className="max-w-3xl mx-auto pb-28 md:pb-24 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
+    <div className="max-w-3xl mx-auto pb-20 lg:pb-0 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
       {/* Header */}
       <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center justify-between">
@@ -1185,88 +1185,64 @@ export function ProductDetail({ product }: ProductDetailProps) {
         )}
       </div>
       
-      {/* Sticky bottom bar — appears when scrolling past buy section */}
+      {/* Mobile sticky bottom bar — appears when scrolling past buy section */}
       <AnimatePresence>
         {showStickyBar && (
           <motion.div
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] glow-edge-bottom"
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+            className="fixed bottom-14 left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:hidden"
+            style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
           >
             <div className="max-w-3xl mx-auto">
               <div className="flex items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground truncate">{product.name}</p>
-                  <p className="text-lg font-bold text-primary text-gradient-primary">{formatBRL(product.price * quantity)}</p>
+                  <p className="text-xl font-bold text-primary text-gradient-primary">{formatBRL(product.price * quantity)}</p>
                 </div>
-                <div className="flex gap-2">
-                  <motion.div whileHover={{ y: -3 }}>
-                    <Button
-                      variant="outline"
-                      className="h-11 px-4 border-primary text-primary hidden sm:flex hover-glow-soft r35-detail-action-btn"
-                      onClick={handleAddToCart}
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      Adicionar
-                    </Button>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.02, y: -3 }} whileTap={{ scale: 0.98 }}>
-                    <Button
-                      className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine r35-detail-action-btn"
-                      onClick={handleBuyNow}
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
-                      Comprar agora
-                    </Button>
-                  </motion.div>
-                </div>
+                <motion.div whileTap={{ scale: 0.95 }}>
+                  <Button
+                    className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold active:scale-95 transition-transform btn-glow btn-shine rounded-xl"
+                    onClick={handleBuyNow}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Comprar agora
+                  </Button>
+                </motion.div>
               </div>
-              {/* iOS safe area */}
-              <div className="h-[env(safe-area-inset-bottom)] md:hidden" />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Always-visible bottom buy section (shown when sticky is hidden) */}
+      {/* Mobile sticky add-to-cart bar (always visible on mobile, hidden on desktop) */}
       <AnimatePresence>
         {!showStickyBar && (
-          <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 glow-edge-bottom">
-            <div className="max-w-3xl mx-auto">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground">Total</p>
-                  <p className="text-lg font-bold text-primary text-gradient-primary">{formatBRL(product.price * quantity)}</p>
-                </div>
-                <div className="flex gap-2">
-                  <motion.div whileHover={{ y: -3 }}>
-                    <Button
-                      variant="outline"
-                      className="h-12 px-4 border-primary text-primary hidden sm:flex hover-glow-soft r35-detail-action-btn"
-                      onClick={handleAddToCart}
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      Adicionar
-                    </Button>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.02, y: -3 }} whileTap={{ scale: 0.98 }}>
-                    <Button
-                      className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine r35-detail-action-btn"
-                      onClick={handleBuyNow}
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
-                      Comprar agora
-                    </Button>
-                  </motion.div>
-                </div>
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+            className="fixed bottom-14 left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border px-4 py-3 lg:hidden"
+            style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
+          >
+            <div className="max-w-3xl mx-auto flex items-center justify-between">
+              <div>
+                <span className="text-sm text-muted-foreground">Total</span>
+                <span className="text-xl font-bold text-gray-900 ml-2">{formatBRL(product.price * quantity)}</span>
               </div>
-              <ShareButton productName={product.name} productPrice={product.price} storeName={product.storeName || 'Loja'} />
-              {/* iOS safe area */}
-              <div className="h-[env(safe-area-inset-bottom)] md:hidden" />
+              <motion.div whileTap={{ scale: 0.95 }}>
+                <Button
+                  className="bg-primary text-white px-6 py-3 rounded-xl font-semibold active:scale-95 transition-transform"
+                  onClick={handleAddToCart}
+                >
+                  Adicionar ao Carrinho
+                </Button>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
