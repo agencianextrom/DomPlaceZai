@@ -121,6 +121,9 @@ import { DeliveryDriverTracking } from '@/components/delivery/DeliveryDriverTrac
 import { InvoiceGenerator } from '@/components/checkout/InvoiceGenerator'
 import { NeighborhoodEvents2 } from '@/components/home/NeighborhoodEvents2'
 import { ProductOriginTracker2 } from '@/components/product/ProductOriginTracker2'
+import GamificationQuests from '@/components/home/GamificationQuests'
+import LiveAuctionSystem from '@/components/home/LiveAuctionSystem'
+import SmartReceipt from '@/components/orders/SmartReceipt'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1507,6 +1510,33 @@ export default function Home() {
                       <ScrollReveal delay={0.55}>
                         <section className="mt-6">
                           <ProductOriginTracker2 />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Gamification Quests */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <GamificationQuests />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Live Auction System */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <LiveAuctionSystem />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Smart Receipt */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <SmartReceipt />
                         </section>
                       </ScrollReveal>
                     </LazySection>
