@@ -2849,3 +2849,84 @@ The DomPlace marketplace is stable and feature-rich:
 3. Password reset tokens in-memory only
 4. Dev server CSS parsing limitations with Turbopack on large CSS files (non-blocking in production)
 5. QA via agent-browser has limitations (can't trigger React synthetic events)
+---
+Task ID: 41 (Round 39 - Job 182228)
+Agent: Main Agent
+Task: New features, styling improvements
+
+Work Log:
+
+**QA Testing:**
+- Build verified clean before starting (zero errors)
+- All 8 parallel agents completed successfully first try
+- TypeScript error: ProductSetupWizard has no `category` prop — fixed by removing prop
+
+**New Features (3 new components):**
+
+1. **src/components/product/ProductSetupWizard.tsx** (NEW — 1,596 lines)
+   - Step-by-step installation wizard with 5-step progress bar
+   - 3 mock guides: "Montagem de Estante", "Instalação de Ar-condicionado", "Configuração de Router Wi-Fi"
+   - Tip/Warning/Danger callout boxes with color-coded left borders
+   - Interactive materials/tools checklist with check animations
+   - Built-in step timer with start/pause/reset
+   - Video placeholder with play button overlay
+   - Completion card with confetti burst (50 particles)
+   - Expandable details per step
+   - Integrated into ProductDetail.tsx (after ProductInstallationGuide)
+
+2. **src/components/home/InfluencerShopPage.tsx** (NEW — 1,430 lines)
+   - Creator storefront with gradient banner, avatar, bio, follower count, verified badge
+   - 3 creators × 8-9 products each with recommendation badges
+   - Exclusive deals section with coupon codes and countdown timers
+   - Video reels horizontal carousel with view/like counts
+   - Engagement stats with animated counters
+   - Follow/Unfollow button with spring animation
+   - Category tabs: Todos, Eletrônicos, Moda, Beleza, Casa
+   - Share creator: copy link, WhatsApp share, embed code
+   - Integrated into page.tsx (after RealTimeDealsTicker)
+
+3. **src/components/home/EcoImpactDashboard.tsx** (NEW — 1,070 lines)
+   - 4 impact summary cards: CO₂, Plastic, Energy, Water with animated counters
+   - SVG bar chart showing 6-month eco-impact scores
+   - Eco Score Ring (0-100) with 6 tier badges
+   - Green product tracker with eco-certification stars
+   - Community leaderboard top 5 with rank badges
+   - 10 achievement badges (5 unlocked, 5 locked with progress)
+   - Auto-rotating eco tips carousel
+   - Active eco challenge card with confetti on accept
+   - Integrated into page.tsx (after InfluencerShopPage)
+
+**Styling Enhancements (5 components + globals.css):**
+
+1. **CartSuggestions.tsx**: Shimmer overlay on cards, gradient recommendation badge, floating particles in empty state, gradient fade scroll edges, spring entrance stagger
+2. **StoreComparison.tsx**: Multi-ring VS badge pulse, animated crown + sparkle on winner, gradient progress bars, star glow, shimmer "Ver Loja" buttons, gradient header
+3. **SmartNotifications.tsx**: Swipe-to-dismiss exit animation, color-coded icon glows (green/purple/blue/amber), gradient tab pills, shimmer badge, floating empty state particles, fade-in timestamps
+4. **CheckoutView.tsx**: Step glow rings, gradient progress line, payment card shimmer + checkmark pop, glassmorphism address card, gradient coupon border, savings glow, confirm button glow, confidence badge wiggle
+5. **SupportCenter.tsx**: Animated gradient header, expanding search border, FAQ shimmer + active gradient border, category card hover lift + glow, contact icon bounce, shimmer action buttons, chat pulse badge
+
+**Bug Fixes:**
+1. ProductDetail.tsx: Removed `category` prop from ProductSetupWizard (component has no props)
+
+Stage Summary:
+- 28 files changed, 6,254 insertions, 367 deletions
+- 3 new components created (ProductSetupWizard, InfluencerShopPage, EcoImpactDashboard)
+- 5 components enhanced with styling
+- 275 components total, 18,104 lines CSS
+- ESLint: 0 errors, Build: successful (next build passes)
+- Commit: 8cbff9f pushed to GitHub main
+
+## Current Project Status Assessment
+The DomPlace marketplace is stable and feature-rich:
+- 53+ API endpoints, 27+ Prisma models, 275 components
+- ~18,104 lines CSS with extensive animations
+- AI-powered features, eco dashboard, influencer storefronts
+- Real DB integration (Turso) with 32 products, 8 stores
+- Multi-role auth, API deduplication cache
+- Production build passes cleanly (zero errors)
+
+## Unresolved Issues / Risks
+1. .env not persisted across sessions
+2. SPA-style navigation (no deep linking)
+3. Password reset tokens in-memory only
+4. Dev server CSS parsing limitations with Turbopack on large CSS files (non-blocking in production)
+5. QA via agent-browser has limitations

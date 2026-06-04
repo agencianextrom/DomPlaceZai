@@ -1328,6 +1328,7 @@ export function ProductSetupWizard() {
                 <CardContent className="r40-step-content space-y-5">
                   {/* Timer */}
                   <StepTimer
+                    key={currentStepIndex}
                     estimatedMinutes={currentStep.estimatedMinutes}
                     stepKey={currentStepIndex}
                   />
