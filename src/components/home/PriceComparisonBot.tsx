@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef, useSyncExternalStore } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -1032,7 +1032,8 @@ function ProductComparisonCard({
 
 // ── Main Component ────────────────────────────────────────────────
 export function PriceComparisonBot() {
-  const [mounted, setMounted] = useState(false)
+  const emptySubscribe = () => () => {}
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])
@@ -1042,11 +1043,6 @@ export function PriceComparisonBot() {
   const [showRecommendations, setShowRecommendations] = useState(true)
   const searchRef = useRef<HTMLDivElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
-
-  // Mount check
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Load persisted data
   useEffect(() => {
