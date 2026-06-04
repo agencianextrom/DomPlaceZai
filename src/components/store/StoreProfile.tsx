@@ -279,7 +279,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
       <div ref={bannerRef} className="relative h-56 sm:h-72 -mx-4 -mt-4 overflow-hidden">
         {/* Animated gradient background with parallax zoom */}
         <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700 r28-ken-burns r34-store-profile-cover-zoom"
+          className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700 r28-ken-burns r34-store-profile-cover-zoom r35-store-cover-zoom"
           style={{ y: bannerY, scale: bannerScale }}
         />
         <motion.div 
@@ -505,7 +505,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
             onClick={() => toggleFavoriteStore(store.id)}
-            className={`relative overflow-hidden h-11 px-5 rounded-xl font-semibold text-sm flex items-center gap-2 r34-store-profile-follow-btn ${isFav ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
+            className={`relative overflow-hidden h-11 px-5 rounded-xl font-semibold text-sm flex items-center gap-2 r34-store-profile-follow-btn r35-store-follow-btn ${isFav ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
           >
             <Heart className={`h-4 w-4 ${isFav ? 'fill-current' : ''}`} />
             {isFav ? 'Seguindo' : 'Seguir loja'}
@@ -590,7 +590,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     <>
                       <motion.div
                         layoutId="store-tab-bg"
-                        className="absolute inset-0 bg-primary rounded-lg r34-store-profile-tab-glow"
+                        className="absolute inset-0 bg-primary rounded-lg r34-store-profile-tab-glow r35-store-tab-indicator"
                         style={{ boxShadow: '0 0 18px rgba(16,185,129,0.4), 0 2px 8px rgba(16,185,129,0.2)' }}
                         transition={{ type: 'spring' as const, stiffness: 420, damping: 28, mass: 0.8 }}
                       />
@@ -626,27 +626,43 @@ export function StoreProfile({ store }: StoreProfileProps) {
                   ))}
                 </div>
               ) : products.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                  {products.map((p, i) => (
+                <motion.div
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"
+                  variants={{
+                    hidden: {},
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.06,
+                      },
+                    },
+                  }}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {products.map((p) => (
                     <motion.div
                       key={p.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: i * 0.04,
-                        duration: 0.45,
-                        type: 'spring' as const,
-                        stiffness: 220,
-                        damping: 20,
+                      variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          transition: {
+                            type: 'spring' as const,
+                            stiffness: 220,
+                            damping: 20,
+                            duration: 0.45,
+                          },
+                        },
                       }}
                       whileHover={{ scale: 1.02, y: -2 }}
                     >
-                      <div className="product-card-hover-enhanced r28-grid-hover-shine">
+                      <div className="product-card-hover-enhanced r28-grid-hover-shine r35-store-product-hover">
                         <ProductCard product={p} />
                       </div>
                     </motion.div>
                   ))}
-                </div>
+                </motion.div>
               ) : (
                 <motion.div 
                   initial={{ opacity: 0 }}

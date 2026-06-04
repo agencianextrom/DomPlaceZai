@@ -88,6 +88,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="r35-fav-empty-float"
             >
               <div className="h-24 w-24 rounded-full bg-gradient-to-br from-red-100 to-rose-200 dark:from-red-900/20 dark:to-rose-800/20 flex items-center justify-center">
                 <Heart className="h-12 w-12 text-red-300 dark:text-red-700" />
@@ -151,7 +152,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold flex items-center gap-2">
-          <Heart className="h-5 w-5 text-red-500 fill-red-500" />
+          <Heart className="h-5 w-5 text-red-500 fill-red-500 r35-fav-heart" />
           Favoritos
           <motion.span
             key={filtered.length}
@@ -172,7 +173,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
                 backgroundSize: '200% 100%',
               }}
             >
-              <Badge variant="secondary" className="text-[10px] bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 border-red-500/20 font-bold relative z-10">
+              <Badge variant="secondary" className="text-[10px] bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 border-red-500/20 font-bold relative z-10 r35-fav-badge-pulse">
                 {filtered.length}
               </Badge>
             </motion.span>
@@ -295,6 +296,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
                   initial="hidden"
                   animate="visible"
                   exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                  className="r35-fav-card"
                 >
                   <ProductCard product={p} />
                 </motion.div>
@@ -317,7 +319,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
                   animate="visible"
                   exit={{ opacity: 0, x: -30 }}
                   whileHover={{ y: -3, boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer group"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer group r35-fav-card"
                   onClick={() => {
                     selectProduct(p)
                     navigate('product')

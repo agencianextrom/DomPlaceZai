@@ -37,6 +37,7 @@ import { ProductFAQ } from './ProductFAQ'
 import { ProductWarranty } from './ProductWarranty'
 import { ProductInstallationGuide } from './ProductInstallationGuide'
 import { ARProductPreview } from './ARProductPreview'
+import { CrossSellEngine } from './CrossSellEngine'
 import { ProductRecipes } from './ProductRecipes'
 import { ProductSpecsTable } from './ProductSpecsTable'
 import { QuantityStepper } from '@/components/ui/QuantityStepper'
@@ -279,6 +280,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="r35-detail-image-glow"
       >
         <ProductGallery product={product} onImageClick={() => setIsImageZoomOpen(true)} />
         {/* Full-screen Image Zoom */}
@@ -292,6 +294,9 @@ export function ProductDetail({ product }: ProductDetailProps) {
       {/* Product Videos Section */}
       <ProductVideos product={product} />
       
+      {/* Animated gradient accent line */}
+      <div className="r35-detail-gradient-accent" />
+
       {/* Info */}
       <div className="px-1 mt-4">
         {/* Store link */}
@@ -385,10 +390,10 @@ export function ProductDetail({ product }: ProductDetailProps) {
         {/* Price */}
         {!product.comparePrice && (
           <motion.div 
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex items-baseline gap-3 mt-3"
+            initial={{ opacity: 0, y: 5, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 25, delay: 0.2 }}
+            className="flex items-baseline gap-3 mt-3 r35-detail-price-animate"
           >
             <span className="text-2xl sm:text-3xl font-bold text-primary r28-price-pulse">{formatBRL(product.price)}</span>
           </motion.div>
@@ -676,6 +681,17 @@ export function ProductDetail({ product }: ProductDetailProps) {
           <ARProductPreview />
         </motion.div>
 
+        {/* Cross-Sell — Frequently Bought Together */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <CrossSellEngine />
+        </motion.div>
+
         {/* Product Recipes — Receitas Relacionadas */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -689,11 +705,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
         {/* Product Specs Table — Especificações Técnicas */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.3 }}
-          className="mt-4"
+          transition={{ type: 'spring' as const, stiffness: 200, damping: 20, delay: 0 }}
+          className="mt-4 r35-detail-section-reveal"
         >
           <ProductSpecsTable
             category={product.category}
@@ -785,11 +801,19 @@ export function ProductDetail({ product }: ProductDetailProps) {
         )}
 
         {/* Reviews */}
-        <ProductReviews 
-          productId={product.id} 
-          productRating={product.rating} 
-          totalReviews={product.totalReviews} 
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: 'spring' as const, stiffness: 200, damping: 20, delay: 0.1 }}
+          className="r35-detail-section-reveal"
+        >
+          <ProductReviews 
+            productId={product.id} 
+            productRating={product.rating} 
+            totalReviews={product.totalReviews} 
+          />
+        </motion.div>
 
         {/* Review Video Gallery — Vídeos de Avaliação */}
         <motion.div
@@ -804,11 +828,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
         {/* Similar Products */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.3 }}
-          className="mt-4"
+          transition={{ type: 'spring' as const, stiffness: 200, damping: 20, delay: 0.2 }}
+          className="mt-4 r35-detail-section-reveal"
         >
           <SimilarProducts
             currentProductId={product.id}
@@ -1136,17 +1160,19 @@ export function ProductDetail({ product }: ProductDetailProps) {
                   <p className="text-lg font-bold text-primary text-gradient-primary">{formatBRL(product.price * quantity)}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    className="h-11 px-4 border-primary text-primary hidden sm:flex hover-glow-soft"
-                    onClick={handleAddToCart}
-                  >
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Adicionar
-                  </Button>
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <motion.div whileHover={{ y: -3 }}>
                     <Button
-                      className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine"
+                      variant="outline"
+                      className="h-11 px-4 border-primary text-primary hidden sm:flex hover-glow-soft r35-detail-action-btn"
+                      onClick={handleAddToCart}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Adicionar
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.02, y: -3 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine r35-detail-action-btn"
                       onClick={handleBuyNow}
                     >
                       <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
@@ -1173,17 +1199,19 @@ export function ProductDetail({ product }: ProductDetailProps) {
                   <p className="text-lg font-bold text-primary text-gradient-primary">{formatBRL(product.price * quantity)}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    className="h-12 px-4 border-primary text-primary hidden sm:flex hover-glow-soft"
-                    onClick={handleAddToCart}
-                  >
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Adicionar
-                  </Button>
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <motion.div whileHover={{ y: -3 }}>
                     <Button
-                      className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine"
+                      variant="outline"
+                      className="h-12 px-4 border-primary text-primary hidden sm:flex hover-glow-soft r35-detail-action-btn"
+                      onClick={handleAddToCart}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Adicionar
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.02, y: -3 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine r35-detail-action-btn"
                       onClick={handleBuyNow}
                     >
                       <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />

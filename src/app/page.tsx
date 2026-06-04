@@ -100,6 +100,8 @@ import { NeighborhoodMarketplace } from '@/components/home/NeighborhoodMarketpla
 import { LocalProducers } from '@/components/home/LocalProducers'
 import { EcoImpactTracker } from '@/components/home/EcoImpactTracker'
 import { StoreEvents } from '@/components/home/StoreEvents'
+import { CommunityChallenge } from '@/components/home/CommunityChallenge'
+import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
 import { AIStyleAdvisor } from '@/components/product/AIStyleAdvisor'
 import { SmartShoppingAssistant } from '@/components/chat/SmartShoppingAssistant'
@@ -227,6 +229,9 @@ function OrderDetailView() {
   return (
     <ViewTransition viewKey="order-detail">
       <OrderDetail />
+      <div className="mt-6">
+        <OrderSummaryReceipt />
+      </div>
     </ViewTransition>
   )
 }
@@ -1264,6 +1269,15 @@ export default function Home() {
                       <ScrollReveal delay={0.15}>
                         <section className="mt-6">
                           <StoreEvents />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Community Challenges */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <CommunityChallenge />
                         </section>
                       </ScrollReveal>
                     </LazySection>

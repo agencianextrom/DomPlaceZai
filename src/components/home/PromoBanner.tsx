@@ -376,7 +376,7 @@ function HeroPromoSlide({
 
       {/* Shimmer sweep */}
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 r35-promo-shimmer"
         style={{
           background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 45%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.06) 55%, transparent 60%)',
           backgroundSize: '250% 100%',
@@ -416,7 +416,7 @@ function HeroPromoSlide({
             animate={{ scale: 1, rotate: 0 }}
             transition={{ duration: 0.5, ease: EASE_SPRING_OUT }}
           >
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-sm border border-white/15 text-[11px] font-bold tracking-wider text-white uppercase r17-promo-badge-pulse">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-sm border border-white/15 text-[11px] font-bold tracking-wider text-white uppercase r17-promo-badge-pulse r35-promo-badge">
               <BadgeIcon type={promo.badgeType} />
               <Zap className="h-3 w-3" />
               {promo.badge}
@@ -587,11 +587,12 @@ function PromoCard({
     <motion.div
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      whileHover={{ scale: 1.02, y: -3, transition: { type: 'spring' as const, stiffness: 300, damping: 20 } }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.6, delay: index * 0.15, ease: EASE_OUT_EXPO }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative group cursor-pointer"
+      className="relative group cursor-pointer r35-promo-card"
     >
       <motion.div
         animate={{
@@ -618,7 +619,7 @@ function PromoCard({
 
         {/* Shimmer sweep */}
         <motion.div
-          className="absolute inset-0"
+          className="absolute inset-0 r35-promo-shimmer"
           style={{
             background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 45%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.06) 55%, transparent 60%)',
             backgroundSize: '250% 100%',
@@ -631,7 +632,7 @@ function PromoCard({
         <div className="relative z-10 flex flex-col justify-between p-5 sm:p-6 min-h-[180px] sm:min-h-[200px]">
           <div className="flex items-start justify-between">
             <motion.div className="relative" initial={{ scale: 0, rotate: -12 }} whileInView={{ scale: 1, rotate: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.15 + 0.3, ease: EASE_SPRING_OUT }}>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-sm border border-white/15 text-[11px] font-bold tracking-wider text-white uppercase r17-promo-badge-pulse">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-sm border border-white/15 text-[11px] font-bold tracking-wider text-white uppercase r17-promo-badge-pulse r35-promo-badge">
                 <BadgeIcon type={promo.badgeType} />
                 {promo.badge}
               </span>
@@ -815,7 +816,26 @@ export function PromoBanner() {
   if (dismissed) return null
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 relative">
+      {/* Floating gradient particles for visual depth */}
+      <motion.div
+        className="absolute -top-16 -left-8 w-40 h-40 rounded-full pointer-events-none z-0"
+        style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%)' }}
+        animate={{ y: [0, -20, 0], x: [0, 10, 0], scale: [1, 1.1, 1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' as const }}
+      />
+      <motion.div
+        className="absolute top-1/3 -right-12 w-32 h-32 rounded-full pointer-events-none z-0"
+        style={{ background: 'radial-gradient(circle, rgba(244,114,182,0.2) 0%, transparent 70%)' }}
+        animate={{ y: [0, 15, 0], x: [0, -8, 0], scale: [1, 1.15, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' as const, delay: 1 }}
+      />
+      <motion.div
+        className="absolute -bottom-10 left-1/3 w-36 h-36 rounded-full pointer-events-none z-0"
+        style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.2) 0%, transparent 70%)' }}
+        animate={{ y: [0, -12, 0], x: [0, 12, 0], scale: [1, 1.08, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' as const, delay: 2 }}
+      />
       {/* Confetti burst overlay */}
       {confettiPos && <PromoConfetti key={confettiPos.key} x={confettiPos.x} y={confettiPos.y} />}
 
@@ -892,7 +912,15 @@ export function PromoBanner() {
       {/* ---- Promo cards grid ---- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {promoCampaigns.map((promo, i) => (
-          <PromoCard key={promo.id} promo={promo} index={i} onCTAClick={handleCTAClick} />
+          <motion.div
+            key={promo.id}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-30px' }}
+            transition={{ delay: i * 0.1, type: 'spring' as const, stiffness: 200, damping: 20 }}
+          >
+            <PromoCard promo={promo} index={i} onCTAClick={handleCTAClick} />
+          </motion.div>
         ))}
       </div>
     </div>

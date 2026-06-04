@@ -572,16 +572,16 @@ export function OrdersView() {
                     return (
                       <motion.div
                         key={order.id}
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 35 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
                           type: 'spring' as const,
-                          delay: idx * 0.08,
+                          delay: idx * 0.12,
                           stiffness: 120,
                           damping: 14,
                         }}
                         whileHover={{ y: -3, scale: 1.01, transition: { type: 'spring' as const, stiffness: 400, damping: 25 } }}
-                        className={`w-full bg-card rounded-xl border border-border p-4 hover:shadow-lg hover:border-primary/20 transition-all r33-orders-card ${getStatusBorderGradient(order.status) ? '' : ''}`}
+                        className={`w-full bg-card rounded-xl border border-border p-4 hover:shadow-lg hover:border-primary/20 transition-all r33-orders-card r35-order-card ${getStatusBorderGradient(order.status) ? '' : ''}`}
                         style={{
                           borderLeft: `4px solid transparent`,
                           borderImage: getStatusBorderGradient(order.status),
@@ -633,7 +633,7 @@ export function OrdersView() {
                                   <motion.div
                                     animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
                                     transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                                    className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                                    className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 r35-order-status-dot ${
                                       isActive
                                         ? 'bg-primary text-primary-foreground'
                                         : 'bg-muted text-muted-foreground'
@@ -643,7 +643,7 @@ export function OrdersView() {
                                   </motion.div>
                                   {i < 3 && (
                                     <motion.div
-                                      className={`h-[2px] flex-1 rounded-full overflow-hidden ${i < stepIdx ? 'bg-gradient-to-r from-primary to-emerald-400' : 'bg-muted'}`}
+                                      className={`h-[2px] flex-1 rounded-full overflow-hidden r35-order-timeline-line ${i < stepIdx ? 'bg-gradient-to-r from-primary to-emerald-400' : 'bg-muted'}`}
                                       initial={{ scaleX: 0 }}
                                       animate={{ scaleX: 1 }}
                                       transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}

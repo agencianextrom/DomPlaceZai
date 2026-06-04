@@ -2438,3 +2438,95 @@ Stage Summary:
 - Build: Clean (zero errors)
 - Commit: 51d301e pushed to GitHub main
 - Total: 253+ components, ~13,400 lines CSS
+---
+Task ID: 36 (Round 34 - Job 182228)
+Agent: Main Agent
+Task: QA, new features, styling improvements
+
+Work Log:
+
+**Build Verification:**
+- Initial build: Clean — zero errors (only CSS optimization warnings, non-blocking)
+- Dev server: Running on port 3099, HTTP 200
+
+**New Features (3 components, 3,542 lines):**
+
+1. **src/components/home/CommunityChallenge.tsx** (1,557 lines)
+   - "Desafios da Comunidade" community challenge system
+   - 3 rotating daily/weekly challenges: Compre Local, Avalie e Ganhe, Indique Amigos
+   - Progress bars, star-based tracking, social share buttons
+   - Community leaderboard: Top 10 with gold/silver/bronze badges
+   - SVG circular progress ring with animated path drawing
+   - Reward preview: discount coupons, free delivery, exclusive products
+   - Web Share API with clipboard fallback
+   - Confetti burst (20 particles) on challenge completion
+   - Celebration overlay modal with reward details
+   - localStorage persistence for challenge state
+   - Animated gradient text title, shimmer effects
+
+2. **src/components/product/CrossSellEngine.tsx** (1,091 lines)
+   - "Frequentemente comprados juntos" cross-sell recommendations
+   - 2-4 product mini cards connected by animated "+" links
+   - Category pairing rules: FOOD→BEVERAGES, CLEANING→HOME, PET→PET, etc.
+   - Bundle variants: Básico (5% off), Completo (10%), Premium (15%)
+   - Animated pill selector with layoutId indicator
+   - Bundle price calculator with savings badge
+   - "Comprar Kit Completo" button with shimmer sweep
+   - Grid/list view toggle with AnimatePresence transitions
+   - Skeleton loading state
+   - "Por que recomendamos?" tooltip
+
+3. **src/components/orders/OrderSummaryReceipt.tsx** (894 lines)
+   - Receipt card with torn/ragged edge effect (SVG clip-path)
+   - Paper texture background, dashed separator lines
+   - Typewriter-animated order number
+   - Itemized list with staggered entrance, quick-add per item
+   - Price breakdown: subtotal, delivery, service fee, discount, taxes
+   - Savings callout with shimmer animation
+   - Payment info: masked card, "Aprovado" badge, installments
+   - Delivery info with animated reveal, driver name, "Rastrear pedido" CTA
+   - Actions: Download Receipt, Share, Request Refund, Rate Order
+   - Print mode (@media print) for clean receipt printing
+   - "DomPlace" branding footer with QR code placeholder
+
+**Integration Changes:**
+- page.tsx: Added CommunityChallenge (after StoreEvents) + OrderSummaryReceipt (in OrderDetailView)
+- ProductDetail.tsx: Added CrossSellEngine (after ARProductPreview)
+
+**Styling Enhancements (5 components + globals.css):**
+
+1. **PromoBanner.tsx**: Shimmer overlay on cards, r35-promo-card hover scale+lift, animated badge float, staggered entrance (0.1s), 3 floating gradient particles
+2. **ProductDetail.tsx**: Image glow effect (r35-detail-image-glow), action button hover lift (r35-detail-action-btn), price spring scale animation, section reveal animations with stagger, animated gradient accent line
+3. **OrdersView.tsx**: Card hover lift (r35-order-card), status dot pulse animation, timeline line scaleY grow, enhanced stagger (0.12s, y:35)
+4. **FavoritesView.tsx**: Card hover lift (r35-fav-card), heart scale on hover, empty state float animation, badge pulse
+5. **StoreProfile.tsx**: Cover zoom on hover, tab indicator smoother transition, product card hover lift, follow button shimmer sweep, staggered product grid with variants
+
+**CSS:** ~250+ lines of r35- prefixed classes added to globals.css
+
+**Rules Compliance:**
+- All spring animations use `type: 'spring' as const`
+- No oklch() colors, no type: 'bouncy'
+- boxShadow as single strings only
+
+Stage Summary:
+- 25 files changed, ~5,400 insertions
+- 3 new components (3,542 lines total)
+- 5 components enhanced with animations/styling
+- Build: Clean (zero errors)
+- Commit: pending
+- Total: 259+ components, ~13,800+ lines CSS
+
+## Current Project Status Assessment
+The DomPlace marketplace continues to grow with 259+ components:
+- 55+ API endpoints, 27+ Prisma models
+- Rich animations (13,800+ lines CSS)
+- Real DB integration (Turso) with 32 products, 8 stores
+- Multi-role auth, API deduplication cache
+- Production build passes cleanly
+
+## Unresolved Issues / Risks
+1. .env not persisted across sessions
+2. SPA-style navigation (no deep linking)
+3. Password reset tokens in-memory only
+4. Dev server instability between Bash sessions
+5. Turbopack dev overlay (non-blocking in production)
