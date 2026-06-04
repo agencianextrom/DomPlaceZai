@@ -532,7 +532,7 @@ export function CheckoutView() {
                       <motion.div
                         animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
                         transition={{ duration: 0.5, type: 'spring' as const, stiffness: 300, damping: 20 }}
-                        className={`step-dot ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow' : ''}`}
+                        className={`step-dot ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow r33-checkout-step-pulse' : ''}`}
                       >
                         {isCompleted ? (
                           <motion.div
@@ -553,7 +553,7 @@ export function CheckoutView() {
                     {i < stepLabels.length - 1 && (
                       <div className="step-line">
                         <motion.div
-                          className={`step-line-fill ${i < currentStepIndex ? 'filled' : ''}`}
+                          className={`step-line-fill ${i < currentStepIndex ? 'filled r33-checkout-progress-line' : ''}`}
                           layout
                           transition={{ duration: 0.6, ease: 'easeInOut' as const }}
                         />
@@ -857,10 +857,10 @@ export function CheckoutView() {
                 {paymentMethods.map((method) => (
                   <motion.button
                     key={method.id}
-                    whileHover={{ y: -4, boxShadow: '0 8px 24px oklch(0.45 0.1 155 / 0.15), 0 0 0 2px oklch(0.45 0.1 155 / 0.2)' }}
+                    whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(16,185,129,0.2)' }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r33-checkout-payment-hover ${
                       payment === method.id
                         ? 'border-primary bg-primary/5 shadow-[0_2px_16px_oklch(0.45_0.1_155/0.1)]'
                         : 'border-border hover:border-primary/30'
@@ -878,7 +878,7 @@ export function CheckoutView() {
                         transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
                         className="absolute top-2 right-2"
                       >
-                        <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                        <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center r33-checkout-checkmark-anim">
                           <Check className="h-3 w-3 text-primary-foreground" />
                         </div>
                       </motion.div>
@@ -1015,6 +1015,7 @@ export function CheckoutView() {
                     <Separator />
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
+                      <span className="r33-checkout-price-shimmer inline-block">
                       <motion.span
                         key={total}
                         initial={{ scale: 1.15, color: 'rgb(16, 185, 129)' }}
@@ -1024,6 +1025,7 @@ export function CheckoutView() {
                       >
                         {formatBRL(total)}
                       </motion.span>
+                    </span>
                     </div>
                   </div>
 
@@ -1043,10 +1045,10 @@ export function CheckoutView() {
               <div className="flex items-center justify-center gap-4 mt-4 py-2">
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
+                  animate={{ opacity: 1, y: [0, -3, 0] }}
+                  transition={{ delay: 0.6, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r33-checkout-security-float"
                 >
                   <span className="text-emerald-500">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -1055,10 +1057,10 @@ export function CheckoutView() {
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 }}
+                  animate={{ opacity: 1, y: [0, -3, 0] }}
+                  transition={{ delay: 0.7, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r33-checkout-security-float"
                 >
                   <motion.span
                     className="text-emerald-500"
@@ -1071,10 +1073,10 @@ export function CheckoutView() {
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 }}
+                  animate={{ opacity: 1, y: [0, -3, 0] }}
+                  transition={{ delay: 0.8, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r33-checkout-security-float"
                 >
                   <span className="text-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="m12 15 5 6H7Z"/></svg>
@@ -1103,10 +1105,11 @@ export function CheckoutView() {
                   Voltar
                 </Button>
                 <Button
-                  className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl checkout-btn-shimmer r32-confirm-shine"
+                  className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl checkout-btn-shimmer r32-confirm-shine r33-checkout-btn-hover relative overflow-hidden"
                   onClick={handlePlaceOrder}
                   disabled={isProcessing || !termsAccepted}
                 >
+                  <span className="r33-checkout-btn-shimmer"></span>
                   {isProcessing ? (
                     <div className="flex items-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin" />

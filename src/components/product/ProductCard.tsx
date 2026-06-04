@@ -381,7 +381,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         initial={{ opacity: 0, y: 24, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: Math.min(index * 0.06, 0.5), duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        whileHover={{ y: -5, scale: 1.02 }}
+        whileHover={{ y: -5, scale: 1.02, boxShadow: '0 0 20px rgba(16,185,129,0.15), 0 0 40px rgba(16,185,129,0.08), 0 8px 24px rgba(0,0,0,0.08)' }}
         className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm card-shadow-cascade card-spotlight card-shine card-glow-border hover:shadow-xl transition-shadow duration-300"
         onClick={handleCardClick}
         onMouseMove={handleMouseMove}
@@ -417,7 +417,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 alt={product.name}
                 className="absolute inset-0 w-full h-full object-cover z-0 will-change-transform"
                 style={{
-                  transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+                  transform: isHovered ? 'scale(1.05)' : 'scale(1)',
                   transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
                 onError={() => setImgError(true)}
@@ -443,6 +443,36 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   Ver Produto
                 </motion.span>
               </motion.div>
+
+              {/* Quick action icons floating over image — staggered entrance */}
+              <AnimatePresence>
+                {showCartBtn && !showMiniCart && (
+                  <div className="absolute top-1/2 right-2 -translate-y-1/2 z-[3] flex flex-col gap-2">
+                    <motion.button
+                      initial={{ opacity: 0, x: 12, scale: 0.8 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, x: 12, scale: 0.8 }}
+                      transition={{ type: 'spring' as const, stiffness: 400, damping: 25, delay: 0 }}
+                      onClick={handleFavoriteClick}
+                      className="h-8 w-8 rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg border border-white/50 hover:bg-white dark:hover:bg-black/80 transition-colors"
+                      aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+                    >
+                      <Heart className={`h-4 w-4 ${isFav ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                    </motion.button>
+                    <motion.button
+                      initial={{ opacity: 0, x: 12, scale: 0.8 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, x: 12, scale: 0.8 }}
+                      transition={{ type: 'spring' as const, stiffness: 400, damping: 25, delay: 0.1 }}
+                      onClick={handleAddToCart}
+                      className="h-8 w-8 rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg border border-white/50 hover:bg-white dark:hover:bg-black/80 transition-colors"
+                      aria-label="Adicionar ao carrinho"
+                    >
+                      <ShoppingCart className="h-4 w-4 text-gray-600" />
+                    </motion.button>
+                  </div>
+                )}
+              </AnimatePresence>
             </>
           ) : (
             <>
@@ -474,16 +504,17 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             </motion.div>
           )}
 
-          {/* "Oferta" badge — red/orange gradient when isOffer */}
+          {/* "Oferta" badge — red/orange gradient when isOffer — bouncing pulse + shimmer */}
           {product.isOffer && discount === 0 && (
             <div className="absolute top-2 left-2 z-10">
               <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                animate={{ scale: [1, 1.08, 0.96, 1.04, 1] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 text-[10px] font-bold px-2 py-0.5 shadow-md shadow-red-500/20 offer-badge-glow">
-                  <Zap className="h-2.5 w-2.5 mr-0.5 fill-white" />
-                  Oferta
+                <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 text-[10px] font-bold px-2 py-0.5 shadow-md shadow-red-500/20 offer-badge-glow relative overflow-hidden">
+                  <Zap className="h-2.5 w-2.5 mr-0.5 fill-white relative z-[1]" />
+                  <span className="relative z-[1]">Oferta</span>
+                  <span className="r33-product-card-oferta-shimmer" />
                 </Badge>
               </motion.div>
             </div>
@@ -760,8 +791,8 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           
           <div className="mt-auto pt-1.5">
             {/* Large, bold price — with spring bounce animation on mount + shimmer */}
-            <div className="flex items-baseline gap-1.5 relative overflow-hidden rounded">
-              <motion.span 
+            <div className={`flex items-baseline gap-1.5 relative overflow-hidden rounded${product.comparePrice && product.comparePrice > product.price ? ' r33-product-card-price-flash' : ''}`}>
+              <motion.span
                 className="text-base font-extrabold text-primary leading-none relative" 
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}

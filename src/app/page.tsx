@@ -96,6 +96,8 @@ import { LiveOrderMap } from '@/components/home/LiveOrderMap'
 import { ExpressDeliveryHub } from '@/components/home/ExpressDeliveryHub'
 import { NeighborhoodMarketplace } from '@/components/home/NeighborhoodMarketplace'
 import { LocalProducers } from '@/components/home/LocalProducers'
+import { EcoImpactTracker } from '@/components/home/EcoImpactTracker'
+import { SmartShoppingAssistant } from '@/components/chat/SmartShoppingAssistant'
 import { Share2 } from 'lucide-react'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -1245,6 +1247,15 @@ export default function Home() {
 
                     {/* Neighborhood Feed */}
                     <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <EcoImpactTracker />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Neighborhood Feed */}
+                    <LazySection>
                       <ScrollReveal delay={0.3}>
                         <section>
                           <NeighborhoodFeed />
@@ -1443,6 +1454,9 @@ export default function Home() {
 
       {/* PWA Install Prompt */}
       <PWAInstallPrompt />
+
+      {/* Smart Shopping Assistant */}
+      <SmartShoppingAssistant />
     </div>
   )
 }

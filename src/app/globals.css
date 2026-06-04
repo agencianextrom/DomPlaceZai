@@ -12835,4 +12835,136 @@
   .dark .r33-store-search-result-card::before {
     background: linear-gradient(135deg, rgba(52, 211, 153, 0.7), rgba(245, 158, 11, 0.5));
   }
+  /* ==============================
+     PRODUCT CARD ENHANCEMENTS (r33-product-card-*)
+     ============================== */
+
+  /* Price flash — subtle red pulse glow for discounted items */
+  @keyframes r33-price-flash-anim {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    50% { box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.12); }
+  }
+  .r33-product-card-price-flash {
+    animation: r33-price-flash-anim 2.5s ease-in-out infinite;
+    border-radius: 6px;
+  }
+
+  /* Oferta badge shimmer sweep overlay */
+  .r33-product-card-oferta-shimmer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .r33-product-card-oferta-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.25) 40%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0.25) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    animation: r33-oferta-shimmer-sweep 2.2s ease-in-out infinite;
+  }
+  @keyframes r33-oferta-shimmer-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* Quick action floating buttons — glass highlight ring on hover */
+  .r33-product-card-quick-action {
+    transition: box-shadow 0.25s ease, transform 0.15s ease;
+  }
+  .r33-product-card-quick-action:hover {
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.25), 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+  .dark .r33-product-card-quick-action:hover {
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.3), 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ================================
+     r33-checkout-price-shimmer
+     Animated gradient text for checkout total price
+     ================================ */
+  @keyframes r33-checkout-price-shimmer-anim {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .r33-checkout-price-shimmer {
+    background: linear-gradient(
+      90deg,
+      #10b981 0%,
+      #f59e0b 25%,
+      #10b981 50%,
+      #f59e0b 75%,
+      #10b981 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r33-checkout-price-shimmer-anim 3s linear infinite;
+  }
+  .dark .r33-checkout-price-shimmer {
+    background: linear-gradient(
+      90deg,
+      #34d399 0%,
+      #fbbf24 25%,
+      #34d399 50%,
+      #fbbf24 75%,
+      #34d399 100%
+    );
+    background-size: 200% auto;
+  }
+
+  /* ================================
+     r33-checkout-btn-shimmer
+     Sweeping gradient overlay for Confirmar Pedido button
+     ================================ */
+  .r33-checkout-btn-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 40%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0.2) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    animation: r33-checkout-btn-sweep 2.8s ease-in-out infinite;
+  }
+  .dark .r33-checkout-btn-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.06) 40%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.06) 60%,
+      transparent 100%
+    );
+  }
+  @keyframes r33-checkout-btn-sweep {
+    0% { left: -100%; }
+    50% { left: 200%; }
+    100% { left: 200%; }
+  }
+
 } /* end @media prefers-reduced-motion: no-preference Round 33 r34- classes + r33-store-search */
