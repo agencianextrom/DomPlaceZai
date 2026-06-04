@@ -127,6 +127,9 @@ import SmartReceipt from '@/components/orders/SmartReceipt'
 import PersonalizedHomePage from '@/components/home/PersonalizedHomePage'
 import ProductBattleArena from '@/components/home/ProductBattleArena'
 import EcoImpactTracker2 from '@/components/home/EcoImpactTracker2'
+import CollaborativeShopping from '@/components/home/CollaborativeShopping'
+import ProductLaunchAlert from '@/components/home/ProductLaunchAlert'
+import SmartDeliveryHub from '@/components/home/SmartDeliveryHub'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1567,6 +1570,33 @@ export default function Home() {
                       <ScrollReveal delay={0.3}>
                         <section>
                           <EcoImpactTracker2 />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Collaborative Shopping */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <CollaborativeShopping />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Product Launch Alert */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <ProductLaunchAlert />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Smart Delivery Hub */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <SmartDeliveryHub />
                         </section>
                       </ScrollReveal>
                     </LazySection>
