@@ -23,6 +23,7 @@ import { CookieConsent } from '@/components/layout/CookieConsent'
 import { ViewTransition } from '@/components/layout/ViewTransition'
 import { SectionDivider } from '@/components/layout/SectionDivider'
 import { QuickInfo } from '@/components/home/QuickInfo'
+import { ScanToShop } from '@/components/home/ScanToShop'
 import { FlashSale } from '@/components/home/FlashSale'
 import { CityNews } from '@/components/home/CityNews'
 import { WeekendSpecials } from '@/components/home/WeekendSpecials'
@@ -1795,6 +1796,7 @@ export default function Home() {
 
               {/* Desktop sidebar - Quick Info panel */}
               <QuickInfo />
+              <ScanToShop />
             </div>
           </motion.div>
         ) : currentView === 'product' ? (

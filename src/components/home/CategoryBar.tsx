@@ -343,7 +343,7 @@ export function CategoryBar() {
             exit={{ opacity: 0, x: -8 }}
             transition={{ duration: 0.2, type: 'spring' as const, stiffness: 400, damping: 30 }}
             onClick={() => scrollByArrow('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-background/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-background transition-colors z-10 r39-scroll-arrow"
+            className="absolute left-0 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-background/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-background transition-colors z-10 r39-scroll-arrow active:scale-95"
             aria-label="Scroll categories left"
           >
             <ChevronLeft className="h-3.5 w-3.5 r39-scroll-arrow-icon" />
@@ -358,7 +358,7 @@ export function CategoryBar() {
             exit={{ opacity: 0, x: 8 }}
             transition={{ duration: 0.2, type: 'spring' as const, stiffness: 400, damping: 30 }}
             onClick={() => scrollByArrow('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-background/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-background transition-colors z-10 r39-scroll-arrow"
+            className="absolute right-0 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-background/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-background transition-colors z-10 r39-scroll-arrow active:scale-95"
             aria-label="Scroll categories right"
           >
             <ChevronRight className="h-3.5 w-3.5 r39-scroll-arrow-icon" />

@@ -120,12 +120,12 @@ function GradientRing({ progress, size = 80 }: { progress: number; size?: number
     <svg width={size} height={size} className="transform -rotate-90">
       <defs>
         <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="oklch(0.45 0.1 155)" />
-          <stop offset="50%" stopColor="oklch(0.60 0.12 160)" />
-          <stop offset="100%" stopColor="oklch(0.78 0.16 70)" />
+          <stop offset="0%" stopColor="#10b981" />
+          <stop offset="50%" stopColor="#34d399" />
+          <stop offset="100%" stopColor="#fbbf24" />
         </linearGradient>
       </defs>
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="oklch(0.92 0.015 120)" strokeWidth={5} className="dark:stroke-oklch(0.30 0.02 150)" />
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#dcfce7" strokeWidth={5} className="dark:stroke-[#1a3a2a]" />
       <motion.circle
         cx={size / 2}
         cy={size / 2}
@@ -264,7 +264,7 @@ function MilestoneNode({
         transition={{ delay: index * 0.15, type: 'spring' as const, stiffness: 400, damping: 20 }}
         className={`relative z-10 h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${
           milestone.achieved
-            ? 'bg-primary text-primary-foreground shadow-[0_0_12px_oklch(0.45_0.1_155/0.3)]'
+            ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(16,185,129,0.3)]'
             : isNext
               ? 'bg-primary/10 border-2 border-primary/30 text-primary'
               : 'bg-muted text-muted-foreground'
@@ -354,7 +354,7 @@ function TimelineSkeleton() {
           <Skeleton className="h-6 w-6 rounded-lg" />
           <Skeleton className="h-5 w-48" />
         </div>
-        <div className="grid grid-cols-4 gap-2 mb-5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
           {[1, 2, 3, 4].map((i) => (
             <Skeleton key={i} className="h-20 rounded-xl" />
           ))}
@@ -545,7 +545,7 @@ export function ShoppingTimeline() {
           </AnimatePresence>
 
           {/* Stats grid */}
-          <div className="grid grid-cols-4 gap-2 mb-5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
             <StatCard
               icon={Package}
               label="Pedidos"

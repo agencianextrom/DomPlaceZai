@@ -407,7 +407,7 @@ export function SupportTicketSystem() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-4 gap-2"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-2"
         >
           {[
             { label: 'Abertos', value: quickStats.openTickets.toString(), icon: Ticket, color: '#f59e0b', glow: 'rgba(245,158,11,0.15)' },

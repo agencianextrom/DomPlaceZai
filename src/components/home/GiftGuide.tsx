@@ -199,7 +199,7 @@ export function GiftGuide() {
 
   return (
     <style dangerouslySetInnerHTML={{ __html: RIBBON_STYLE }}>
-      <section className="w-full bg-gradient-to-br from-rose-50/30 via-background to-amber-50/20 rounded-2xl p-4 sm:p-5">
+      <section className="w-full bg-gradient-to-br from-rose-50/30 via-background to-amber-50/20 rounded-2xl p-4 sm:p-5 r61-gift-border">
         {/* ── Header ── */}
         <div className="flex items-center gap-2 mb-4 px-1">
           <motion.div
@@ -220,7 +220,7 @@ export function GiftGuide() {
                 key={occasion.id}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedOccasion(occasion)}
-                className={`snap-start shrink-0 flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold transition-all border ${
+                className={`snap-start shrink-0 flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold transition-all border r61-pill-shimmer ${
                   isActive
                     ? 'text-white border-transparent shadow-lg occasion-pill-glow r34-gift-guide-pill-border'
                     : 'bg-card text-muted-foreground border-border hover:border-primary/30'

@@ -191,7 +191,7 @@ export function Header() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10"
+                          className="min-h-[44px] min-w-[44px] text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 active:scale-95 transition-transform"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           <X className="h-5 w-5" />
@@ -266,7 +266,7 @@ export function Header() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-9 w-9 text-muted-foreground hover:text-destructive"
+                            className="min-h-[44px] min-w-[44px] text-muted-foreground hover:text-destructive active:scale-95 transition-transform"
                             onClick={() => {
                               logoutUser()
                               setMobileMenuOpen(false)
@@ -482,7 +482,7 @@ export function Header() {
                 {currentUser ? (
                   <Button
                     variant="ghost"
-                    className="flex items-center gap-2 h-10 px-2 hover:bg-secondary/50"
+                    className="flex items-center gap-2 min-h-[44px] px-2 hover:bg-secondary/50 active:scale-95 transition-transform"
                     onClick={() => navigate('profile')}
                   >
                     <span className="r38-header-avatar-ring r44-avatar-ring">

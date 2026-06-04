@@ -1168,7 +1168,7 @@ function ModerationTab() {
   if (state.loading) {
     return (
       <div className="space-y-4">
-        <div className="grid grid-cols-3 gap-2">{[...Array(3)].map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">{[...Array(3)].map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}</div>
         {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
       </div>
     )
@@ -1183,7 +1183,7 @@ function ModerationTab() {
   return (
     <motion.div variants={tabVariants} initial="enter" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="space-y-4">
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {[
           { label: 'Total sinalizados', value: reviews.length, icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/20' },
           { label: 'Abaixo de 3 estrelas', value: reviews.filter(r => r.lowRating).length, icon: XCircle, color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-900/20' },

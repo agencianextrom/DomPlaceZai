@@ -364,7 +364,7 @@ export function DealOfTheDay() {
                 transition={{ delay: 0.5 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={(e) => { e.stopPropagation(); handleShare() }}
-                className="absolute top-3 right-16 h-8 w-8 rounded-full bg-white/80 dark:bg-black/40 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white dark:hover:bg-black/60 transition-colors"
+                className="absolute top-3 right-16 min-h-[44px] min-w-[44px] rounded-full bg-white/80 dark:bg-black/40 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white dark:hover:bg-black/60 transition-colors active:scale-95"
               >
                 <Share2 className="h-3.5 w-3.5 text-muted-foreground" />
               </motion.button>

@@ -221,7 +221,7 @@ function LightningBadge({ discount }: { discount: number }) {
         animate={{ scale: [1, 1.15, 1], rotate: [0, 2, -2, 0] }}
         transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.6 }}
       >
-        <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-sm bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 text-white daily-deals-badge-shimmer">
+        <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-sm bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 text-white daily-deals-badge-shimmer r61-discount-pulse">
           <Flame className="h-2.5 w-2.5" />
           Oferta Relâmpago
           <span className="ml-0.5">-{discount}%</span>
@@ -437,7 +437,7 @@ function DealCard({
           transform: `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg)`,
           transition: 'transform 0.15s ease-out',
         }}
-        className="r42-3d-tilt r42-3d-tilt-inner deal-card-hover r26-card-lift r59-deals-shimmer-sweep bg-card rounded-xl border border-border p-3 cursor-pointer hover:border-amber-300/50 dark:hover:border-amber-700/40 transition-all group relative overflow-hidden shadow-lg hover:shadow-xl hover:shadow-primary/10"
+        className="r42-3d-tilt r42-3d-tilt-inner deal-card-hover r26-card-lift r59-deals-shimmer-sweep bg-card rounded-xl border border-border p-3 cursor-pointer hover:border-amber-300/50 dark:hover:border-amber-700/40 transition-all group relative overflow-hidden shadow-lg hover:shadow-xl hover:shadow-primary/10 active:scale-[0.98] transition-transform"
       >
         {/* Heat-map gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-amber-500/[0.06] via-orange-500/[0.03] to-transparent pointer-events-none z-0" />
@@ -735,7 +735,7 @@ export function DailyDeals() {
             <Zap className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h2 className="text-base font-bold r26-shimmer-text">Ofertas do Dia</h2>
+            <h2 className="text-base font-bold r26-shimmer-text r61-deals-shimmer">Ofertas do Dia</h2>
             <p className="text-[10px] text-muted-foreground">Preços exclusivos até às 23:59</p>
           </div>
         </div>

@@ -44597,3 +44597,179 @@
     animation: none !important;
   }
 }
+
+/* ═══ R61 Mobile Touch Targets & Helpers ═══ */
+.r61-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r61-scan-line, .r61-discount-pulse, .r61-game-glow,
+  .r61-gift-border::before, .r61-pill-shimmer, .r61-deals-shimmer,
+  .r61-scan-pulse {
+    animation: none !important;
+  }
+}
+
+/* ═══ R61 ScanToShop ═══ */
+@keyframes r61-scan-line {
+  0% { top: 10%; }
+  50% { top: 85%; }
+  100% { top: 10%; }
+}
+.r61-scan-line {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #10b981, transparent);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 24px rgba(16, 185, 129, 0.3);
+  animation: r61-scan-line 2.5s ease-in-out infinite;
+}
+.r61-scan-viewfinder {
+  position: relative;
+  border: 2px solid rgba(16, 185, 129, 0.6);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.r61-scan-viewfinder::before,
+.r61-scan-viewfinder::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #10b981;
+}
+.r61-scan-viewfinder::before {
+  top: 0; left: 0;
+  border-right: none; border-bottom: none;
+  border-radius: 8px 0 0 0;
+}
+.r61-scan-viewfinder::after {
+  bottom: 0; right: 0;
+  border-left: none; border-top: none;
+  border-radius: 0 0 8px 0;
+}
+.r61-scan-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r61-scan-btn:hover {
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+}
+.r61-scan-btn:active {
+  transform: scale(0.95);
+}
+.r61-scan-pulse {
+  animation: r61-scan-pulse-anim 2s ease-in-out infinite;
+}
+@keyframes r61-scan-pulse-anim {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+}
+.r61-scan-product-card {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ═══ R61 DailyDeals Shimmer ═══ */
+.r61-deals-shimmer {
+  background: linear-gradient(90deg, currentColor 0%, #f59e0b 25%, currentColor 50%, #ef4444 75%, currentColor 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: r61-shimmer-text 3s linear infinite;
+}
+@keyframes r61-discount-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.4); transform: scale(1); }
+  50% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.7), 0 0 20px rgba(245, 158, 11, 0.3); transform: scale(1.05); }
+}
+.r61-discount-pulse {
+  animation: r61-discount-pulse 2s ease-in-out infinite;
+}
+
+/* ═══ R61 InteractiveGameZone Glow ═══ */
+@keyframes r61-game-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(16, 185, 129, 0.3), 0 2px 8px rgba(16, 185, 129, 0.2); }
+  50% { box-shadow: 0 0 16px rgba(16, 185, 129, 0.5), 0 4px 16px rgba(16, 185, 129, 0.3), 0 0 24px rgba(16, 185, 129, 0.1); }
+}
+.r61-game-glow {
+  animation: r61-game-glow 2.5s ease-in-out infinite;
+}
+
+/* ═══ R61 GiftGuide Gradient Border ═══ */
+@keyframes r61-gradient-border-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.r61-gift-border {
+  position: relative;
+}
+.r61-gift-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  padding: 2px;
+  background: linear-gradient(90deg, #f43f5e, #ec4899, #f59e0b, #f43f5e);
+  background-size: 300% 100%;
+  animation: r61-gradient-border-rotate 4s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ═══ R61 GiftGuide Pill Shimmer ═══ */
+@keyframes r61-pill-shimmer-anim {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.r61-pill-shimmer {
+  background-size: 200% 100%;
+  background-image: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+  animation: r61-pill-shimmer-anim 3s linear infinite;
+}
+
+/* ═══ R61 Shimmer Text ═══ */
+@keyframes r61-shimmer-text {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+
+/* ═══ R61 Mobile Touch Targets & Grid Helpers ═══ */
+.r61-touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.r61-tap-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.r61-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r61-touch-target,
+  .r61-tap-btn {
+    transition: none !important;
+  }
+}

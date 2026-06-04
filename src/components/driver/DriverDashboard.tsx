@@ -213,7 +213,7 @@ function LoadingSkeleton() {
             </div>
             <Skeleton className="h-10 w-24 rounded-xl bg-white/15" />
           </div>
-          <div className="grid grid-cols-3 gap-3 mt-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
             {[1, 2, 3].map((i) => (
               <Skeleton key={i} className="h-20 rounded-xl bg-white/15" />
             ))}
@@ -855,7 +855,7 @@ export function DriverDashboard() {
           </div>
 
           {/* -- Today stats -- */}
-          <div className="relative grid grid-cols-3 gap-3 mt-5">
+          <div className="relative grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
             {[
               { icon: Package, label: 'Entregas Hoje', value: earnings?.deliveryCount ?? 0, color: 'from-white/20 to-white/10' },
               { icon: DollarSign, label: 'Ganhos Hoje', value: earnings ? formatCurrency(earnings.periodEarnings) : 'R$ 0,00', color: 'from-amber-400/30 to-orange-400/20' },
@@ -1044,7 +1044,7 @@ export function DriverDashboard() {
         </AnimatePresence>
 
         {/* -- Earnings Overview Cards (Hoje, Semana, Mês) -- */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
           <Card className="border-border/50 overflow-hidden">
             <div className="bg-gradient-to-r from-primary to-emerald-600 px-3 py-2">
               <p className="text-[10px] text-white/70">Hoje</p>
@@ -1380,7 +1380,7 @@ export function DriverDashboard() {
                 >
                   {formatCurrency(earnings.periodEarnings)}
                 </motion.p>
-                <div className="grid grid-cols-3 gap-3 mt-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
                   <div className="bg-white/15 rounded-xl p-2.5">
                     <p className="text-[10px] text-white/70">Entregas</p>
                     <p className="text-sm font-bold">{earnings.deliveryCount}</p>
@@ -1403,7 +1403,7 @@ export function DriverDashboard() {
               >
                 <p className="text-sm text-white/70 mb-1">Total de Ganhos</p>
                 <p className="text-3xl font-bold">R$ 0,00</p>
-                <div className="grid grid-cols-3 gap-3 mt-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
                   {[1, 2, 3].map((i) => (
                     <div key={i} className="bg-white/15 rounded-xl p-2.5">
                       <Skeleton className="h-3 w-16 bg-white/20 mb-1 mx-auto" />

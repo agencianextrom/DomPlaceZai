@@ -481,7 +481,7 @@ function MemoryGameUI({ cards, moves, matchedPairs, timer, gameWon, onFlip, onRe
             </motion.div>
             <h3 className="text-lg font-bold mb-1">Parabéns!</h3>
             <p className="text-sm text-muted-foreground mb-4">Você completou em {moves} jogadas e {timer}s</p>
-            <Button onClick={onRestart} className="gap-2 btn-glow bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Button onClick={onRestart} className="gap-2 btn-glow bg-primary hover:bg-primary/90 text-primary-foreground r61-game-glow">
               <Play className="h-4 w-4" /> Jogar Novamente
             </Button>
           </motion.div>
@@ -507,7 +507,7 @@ function MemoryGameUI({ cards, moves, matchedPairs, timer, gameWon, onFlip, onRe
                 whileTap={!card.isFlipped && !card.isMatched ? { scale: 0.95 } : {}}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.04, ...springConfig }}
+                transition={{ delay: i * 0.06, ...springConfig }}
               >
                 <AnimatePresence mode="wait">
                   {(card.isFlipped || card.isMatched) ? (
@@ -563,7 +563,7 @@ function QuizGameUI({ currentQuestion, currentIndex, selectedAnswer, isRevealed,
           <h3 className="text-lg font-bold mb-1">Quiz Finalizado!</h3>
           <p className="text-2xl font-bold text-primary mb-1">{score} pontos</p>
           <p className="text-xs text-muted-foreground mb-1">Melhor sequência: {bestStreak} acertos seguidos</p>
-          <Button onClick={onRestart} className="mt-4 gap-2 btn-glow bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={onRestart} className="mt-4 gap-2 btn-glow bg-primary hover:bg-primary/90 text-primary-foreground r61-game-glow">
             <RotateCcw className="h-4 w-4" /> Jogar Novamente
           </Button>
         </div>
@@ -708,7 +708,7 @@ function DragSortGameUI({ items, sortMode, isComplete, dragIndex, dragItemRef, o
             <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.5, repeat: 2 }} className="text-4xl mb-3">🎯</motion.div>
             <h3 className="text-lg font-bold mb-1">Perfeito!</h3>
             <p className="text-sm text-muted-foreground mb-4">Ordem correta!</p>
-            <Button onClick={() => onInitGame(sortMode)} className="gap-2 btn-glow bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Button onClick={() => onInitGame(sortMode)} className="gap-2 btn-glow bg-primary hover:bg-primary/90 text-primary-foreground r61-game-glow">
               <Play className="h-4 w-4" /> Tentar Novamente
             </Button>
           </motion.div>

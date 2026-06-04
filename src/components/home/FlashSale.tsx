@@ -478,7 +478,7 @@ export function FlashSale() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
+                className="h-7 w-7 min-h-[44px] min-w-[44px] active:scale-95 transition-transform"
                 onClick={() => {
                   setRefreshing(true)
                   fetchProducts()
@@ -738,7 +738,7 @@ export function FlashSale() {
                                         <div className="absolute inset-0 r39-cta-shimmer pointer-events-none z-10" />
                                         <Button
                                           size="sm"
-                                          className="w-full h-7 text-[10px] bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-0 gap-1 btn-smooth ripple-effect flash-buy-btn-shimmer relative z-0"
+                                          className="w-full min-h-11 text-[10px] bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-0 gap-1 btn-smooth ripple-effect flash-buy-btn-shimmer relative z-0 active:scale-95 transition-transform"
                                           onClick={(e) => {
                                             e.stopPropagation()
                                             addToCart(product, product.storeName || 'Loja')
@@ -776,13 +776,13 @@ export function FlashSale() {
               <>
                 <button
                   onClick={() => scroll('left')}
-                  className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors z-10 hidden sm:flex"
+                  className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors z-10 hidden sm:flex active:scale-95 transition-transform"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => scroll('right')}
-                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors z-10 hidden sm:flex"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors z-10 hidden sm:flex active:scale-95 transition-transform"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
