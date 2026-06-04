@@ -17,7 +17,6 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   reactStrictMode: false,
-  // Cloudinary usa módulos do Node.js (fs, path) que não existem no browser
   serverExternalPackages: ['cloudinary'],
   async headers() {
     return [

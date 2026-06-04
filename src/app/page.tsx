@@ -163,7 +163,6 @@ import { MarketplaceAnalytics } from '@/components/home/MarketplaceAnalytics'
 import { MealDealFinder } from '@/components/home/MealDealFinder'
 import { NeighborhoodBulletinBoard } from '@/components/home/NeighborhoodBulletinBoard'
 import NeighborhoodWishlist from '@/components/home/NeighborhoodWishlist'
-import { NutritionLens } from '@/components/home/NutritionLens'
 import { PersonalShopperBot } from '@/components/home/PersonalShopperBot'
 import PriceDropAlertEnhanced from '@/components/home/PriceDropAlertEnhanced'
 import { PriceMatchGuarantee } from '@/components/home/PriceMatchGuarantee'
@@ -176,7 +175,7 @@ import { SmartMealPrep } from '@/components/home/SmartMealPrep'
 import { SocialCommerceHub } from '@/components/home/SocialCommerceHub'
 import { StoreEventHub } from '@/components/home/StoreEventHub'
 import { SubscriptionBoxBuilder } from '@/components/home/SubscriptionBoxBuilder'
-// import { SustainabilityTracker } from '@/components/home/SustainabilityTracker'
+// SustainabilityTracker removed - incomplete from R57
 import { VirtualMarketTour } from '@/components/home/VirtualMarketTour'
 import VoiceShoppingAssistant from '@/components/home/VoiceShoppingAssistant'
 import { WishListManager } from '@/components/home/WishListManager'
@@ -1730,8 +1729,7 @@ export default function Home() {
                     <LazySection><ScrollReveal delay={0.3}><section><FoodDeliveryTracker /></section></ScrollReveal></LazySection>
                     <LazySection><ScrollReveal delay={0.3}><section><WishListManager /></section></ScrollReveal></LazySection>
                     <LazySection><ScrollReveal delay={0.3}><section><StoreEventHub /></section></ScrollReveal></LazySection>
-                    <LazySection><ScrollReveal delay={0.3}><section><NutritionLens /></section></ScrollReveal></LazySection>
-                    {/* <LazySection><ScrollReveal delay={0.3}><section><SustainabilityTracker /></section></ScrollReveal></LazySection> */}
+
                     <LazySection><ScrollReveal delay={0.3}><section><ARInteriorPreview /></section></ScrollReveal></LazySection>
                     <LazySection><ScrollReveal delay={0.3}><section><FamilyPurchasePlanner /></section></ScrollReveal></LazySection>
                     <LazySection><ScrollReveal delay={0.3}><section><NeighborhoodWishlist /></section></ScrollReveal></LazySection>
