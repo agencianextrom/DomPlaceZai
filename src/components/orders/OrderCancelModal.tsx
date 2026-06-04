@@ -63,17 +63,17 @@ export function OrderCancelModal({
   const [otherReasonText, setOtherReasonText] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
 
-  // Reset state when modal closes
-  const prevIsOpenRef = useRef(false)
-  useEffect(() => {
-    if (prevIsOpenRef.current && !isOpen) {
-      setStep(1)
-      setSelectedReason(null)
-      setOtherReasonText('')
-      setIsSuccess(false)
-    }
-    prevIsOpenRef.current = isOpen
-  }, [isOpen])
+  // Reset state when modal closes (React 18+ pattern: set state during rendering)
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
+  if (prevIsOpen && !isOpen) {
+    setStep(1)
+    setSelectedReason(null)
+    setOtherReasonText('')
+    setIsSuccess(false)
+    setPrevIsOpen(isOpen)
+  } else if (!prevIsOpen && isOpen) {
+    setPrevIsOpen(isOpen)
+  }
 
   const handleConfirmCancel = useCallback(() => {
     const reasonLabel = cancelReasons.find(r => r.id === selectedReason)?.label || selectedReason

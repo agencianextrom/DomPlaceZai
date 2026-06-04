@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -182,7 +182,7 @@ export function DomEliseuStories() {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [seenStories, setSeenStories] = useState<Set<string>>(new Set())
-  const [allViewed, setAllViewed] = useState(false)
+  const allViewed = useMemo(() => seenStories.size === storyData.length && storyData.length > 0, [seenStories, storyData.length])
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -236,7 +236,6 @@ export function DomEliseuStories() {
 
   const handleViewAll = useCallback(() => {
     setSeenStories(new Set(storyData.map(s => s.id)))
-    setAllViewed(true)
     setActiveStoryIndex(null)
     setActiveSlideIndex(0)
   }, [])
@@ -253,12 +252,6 @@ export function DomEliseuStories() {
       if (timerRef.current) clearInterval(timerRef.current)
     }
   }, [activeStoryIndex, isPaused, goNextSlide])
-
-  useEffect(() => {
-    if (seenStories.size === storyData.length && !allViewed) {
-      setAllViewed(true)
-    }
-  }, [seenStories, allViewed])
 
   return (
     <>

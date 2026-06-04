@@ -534,7 +534,7 @@ export function CheckoutView() {
                       <motion.div
                         animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
                         transition={{ duration: 0.5, type: 'spring' as const, stiffness: 300, damping: 20 }}
-                        className={`step-dot ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow r33-checkout-step-pulse' : ''}`}
+                        className={`step-dot ${isCompleted ? 'completed r40-step-glow-ring' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow r33-checkout-step-pulse r40-step-glow-ring' : ''}`}
                       >
                         {isCompleted ? (
                           <motion.div
@@ -555,7 +555,7 @@ export function CheckoutView() {
                     {i < stepLabels.length - 1 && (
                       <div className="step-line">
                         <motion.div
-                          className={`step-line-fill ${i < currentStepIndex ? 'filled r33-checkout-progress-line' : ''}`}
+                          className={`step-line-fill ${i < currentStepIndex ? 'filled r33-checkout-progress-line r40-progress-line-gradient' : ''}`}
                           layout
                           transition={{ duration: 0.6, ease: 'easeInOut' as const }}
                         />
@@ -862,7 +862,7 @@ export function CheckoutView() {
                     whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(16,185,129,0.2)' }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r33-checkout-payment-hover ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r40-payment-card-hover ${
                       payment === method.id
                         ? 'border-primary bg-primary/5 shadow-[0_2px_16px_oklch(0.45_0.1_155/0.1)]'
                         : 'border-border hover:border-primary/30'
@@ -880,7 +880,7 @@ export function CheckoutView() {
                         transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
                         className="absolute top-2 right-2"
                       >
-                        <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center r33-checkout-checkmark-anim">
+                        <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center r33-checkout-checkmark-anim r40-payment-checkmark-pop">
                           <Check className="h-3 w-3 text-primary-foreground" />
                         </div>
                       </motion.div>
@@ -919,8 +919,8 @@ export function CheckoutView() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                   >
-                    <Card className="border-primary/20 bg-primary/5">
-                      <CardContent className="p-3 flex items-center justify-between">
+                    <Card className="r40-coupon-gradient-border">
+                      <CardContent className="p-3 flex items-center justify-between r40-coupon-success">
                         <div className="flex items-center gap-2">
                           <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
                             <Tag className="h-4 w-4 text-primary" />
@@ -958,7 +958,7 @@ export function CheckoutView() {
               </div>
 
               {/* Order summary card with animated items */}
-              <Card className="mt-6 gradient-border-animated bg-card rounded-xl overflow-hidden">
+              <Card className="mt-6 gradient-border-animated bg-card rounded-xl overflow-hidden r40-address-glass">
                 <CardContent className="p-4">
                   <motion.h4
                     initial={{ opacity: 0, y: -6 }}
@@ -996,7 +996,7 @@ export function CheckoutView() {
                     </div>
                     {appliedCoupon === 'ACAI10' && (
                       <div className="flex justify-between text-emerald-600">
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-1 r40-savings-glow">
                           <Tag className="h-3 w-3" />
                           Desconto (10%)
                         </span>
@@ -1005,7 +1005,7 @@ export function CheckoutView() {
                     )}
                     {appliedCoupon === 'FRETE5' && (
                       <div className="flex justify-between text-emerald-600">
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-1 r40-savings-glow">
                           <Tag className="h-3 w-3" />
                           Desconto no frete
                         </span>
@@ -1027,7 +1027,7 @@ export function CheckoutView() {
                     <Separator />
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
-                      <span className="r33-checkout-price-shimmer inline-block">
+                      <span className="r33-checkout-price-shimmer r40-total-gradient-text inline-block">
                       <motion.span
                         key={total}
                         initial={{ scale: 1.15, color: 'rgb(16, 185, 129)' }}
@@ -1060,9 +1060,9 @@ export function CheckoutView() {
                   animate={{ opacity: 1, y: [0, -3, 0] }}
                   transition={{ delay: 0.6, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r33-checkout-security-float"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge"
                 >
-                  <span className="text-emerald-500">
+                  <span className="text-emerald-500 r40-confidence-icon-wiggle" style={{ '--r40-badge-delay': '0s' } as React.CSSProperties}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                   </span>
                   Seguro
@@ -1072,10 +1072,11 @@ export function CheckoutView() {
                   animate={{ opacity: 1, y: [0, -3, 0] }}
                   transition={{ delay: 0.7, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r33-checkout-security-float"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge"
                 >
                   <motion.span
-                    className="text-emerald-500"
+                    className="text-emerald-500 r40-confidence-icon-wiggle"
+                    style={{ '--r40-badge-delay': '0.3s' } as React.CSSProperties}
                     animate={{ rotate: [0, 10, -10, 0] }}
                     transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' }}
                   >
@@ -1088,9 +1089,9 @@ export function CheckoutView() {
                   animate={{ opacity: 1, y: [0, -3, 0] }}
                   transition={{ delay: 0.8, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r33-checkout-security-float"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge"
                 >
-                  <span className="text-primary">
+                  <span className="text-primary r40-confidence-icon-wiggle" style={{ '--r40-badge-delay': '0.6s' } as React.CSSProperties}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="m12 15 5 6H7Z"/></svg>
                   </span>
                   Frete grátis acima de R$50
@@ -1116,24 +1117,26 @@ export function CheckoutView() {
                 <Button variant="outline" className="flex-1 h-12" onClick={() => setStep('address')}>
                   Voltar
                 </Button>
-                <Button
-                  className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl checkout-btn-shimmer r32-confirm-shine r33-checkout-btn-hover relative overflow-hidden"
-                  onClick={handlePlaceOrder}
-                  disabled={isProcessing || !termsAccepted}
-                >
-                  <span className="r33-checkout-btn-shimmer"></span>
-                  {isProcessing ? (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      Processando...
-                    </div>
-                  ) : (
-                    <>
-                      Confirmar Pedido
-                      <Check className="h-4 w-4 ml-2" />
-                    </>
-                  )}
-                </Button>
+                <motion.div className="r40-confirm-btn-wrapper">
+                  <Button
+                    className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl checkout-btn-shimmer r32-confirm-shine r40-confirm-btn-glow relative overflow-hidden"
+                    onClick={handlePlaceOrder}
+                    disabled={isProcessing || !termsAccepted}
+                  >
+                    <span className="r33-checkout-btn-shimmer"></span>
+                    {isProcessing ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        Processando...
+                      </div>
+                    ) : (
+                      <>
+                        Confirmar Pedido
+                        <Check className="h-4 w-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </motion.div>
               </div>
               </div>
             </motion.div>

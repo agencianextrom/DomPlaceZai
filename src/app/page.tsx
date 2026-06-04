@@ -109,6 +109,8 @@ import { DynamicPricingAlerts } from '@/components/home/DynamicPricingAlerts'
 import { StoreEventCalendar } from '@/components/store/StoreEventCalendar'
 import { ReviewSentimentAI } from '@/components/home/ReviewSentimentAI'
 import { StoreMembershipTiers } from '@/components/store/StoreMembershipTiers'
+import { InfluencerShopPage } from '@/components/home/InfluencerShopPage'
+import { EcoImpactDashboard } from '@/components/home/EcoImpactDashboard'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1368,6 +1370,24 @@ export default function Home() {
                       <ScrollReveal delay={0.15}>
                         <section className="mt-6">
                           <RealTimeDealsTicker />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Influencer Shop Page */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <InfluencerShopPage />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Eco Impact Dashboard */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <EcoImpactDashboard />
                         </section>
                       </ScrollReveal>
                     </LazySection>

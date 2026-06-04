@@ -36,6 +36,7 @@ import { RelatedCollections } from './RelatedCollections'
 import { ProductFAQ } from './ProductFAQ'
 import { ProductWarranty } from './ProductWarranty'
 import { ProductInstallationGuide } from './ProductInstallationGuide'
+import { ProductSetupWizard } from './ProductSetupWizard'
 import { ARProductPreview } from './ARProductPreview'
 import { CrossSellEngine } from './CrossSellEngine'
 import { ProductOriginTracker } from './ProductOriginTracker'
@@ -670,6 +671,17 @@ export function ProductDetail({ product }: ProductDetailProps) {
           className="mt-4"
         >
           <ProductInstallationGuide category={product.category} />
+        </motion.div>
+
+        {/* Product Setup Wizard — Guia de Montagem */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductSetupWizard />
         </motion.div>
 
         {/* AR Product Preview — Visualização RA */}

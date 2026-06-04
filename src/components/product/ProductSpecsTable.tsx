@@ -128,17 +128,11 @@ interface ProductSpecsTableProps {
 
 export function ProductSpecsTable({ category, specs: propSpecs, productName }: ProductSpecsTableProps) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [loadedRows, setLoadedRows] = useState(0)
 
   const specs = useMemo(() => {
     if (propSpecs && propSpecs.length > 0) return propSpecs
     return generateSpecs(category, productName || category)
   }, [propSpecs, category, productName])
-
-  // Staggered row loading
-  useMemo(() => {
-    setLoadedRows(isExpanded ? specs.length : 4)
-  }, [isExpanded, specs.length])
 
   const displaySpecs = isExpanded ? specs : specs.slice(0, 4)
   const hasMore = specs.length > 4

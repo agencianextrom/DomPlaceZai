@@ -422,12 +422,10 @@ export function StoreAnalytics() {
   const donutCircumference = 2 * Math.PI * donutRadius
 
   const donutSegments = useMemo(() => {
-    let offset = 0
-    return categoryData.map(cat => {
+    return categoryData.map((cat, idx) => {
       const segment = (cat.value / 100) * donutCircumference
-      const result = { ...cat, dashArray: segment, dashOffset: offset }
-      offset += segment
-      return result
+      const dashOffset = categoryData.slice(0, idx).reduce((sum, c) => sum + (c.value / 100) * donutCircumference, 0)
+      return { ...cat, dashArray: segment, dashOffset }
     })
   }, [categoryData])
 

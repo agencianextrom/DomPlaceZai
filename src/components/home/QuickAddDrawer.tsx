@@ -431,7 +431,7 @@ export function QuickAddDrawer() {
     } catch {
       return []
     }
-  }, [quickAddProduct?.variations])
+  }, [quickAddProduct])
 
   const cartTotal = getCartTotal()
   const cartItemCount = getCartItemCount()

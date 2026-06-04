@@ -200,13 +200,13 @@ function DonutChart({ segments, remaining, total }: { segments: DonutSegment[]; 
 
   const activeSegments = segments.filter((s) => s.value > 0);
 
-  let accumulatedOffset = 0;
-  const arcs = activeSegments.map((seg) => {
+  const arcs = activeSegments.map((seg, idx) => {
     const fraction = seg.value / total;
     const dashLength = fraction * circumference;
-    const dashOffset = -accumulatedOffset;
-    accumulatedOffset += dashLength;
-    return { ...seg, dashLength, dashOffset, fraction };
+    const prevOffset = activeSegments
+      .slice(0, idx)
+      .reduce((sum, s) => sum + (s.value / total) * circumference, 0);
+    return { ...seg, dashLength, dashOffset: -prevOffset, fraction };
   });
 
   return (

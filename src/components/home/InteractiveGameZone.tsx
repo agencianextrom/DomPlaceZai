@@ -100,7 +100,13 @@ function saveGamePoints(pts: number): void {
 
 // ==================== MEMORY GAME ====================
 function useMemoryGame() {
-  const [cards, setCards] = useState<MemoryCard[]>([])
+  const [cards, setCards] = useState<MemoryCard[]>(() => {
+    const pairs = GAME_EMOJIS.map((emoji, i) => [
+      { id: i * 2, emoji, name: PRODUCT_NAMES[i], isFlipped: false, isMatched: false },
+      { id: i * 2 + 1, emoji, name: PRODUCT_NAMES[i], isFlipped: false, isMatched: false },
+    ]).flat()
+    return shuffleArray(pairs)
+  })
   const [moves, setMoves] = useState(0)
   const [matchedPairs, setMatchedPairs] = useState(0)
   const [flippedIds, setFlippedIds] = useState<number[]>([])
@@ -125,8 +131,6 @@ function useMemoryGame() {
     setGameWon(false)
     if (timerRef.current) clearInterval(timerRef.current)
   }, [])
-
-  useEffect(() => { initGame() }, [initGame])
 
   useEffect(() => {
     if (isRunning && !gameWon) {
@@ -183,7 +187,7 @@ function useMemoryGame() {
 
 // ==================== QUIZ GAME ====================
 function useQuizGame() {
-  const [questionPool, setQuestionPool] = useState<QuizQuestion[]>([])
+  const [questionPool, setQuestionPool] = useState<QuizQuestion[]>(() => shuffleArray([...QUIZ_QUESTIONS]).slice(0, 10))
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [isRevealed, setIsRevealed] = useState(false)
@@ -191,17 +195,6 @@ function useQuizGame() {
   const [streak, setStreak] = useState(0)
   const [bestStreak, setBestStreak] = useState(0)
   const [isFinished, setIsFinished] = useState(false)
-
-  useEffect(() => {
-    setQuestionPool(shuffleArray([...QUIZ_QUESTIONS]).slice(0, 10))
-    setCurrentIndex(0)
-    setScore(0)
-    setStreak(0)
-    setBestStreak(0)
-    setSelectedAnswer(null)
-    setIsRevealed(false)
-    setIsFinished(false)
-  }, [])
 
   const currentQuestion = questionPool[currentIndex]
 
@@ -254,7 +247,14 @@ function useQuizGame() {
 
 // ==================== DRAG SORT GAME ====================
 function useDragSortGame() {
-  const [items, setItems] = useState<DragItem[]>([])
+  const [items, setItems] = useState<DragItem[]>(() => {
+    const shuffled = shuffleArray([...DRAG_ITEMS])
+    const sorted = [...shuffled].sort((a, b) => a.price - b.price)
+    if (shuffled.every((item, i) => item.id === sorted[i].id) && shuffled.length >= 2) {
+      ;[shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]]
+    }
+    return shuffled
+  })
   const [sortMode, setSortMode] = useState<'price' | 'rating'>('price')
   const [isComplete, setIsComplete] = useState(false)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
@@ -274,8 +274,6 @@ function useDragSortGame() {
     setIsComplete(false)
     setDragIndex(null)
   }, [])
-
-  useEffect(() => { initGame('price') }, [initGame])
 
   const checkOrder = useCallback((currentItems: DragItem[], mode: 'price' | 'rating') => {
     const sorted = [...currentItems].sort((a, b) => mode === 'price' ? a.price - b.price : b.rating - a.rating)

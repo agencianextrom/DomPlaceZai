@@ -1,6 +1,11 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from 'react'
+const emptySubscribe = () => () => {}
+function useHydrated() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false)
+}
+
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Crown,
@@ -1034,14 +1039,9 @@ function CurrentTierStats({
 
 export function LoyaltyTierBenefits() {
   const [points, setPoints] = useState<number>(() => loadUserPoints())
+  const mounted = useHydrated()
   const [expandedTiers, setExpandedTiers] = useState<Set<string>>(new Set())
   const [showConfetti, setShowConfetti] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  // Hydration guard
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Derive current tier
   const currentTierIndex = useMemo(() => {

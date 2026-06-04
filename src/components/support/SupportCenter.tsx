@@ -274,10 +274,12 @@ export function SupportCenter() {
   return (
     <div className="min-h-screen pb-24 relative">
       {/* Floating headset emoji particles */}
-      <FloatingHeadsetParticles />
+      <div className="r40-particles">
+        <FloatingHeadsetParticles />
+      </div>
 
-      {/* Header with shimmer */}
-      <div className="sticky top-14 sm:top-16 z-40 bg-background/80 backdrop-blur-xl border-b border-border/30 -mx-4 px-4 -mt-4 pt-4">
+      {/* Header with animated gradient background */}
+      <div className="r40-header sticky top-14 sm:top-16 z-40 bg-gradient-to-r from-primary/5 via-background to-emerald-50/30 dark:from-primary/8 dark:via-background dark:to-emerald-900/5 backdrop-blur-xl border-b border-border/30 -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -305,10 +307,10 @@ export function SupportCenter() {
           animate={{ opacity: 1, y: 0 }}
           className="relative"
         >
-          <div className="relative">
+          <div className="r40-search-wrapper relative rounded-xl">
             <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/10 via-emerald-500/5 to-amber-500/10 blur-sm" />
             <div className="relative bg-white/70 dark:bg-card/70 backdrop-blur-xl rounded-xl border border-white/40 dark:border-border/40 shadow-lg">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="r40-search-icon absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar na Central de Ajuda..."
                 value={searchQuery}
@@ -334,11 +336,11 @@ export function SupportCenter() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
           >
-            <div className="relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-lg">
+            <div className="r40-help-card relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-lg">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-emerald-50/50 dark:from-primary/10 dark:via-background dark:to-emerald-900/10 backdrop-blur-xl" />
               <div className="relative p-4 bg-white/40 dark:bg-card/40 backdrop-blur-sm">
                 <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-primary" />
+                  <Zap className="r40-step-icon h-4 w-4 text-primary" />
                   Como funciona o DomPlace?
                 </h3>
                 <div className="flex items-start gap-3">
@@ -368,12 +370,12 @@ export function SupportCenter() {
                     <div key={item.step} className="flex-1 text-center">
                       <motion.div
                         whileHover={{ y: -3 }}
-                        className="relative inline-block"
+                        className="r40-category-icon relative inline-block"
                       >
                         <div
-                          className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto mb-2 shadow-lg`}
+                          className={`r40-category-glow h-12 w-12 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto mb-2 shadow-lg`}
                         >
-                          <item.icon className="h-6 w-6 text-white" />
+                          <item.icon className="r40-step-icon h-6 w-6 text-white" />
                         </div>
                         <div className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-background border-2 border-primary flex items-center justify-center">
                           <span className="text-[10px] font-bold text-primary">
@@ -407,14 +409,15 @@ export function SupportCenter() {
           <AnimatePresence mode="popLayout">
             {filteredFaqs.map((category, catIdx) => {
               const CategoryIcon = category.icon
+              const hasActiveFaq = category.faqs.some((_, i) => expandedFaq === `${category.id}-${i}`)
               return (
                 <motion.div
                   key={category.id}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: catIdx * 0.06 }}
+                  transition={{ delay: catIdx * 0.06, type: 'spring' as const, stiffness: 260, damping: 24 }}
                   exit={{ opacity: 0, y: -8 }}
-                  className="relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-md"
+                  className={`r40-faq-card r40-category-card r40-category-shimmer relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-md ${hasActiveFaq ? 'r40-faq-active' : ''}`}
                 >
                   {/* Glassmorphism background */}
                   <div
@@ -449,7 +452,7 @@ export function SupportCenter() {
                               }
                               className="w-full flex items-center gap-2 p-3.5 text-left hover:bg-white/30 dark:hover:bg-white/5 transition-colors"
                             >
-                              <span className="text-sm flex-1 font-medium">
+                              <span className={`text-sm flex-1 font-medium ${isExpanded ? 'text-primary' : ''}`}>
                                 {faq.q}
                               </span>
                               <motion.div
@@ -460,9 +463,9 @@ export function SupportCenter() {
                                   stiffness: 300,
                                   damping: 25,
                                 }}
-                                className="shrink-0"
+                                className="r40-faq-chevron shrink-0"
                               >
-                                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                                <ChevronDown className={`h-4 w-4 ${isExpanded ? 'text-primary' : 'text-muted-foreground'}`} />
                               </motion.div>
                             </button>
                             <AnimatePresence>
@@ -544,7 +547,7 @@ export function SupportCenter() {
               animate={{ opacity: 1 }}
               className="text-center py-8"
             >
-              <HelpCircle className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+              <HelpCircle className="r40-no-results h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">
                 Nenhum resultado encontrado
               </p>
@@ -576,15 +579,15 @@ export function SupportCenter() {
             <motion.button
               whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(16,185,129,0.15)' }}
               whileTap={{ scale: 0.95 }}
-              className="relative flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 dark:bg-card/50 backdrop-blur-md border border-white/30 dark:border-border/30 overflow-hidden"
+              className="r40-contact-card relative flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 dark:bg-card/50 backdrop-blur-md border border-white/30 dark:border-border/30 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/80 to-transparent dark:from-emerald-900/10 dark:to-transparent" />
               <motion.div
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative"
+                className="r40-contact-icon-bounce relative"
               >
-                <div className="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-800/30 flex items-center justify-center shadow-sm">
+                <div className="r40-contact-glow relative h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-800/30 flex items-center justify-center shadow-sm">
                   <Phone className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
               </motion.div>
@@ -599,15 +602,15 @@ export function SupportCenter() {
             <motion.button
               whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(245,158,11,0.15)' }}
               whileTap={{ scale: 0.95 }}
-              className="relative flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 dark:bg-card/50 backdrop-blur-md border border-white/30 dark:border-border/30 overflow-hidden"
+              className="r40-contact-card relative flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 dark:bg-card/50 backdrop-blur-md border border-white/30 dark:border-border/30 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-amber-50/80 to-transparent dark:from-amber-900/10 dark:to-transparent" />
               <motion.div
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-                className="relative"
+                className="r40-contact-icon-bounce relative"
               >
-                <div className="h-12 w-12 rounded-full bg-amber-100 dark:bg-amber-800/30 flex items-center justify-center shadow-sm">
+                <div className="r40-contact-glow relative h-12 w-12 rounded-full bg-amber-100 dark:bg-amber-800/30 flex items-center justify-center shadow-sm">
                   <Mail className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                 </div>
               </motion.div>
@@ -622,15 +625,15 @@ export function SupportCenter() {
             <motion.button
               whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(16,185,129,0.15)' }}
               whileTap={{ scale: 0.95 }}
-              className="relative flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 dark:bg-card/50 backdrop-blur-md border border-white/30 dark:border-border/30 overflow-hidden"
+              className="r40-contact-card relative flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 dark:bg-card/50 backdrop-blur-md border border-white/30 dark:border-border/30 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent dark:from-primary/10 dark:to-transparent" />
               <motion.div
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-                className="relative"
+                className="r40-contact-icon-bounce relative"
               >
-                <div className="h-12 w-12 rounded-full bg-teal-100 dark:bg-teal-800/30 flex items-center justify-center shadow-sm">
+                <div className="r40-contact-glow relative h-12 w-12 rounded-full bg-teal-100 dark:bg-teal-800/30 flex items-center justify-center shadow-sm">
                   <Phone className="h-5 w-5 text-teal-600 dark:text-teal-400" />
                 </div>
               </motion.div>
@@ -772,8 +775,8 @@ export function SupportCenter() {
                   /* Form with glassmorphism */
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-lg"
+                    animate={{ opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 220, damping: 22 } }}
+                    className="r40-ticket-form relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-lg"
                   >
                     <div className="absolute inset-0 bg-white/50 dark:bg-card/50 backdrop-blur-xl" />
                     <div className="relative p-4 space-y-3 bg-white/30 dark:bg-card/30 backdrop-blur-md rounded-2xl">
@@ -898,15 +901,21 @@ export function SupportCenter() {
 
           {/* Toggle form button */}
           {!showContact && !isSubmitted && (
-            <motion.div whileTap={{ scale: 0.97 }}>
-              <Button
-                variant="outline"
-                className="w-full border-primary/30 hover:bg-primary/5 gap-2"
-                onClick={() => setShowContact(true)}
-              >
-                <Send className="h-4 w-4 text-primary" />
-                Enviar Ticket de Suporte
-              </Button>
+            <motion.div
+              whileTap={{ scale: 0.97 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 220, damping: 22 } }}
+            >
+              <div className="r40-action-btn rounded-xl">
+                <Button
+                  variant="outline"
+                  className="w-full border-primary/30 hover:bg-primary/5 gap-2"
+                  onClick={() => setShowContact(true)}
+                >
+                  <Send className="h-4 w-4 text-primary" />
+                  Enviar Ticket de Suporte
+                </Button>
+              </div>
             </motion.div>
           )}
         </motion.div>
@@ -919,16 +928,16 @@ export function SupportCenter() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <div className="relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-lg">
+          <div className="r40-chat-card relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-lg">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-emerald-50/50 dark:from-primary/10 dark:to-emerald-900/10 backdrop-blur-xl" />
             <div className="relative p-4 bg-white/40 dark:bg-card/40 backdrop-blur-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-md">
+                    <div className="r40-category-glow h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-md">
                       <Headphones className="h-6 w-6 text-white" />
                     </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-background animate-pulse" />
+                    <div className="r40-chat-badge absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-background" />
                   </div>
                   <div>
                     <p className="text-sm font-bold">Precisa de mais ajuda?</p>
@@ -937,13 +946,15 @@ export function SupportCenter() {
                     </p>
                   </div>
                 </div>
-                <Button
-                  onClick={toggleChat}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 rounded-xl text-xs font-semibold"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  Chat
-                </Button>
+                <div className="r40-action-btn rounded-xl">
+                  <Button
+                    onClick={toggleChat}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 rounded-xl text-xs font-semibold"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    Chat
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

@@ -1,6 +1,11 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef, useSyncExternalStore } from 'react'
+const emptySubscribe = () => () => {}
+function useHydrated() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false)
+}
+
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Heart,
@@ -622,15 +627,10 @@ function EmptyState() {
    ═══════════════════════════════════════════════════════════════ */
 export function ProductWishTracker() {
   const [state, setState] = useState<WishlistState>(loadState)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useHydrated()
   const [showSortMenu, setShowSortMenu] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const sortMenuRef = useRef<HTMLDivElement>(null)
-
-  // Hydration guard
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Persist on change
   useEffect(() => {

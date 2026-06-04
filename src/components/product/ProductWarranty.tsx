@@ -121,10 +121,9 @@ function AnimatedPriceCounter({ target, duration = 800 }: { target: number; dura
   const [display, setDisplay] = useState(0)
 
   useEffect(() => {
-    if (target === 0) { setDisplay(0); return }
-    const start = Date.now()
+    const startTime = performance.now()
     const tick = () => {
-      const elapsed = Date.now() - start
+      const elapsed = performance.now() - startTime
       const progress = Math.min(elapsed / duration, 1)
       const eased = 1 - Math.pow(1 - progress, 3)
       setDisplay(target * eased)
@@ -343,17 +342,15 @@ function WarrantySkeleton() {
 
 // ==================== MAIN COMPONENT ====================
 export function ProductWarranty({ productId, productName, basePrice }: ProductWarrantyProps) {
-  const [selectedTierId, setSelectedTierId] = useState<string>('standard')
+  const [selectedTierId, setSelectedTierId] = useState<string>(() => loadWarrantyPreference(productId))
   const [isLoaded, setIsLoaded] = useState(false)
   const [addedToCart, setAddedToCart] = useState(false)
 
-  // Load saved preference
+  // Loading animation
   useEffect(() => {
-    const saved = loadWarrantyPreference(productId)
-    setSelectedTierId(saved)
     const t = setTimeout(() => setIsLoaded(true), 500)
     return () => clearTimeout(t)
-  }, [productId])
+  }, [])
 
   const selectedTier = useMemo(
     () => WARRANTY_TIERS.find(t => t.id === selectedTierId) || WARRANTY_TIERS[0],

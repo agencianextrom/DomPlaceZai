@@ -379,21 +379,23 @@ function ConfettiMicroBurst({ active }: { active: boolean }) {
       rotation: Math.random() * 360,
       opacity: 1,
     }))
-    setParticles(initial)
 
     let raf: number
     function tick(now: number) {
       const progress = Math.min((now - created) / 800, 1)
-      setParticles(prev => prev.map(p => ({
-        ...p,
-        x: p.x + p.vx * 0.96,
-        y: p.y + p.vy + 0.15,
-        vy: p.vy + 0.15,
-        rotation: p.rotation + 8,
-        opacity: Math.max(0, 1 - progress),
-      })))
+      setParticles(prev => {
+        if (prev.length === 0) return initial
+        if (progress >= 1) return []
+        return prev.map(p => ({
+          ...p,
+          x: p.x + p.vx * 0.96,
+          y: p.y + p.vy + 0.15,
+          vy: p.vy + 0.15,
+          rotation: p.rotation + 8,
+          opacity: Math.max(0, 1 - progress),
+        }))
+      })
       if (progress < 1) raf = requestAnimationFrame(tick)
-      else setParticles([])
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
@@ -477,14 +479,9 @@ function ParticiparButton({ eventId, attendeeCount, maxAttendees }: {
   attendeeCount: number
   maxAttendees: number
 }) {
-  const [isParticipating, setIsParticipating] = useState(false)
+  const [isParticipating, setIsParticipating] = useState(() => loadRSVPs().has(eventId))
   const [showConfetti, setShowConfetti] = useState(false)
   const [rsvpCount, setRSVPCount] = useState(attendeeCount)
-
-  useEffect(() => {
-    const rsvps = loadRSVPs()
-    if (rsvps.has(eventId)) setIsParticipating(true)
-  }, [eventId])
 
   const handleToggle = useCallback(() => {
     const next = !isParticipating

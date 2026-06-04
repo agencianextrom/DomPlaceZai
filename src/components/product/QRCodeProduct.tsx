@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 interface QRCodeProductProps {
@@ -79,12 +79,10 @@ function FloatingParticles() {
 
 export function QRCodeProduct({ productId, productName, price }: QRCodeProductProps) {
   const [copied, setCopied] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [mounted] = useState(true);
   const svgRef = useRef<HTMLDivElement>(null);
 
   const productUrl = useMemo(() => `https://domplacezai.com.br/produto/${productId}`, [productId]);
-
-  useEffect(() => { setMounted(true); }, []);
 
   const handleCopyLink = useCallback(async () => {
     try {

@@ -1,6 +1,11 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef, useSyncExternalStore } from 'react'
+const emptySubscribe = () => () => {}
+function useHydrated() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false)
+}
+
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Users,
@@ -757,16 +762,15 @@ function CreateGroupModal({
       })
   }, [open])
 
-  // Reset form on close
-  useEffect(() => {
-    if (!open) {
-      setGroupName('')
-      setSelectedStore(null)
-      setMaxMembers(6)
-      setMinOrderValue('200')
-      setSplitType('igual')
-    }
-  }, [open])
+  // Reset form on close via handler instead of effect
+  const handleClose = useCallback(() => {
+    setGroupName('')
+    setSelectedStore(null)
+    setMaxMembers(6)
+    setMinOrderValue('200')
+    setSplitType('igual')
+    onClose()
+  }, [onClose])
 
   const handleCreate = useCallback(() => {
     if (!groupName.trim()) {
@@ -832,7 +836,7 @@ function CreateGroupModal({
         {/* Backdrop */}
         <motion.div
           className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-          onClick={onClose}
+          onClick={handleClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -858,7 +862,7 @@ function CreateGroupModal({
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              onClick={onClose}
+              onClick={handleClose}
               className="h-7 w-7 rounded-full bg-secondary/80 flex items-center justify-center"
             >
               <X className="h-3.5 w-3.5 text-muted-foreground" />
@@ -1088,13 +1092,8 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
 export function GroupOrderCreator() {
   const [groupState, setGroupState] = useState<GroupState>(loadGroupState)
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useHydrated()
   const { toast } = useToast()
-
-  // Hydration guard
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Persist state
   useEffect(() => {

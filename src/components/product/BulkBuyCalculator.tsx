@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback, Fragment } from 'react'
+import { useState, useMemo, useEffect, useCallback, useRef, Fragment } from 'react'
 import { motion, AnimatePresence, useMotionValue, animate as motionAnimate } from 'framer-motion'
 import { Plus, Minus, Check, Sparkles, TrendingDown, Zap, Crown, Package } from 'lucide-react'
 import { formatBRL } from '@/lib/format'
@@ -376,7 +376,7 @@ function PriceBreakdownTable({
 
 export function BulkBuyCalculator({ price }: BulkBuyCalculatorProps) {
   const [quantity, setQuantity] = useState(1)
-  const [prevTierIndex, setPrevTierIndex] = useState(0)
+  const prevTierIndexRef = useRef(0)
   const [showTierAnimation, setShowTierAnimation] = useState(false)
 
   const currentTier = getCurrentTier(quantity)
@@ -387,15 +387,18 @@ export function BulkBuyCalculator({ price }: BulkBuyCalculatorProps) {
   const savings = useMemo(() => calculateSavings(price, quantity, currentTier.discount), [price, quantity, currentTier.discount])
   const progress = useMemo(() => getProgressToNextTier(quantity), [quantity])
 
-  // Tier change animation trigger
+  // Tier change animation trigger (detect during rendering, timeout in effect)
+  if (tierIndex !== prevTierIndexRef.current && quantity > 1) {
+    prevTierIndexRef.current = tierIndex
+    setShowTierAnimation(true)
+  }
+
   useEffect(() => {
-    if (tierIndex !== prevTierIndex && quantity > 1) {
-      setShowTierAnimation(true)
+    if (showTierAnimation) {
       const timeout = setTimeout(() => setShowTierAnimation(false), 1500)
-      setPrevTierIndex(tierIndex)
       return () => clearTimeout(timeout)
     }
-  }, [tierIndex, prevTierIndex, quantity])
+  }, [showTierAnimation])
 
   const handleQuantityChange = useCallback((newQty: number) => {
     setQuantity(Math.max(1, Math.min(MAX_QUANTITY, newQty)))

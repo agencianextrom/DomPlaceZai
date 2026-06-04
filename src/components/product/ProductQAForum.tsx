@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   HelpCircle,
   ChevronDown,
@@ -435,7 +435,8 @@ function getAvatarGradient(index: number): string {
 
 export function ProductQAForum({ productId, productName, category }: ProductQAForumProps) {
   const [questions, setQuestions] = useState<QAQuestion[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [lastFetchedId, setLastFetchedId] = useState<string | undefined>()
+  const isLoading = productId != null && productId !== lastFetchedId
   const [searchQuery, setSearchQuery] = useState('')
   const [activeSort, setActiveSort] = useState<SortOption>('recent')
   const [activeCategory, setActiveCategory] = useState<QuestionCategory | 'Todos'>('Todos')
@@ -451,33 +452,27 @@ export function ProductQAForum({ productId, productName, category }: ProductQAFo
 
   // ── Fetch Questions ──
 
-  const fetchQuestions = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      if (productId) {
-        const data = await cachedFetch(`/api/products/qa?productId=${productId}`)
+  useEffect(() => {
+    if (!productId) return
+    let cancelled = false
+    cachedFetch(`/api/products/qa?productId=${productId}`)
+      .then(data => {
+        if (cancelled) return
         if (data && data.questions) {
           setQuestions(data.questions)
-          return
+          setLastFetchedId(productId)
+        } else {
+          setQuestions(generateMockQuestions())
+          setLastFetchedId(productId)
         }
-      }
-    } catch {
-      // Fall through to mock data
-    }
-    // Use mock data
-    setQuestions(generateMockQuestions())
-    setIsLoading(false)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setQuestions(generateMockQuestions())
+        setLastFetchedId(productId)
+      })
+    return () => { cancelled = true }
   }, [productId])
-
-  useEffect(() => {
-    fetchQuestions()
-  }, [fetchQuestions])
-
-  useEffect(() => {
-    if (questions.length > 0) {
-      setIsLoading(false)
-    }
-  }, [questions])
 
   // ── Computed Values ──
 

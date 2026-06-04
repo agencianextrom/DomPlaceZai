@@ -1,6 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from 'react';
+const emptySubscribe = () => () => {};
+function useHydrated() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false);
+}
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface WeeklySpecial {
@@ -185,14 +190,13 @@ function LoadingSkeleton() {
 }
 
 export function WeeklySpecials() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHydrated();
   const [selectedDay, setSelectedDay] = useState<DayOfWeek>(() => getCurrentDay());
   const [currentDay, setCurrentDay] = useState<DayOfWeek>(() => getCurrentDay());
   const [countdown, setCountdown] = useState(() => getTimeUntilMidnight());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);

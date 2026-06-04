@@ -178,30 +178,35 @@ function getNotificationMeta(type: NotificationType) {
         icon: CheckCircle2,
         color: 'text-emerald-600 dark:text-emerald-400',
         bg: 'bg-emerald-100 dark:bg-emerald-900/40',
+        glowClass: 'r40-icon-glow-order',
       }
     case 'order_delivered':
       return {
         icon: Package,
-        color: 'text-amber-600 dark:text-amber-400',
-        bg: 'bg-amber-100 dark:bg-amber-900/40',
+        color: 'text-emerald-600 dark:text-emerald-400',
+        bg: 'bg-emerald-100 dark:bg-emerald-900/40',
+        glowClass: 'r40-icon-glow-order',
       }
     case 'promo_new':
       return {
         icon: Tag,
-        color: 'text-rose-600 dark:text-rose-400',
-        bg: 'bg-rose-100 dark:bg-rose-900/40',
+        color: 'text-purple-600 dark:text-purple-400',
+        bg: 'bg-purple-100 dark:bg-purple-900/40',
+        glowClass: 'r40-icon-glow-promo',
       }
     case 'delivery_update':
       return {
         icon: Truck,
         color: 'text-sky-600 dark:text-sky-400',
         bg: 'bg-sky-100 dark:bg-sky-900/40',
+        glowClass: 'r40-icon-glow-delivery',
       }
     case 'price_drop':
       return {
         icon: TrendingDown,
-        color: 'text-purple-600 dark:text-purple-400',
-        bg: 'bg-purple-100 dark:bg-purple-900/40',
+        color: 'text-amber-600 dark:text-amber-400',
+        bg: 'bg-amber-100 dark:bg-amber-900/40',
+        glowClass: 'r40-icon-glow-price',
       }
   }
 }
@@ -236,18 +241,18 @@ const listVariants = {
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 16, scale: 0.97 },
+  hidden: { opacity: 0, x: 24, scale: 0.97 },
   visible: {
     opacity: 1,
-    y: 0,
+    x: 0,
     scale: 1,
     transition: { type: 'spring' as const, stiffness: 300, damping: 22 },
   },
   exit: {
     opacity: 0,
-    x: -60,
-    scale: 0.95,
-    transition: { duration: 0.25 },
+    x: 80,
+    scale: 0.92,
+    transition: { duration: 0.3, ease: 'easeOut' as const },
   },
 }
 
@@ -267,18 +272,21 @@ function EmptyTabState({ tab }: { tab: TabKey }) {
 
   return (
     <motion.div
-      className="flex flex-col items-center justify-center py-16 text-center px-6"
+      className="relative flex flex-col items-center justify-center py-16 text-center px-6 overflow-hidden"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
     >
-      <motion.div {...emptyBounce} className="mb-4">
+      {/* Floating gradient particles */}
+      <div className="r40-empty-particles" aria-hidden="true" />
+
+      <motion.div {...emptyBounce} className="mb-4 relative z-10">
         <Inbox className="h-12 w-12 text-muted-foreground/30" />
       </motion.div>
-      <p className="text-sm font-semibold text-muted-foreground/70">
+      <p className="text-sm font-semibold r40-gradient-text-empty relative z-10">
         Sem notificações de {label.toLowerCase()}
       </p>
-      <p className="text-xs text-muted-foreground/40 mt-1">
+      <p className="text-xs text-muted-foreground/40 mt-1 relative z-10">
         Quando houver novidades, elas aparecerão aqui.
       </p>
     </motion.div>
@@ -403,7 +411,7 @@ export function SmartNotifications() {
             <h2 className="text-lg sm:text-xl font-bold">Notificações</h2>
             {totalUnread > 0 && (
               <motion.p
-                className="text-[11px] text-muted-foreground"
+                className="text-[11px] text-muted-foreground r40-timestamp"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
@@ -414,14 +422,18 @@ export function SmartNotifications() {
         </div>
 
         {totalUnread > 0 && (
-          <motion.button
-            onClick={markAllAsRead}
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="text-xs text-primary font-medium hover:bg-primary/10 px-3 py-1.5 rounded-full transition-colors"
+          <motion.div
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: 'spring' as const, stiffness: 400, damping: 17 }}
           >
-            Marcar todas como lidas
-          </motion.button>
+            <button
+              onClick={markAllAsRead}
+              className="text-xs text-primary font-medium hover:bg-primary/10 px-3 py-1.5 rounded-full transition-colors r40-mark-all-btn"
+            >
+              Marcar todas como lidas
+            </button>
+          </motion.div>
         )}
       </div>
 
@@ -445,22 +457,22 @@ export function SmartNotifications() {
               {isActive && (
                 <motion.span
                   layoutId="smart-notif-tab-indicator"
-                  className="absolute inset-0 rounded-lg bg-primary shadow-sm"
+                  className="absolute inset-0 rounded-lg r40-tab-gradient-pill shadow-sm"
                   transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
                 />
               )}
 
               <TabIcon className="h-3.5 w-3.5 relative z-10" />
-              <span className="relative z-10 hidden sm:inline">{tab.label}</span>
+              <span className={`relative z-10 hidden sm:inline ${isActive ? 'r40-tab-active-text' : ''}`}>{tab.label}</span>
 
-              {/* Unread badge with pulse */}
+              {/* Unread badge with pulse and glow */}
               {unread > 0 && (
                 <motion.span
                   key={`badge-${tab.key}-${unread}`}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
-                  className="relative z-10 min-w-[16px] h-4 px-1 rounded-full text-[10px] font-bold flex items-center justify-center bg-red-500 text-white"
+                  className="relative z-10 min-w-[16px] h-4 px-1 rounded-full text-[10px] font-bold flex items-center justify-center bg-red-500 text-white r40-tab-badge"
                 >
                   {unread > 9 ? '9+' : unread}
                   {/* Pulse ring */}
@@ -513,7 +525,7 @@ export function SmartNotifications() {
                       )
                     }
                     onTouchEnd={handleTouchEnd}
-                    className={`relative rounded-xl border overflow-hidden transition-colors ${
+                    className={`relative rounded-xl border overflow-hidden transition-colors r40-notif-card ${
                       notification.read
                         ? 'bg-card border-border'
                         : 'bg-primary/[0.03] border-primary/20'
@@ -529,9 +541,9 @@ export function SmartNotifications() {
                     }}
                   >
                     <div className="flex items-start gap-3 p-3.5">
-                      {/* Icon */}
+                      {/* Icon with type-specific glow */}
                       <motion.div
-                        className={`h-10 w-10 rounded-xl ${meta.bg} flex items-center justify-center shrink-0 mt-0.5`}
+                        className={`h-10 w-10 rounded-xl ${meta.bg} ${meta.glowClass} flex items-center justify-center shrink-0 mt-0.5`}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
                       >
@@ -576,7 +588,7 @@ export function SmartNotifications() {
                         <div className="flex items-center justify-between mt-2.5">
                           <div className="flex items-center gap-1">
                             <Clock className="h-3 w-3 text-muted-foreground/40" />
-                            <span className="text-[10px] text-muted-foreground/50">
+                            <span className="text-[10px] text-muted-foreground/50 r40-timestamp">
                               {notification.timestamp}
                             </span>
                           </div>
@@ -600,7 +612,7 @@ export function SmartNotifications() {
                                 onClick={() => handleAction(notification)}
                                 whileHover={{
                                   scale: 1.05,
-                                  boxShadow: '0 4px 12px -2px rgba(0,0,0,0.1)',
+                                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                                 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="text-[10px] font-semibold text-primary px-2.5 py-1 rounded-full bg-primary/10 hover:bg-primary/15 transition-colors"
@@ -612,13 +624,20 @@ export function SmartNotifications() {
                         </div>
                       </div>
 
-                      {/* Unread dot */}
+                      {/* Unread dot with pulse ring */}
                       {!notification.read && (
                         <motion.span
                           layoutId={`dot-${notification.id}`}
-                          className="absolute top-3 right-3 h-2 w-2 rounded-full bg-emerald-500"
+                          className="absolute top-3 right-3 h-2 w-2 rounded-full bg-emerald-500 r40-unread-dot"
                           transition={{ type: 'spring' as const, stiffness: 500, damping: 30 }}
-                        />
+                        >
+                          {/* Pulse ring for unread dot */}
+                          <motion.span
+                            className="absolute inset-0 rounded-full bg-emerald-500"
+                            animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const }}
+                          />
+                        </motion.span>
                       )}
                     </div>
 

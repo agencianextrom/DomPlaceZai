@@ -4,17 +4,18 @@ import { Sun, Moon, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useSyncExternalStore } from 'react'
+
+const emptySubscribe = () => () => {}
+function useHydrated() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false)
+}
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const mounted = useHydrated()
   const [sparkles, setSparkles] = useState<Array<{ id: number; x: number; y: number }>>([])
   const buttonRef = useRef<HTMLButtonElement>(null)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleToggle = useCallback(() => {
     if (!mounted) return

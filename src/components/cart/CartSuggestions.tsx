@@ -41,7 +41,7 @@ const SUGGESTION_REASONS = [
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
+  visible: { transition: { staggerChildren: 0.1 } },
 }
 
 const cardVariants = {
@@ -118,9 +118,9 @@ function ShimmerHeader() {
   return (
     <motion.div className="flex items-center gap-2 mb-3" variants={headerVariants} initial="hidden" animate="visible">
       <motion.div
-        className="h-7 w-7 rounded-lg bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-lg shadow-primary/20"
-        animate={{ scale: [1, 1.08, 1], rotate: [0, 3, -3, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        className="r40-header-sparkle h-7 w-7 rounded-lg bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center"
+        animate={{ scale: [1, 1.1, 1], rotate: [0, 8, -8, 0] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
       >
         <Sparkles className="h-3.5 w-3.5 text-white" />
       </motion.div>
@@ -129,7 +129,7 @@ function ShimmerHeader() {
           variants={shimmerTextVariants}
           initial="initial"
           animate="animate"
-          className="text-sm font-bold"
+          className="r40-header-title text-sm font-bold"
           style={{
             backgroundImage: 'linear-gradient(90deg, hsl(var(--foreground)) 0%, hsl(var(--primary)) 50%, hsl(var(--foreground)) 100%)',
             backgroundSize: '200% 100%',
@@ -169,8 +169,8 @@ function SuggestionCard({
   return (
     <motion.div
       variants={cardVariants}
-      className="shrink-0 w-[150px] bg-card rounded-xl border border-border/50 overflow-hidden relative"
-      whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}
+      className="r40-card-shimmer shrink-0 w-[150px] bg-card rounded-xl border border-border/50 overflow-hidden relative"
+      whileHover={{ y: -4, boxShadow: '0 12px 28px rgba(0,0,0,0.12)' }}
       transition={{ type: 'spring' as const, stiffness: 300, damping: 22 }}
     >
       {/* Product image area */}
@@ -212,16 +212,16 @@ function SuggestionCard({
         {/* Product name */}
         <h4 className="text-xs font-semibold line-clamp-2 leading-tight min-h-[2rem]">{item.name}</h4>
 
-        {/* Reason subtitle */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 + index * 0.05 }}
-          className="text-[9px] text-muted-foreground mt-1 flex items-center gap-0.5"
+        {/* Reason badge – "Por que recomendamos?" */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15 + index * 0.05, type: 'spring' as const, stiffness: 400, damping: 25 }}
+          className="r40-reason-badge mt-1 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[8px] font-semibold"
         >
-          <TrendingUp className="h-2.5 w-2.5 text-primary/60" />
-          {reason}
-        </motion.p>
+          <TrendingUp className="h-2 w-2" />
+          <span>{reason}</span>
+        </motion.div>
 
         {/* Price + Add button */}
         <div className="flex items-center justify-between mt-2">
@@ -235,45 +235,51 @@ function SuggestionCard({
           </div>
 
           {/* Add button with success animation */}
-          <motion.button
+          <motion.div
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.85 }}
-            onClick={onAdd}
-            className={`h-7 w-7 rounded-lg flex items-center justify-center transition-all duration-300 ${
-              isAdded
-                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
-                : 'bg-primary/10 text-primary hover:bg-primary/20'
-            }`}
           >
-            <AnimatePresence mode="wait">
-              {isAdded ? (
-                <motion.div
-                  key="check"
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  exit={{ scale: 0, rotate: 180 }}
-                  transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
-                >
-                  <Check className="h-3.5 w-3.5" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="plus"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
+            <button
+              onClick={onAdd}
+              className={`r40-add-btn h-7 w-7 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                isAdded
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-primary/10 text-primary hover:bg-primary/20'
+              }`}
+            >
+              <AnimatePresence mode="wait">
+                {isAdded ? (
+                  <motion.div
+                    key="check"
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    exit={{ scale: 0, rotate: 180 }}
+                    transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
+                    className="flex items-center justify-center"
+                  >
+                    <Check className="h-3.5 w-3.5" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="plus"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="flex items-center justify-center"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+          </motion.div>
         </div>
 
         {/* Success pulse animation overlay */}
         <AnimatePresence>
           {isAdded && (
             <motion.div
-              className="absolute inset-0 border-2 border-emerald-500/40 rounded-xl pointer-events-none"
+              className="r40-success-pulse absolute inset-0 border-2 border-emerald-500/40 rounded-xl pointer-events-none"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: [0, 0.8, 0], scale: [0.95, 1.02, 1] }}
               exit={{ opacity: 0 }}
@@ -309,23 +315,57 @@ function LoadingSkeleton() {
   )
 }
 
+const EMPTY_PARTICLES = [
+  { id: 'a', size: 6, x: -20, delay: 0, dur: 3.2 },
+  { id: 'b', size: 4, x: 18, delay: 0.6, dur: 2.8 },
+  { id: 'c', size: 5, x: -30, delay: 1.2, dur: 3.5 },
+  { id: 'd', size: 3, x: 25, delay: 0.3, dur: 3.0 },
+  { id: 'e', size: 4, x: -12, delay: 0.9, dur: 2.6 },
+]
+
 function EmptyCartState() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}
-      className="bg-card rounded-xl border border-border p-6 flex flex-col items-center text-center"
+      className="bg-card rounded-xl border border-border p-6 flex flex-col items-center text-center relative overflow-hidden"
     >
+      {/* Floating particles */}
+      {EMPTY_PARTICLES.map((p) => (
+        <motion.span
+          key={p.id}
+          className="r40-empty-particle absolute rounded-full"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: '50%',
+            bottom: '30%',
+          }}
+          animate={{
+            y: [0, -40, -80, -40, 0],
+            x: [0, p.x * 0.5, p.x, p.x * 0.5, 0],
+            opacity: [0, 0.7, 1, 0.7, 0],
+            scale: [0.5, 1, 0.8, 1, 0.5],
+          }}
+          transition={{
+            duration: p.dur,
+            repeat: Infinity,
+            ease: 'easeInOut' as const,
+            delay: p.delay,
+          }}
+        />
+      ))}
+
       <motion.div
-        animate={{ y: [0, -8, 0], rotate: [0, 5, -5, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        className="text-3xl mb-2"
+        animate={{ y: [0, -10, 0], rotate: [0, 6, -6, 0] }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' as const }}
+        className="text-4xl mb-2 relative z-10"
       >
         🛒
       </motion.div>
-      <p className="text-sm font-semibold text-muted-foreground">Carrinho vazio</p>
-      <p className="text-xs text-muted-foreground mt-1">
+      <p className="text-sm font-semibold text-muted-foreground relative z-10">Carrinho vazio</p>
+      <p className="text-xs text-muted-foreground mt-1 relative z-10">
         Adicione produtos para ver sugestões personalizadas
       </p>
     </motion.div>
@@ -472,7 +512,7 @@ export function CartSuggestions() {
       {/* Horizontal scrollable cards */}
       <div
         ref={scrollRef}
-        className="flex gap-3 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1"
+        className="r40-scroll-container flex gap-3 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1"
       >
         <AnimatePresence>
           {suggestions.map((item, index) => {
