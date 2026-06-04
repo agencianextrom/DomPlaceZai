@@ -34,6 +34,16 @@ const categories: CategoryItem[] = [
 /** Stagger delay per icon (seconds) — creates a wave-like idle float */
 const floatDelays = [0, 0.35, 0.7, 0.2, 0.55, 0.1, 0.45, 0.8, 0.25, 0.6, 0.15, 0.5, 0.3]
 
+// r58-cat: Mini floating particles for active category
+const r58CatParticles = Array.from({ length: 6 }, (_, i) => ({
+  id: i,
+  size: 2 + Math.random() * 3,
+  angle: (i / 6) * 360,
+  dist: 20 + Math.random() * 12,
+  duration: 2 + Math.random() * 2,
+  delay: -Math.random() * 3,
+}))
+
 export function CategoryBar() {
   const { activeCategory, setActiveCategory } = useAppStore()
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -175,13 +185,65 @@ export function CategoryBar() {
                   )}
                 </AnimatePresence>
 
+                {/* r58-cat: Enhanced active glow pulse ring (growing glow) */}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute -inset-2 rounded-2xl pointer-events-none"
+                    >
+                      <span className="absolute inset-0 rounded-2xl r58-cat-glow-ring" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* r58-cat: Floating mini-particles around active category */}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 pointer-events-none"
+                    >
+                      {r58CatParticles.map((p) => (
+                        <motion.span
+                          key={`r58-particle-${p.id}`}
+                          className="absolute rounded-full bg-primary/40"
+                          style={{
+                            width: p.size,
+                            height: p.size,
+                            left: '50%',
+                            top: '50%',
+                          }}
+                          animate={{
+                            x: [0, Math.cos((p.angle * Math.PI) / 180) * p.dist, 0],
+                            y: [0, Math.sin((p.angle * Math.PI) / 180) * p.dist, 0],
+                            opacity: [0, 0.8, 0],
+                            scale: [0.5, 1, 0.5],
+                          }}
+                          transition={{
+                            duration: p.duration,
+                            delay: p.delay,
+                            repeat: Infinity,
+                            ease: 'easeInOut' as const,
+                          }}
+                        />
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 <motion.div
                   whileTap={{ scale: 0.9 }}
                   className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${
                     isActive ? cat.gradientColor : 'from-muted to-muted/80'
                   } flex items-center justify-center shadow-sm transition-all duration-300 ${
                     isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg' : ''
-                  } r39-category-icon-wrap r42-catbar-icon-box`}
+                  } r39-category-icon-wrap r42-catbar-icon-box r58-cat-icon-rotate-border`}
                 >
                   {/* ── Shimmer sweep effect on icon container ── */}
                   <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
@@ -257,7 +319,7 @@ export function CategoryBar() {
                       animate={{ width: '70%', opacity: 1 }}
                       exit={{ width: '0%', opacity: 0 }}
                       transition={{ duration: 0.25, ease: 'easeOut' }}
-                      className="h-[2.5px] rounded-full mx-auto mt-0.5 r39-gradient-underline"
+                      className="h-[2.5px] rounded-full mx-auto mt-0.5 r39-gradient-underline r58-cat-sliding-underline"
                     />
                   )}
                 </AnimatePresence>

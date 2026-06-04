@@ -455,7 +455,7 @@ export function FlashSale() {
                 <span className="absolute -inset-2 rounded-xl pointer-events-none r39-oferta-pulse-ring" />
                 <div className="relative">
                 <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5 r44-header-fire-glow">
-                  <span className="r44-header-gradient-text">
+                  <span className="r44-header-gradient-text r58-flash-fire-heading">
                     OFERTA RELÂMPAGO
                   </span>
                   <motion.div
@@ -505,7 +505,7 @@ export function FlashSale() {
                   animate={{ y: [0, -6, -14], opacity: [0, 0.9, 0], scale: [0.4, 1, 0.3] }}
                   transition={{ duration: 2.6, repeat: Infinity, ease: 'easeOut' as const, delay: 1.6 }}
                 />
-                <div className="flex items-center gap-1.5 bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-xl px-2.5 py-1.5 border border-red-200/50 dark:border-red-800/30 shadow-sm inner-shadow-accent relative overflow-hidden r27-timer-glow r39-countdown-badge">
+                <div className="flex items-center gap-1.5 bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-xl px-2.5 py-1.5 border border-red-200/50 dark:border-red-800/30 shadow-sm inner-shadow-accent relative overflow-hidden r27-timer-glow r39-countdown-badge r58-flash-countdown-pulse">
                   <div className="absolute inset-0 r17-flash-timer-shimmer pointer-events-none rounded-xl" />
                   {/* r39 gradient shimmer sweep behind countdown */}
                   <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
@@ -600,13 +600,15 @@ export function FlashSale() {
                             {/* 3. 3D Tilt Card Wrapper (enhanced) */}
                             <TiltCard className="h-full">
                               <Card
-                                className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow r42-flash-card r27-card-lift r34-flash-sale-card-glow r39-card-3d-hover r44-cta-bottom-shimmer"
+                                className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow r42-flash-card r27-card-lift r34-flash-sale-card-glow r39-card-3d-hover r44-cta-bottom-shimmer r58-flash-card-3d"
                                 onClick={() => { selectProduct(product); navigate('product') }}
                               >
                                 <CardContent className="p-0 h-full flex flex-col relative">
                                   {/* r36 shimmer sweep overlay */}
                                   <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none z-10">
                                     <div className="absolute inset-0 r36-flash-shimmer" />
+                                    {/* r58 scanning line effect */}
+                                    <div className="absolute inset-0 r58-flash-scan-line" />
                                   </div>
                                   {/* Image */}
                                   <div className={`relative aspect-square flex items-center justify-center bg-gradient-to-br ${gradient} overflow-hidden`}>
@@ -646,10 +648,10 @@ export function FlashSale() {
                                           <motion.div
                                             animate={{ opacity: [1, 0.6, 1] }}
                                             transition={{ duration: 1.2, repeat: Infinity }}
-                                            className="flex items-center gap-0.5 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm badge-floating"
+                                            className="flex items-center gap-0.5 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm badge-floating r58-flash-urgency-badge"
                                           >
                                             <AlertTriangle className="h-2.5 w-2.5" />
-                                            Últimas!
+                                            ÚLTIMAS UNIDADES
                                           </motion.div>
                                         </UrgencyBadge>
                                       </motion.div>

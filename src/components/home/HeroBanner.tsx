@@ -68,6 +68,14 @@ const heroParticles = [
   { id: 4, size: 5, top: '18%', right: '82%', color: 'rgba(255,255,255,0.28)', duration: 9, delay: -5, animY: [0, -12, 8, -16, 0], animX: [0, 6, -12, 10, 0] },
 ]
 
+// r58-hero: Floating price tag / badge decorations (parallax float)
+const r58FloatingBadges = [
+  { emoji: '🏷️', size: 20, top: '15%', right: '22%', label: '-30%', floatDelay: 0, floatDur: 5 },
+  { emoji: '💰', size: 18, top: '65%', right: '38%', label: 'Frete Grátis', floatDelay: -1.5, floatDur: 6 },
+  { emoji: '🔥', size: 22, top: '35%', right: '75%', label: 'Hot', floatDelay: -3, floatDur: 7 },
+  { emoji: '⭐', size: 16, top: '80%', right: '60%', label: 'Novo', floatDelay: -2, floatDur: 5.5 },
+]
+
 // Enhanced particle field (20+ particles for r43-hero)
 const r43ParticleField = Array.from({ length: 22 }, (_, i) => ({
   id: i,
@@ -332,6 +340,21 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
           {/* r41-hero: Enhanced multi-color gradient depth layer */}
           <div className="absolute inset-0 r41-hero-depth-gradient pointer-events-none" />
 
+          {/* r58-hero: Animated gradient mesh blobs (moving color orbs) */}
+          <div className="r58-hero-mesh-blobs absolute inset-0 pointer-events-none" aria-hidden="true">
+            <div className="r58-hero-mesh-orb r58-hero-mesh-orb-1" />
+            <div className="r58-hero-mesh-orb r58-hero-mesh-orb-2" />
+            <div className="r58-hero-mesh-orb r58-hero-mesh-orb-3" />
+          </div>
+
+          {/* r58-hero: Subtle noise/grain texture overlay for premium feel */}
+          <div className="r58-hero-noise-overlay absolute inset-0 pointer-events-none" aria-hidden="true" />
+
+          {/* r58-hero: Animated rotating conic-gradient border glow */}
+          <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+            <div className="r58-hero-border-glow" />
+          </div>
+
           {/* =====================================================
               1. PARALLAX: Dot pattern with scroll-based depth
               ===================================================== */}
@@ -414,7 +437,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
 
             <motion.h2
               variants={staggerItem}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer r41-hero-title-enhanced r43-hero-heading-mega"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer r41-hero-title-enhanced r43-hero-heading-mega r58-hero-shimmer-text"
               style={{
                 textShadow: '0 2px 12px rgba(0,0,0,0.2)',
                 backgroundImage: headingBg,
@@ -621,6 +644,33 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               }}
             >
               <span className="drop-shadow-lg opacity-50" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))' }}>{fp.emoji}</span>
+            </motion.div>
+          ))}
+
+          {/* r58-hero: Floating price tag / badge parallax decorations */}
+          {r58FloatingBadges.map((badge, i) => (
+            <motion.div
+              key={`r58-badge-${i}`}
+              className="absolute pointer-events-none select-none"
+              style={{ top: badge.top, right: badge.right }}
+              animate={{
+                y: [0, -8, 4, -6, 0],
+                x: [0, 4, -6, 3, 0],
+                rotate: [0, 4, -3, 2, 0],
+              }}
+              transition={{
+                duration: badge.floatDur,
+                delay: badge.floatDelay,
+                repeat: Infinity,
+                ease: 'easeInOut' as const,
+              }}
+            >
+              <span className="r58-hero-float-badge relative drop-shadow-lg" style={{ fontSize: badge.size }}>
+                {badge.emoji}
+                <span className="r58-hero-badge-label absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] font-bold text-white/70 bg-black/20 rounded-full px-1.5 py-0.5 backdrop-blur-sm">
+                  {badge.label}
+                </span>
+              </span>
             </motion.div>
           ))}
 

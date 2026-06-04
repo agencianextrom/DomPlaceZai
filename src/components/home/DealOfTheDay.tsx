@@ -278,10 +278,16 @@ export function DealOfTheDay() {
           <Sparkles className="h-2.5 w-2.5 mr-0.5" />
           Exclusiva
         </Badge>
+        {/* r58 Oferta Especial badge with rotating border */}
+        <div className="r58-deal-rotating-badge">
+          <span className="relative z-10 text-[9px] font-bold text-red-600 dark:text-red-400 px-2 py-0.5 bg-white dark:bg-card rounded-full">
+            Oferta Especial
+          </span>
+        </div>
       </motion.div>
 
       {/* Main Deal Card — Glassmorphism */}
-      <motion.div variants={itemVariants} className="relative rounded-2xl overflow-hidden glassmorphism-strong r44-comparison-glass">
+      <motion.div variants={itemVariants} className="relative rounded-2xl overflow-hidden glassmorphism-strong r44-comparison-glass r58-deal-spotlight">
         {/* Animated gradient border via CSS — r42 conic rotation */}
         <div className="absolute inset-0 rounded-2xl r26-deal-gradient-border r42-conic-border pointer-events-none" />
 
@@ -339,9 +345,15 @@ export function DealOfTheDay() {
                   transition={{ type: 'spring' as const, stiffness: 400, damping: 20, delay: 0.4 }}
                   className="absolute top-3 right-3"
                 >
-                  <div className="r26-savings-badge px-2.5 py-1 rounded-full bg-red-500 text-white text-xs font-bold shadow-md r42-discount-pulse">
+                  <div className="r26-savings-badge px-2.5 py-1 rounded-full bg-red-500 text-white text-xs font-bold shadow-md r42-discount-pulse r58-deal-sparkle-container">
                     -{discount}%
                   </div>
+                  {/* r58 floating sparkle particles */}
+                  <span className="absolute -top-1 -right-1 r58-deal-sparkle" style={{ animationDelay: '0s' }} />
+                  <span className="absolute -top-2 right-2 r58-deal-sparkle" style={{ animationDelay: '0.5s' }} />
+                  <span className="absolute -top-1 right-6 r58-deal-sparkle" style={{ animationDelay: '1s' }} />
+                  <span className="absolute top-2 -right-2 r58-deal-sparkle" style={{ animationDelay: '1.5s' }} />
+                  <span className="absolute -bottom-1 right-3 r58-deal-sparkle" style={{ animationDelay: '0.8s' }} />
                 </motion.div>
               )}
 
@@ -381,12 +393,12 @@ export function DealOfTheDay() {
                 <span className="text-xs font-semibold text-muted-foreground">Acaba em:</span>
               </div>
             </motion.div>
-            <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 sm:gap-6 -mt-3">
-              <div className="r42-ring-glow r44-timer-glow"><CountdownCircle timeLeft={timeLeft.h} label="H" size={56} strokeWidth={3.5} /></div>
-              <span className="text-xl font-bold text-primary mt-[-18px]">:</span>
-              <div className="r42-ring-glow r44-timer-glow"><CountdownCircle timeLeft={timeLeft.m} label="M" size={56} strokeWidth={3.5} /></div>
-              <span className="text-xl font-bold text-primary mt-[-18px]">:</span>
-              <div className="r42-ring-glow r44-timer-glow"><CountdownCircle timeLeft={timeLeft.s} label="S" size={56} strokeWidth={3.5} /></div>
+            <motion.div variants={itemVariants} className="flex items-center justify-center gap-3 sm:gap-4 -mt-3">
+              <div className="r42-ring-glow r44-timer-glow r58-deal-digit-box"><CountdownCircle timeLeft={timeLeft.h} label="H" size={56} strokeWidth={3.5} /></div>
+              <span className="text-xl font-bold text-primary mt-[-18px] r58-deal-digit-sep">:</span>
+              <div className="r42-ring-glow r44-timer-glow r58-deal-digit-box"><CountdownCircle timeLeft={timeLeft.m} label="M" size={56} strokeWidth={3.5} /></div>
+              <span className="text-xl font-bold text-primary mt-[-18px] r58-deal-digit-sep">:</span>
+              <div className="r42-ring-glow r44-timer-glow r58-deal-digit-box"><CountdownCircle timeLeft={timeLeft.s} label="S" size={56} strokeWidth={3.5} /></div>
             </motion.div>
 
             {/* Price Section */}
@@ -435,13 +447,13 @@ export function DealOfTheDay() {
                   initial={{ width: 0 }}
                   animate={{ width: `${stockPercent}%` }}
                   transition={{ type: 'spring' as const, stiffness: 60, damping: 20, delay: 0.4 }}
-                  className={`h-full rounded-full ${
+                  className={`h-full rounded-full relative ${
                     stockPercent > 50
                       ? 'bg-gradient-to-r from-emerald-400 to-primary'
                       : stockPercent > 20
                         ? 'bg-gradient-to-r from-amber-400 to-orange-500'
                         : 'bg-gradient-to-r from-red-400 to-red-600'
-                  } r26-stock-bar-fill`}
+                  } r26-stock-bar-fill r58-deal-progress-shimmer`}
                 />
               </div>
             </motion.div>

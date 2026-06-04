@@ -176,6 +176,9 @@ import { SocialCommerceHub } from '@/components/home/SocialCommerceHub'
 import { StoreEventHub } from '@/components/home/StoreEventHub'
 import { SubscriptionBoxBuilder } from '@/components/home/SubscriptionBoxBuilder'
 // SustainabilityTracker removed - incomplete from R57
+import { MysteryDealBox } from '@/components/home/MysteryDealBox'
+import { StoreLoyaltyPassport } from '@/components/home/StoreLoyaltyPassport'
+import { QuickMealFinder } from '@/components/home/QuickMealFinder'
 import { VirtualMarketTour } from '@/components/home/VirtualMarketTour'
 import VoiceShoppingAssistant from '@/components/home/VoiceShoppingAssistant'
 import { WishListManager } from '@/components/home/WishListManager'
@@ -1736,6 +1739,11 @@ export default function Home() {
                     <LazySection><ScrollReveal delay={0.3}><section><PriceDropAlertEnhanced /></section></ScrollReveal></LazySection>
                     <LazySection><ScrollReveal delay={0.3}><section><SmartComparisonMatrix /></section></ScrollReveal></LazySection>
                     <LazySection><ScrollReveal delay={0.3}><section><VoiceShoppingAssistant /></section></ScrollReveal></LazySection>
+
+                    {/* R58 New Components */}
+                    <LazySection><ScrollReveal delay={0.3}><section><MysteryDealBox /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><StoreLoyaltyPassport /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><QuickMealFinder /></section></ScrollReveal></LazySection>
 
                     </div>
                   </>

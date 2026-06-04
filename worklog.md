@@ -1,4 +1,18 @@
 ---
+Task ID: r58-mystery-box
+Agent: Feature Agent
+Task: Create MysteryDealBox component
+
+Work Log:
+- Created src/components/home/MysteryDealBox.tsx (~757 lines)
+- Added r58-mystery-* CSS animations to globals.css (~170 lines)
+
+Stage Summary:
+- New mystery box unboxing component with 6 deals, 4 rarity levels, daily limit
+- Confetti reveal, animated box opening, rarity-based visual effects
+- Named export `MysteryDealBox` ready for import in page.tsx
+
+---
 Task ID: 7
 Agent: Feature Agent
 Task: Add 4 new features — Product Comparison Tool, Order Tracking Timeline, Loyalty Rewards Widget, Product Image Gallery with Zoom
@@ -3580,3 +3594,70 @@ Stage Summary:
 - Deploy: https://domplace.vercel.app (live)
 - Components: ~330 files
 - CSS: 41,923 lines (reduced from 81,102 — R47-R56 CSS needs rebuilding)
+
+---
+Task ID: r58-quick-meal
+Agent: Feature Agent
+Task: Create QuickMealFinder component
+
+Work Log:
+- Created src/components/home/QuickMealFinder.tsx (~685 lines)
+- Added r58-meal-* CSS animations to globals.css (~80 lines)
+
+Stage Summary:
+- New quick meal finder with 4 mood filters (Faminto, Lanche Rápido, Saudável, Doces/Sobremesas)
+- Time-based suggestions (café da manhã, almoço, jantar, lanche)
+- Animated delivery estimates with progress bars
+- Meal cards with emoji, name, price, delivery time, rating, store name
+- "Pedir Agora" button per card with quick-add to cart animation
+- Horizontal scrollable meal cards with snap scrolling
+- Animated fire/heat indicator for popular items
+- "Pronto em X min" countdown badges
+- Skeleton loading state with shimmer
+- Empty state with hungry emoji animation
+- Gradient backgrounds per category
+- Staggered entrance animations
+- Uses cachedFetch for product data, filters FOOD category
+---
+Task ID: r58-loyalty-passport
+Agent: Feature Agent
+Task: Create StoreLoyaltyPassport component
+
+Work Log:
+- Created src/components/home/StoreLoyaltyPassport.tsx (~678 lines)
+- Added r58-passport-* CSS animations to globals.css (~180 lines)
+- Component exports as named export: StoreLoyaltyPassport
+- Uses cachedFetch from @/lib/api-cache for store data
+- All framer motion animations follow critical rules (spring as const, string boxShadow, no oklch in JS)
+- Passes ESLint with zero errors
+
+Stage Summary:
+- New digital passport stamp collection component with 8 store destinations
+- Travel-themed design with animated leather-textured passport cover and inner pages
+- Stamp grid per store (10 slots) with ink-splash effect on stamp placement
+- 3 milestone tiers per store: Bronze (3), Silver (6), Gold (10) with rewards
+- Page flip animation between stores via CSS perspective/rotateY
+- "Selos" and "Recompensas" tabs for stamp view and reward summary view
+- Stamp progress bar with animated fill per store
+- Total stamps counter with AnimatedCounter
+- Reward redemption section with claimable milestones
+- Gradient backgrounds per store page matching store category
+- Staggered entrance animations for reward cards
+- localStorage persistence for stamp data
+- All CSS animations wrapped in @media prefers-reduced-motion for accessibility
+---
+Task ID: r58-style-flash-deal
+Agent: Styling Agent
+Task: Enhance FlashSale and DealOfTheDay styling
+
+Work Log:
+- Enhanced FlashSale.tsx: fire/heat wave gradient heading (r58-flash-fire-heading), pulsing countdown red glow (r58-flash-countdown-pulse), scanning line sweep on cards (r58-flash-scan-line), 3D perspective tilt hover with lift shadow (r58-flash-card-3d), animated ÚLTIMAS UNIDADES urgency badge with flashing text (r58-flash-urgency-badge)
+- Enhanced DealOfTheDay.tsx: spotlight sweep effect on deal card (r58-deal-spotlight), animated progress bar with shimmer overlay (r58-deal-progress-shimmer), floating sparkle particles around discount (r58-deal-sparkle), Oferta Especial badge with rotating conic gradient border (r58-deal-rotating-badge), countdown digit boxes with glow pulse (r58-deal-digit-box)
+- Added ~280 lines CSS with r58-flash-* and r58-deal-* prefixes to globals.css before the last reduced-motion block
+- Added reduced-motion overrides for all r58-flash-* and r58-deal-* classes (display: none, animation: none)
+
+Stage Summary:
+- 2 components enhanced with new visual effects (no existing functionality removed)
+- ~280 lines CSS added (keyframes + base classes + dark mode overrides)
+- All animations properly guarded with prefers-reduced-motion: reduce fallbacks
+- Dev server compiles successfully, no new lint errors

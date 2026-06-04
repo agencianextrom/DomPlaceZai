@@ -128,7 +128,7 @@ function CategoryIcon({ category }: { category: string }) {
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <div className="flex items-center gap-px star-shimmer-wrap r41-stars-glow r44-stars-glow">
+    <div className="flex items-center gap-px star-shimmer-wrap r41-stars-glow r44-stars-glow r58-pcard-star-glow">
       {[1, 2, 3, 4, 5].map((star) => {
         const filled = rating >= star
         const half = !filled && rating >= star - 0.5
@@ -383,7 +383,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: Math.min(index * 0.06, 0.5), duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         whileHover={{ y: -5, scale: 1.02, boxShadow: '0 0 20px rgba(16,185,129,0.15), 0 0 40px rgba(16,185,129,0.08), 0 8px 24px rgba(0,0,0,0.08)' }}
-        className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm card-shadow-cascade card-spotlight card-shine card-glow-border hover:shadow-xl transition-shadow duration-300 r41-card-3d r44-card-3d-tilt r44-card-glow-border"
+        className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm card-shadow-cascade card-spotlight card-shine card-glow-border hover:shadow-xl transition-shadow duration-300 r41-card-3d r44-card-3d-tilt r44-card-glow-border r58-pcard-border-glow"
         onClick={handleCardClick}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setShowCartBtn(true)}
@@ -541,7 +541,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
               >
-                <Badge className="bg-primary text-primary-foreground border-0 text-[10px] px-1.5 py-0 shadow-sm relative overflow-hidden r41-badge-novo r44-badge-novo">
+                <Badge className="bg-primary text-primary-foreground border-0 text-[10px] px-1.5 py-0 shadow-sm relative overflow-hidden r41-badge-novo r44-badge-novo r58-pcard-shine-badge">
                   <span className="badge-shimmer">Novo</span>
                 </Badge>
               </motion.div>
@@ -693,7 +693,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
                 {/* Quick add to cart button */}
                 <div className="px-2 pb-2">
-                  <motion.div className="r41-btn-shimmer">
+                  <motion.div className="r41-btn-shimmer r58-pcard-quick-add">
                     <Button
                       size="sm"
                       className={`w-full h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg rounded-lg transition-transform btn-glow r41-btn-pulse r44-btn-pulse ${
@@ -849,7 +849,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
                 className="mt-1"
               >
-                <span className="text-[9px] font-bold text-red-500 flex items-center gap-0.5 stock-pulse-badge">
+                <span className="text-[9px] font-bold text-red-500 flex items-center gap-0.5 stock-pulse-badge r58-pcard-stock-pulse">
                   <motion.span
                     animate={{ scale: [1, 1.4, 1], rotate: [0, 10, -10, 0] }}
                     transition={{ duration: 1.2, repeat: Infinity }}

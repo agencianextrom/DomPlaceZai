@@ -534,7 +534,7 @@ export function CheckoutView() {
                       <motion.div
                         animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
                         transition={{ duration: 0.5, type: 'spring' as const, stiffness: 300, damping: 20 }}
-                        className={`step-dot ${isCompleted ? 'completed r40-step-glow-ring r39-step-check-wiggle' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow r33-checkout-step-pulse r40-step-glow-ring r42-step-icon-glow-ring' : ''}`}
+                        className={`step-dot ${isCompleted ? 'completed r40-step-glow-ring r39-step-check-wiggle' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow r33-checkout-step-pulse r40-step-glow-ring r42-step-icon-glow-ring r58-checkout-step-glow' : ''}`}
                       >
                         {isCompleted ? (
                           <motion.div
@@ -862,7 +862,7 @@ export function CheckoutView() {
                     whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(16,185,129,0.2)' }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r42-payment-card-hover r42-payment-card-shimmer r39-payment-glow ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r42-payment-card-hover r42-payment-card-shimmer r39-payment-glow r58-checkout-payment-glow ${
                       payment === method.id
                         ? 'border-primary bg-primary/5 r39-payment-glow-active'
                         : 'border-border hover:border-primary/30'
@@ -987,7 +987,7 @@ export function CheckoutView() {
                   <Separator />
                   <div className="space-y-2 text-sm mt-2">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Subtotal ({getCartItemCount()} itens)</span>
+                      <span className="text-muted-foreground">Subtotal (<span className="r58-checkout-badge-pulse">{getCartItemCount()}</span> itens)</span>
                       <span>{formatBRL(subtotal)}</span>
                     </div>
                     <div className="flex justify-between">
@@ -1119,7 +1119,7 @@ export function CheckoutView() {
                 </Button>
                 <motion.div className="r40-confirm-btn-wrapper">
                   <Button
-                    className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl checkout-btn-shimmer r32-confirm-shine r40-confirm-btn-glow r39-confirm-shimmer relative overflow-hidden"
+                    className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl checkout-btn-shimmer r32-confirm-shine r40-confirm-btn-glow r39-confirm-shimmer relative overflow-hidden r58-checkout-btn-sweep"
                     onClick={handlePlaceOrder}
                     disabled={isProcessing || !termsAccepted}
                   >
