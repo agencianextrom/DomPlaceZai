@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * types.ts — 统一类型定义
  */

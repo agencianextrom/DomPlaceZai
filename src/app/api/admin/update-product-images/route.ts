@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     for (const product of products) {
       const realImages = PRODUCT_REAL_IMAGES[product.slug]
       
-      if (realImages && realImages.length > 0) {
+      if (realImages && Array.isArray(realImages) && realImages.length > 0) {
         try {
           const newImagesJson = JSON.stringify(realImages)
           await db.product.update({
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     }
 
     // Also update store cover images
-    const storeCovers = PRODUCT_REAL_IMAGES['__store_covers'] as Record<string, string> | undefined
+    const storeCovers = PRODUCT_REAL_IMAGES['__store_covers'] as unknown as Record<string, string> | undefined
     if (storeCovers) {
       const stores = await db.store.findMany({
         select: { id: true, slug: true, name: true, coverImage: true, logo: true },

@@ -8,11 +8,13 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/s
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAppStore } from '@/store/useAppStore'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { MobileNav } from './MobileNav'
+import { ScrollProgress } from './ScrollProgress'
 import { NotificationPanel } from '@/components/notifications/NotificationPanel'
 import { useState, useEffect, useRef } from 'react'
 import { useTheme } from 'next-themes'
+import { useMagnetic } from '@/lib/use-magnetic'
 
 const desktopNavItems = [
   { id: 'home', icon: Home, label: 'Início' },
@@ -52,7 +54,7 @@ export function Header() {
     currentView, 
     navigate, 
     goBack, 
-    getCartItemCount, 
+    cartItems,
     openSearch,
     searchQuery,
     setSearchQuery,
@@ -68,21 +70,36 @@ export function Header() {
 
   const desktopSearchValue = !isSearchOpen ? searchQuery : ''
 
-  const cartCount = getCartItemCount()
+  const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0)
+  // Track cart count changes for bounce trigger
+  const [prevCartCount, setPrevCartCount] = useState(cartCount)
+  const [cartBounce, setCartBounce] = useState(false)
+  useEffect(() => {
+    if (cartCount !== prevCartCount) {
+      setCartBounce(true)
+      setPrevCartCount(cartCount)
+      const timer = setTimeout(() => setCartBounce(false), 600)
+      return () => clearTimeout(timer)
+    }
+  }, [cartCount, prevCartCount])
   const canGoBack = navigationHistory.length > 1 && currentView !== 'home'
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
+  const [blurAmount, setBlurAmount] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const mounted = useRef(false)
   useEffect(() => { mounted.current = true }, [])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  const magneticCTA = useMagnetic({ strength: 25, radius: 150 })
+  const magneticAuth = useMagnetic({ strength: 20, radius: 120 })
+
+  // Smooth scroll tracking with framer-motion
+  const { scrollY } = useScroll()
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setIsScrolled(latest > 10)
+    setBlurAmount(Math.min(latest / 5, 20))
+  })
   
   const handleDesktopSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -117,7 +134,14 @@ export function Header() {
   
   return (
     <>
-      <header className={`sticky top-0 z-50 backdrop-blur-xl transition-all duration-300 safe-top ${isScrolled ? 'bg-background/95 shadow-md shadow-black/[0.03]' : 'bg-background/70'} relative`}>
+      <ScrollProgress />
+      <header
+        className={`sticky top-0 z-50 transition-colors duration-300 safe-top ${isScrolled ? 'bg-background/95 shadow-md shadow-black/[0.03]' : 'bg-background/70'} relative`}
+        style={{
+          backdropFilter: `blur(${blurAmount}px)`,
+          WebkitBackdropFilter: `blur(${blurAmount}px)`,
+        }}
+      >
         {/* Gradient border-bottom that intensifies on scroll */}
         <motion.div
           initial={{ opacity: 0, scaleY: 1 }}
@@ -263,17 +287,19 @@ export function Header() {
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
               ) : (
-                <button 
+                <motion.button
                   onClick={() => navigate('home')}
                   className="flex items-center gap-2.5 min-w-0 group"
+                  animate={{ y: [0, -1.5, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
                 >
-                  <img 
-                    src="/domplace-logo.png" 
-                    alt="DomPlace" 
+                  <img
+                    src="/domplace-logo.png"
+                    alt="DomPlace"
                     className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg shrink-0 transition-transform duration-200 group-hover:scale-105"
                   />
                   <span className="font-bold text-lg sm:text-xl text-primary gradient-text">DomPlace</span>
-                </button>
+                </motion.button>
               )}
               
               {/* Location + Area Selector - inline on desktop */}
@@ -291,20 +317,25 @@ export function Header() {
             </div>
             
             {/* Search bar - hidden on mobile, always visible on desktop */}
-            <form 
-              className="hidden md:flex flex-1 max-w-md mx-4 transition-all duration-300 focus-within:max-w-lg" 
+            <motion.form
+              className="hidden md:flex flex-1 mx-4 card-shine"
+              initial={{ maxWidth: 0 }}
+              animate={{ maxWidth: isSearchFocused ? 580 : 448 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 28 }}
               onSubmit={handleDesktopSearchSubmit}
             >
               <div className="relative w-full">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Buscar em Dom Eliseu..." 
+                <Input
+                  placeholder="Buscar em Dom Eliseu..."
                   value={desktopSearchValue}
                   onChange={(e) => handleDesktopSearchChange(e.target.value)}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
                   className="pl-10 pr-4 h-10 rounded-full bg-secondary/50 border-border/50 focus:bg-background focus:border-primary/30 transition-all duration-300 search-pulse focus:shadow-[0_0_0_3px_oklch(0.45_0.1_155/0.15),0_0_12px_oklch(0.45_0.1_155/0.1)] dark:focus:shadow-[0_0_0_3px_oklch(0.55_0.12_155/0.2),0_0_16px_oklch(0.55_0.12_155/0.12)]"
                 />
               </div>
-            </form>
+            </motion.form>
             
             {/* Right side actions */}
             <div className="flex items-center gap-1">
@@ -344,30 +375,35 @@ export function Header() {
               )}
               
               {/* Cart - enhanced with animation */}
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 className={`relative h-10 w-10 transition-all duration-200 hover-glow ${currentView === 'cart' ? 'text-primary bg-primary/5' : ''}`}
                 onClick={() => navigate('cart')}
               >
-                <ShoppingCart className="h-5 w-5" />
+                <motion.div
+                  animate={cartBounce ? { scale: [1, 1.3, 0.85, 1.1, 1], rotate: [0, -8, 5, -3, 0] } : { scale: 1, rotate: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                </motion.div>
                 <AnimatePresence mode="popLayout">
                   {cartCount > 0 && (
                     <motion.span
-                      key={cartCount}
-                      initial={{ scale: 0, y: -10 }}
-                      animate={{ scale: 1, y: 0 }}
+                      key={`cart-badge-${cartCount}`}
+                      initial={{ scale: 0, y: -8 }}
+                      animate={{ scale: [0, 1.35, 0.85, 1.1, 1], y: 0 }}
                       exit={{ scale: 0, y: 10 }}
-                      transition={{ type: 'spring', stiffness: 700, damping: 18 }}
-                      className="absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-2 border-background rounded-full font-bold shadow-sm"
+                      transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                      className={`absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] bg-primary text-primary-foreground border-2 border-background rounded-full font-bold shadow-sm ${cartCount > 0 ? 'breathe' : ''}`}
                     >
                       {cartCount > 99 ? '99+' : cartCount}
                       {/* Ping animation when count changes */}
                       <motion.span
                         key={`ping-${cartCount}`}
                         initial={{ scale: 1, opacity: 0.6 }}
-                        animate={{ scale: 2, opacity: 0 }}
-                        transition={{ duration: 0.5 }}
+                        animate={{ scale: 2.2, opacity: 0 }}
+                        transition={{ duration: 0.5, ease: 'easeOut' as const }}
                         className="absolute inset-0 rounded-full bg-primary"
                       />
                     </motion.span>
@@ -376,16 +412,28 @@ export function Header() {
               </Button>
 
               {/* Anunciar CTA - hidden on mobile, shown on desktop */}
-              <Button
-                onClick={handleAdvertiseClick}
-                className="hidden lg:flex items-center gap-2 h-9 px-4 rounded-full bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground text-sm font-semibold shadow-sm btn-glow btn-shine transition-all duration-200"
+              <div
+                ref={magneticCTA.ref}
+                onMouseMove={magneticCTA.onMouseMove}
+                onMouseLeave={magneticCTA.onMouseLeave}
+                className="hidden lg:block"
               >
-                <Megaphone className="h-4 w-4" />
-                Anunciar
-              </Button>
+                <Button
+                  onClick={handleAdvertiseClick}
+                  className="flex items-center gap-2 h-9 px-4 rounded-full bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground text-sm font-semibold shadow-sm magnetic-btn btn-glow btn-shine transition-all duration-200"
+                >
+                  <Megaphone className="h-4 w-4" />
+                  Anunciar
+                </Button>
+              </div>
               
               {/* Auth button - Entrar or Avatar */}
-              <div className="hidden md:block">
+              <div
+                ref={magneticAuth.ref}
+                onMouseMove={magneticAuth.onMouseMove}
+                onMouseLeave={magneticAuth.onMouseLeave}
+                className="hidden md:block"
+              >
                 {currentUser ? (
                   <Button
                     variant="ghost"

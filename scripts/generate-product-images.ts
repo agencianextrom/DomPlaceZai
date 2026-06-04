@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Script to generate product images using z-ai-web-dev-sdk
  * Run with: npx tsx scripts/generate-product-images.ts

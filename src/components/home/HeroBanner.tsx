@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { ChevronLeft, ChevronRight, MapPin, Flame, Sparkles, Store, ShoppingBag } from 'lucide-react'
+import { ChevronLeft, ChevronRight, MapPin, Flame, Sparkles, Store, ShoppingBag, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 
 interface HeroBannerProps {
@@ -21,26 +21,93 @@ const bannerGradients = [
   'bg-gradient-to-br from-teal-500 via-emerald-500 to-cyan-400',
 ]
 
-const floatingDots = [
-  { size: 6, top: '15%', right: '12%', delay: 0, duration: 4 },
-  { size: 4, top: '60%', right: '30%', delay: 0.8, duration: 3.5 },
-  { size: 5, top: '35%', right: '55%', delay: 1.5, duration: 4.5 },
-  { size: 3, top: '75%', right: '18%', delay: 2, duration: 3 },
-  { size: 7, top: '25%', right: '70%', delay: 0.5, duration: 5 },
-  { size: 4, top: '80%', right: '60%', delay: 1.2, duration: 3.8 },
-  { size: 3, top: '10%', right: '45%', delay: 2.5, duration: 4.2 },
+// Floating gradient blobs configuration
+const floatingBlobs = [
+  { size: 160, top: '-15%', right: '-8%', color: 'bg-primary/20', animY: [0, 18, -12, 8, 0], animX: [0, -14, 10, -6, 0], duration: 12, delay: 0 },
+  { size: 120, top: '55%', right: '15%', color: 'bg-emerald-400/15', animY: [0, -22, 10, -16, 0], animX: [0, 12, -8, 14, 0], duration: 15, delay: -3 },
+  { size: 200, top: '20%', right: '40%', color: 'bg-amber-300/10', animY: [0, 14, -18, 6, 0], animX: [0, -10, 16, -12, 0], duration: 18, delay: -7 },
+  { size: 90, top: '72%', right: '5%', color: 'bg-cyan-300/12', animY: [0, -16, 12, -8, 0], animX: [0, 8, -12, 10, 0], duration: 14, delay: -5 },
 ]
 
-// Sparkle particle positions
-const sparkleParticles = Array.from({ length: 12 }, (_, i) => ({
+// Floating decorative shapes (pure CSS, positioned absolutely)
+const floatingShapes = [
+  { size: 14, top: '12%', right: '8%', className: 'hero-float-shape-1', bg: 'bg-white/20' },
+  { size: 8, top: '70%', right: '25%', className: 'hero-float-shape-2', bg: 'bg-white/15' },
+  { size: 10, top: '40%', right: '60%', className: 'hero-float-shape-3', bg: 'bg-white/18' },
+  { size: 6, top: '25%', right: '45%', className: 'hero-float-shape-4', bg: 'bg-white/12' },
+]
+
+// Floating product images around the hero
+const floatingProducts = [
+  { emoji: '🛒', size: 28, top: '8%', right: '15%', anim: 'hero-float-product-1' },
+  { emoji: '📦', size: 22, top: '60%', right: '10%', anim: 'hero-float-product-2' },
+  { emoji: '🍎', size: 20, top: '20%', right: '70%', anim: 'hero-float-product-3' },
+  { emoji: '🥤', size: 18, top: '75%', right: '55%', anim: 'hero-float-product-4' },
+  { emoji: '🌿', size: 24, top: '45%', right: '80%', anim: 'hero-float-product-5' },
+]
+
+// Particle/sparkle positions for CTA area
+const ctaSparkles = Array.from({ length: 12 }, (_, i) => ({
   id: i,
-  size: Math.random() * 4 + 2,
-  top: `${Math.random() * 80 + 5}%`,
-  left: `${Math.random() * 50 + 5}%`,
-  delay: Math.random() * 3,
-  duration: Math.random() * 2 + 2,
-  scaleRange: [0.5, 1.2] as [number, number],
+  x: 20 + Math.random() * 160,
+  y: 40 + Math.random() * 60,
+  size: 2 + Math.random() * 4,
+  duration: 1.5 + Math.random() * 2,
+  delay: Math.random() * 2,
 }))
+
+// Animated gradient color stops for the morphing gradient overlay
+const gradientColors = [
+  { from: 'rgba(255,255,255,0.12)', via: 'rgba(255,255,255,0.05)', to: 'rgba(255,255,255,0.0)' },
+  { from: 'rgba(255,255,255,0.08)', via: 'rgba(255,255,255,0.15)', to: 'rgba(255,255,255,0.02)' },
+  { from: 'rgba(255,255,255,0.0)', via: 'rgba(255,255,255,0.1)', to: 'rgba(255,255,255,0.18)' },
+]
+
+// Slide transition variants for banner cycling
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? '100%' : '-100%',
+    opacity: 0,
+    scale: 0.95,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? '-100%' : '100%',
+    opacity: 0,
+    scale: 0.95,
+  }),
+}
+
+// Stagger container variants for text entrance
+const staggerContainer = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+}
+
+// Individual text item variants with spring physics
+const staggerItem = {
+  hidden: { opacity: 0, y: 20, filter: 'blur(4px)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring' as const,
+      stiffness: 260,
+      damping: 22,
+      mass: 0.8,
+    },
+  },
+}
 
 const SLIDE_DURATION = 5000
 
@@ -89,26 +156,24 @@ function HeroBannerSkeleton() {
 export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroBannerProps) {
   const [current, setCurrent] = useState(0)
   const [progress, setProgress] = useState(0)
-  const [scrollY, setScrollY] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
-  const [touchStartX, setTouchStartX] = useState<number | null>(null)
-  const [touchDiffX, setTouchDiffX] = useState(0)
-  const { navigate, setActiveCategory } = useAppStore()
+  const [direction, setDirection] = useState(1) // 1 = forward, -1 = backward
+  const { navigate, setActiveCategory, setSearchQuery } = useAppStore()
   const countdown = useCountdown()
-  const dragX = useRef(0)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  // =====================================================
+  // 1. PARALLAX DEPTH via useScroll + useTransform
+  // =====================================================
+  const { scrollY } = useScroll()
+  const bgParallaxY = useTransform(scrollY, [0, 500], [0, 80])    // background moves slower
+  const textParallaxY = useTransform(scrollY, [0, 500], [0, 30])   // text moves at normal speed
+  const dotPatternY = useTransform(scrollY, [0, 500], [0, 25])
 
   // Simulate loading state on mount
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 600)
     return () => clearTimeout(timer)
-  }, [])
-
-  // Track scroll for parallax effect
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const enhancedBanners = useMemo(() => {
@@ -118,12 +183,38 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
     }))
   }, [banners])
 
+  // Gradient animation keyframes for heading text
+  // NOTE: These hooks MUST be declared before any early returns to avoid Rules of Hooks violation
+  const headingGradient = useMotionValue(0)
+  useEffect(() => {
+    let frame: number
+    const animate = () => {
+      headingGradient.set(headingGradient.get() >= 360 ? 0 : headingGradient.get() + 0.5)
+      frame = requestAnimationFrame(animate)
+    }
+    frame = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frame)
+  }, [headingGradient])
+
+  const headingBg = useTransform(headingGradient, (v) =>
+    `linear-gradient(${v}deg, #ffffff, #e0f2fe, #ffffff, #bbf7d0, #ffffff)`
+  )
+
+  const goTo = useCallback((index: number) => {
+    const diff = index - current
+    setDirection(diff > 0 ? 1 : diff < 0 ? -1 : 1)
+    setCurrent(index)
+    setProgress(0)
+  }, [current])
+
   const next = useCallback(() => {
+    setDirection(1)
     setCurrent((prev) => (prev + 1) % enhancedBanners.length)
     setProgress(0)
   }, [enhancedBanners.length])
 
   const prev = useCallback(() => {
+    setDirection(-1)
     setCurrent((prev) => (prev - 1 + enhancedBanners.length) % enhancedBanners.length)
     setProgress(0)
   }, [enhancedBanners.length])
@@ -133,46 +224,27 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          next()
+          setDirection(1)
+          setCurrent((c) => (c + 1) % enhancedBanners.length)
           return 0
         }
         return prev + 100 / (SLIDE_DURATION / 50)
       })
     }, 50)
     return () => clearInterval(interval)
-  }, [next])
+  }, [enhancedBanners.length])
 
   const handleVerOfertas = useCallback(() => {
     setActiveCategory(null)
+    setSearchQuery('')
     navigate('search')
-  }, [navigate, setActiveCategory])
+  }, [navigate, setActiveCategory, setSearchQuery])
 
   const handleComprarAgora = useCallback(() => {
-    setActiveCategory(null)
+    setActiveCategory('offers')
+    setSearchQuery('')
     navigate('search')
-  }, [navigate, setActiveCategory])
-
-  // Touch swipe handlers
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    setTouchStartX(e.touches[0].clientX)
-    dragX.current = 0
-  }, [])
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (touchStartX === null) return
-    const diff = e.touches[0].clientX - touchStartX
-    dragX.current = diff
-    setTouchDiffX(diff)
-  }, [touchStartX])
-
-  const handleTouchEnd = useCallback(() => {
-    if (Math.abs(dragX.current) > 50) {
-      if (dragX.current < 0) next()
-      else prev()
-    }
-    setTouchStartX(null)
-    setTouchDiffX(0)
-  }, [next, prev])
+  }, [navigate, setActiveCategory, setSearchQuery])
 
   if (!enhancedBanners.length) return null
 
@@ -180,94 +252,121 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
   if (!isLoaded) return <HeroBannerSkeleton />
 
   const banner = enhancedBanners[current]
-
   const pad = (n: number) => String(n).padStart(2, '0')
 
   return (
     <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl" ref={containerRef}>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" custom={direction}>
         <motion.div
           key={banner.id}
-          initial={{ opacity: 0, x: touchDiffX > 0 ? 60 : -60 }}
-          animate={{ opacity: 1, x: touchDiffX }}
-          exit={{ opacity: 0, x: touchDiffX > 0 ? -60 : 60 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className={`relative w-full h-[200px] sm:h-[280px] md:h-[320px] lg:h-[400px] ${banner.gradient} flex items-center overflow-hidden select-none`}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          custom={direction}
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{
+            x: { type: 'spring', stiffness: 300, damping: 30 },
+            opacity: { duration: 0.3 },
+            scale: { duration: 0.3 },
+          }}
+          className={`relative w-full h-[200px] sm:h-[280px] md:h-[320px] lg:h-[400px] ${banner.gradient} flex items-center overflow-hidden select-none r28-hero-gradient-bg`}
           draggable={false}
         >
-          {/* Dot pattern texture overlay with parallax */}
-          <div className="absolute inset-0 dot-pattern opacity-60" style={{ transform: `translateY(${scrollY * 0.15}px)` }} />
+          {/* =====================================================
+              2. ANIMATED GRADIENT OVERLAY (morphing gradient)
+              ===================================================== */}
+          <motion.div
+            className="absolute inset-0"
+            animate={{
+              background: [
+                'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.0) 100%)',
+                'linear-gradient(225deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.02) 100%)',
+                'linear-gradient(45deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.18) 100%)',
+                'linear-gradient(315deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.14) 100%)',
+                'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.0) 100%)',
+              ],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
 
-          {/* Morph blob decorative elements with parallax depth */}
-          <div className="absolute right-0 top-0 w-2/3 h-full opacity-15" style={{ transform: `translateY(${scrollY * 0.08}px)` }}>
+          {/* =====================================================
+              1. PARALLAX: Dot pattern with scroll-based depth
+              ===================================================== */}
+          <motion.div
+            className="absolute inset-0 dot-pattern opacity-60"
+            style={{ y: dotPatternY }}
+          />
+
+          {/* PARALLAX: Morph blob decorative elements (deeper layer) */}
+          <motion.div
+            className="absolute right-0 top-0 w-2/3 h-full opacity-15"
+            style={{ y: bgParallaxY }}
+          >
             <div className="morph-blob absolute right-10 top-10 w-32 h-32 bg-white/30" />
             <div className="morph-blob absolute right-0 bottom-0 w-48 h-48 bg-white/20" style={{ animationDelay: '-2s' }} />
             <div className="morph-blob absolute right-20 top-1/2 w-16 h-16 bg-white/15" style={{ animationDelay: '-4s' }} />
             <div className="morph-blob absolute -right-8 -top-8 w-24 h-24 bg-white/10" style={{ animationDelay: '-6s' }} />
             <div className="morph-blob absolute right-40 bottom-10 w-12 h-12 bg-white/12" style={{ animationDelay: '-1s' }} />
-          </div>
-          <div className="absolute left-1/3 bottom-0 opacity-10" style={{ transform: `translateY(${scrollY * 0.2}px)` }}>
+          </motion.div>
+          <motion.div
+            className="absolute left-1/3 bottom-0 opacity-10"
+            style={{ y: bgParallaxY }}
+          >
             <div className="morph-blob w-20 h-20 bg-white/30" style={{ animationDelay: '-3s' }} />
-          </div>
+          </motion.div>
 
-          {/* Sparkle / particle effects behind hero text */}
-          {sparkleParticles.map((particle) => (
-            <motion.div
-              key={`sparkle-${particle.id}`}
-              className="absolute rounded-full bg-white"
+          {/* =====================================================
+              4. FLOATING DECORATIVE ELEMENTS (pure CSS keyframes)
+              ===================================================== */}
+          {floatingShapes.map((shape, i) => (
+            <div
+              key={`float-${i}`}
+              className={`hero-float-shape ${shape.className} ${shape.bg}`}
               style={{
-                width: particle.size,
-                height: particle.size,
-                top: particle.top,
-                left: particle.left,
+                width: shape.size,
+                height: shape.size,
+                top: shape.top,
+                right: shape.right,
               }}
-              animate={{
-                scale: particle.scaleRange,
-                opacity: [0.2, 0.9, 0.2],
-              }}
+            />
+          ))}
+
+          {/* =====================================================
+              6. TEXT ENTRANCE with stagger + spring physics
+              ===================================================== */}
+          {/* =====================================================
+              7. FLOATING GRADIENT BLOBS (slow multi-axis float)
+              ===================================================== */}
+          {floatingBlobs.map((blob, i) => (
+            <motion.div
+              key={`blob-${i}`}
+              className={`absolute rounded-full ${blob.color} blur-3xl pointer-events-none ${i % 2 === 0 ? 'r28-hero-blob-1' : 'r28-hero-blob-2'}`}
+              style={{ width: blob.size, height: blob.size, top: blob.top, right: blob.right }}
+              animate={{ y: blob.animY, x: blob.animX }}
               transition={{
-                duration: particle.duration,
-                delay: particle.delay,
+                duration: blob.duration,
+                delay: blob.delay,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
             />
           ))}
 
-          {/* Floating animated dots */}
-          {floatingDots.map((dot, i) => (
-            <motion.div
-              key={`dot-${i}`}
-              className="absolute rounded-full bg-white/20"
-              style={{
-                width: dot.size,
-                height: dot.size,
-                top: dot.top,
-                right: dot.right,
-              }}
-              animate={{
-                y: [-4, 4, -4],
-                opacity: [0.3, 0.7, 0.3],
-              }}
-              transition={{
-                duration: dot.duration,
-                delay: dot.delay,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-          ))}
-
-          {/* Content */}
-          <div className="relative z-10 p-5 sm:p-8 max-w-lg">
+          <motion.div
+            className="relative z-10 p-5 sm:p-8 max-w-lg"
+            style={{ y: textParallaxY }}
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            key={`text-${banner.id}`}
+          >
             {/* Location indicator */}
             <motion.div
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.15, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              variants={staggerItem}
               className="flex items-center gap-1.5 mb-3 text-white/80 text-xs sm:text-sm"
             >
               <MapPin className="h-3.5 w-3.5" />
@@ -275,75 +374,122 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             </motion.div>
 
             <motion.h2
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight"
-              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.2)' }}
+              variants={staggerItem}
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer"
+              style={{
+                textShadow: '0 2px 12px rgba(0,0,0,0.2)',
+                backgroundImage: headingBg,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
             >
               {banner.title}
             </motion.h2>
 
             {banner.subtitle && (
               <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                variants={staggerItem}
                 className="text-sm sm:text-base text-white/90 mt-2 drop-shadow-sm max-w-md"
               >
                 {banner.subtitle}
               </motion.p>
             )}
 
-            {/* Store + product count badge */}
+            {/* Store + product count badge with counter pulse */}
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              variants={staggerItem}
               className="mt-3 flex items-center gap-3"
             >
-              <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/10">
+              <motion.div
+                className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/10"
+                animate={{ scale: [1, 1.04, 1] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+              >
                 <Store className="h-3.5 w-3.5 text-white/90" />
                 <span className="text-white text-xs font-medium">
-                  <span className="font-bold">{storeCount}</span> lojas
+                  <motion.span
+                    className="font-bold hero-stat-pulse"
+                    animate={{ opacity: [1, 0.7, 1] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+                  >{storeCount}</motion.span> lojas
                 </span>
-              </div>
-              <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/10">
+              </motion.div>
+              <motion.div
+                className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/10"
+                animate={{ scale: [1, 1.04, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              >
                 <ShoppingBag className="h-3.5 w-3.5 text-white/90" />
                 <span className="text-white text-xs font-medium">
-                  <span className="font-bold">{productCount}</span> produtos
+                  <motion.span
+                    className="font-bold hero-stat-pulse"
+                    animate={{ opacity: [1, 0.7, 1] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                  >{productCount}</motion.span> produtos
                 </span>
-              </div>
+              </motion.div>
             </motion.div>
 
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.55, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-4 flex items-center gap-2.5"
-            >
-              <Button
-                onClick={handleVerOfertas}
-                className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-5 sm:px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden"
+            {/* Particle/Sparkle effect behind CTA */}
+            <motion.div variants={staggerItem} className="relative mt-4">
+              <div className="absolute inset-0 pointer-events-none overflow-visible" aria-hidden="true">
+                {ctaSparkles.map((s) => (
+                  <motion.span
+                    key={s.id}
+                    className="absolute rounded-full bg-white/70"
+                    style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size }}
+                    animate={{
+                      opacity: [0, 1, 0.4, 1, 0],
+                      scale: [0, 1.2, 0.6, 1, 0],
+                      y: [0, -8, 4, -6, 0],
+                    }}
+                    transition={{
+                      duration: s.duration,
+                      delay: s.delay,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                  />
+                ))}
+              </div>
+            <div className="flex items-center gap-2.5">
+              <motion.div
+                className="relative rounded-lg"
+                whileHover={{
+                  boxShadow: '0 0 16px rgba(255,255,255,0.4), 0 0 32px rgba(16,185,129,0.3)',
+                }}
+                transition={{ duration: 0.3, type: 'spring' as const, stiffness: 400, damping: 25 }}
               >
-                <span className="ripple-effect absolute inset-0 rounded-lg" />
-                <span className="relative z-10">Ver Ofertas</span>
-              </Button>
-              <Button
-                onClick={handleComprarAgora}
-                className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 font-semibold h-10 sm:h-11 px-5 sm:px-6 press-effect relative overflow-hidden transition-all duration-300"
+                <Button
+                  onClick={handleVerOfertas}
+                  className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-5 sm:px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer"
+                >
+                  <span className="ripple-effect absolute inset-0 rounded-lg" />
+                  <span className="relative z-10">Ver Ofertas</span>
+                </Button>
+              </motion.div>
+              <motion.div
+                className="relative rounded-lg"
+                whileHover={{
+                  boxShadow: '0 0 16px rgba(255,255,255,0.35), 0 0 28px rgba(255,255,255,0.15)',
+                }}
+                transition={{ duration: 0.3, type: 'spring' as const, stiffness: 400, damping: 25 }}
               >
-                <span className="ripple-effect absolute inset-0 rounded-lg" />
-                <span className="relative z-10">Comprar Agora</span>
-              </Button>
+                <Button
+                  onClick={handleComprarAgora}
+                  className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 font-semibold h-10 sm:h-11 px-5 sm:px-6 press-effect relative overflow-hidden transition-all duration-300"
+                >
+                  <span className="ripple-effect absolute inset-0 rounded-lg" />
+                  <span className="relative z-10">Comprar Agora</span>
+                </Button>
+              </motion.div>
+            </div>
             </motion.div>
 
             {/* Promotional countdown timer */}
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              variants={staggerItem}
               className="mt-4 inline-flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10"
             >
               <Flame className="h-4 w-4 text-amber-300 flex-shrink-0" />
@@ -368,7 +514,24 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                 ))}
               </div>
             </motion.div>
-          </div>
+          </motion.div>
+
+          {/* Floating product images */}
+          {floatingProducts.map((fp, i) => (
+            <motion.div
+              key={`fp-${i}`}
+              className={`absolute ${fp.anim} pointer-events-none select-none`}
+              style={{ top: fp.top, right: fp.right, fontSize: fp.size }}
+              animate={{ y: [0, -10, 5, -8, 0], rotate: [0, 5, -5, 3, 0] }}
+              transition={{
+                duration: 4 + i * 0.8,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            >
+              <span className="drop-shadow-lg opacity-50" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))' }}>{fp.emoji}</span>
+            </motion.div>
+          ))}
 
           {/* SVG Wave bottom edge */}
           <svg className="absolute bottom-0 left-0 right-0 z-10" viewBox="0 0 1440 50" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
@@ -396,30 +559,66 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
         <ChevronRight className="h-5 w-5" />
       </Button>
 
-      {/* Dots + Progress bar */}
-      <div className="absolute bottom-4 left-0 right-0 z-20 flex flex-col items-center gap-2">
-        <div className="flex gap-1.5">
+      {/* =====================================================
+          5. PROGRESS DOTS INDICATOR with sliding pill + glow + connecting line
+          ===================================================== */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 flex flex-col items-center gap-1.5">
+        <div className="relative flex items-center gap-1.5">
+          {/* Connecting line between dots */}
+          <div className="absolute top-1/2 -translate-y-1/2 left-[5px] right-[5px] h-px bg-white/15" />
+          <AnimatePresence>
+            <motion.div
+              key={`dot-line-${current}`}
+              className="absolute top-1/2 -translate-y-1/2 left-[5px] h-px bg-white/40"
+              initial={{ width: 0 }}
+              animate={{ width: `${(current / (enhancedBanners.length - 1)) * 100}%` }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
+            />
+          </AnimatePresence>
           {enhancedBanners.map((_, i) => (
             <button
               key={i}
-              onClick={() => {
-                setCurrent(i)
-                setProgress(0)
-              }}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === current ? 'w-6 bg-white' : 'w-1.5 bg-white/50'
-              }`}
-            />
+              onClick={() => goTo(i)}
+              className="relative flex items-center justify-center px-0.5"
+              aria-label={`Banner ${i + 1}`}
+            >
+              {/* The actual visible dot */}
+              <div
+                className={`rounded-full transition-all duration-300 ${
+                  i === current
+                    ? 'w-6 h-1.5 bg-white shadow-[0_0_6px_rgba(255,255,255,0.4)]'
+                    : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/60'
+                }`}
+              />
+              {/* Sliding indicator with active glow (animated via layoutId) */}
+              {i === current && (
+                <motion.div
+                  layoutId="hero-dot-indicator"
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                  transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+                >
+                  <motion.div
+                    className="w-6 h-1.5 rounded-full bg-white"
+                    animate={{
+                      boxShadow: ['0 0 8px rgba(255,255,255,0.5)', '0 0 16px rgba(255,255,255,0.7), 0 0 28px rgba(255,255,255,0.3)', '0 0 8px rgba(255,255,255,0.5)'],
+                    }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                  />
+                </motion.div>
+              )}
+            </button>
           ))}
         </div>
         {/* Progress bar */}
-        <div className="w-24 h-0.5 bg-white/20 rounded-full overflow-hidden">
+        <div className="w-20 h-0.5 bg-white/20 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-white rounded-full"
-            style={{ width: `${progress}%` }}
+            className="h-full bg-white/90 rounded-full"
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.05, ease: 'linear' }}
           />
         </div>
-        {/* Mobile swipe indicator dots */}
+        {/* Mobile swipe hint */}
         <div className="flex items-center gap-1.5 md:hidden">
           {enhancedBanners.map((_, i) => (
             <div
@@ -442,6 +641,16 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
           <Sparkles className="h-3 w-3 text-white/40 ml-1" />
         </div>
       </div>
+      {/* Scroll-down indicator with bouncing arrow */}
+      <motion.div
+        className="absolute bottom-3 right-3 z-20 hidden sm:flex flex-col items-center gap-0.5"
+        animate={{ y: [0, 6, 0] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+        aria-label="Rolar para baixo"
+      >
+        <span className="text-[8px] text-white/60 font-medium">Explorar</span>
+        <ChevronDown className="h-4 w-4 text-white/70" />
+      </motion.div>
     </div>
   )
 }

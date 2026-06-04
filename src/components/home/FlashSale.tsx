@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { Flame, Clock, TrendingDown, ShoppingCart, ChevronLeft, ChevronRight, Zap, AlertTriangle, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +9,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
 import { motion, AnimatePresence } from 'framer-motion'
 import { resolveProductImage } from '@/lib/product-images'
+import { fireConfettiFromElement } from '@/lib/confetti'
+import { cachedFetch } from '@/lib/api-cache'
 import { toast } from 'sonner'
 
 const gradients = [
@@ -38,9 +40,139 @@ function formatBRL(value: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
 }
 
+/* ───────────────────────────────────────────────────────────────
+   1. CIRCULAR PROGRESS COUNTDOWN RING
+   ─────────────────────────────────────────────────────────────── */
+
+function CountdownRing({
+  value,
+  max,
+  size = 36,
+  strokeWidth = 3,
+  gradientId,
+}: {
+  value: number
+  max: number
+  size?: number
+  strokeWidth?: number
+  gradientId: string
+}) {
+  const radius = (size - strokeWidth) / 2
+  const circumference = 2 * Math.PI * radius
+  const progress = value / max
+  const offset = circumference * (1 - progress)
+
+  return (
+    <div className="relative inline-flex flex-col items-center gap-0.5">
+      <svg width={size} height={size} className="transform -rotate-90">
+        <defs>
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#f59e0b" />
+          </linearGradient>
+        </defs>
+        {/* Background track */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          className="text-red-100 dark:text-red-900/30"
+        />
+        {/* Foreground progress arc */}
+        <motion.circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={`url(#${gradientId})`}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          initial={{ strokeDashoffset: 0 }}
+          animate={{ strokeDashoffset: offset }}
+          transition={{ duration: 0.6, ease: 'easeOut' as const }}
+        />
+      </svg>
+      {/* Center value */}
+      <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-red-600 dark:text-red-400 tabular-nums rotate-0">
+        {String(value).padStart(2, '0')}
+      </span>
+    </div>
+  )
+}
+
+/* ───────────────────────────────────────────────────────────────
+   5. FIRE / SPARK EMOJI FLOATING ANIMATION (ENHANCED)
+   ─────────────────────────────────────────────────────────────── */
+
+function FireSparks() {
+  const sparkConfigs = [
+    { emoji: '🔥', xOff: -2, delay: 0 },
+    { emoji: '✨', xOff: 10, delay: 0.7 },
+    { emoji: '🔥', xOff: 4, delay: 1.4 },
+    { emoji: '💫', xOff: -8, delay: 2.1 },
+  ]
+
+  return (
+    <span className="relative inline-flex w-5 h-0 ml-0.5">
+      {sparkConfigs.map((cfg, i) => (
+        <motion.span
+          key={i}
+          className="absolute text-xs pointer-events-none select-none"
+          style={{ left: cfg.xOff, bottom: 0 }}
+          initial={{ opacity: 0, y: 0, scale: 0.6 }}
+          animate={{
+            opacity: [0, 1, 1, 0],
+            y: [2, -8, -22, -34],
+            scale: [0.6, 1, 0.9, 0.4],
+          }}
+          transition={{
+            duration: 2.2,
+            repeat: Infinity,
+            delay: cfg.delay,
+            ease: 'easeOut' as const,
+            repeatDelay: 0.4,
+          }}
+        >
+          {cfg.emoji}
+        </motion.span>
+      ))}
+    </span>
+  )
+}
+
+/* ───────────────────────────────────────────────────────────────
+   4. URGENCY TAG SHAKING MICRO-ANIMATION
+   ─────────────────────────────────────────────────────────────── */
+
+function UrgencyBadge({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      animate={{
+        x: [0, -1.5, 1.5, -1, 0],
+        rotate: [0, -0.8, 0.8, -0.5, 0],
+      }}
+      transition={{
+        duration: 0.45,
+        repeat: Infinity,
+        repeatDelay: 2.5,
+        ease: 'easeInOut' as const,
+      }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+/* ───────────────────────────────────────────────────────────────
+   HOOKS
+   ─────────────────────────────────────────────────────────────── */
+
 function useFlashCountdown() {
   const [time, setTime] = useState(() => {
-    // Set to end of day (23:59:59)
     const now = new Date()
     const end = new Date(now)
     end.setHours(23, 59, 59, 999)
@@ -56,14 +188,8 @@ function useFlashCountdown() {
       setTime(prev => {
         let { hours, minutes, seconds } = prev
         seconds--
-        if (seconds < 0) {
-          seconds = 59
-          minutes--
-        }
-        if (minutes < 0) {
-          minutes = 59
-          hours--
-        }
+        if (seconds < 0) { seconds = 59; minutes-- }
+        if (minutes < 0) { minutes = 59; hours-- }
         if (hours < 0) return prev
         return { hours, minutes, seconds }
       })
@@ -74,7 +200,10 @@ function useFlashCountdown() {
   return time
 }
 
-// Loading skeleton for flash sale cards
+/* ───────────────────────────────────────────────────────────────
+   SKELETON
+   ─────────────────────────────────────────────────────────────── */
+
 function FlashSaleCardSkeleton() {
   return (
     <div className="shrink-0 w-[155px] sm:w-[175px]">
@@ -97,7 +226,10 @@ function FlashSaleCardSkeleton() {
   )
 }
 
-// Map API product to the display format
+/* ───────────────────────────────────────────────────────────────
+   PRODUCT MAPPER
+   ─────────────────────────────────────────────────────────────── */
+
 interface FlashProduct extends ProductData {
   soldPercent: number
 }
@@ -132,6 +264,91 @@ function mapApiToFlashProduct(p: Record<string, unknown>): FlashProduct {
   }
 }
 
+/* ───────────────────────────────────────────────────────────────
+   6. PRICE BOUNCE ANIMATION COMPONENT
+   ─────────────────────────────────────────────────────────────── */
+
+function AnimatedPrice({ price, hasCompare }: { price: number; hasCompare: boolean }) {
+  if (!hasCompare) {
+    return (
+      <span className="text-sm font-extrabold text-red-600 dark:text-red-400">
+        {formatBRL(price)}
+      </span>
+    )
+  }
+
+  return (
+    <motion.span
+      className="inline-block"
+      initial={{ scale: 0.6, color: '#dc2626' }}
+      animate={{ scale: 1, color: '#16a34a' }}
+      transition={{
+        type: 'spring',
+        stiffness: 400,
+        damping: 14,
+        color: { duration: 0.9, delay: 0.15 },
+      }}
+      style={{ color: '#16a34a' }}
+    >
+      <span className="text-sm font-extrabold">{formatBRL(price)}</span>
+    </motion.span>
+  )
+}
+
+/* ───────────────────────────────────────────────────────────────
+   3. 3D TILT CARD WRAPPER
+   ─────────────────────────────────────────────────────────────── */
+
+function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 })
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = (e.clientY - rect.top) / rect.height
+    const rotateY = (x - 0.5) * 12
+    const rotateX = -(y - 0.5) * 8
+    setTilt({ rotateX, rotateY })
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    setTilt({ rotateX: 0, rotateY: 0 })
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{ perspective: 700 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <motion.div
+        animate={{
+          rotateX: tilt.rotateX,
+          rotateY: tilt.rotateY,
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 25,
+          mass: 0.5,
+        }}
+        style={{ transformStyle: 'preserve-3d' }}
+      >
+        {children}
+      </motion.div>
+    </div>
+  )
+}
+
+/* ───────────────────────────────────────────────────────────────
+   MAIN COMPONENT
+   ─────────────────────────────────────────────────────────────── */
+
 export function FlashSale() {
   const { addToCart, selectProduct, navigate } = useAppStore()
   const countdown = useFlashCountdown()
@@ -141,7 +358,6 @@ export function FlashSale() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const pad = (n: number) => String(n).padStart(2, '0')
   const { hours, minutes, seconds } = countdown
 
   // Fetch offer products from API
@@ -149,9 +365,7 @@ export function FlashSale() {
     setIsLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/products?isOffer=true&limit=6&sort=popular')
-      if (!res.ok) throw new Error('Erro ao carregar ofertas')
-      const data = await res.json()
+      const data = await cachedFetch('/api/products?isOffer=true&limit=6&sort=popular')
       const flashProducts = (data.products || []).map(mapApiToFlashProduct)
       setProducts(flashProducts)
     } catch {
@@ -197,291 +411,412 @@ export function FlashSale() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15 }}
-      className="relative"
+      className="relative overflow-hidden"
     >
-      <div className="bg-gradient-to-r from-red-50 via-orange-50 to-amber-50 dark:from-red-900/10 dark:via-orange-900/10 dark:to-amber-900/10 rounded-2xl border border-red-200/50 dark:border-red-800/30 overflow-hidden glass-card-hover">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 pt-4 pb-3">
-          <div className="flex items-center gap-2.5">
-            <motion.div
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              className="h-10 w-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg"
-            >
-              <Flame className="h-5 w-5 text-white" />
-            </motion.div>
-            <div>
-              <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5">
-                <span className="bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
-                  Oferta Relâmpago
-                </span>
-                <Zap className="h-4 w-4 text-amber-500 fill-amber-500" />
-              </h2>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Descontos imperdíveis por tempo limitado</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* Refresh button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7"
-              onClick={() => {
-                setRefreshing(true)
-                fetchProducts()
-              }}
-            >
-              <RefreshCw className={`h-3 w-3 ${refreshing ? 'animate-spin' : ''}`} />
-            </Button>
-
-            {/* Countdown Timer */}
-            <div className="flex items-center gap-1 bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-xl px-3 py-2 border border-red-200/50 dark:border-red-800/30 shadow-sm inner-shadow-accent">
-              <Clock className="h-3.5 w-3.5 text-red-500 mr-1 hidden sm:block" />
-              <div className="flex items-center gap-0.5">
-                {[
-                  { value: pad(hours), label: 'h' },
-                  { value: pad(minutes), label: 'm' },
-                  { value: pad(seconds), label: 's' },
-                ].map((unit, idx) => (
-                  <span key={unit.label} className="flex items-center">
-                    <motion.span
-                      key={unit.value}
-                      initial={{ y: -4, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      className="inline-flex items-center justify-center min-w-[28px] h-8 rounded-lg bg-gradient-to-b from-red-500 to-red-600 text-white text-sm font-bold tabular-nums shadow-sm"
-                    >
-                      {unit.value}
-                    </motion.span>
-                    <span className="text-[9px] font-medium text-muted-foreground ml-0.5 mr-0.5">{unit.label}</span>
-                    {idx < 2 && <span className="text-red-400 font-bold mx-0.5 animate-pulse-soft">:</span>}
+      <div className="absolute inset-0 gradient-mesh opacity-50 pointer-events-none" />
+      <div className="relative">
+        <div className="bg-gradient-to-r from-red-50 via-orange-50 to-amber-50 dark:from-red-900/10 dark:via-orange-900/10 dark:to-amber-900/10 rounded-2xl border border-red-200/50 dark:border-red-800/30 overflow-hidden glass-card-hover r17-flash-glow-border r27-gradient-border">
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 pt-4 pb-3">
+            <div className="flex items-center gap-2.5">
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                className="h-10 w-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg"
+              >
+                <Flame className="h-5 w-5 text-white" />
+              </motion.div>
+              <div className="relative">
+                {/* Pulsing glow ring around badge */}
+                <motion.div
+                  className="absolute -inset-3 rounded-xl pointer-events-none flash-badge-glow"
+                  style={{ background: 'radial-gradient(ellipse at center, oklch(0.577 0.245 27.325 / 0.15), transparent 70%)' }}
+                  animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
+                />
+                <motion.div
+                  className="absolute -inset-1.5 rounded-xl pointer-events-none"
+                  style={{ background: 'radial-gradient(ellipse at center, oklch(0.78 0.16 70 / 0.1), transparent 60%)' }}
+                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.12, 1] }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+                />
+                <div className="relative">
+                <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5">
+                  <span className="r17-flash-gradient-text r17-flash-shimmer-oferta r27-shimmer-text">
+                    OFERTA RELÂMPAGO
                   </span>
-                ))}
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                  >
+                    <Zap className="h-4 w-4 text-amber-500 fill-amber-500" />
+                  </motion.div>
+                  {/* 5. Fire/spark emoji animation near the title */}
+                  <FireSparks />
+                </h2>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Descontos imperdíveis por tempo limitado</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {/* Refresh button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => {
+                  setRefreshing(true)
+                  fetchProducts()
+                }}
+              >
+                <RefreshCw className={`h-3 w-3 ${refreshing ? 'animate-spin' : ''}`} />
+              </Button>
+
+              {/* ─── 1. Circular progress countdown ─── */}
+              <div className="relative flex items-center gap-1.5">
+                {/* Floating urgency particles near the timer */}
+                <motion.div
+                  className="absolute -top-3 -left-1 w-1.5 h-1.5 rounded-full bg-red-400 pointer-events-none"
+                  animate={{ y: [0, -8, -16], opacity: [0, 0.8, 0], scale: [0.5, 1, 0.4] }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' as const, delay: 0 }}
+                />
+                <motion.div
+                  className="absolute -top-2 left-1/2 w-1 h-1 rounded-full bg-amber-400 pointer-events-none"
+                  animate={{ y: [0, -10, -20], opacity: [0, 0.7, 0], scale: [0.6, 0.8, 0.3] }}
+                  transition={{ duration: 2.8, repeat: Infinity, ease: 'easeOut' as const, delay: 0.8 }}
+                />
+                <motion.div
+                  className="absolute -top-2.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-orange-400 pointer-events-none"
+                  animate={{ y: [0, -6, -14], opacity: [0, 0.9, 0], scale: [0.4, 1, 0.3] }}
+                  transition={{ duration: 2.6, repeat: Infinity, ease: 'easeOut' as const, delay: 1.6 }}
+                />
+                <div className="flex items-center gap-1.5 bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-xl px-2.5 py-1.5 border border-red-200/50 dark:border-red-800/30 shadow-sm inner-shadow-accent relative overflow-hidden r27-timer-glow">
+                  <div className="absolute inset-0 r17-flash-timer-shimmer pointer-events-none rounded-xl" />
+                  <CountdownRing value={hours} max={24} size={34} strokeWidth={2.5} gradientId="flash-h" />
+                  <CountdownRing value={minutes} max={60} size={34} strokeWidth={2.5} gradientId="flash-m" />
+                  <CountdownRing value={seconds} max={60} size={34} strokeWidth={2.5} gradientId="flash-s" />
+                  <div className="hidden sm:flex flex-col text-[8px] text-muted-foreground font-medium leading-none gap-1.5 ml-0.5">
+                    <span>h</span>
+                    <span>m</span>
+                    <span>s</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Product scroll */}
-        <div className="relative">
-          <AnimatePresence mode="wait">
-            {refreshing ? (
-              <motion.div
-                key="refreshing"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="h-48 flex items-center justify-center"
-              >
+          {/* Product scroll */}
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              {refreshing ? (
                 <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent"
-                />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="products"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                {/* Error state */}
-                {error && !isLoading && products.length === 0 ? (
-                  <div className="px-4 pb-4 flex flex-col items-center justify-center h-48 text-center">
-                    <p className="text-sm text-muted-foreground mb-2">{error}</p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={fetchProducts}
-                      className="gap-1.5"
-                    >
-                      <RefreshCw className="h-3 w-3" />
-                      Tentar novamente
-                    </Button>
-                  </div>
-                ) : (
-                  <div id="flash-sale-scroll" className="flex gap-3 overflow-x-auto hide-scrollbar px-4 pb-4">
-                    {/* Loading skeletons */}
-                    {isLoading && (
-                      <>
-                        {Array.from({ length: 4 }).map((_, i) => (
-                          <FlashSaleCardSkeleton key={`skeleton-${i}`} />
-                        ))}
-                      </>
-                    )}
+                  key="refreshing"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="h-48 flex items-center justify-center"
+                >
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent"
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="products"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  {/* Error state */}
+                  {error && !isLoading && products.length === 0 ? (
+                    <div className="px-4 pb-4 flex flex-col items-center justify-center h-48 text-center">
+                      <p className="text-sm text-muted-foreground mb-2">{error}</p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={fetchProducts}
+                        className="gap-1.5"
+                      >
+                        <RefreshCw className="h-3 w-3" />
+                        Tentar novamente
+                      </Button>
+                    </div>
+                  ) : (
+                    <div id="flash-sale-scroll" className="flex gap-3 overflow-x-auto hide-scrollbar px-4 pb-4">
+                      {/* Loading skeletons */}
+                      {isLoading && (
+                        <>
+                          {Array.from({ length: 4 }).map((_, i) => (
+                            <FlashSaleCardSkeleton key={`skeleton-${i}`} />
+                          ))}
+                        </>
+                      )}
 
-                    {/* Real products */}
-                    {!isLoading && sortedProducts.map((product, index) => {
-                      const discount = product.comparePrice
-                        ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
-                        : 0
-                      const isLowStock = product.soldPercent >= 85
-                      const gradient = gradients[index % gradients.length]
-                      const imageUrl = resolveProductImage({
-                        slug: product.slug,
-                        category: product.category,
-                        images: product.images,
-                      })
+                      {/* Real product cards */}
+                      {!isLoading && sortedProducts.map((product, index) => {
+                        const discount = product.comparePrice
+                          ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
+                          : 0
+                        const isLowStock = product.soldPercent >= 85
+                        const isCriticallyLow = product.soldPercent >= 70 // <30% remaining → glow
+                        const gradient = gradients[index % gradients.length]
+                        const imageUrl = resolveProductImage({
+                          slug: product.slug,
+                          category: product.category,
+                          images: product.images,
+                        })
 
-                      return (
-                        <motion.div
-                          key={product.id}
-                          className="shrink-0 w-[155px] sm:w-[175px]"
-                          initial={{ opacity: 0, x: 30 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.08, duration: 0.4 }}
-                        >
-                          <Card className="overflow-hidden hover:shadow-lg transition-all border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover" onClick={() => { selectProduct(product); navigate('product') }}>
-                            <CardContent className="p-0 h-full flex flex-col">
-                              {/* Image */}
-                              <div className={`relative aspect-square flex items-center justify-center bg-gradient-to-br ${gradient} overflow-hidden`}>
-                                {imageUrl ? (
-                                  <img
-                                    src={imageUrl}
-                                    alt={product.name}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                                    loading="lazy"
-                                  />
-                                ) : null}
-                                {!imageUrl && (
-                                  <motion.div
-                                    className="h-14 w-14 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform z-10"
-                                    animate={isLowStock ? { scale: [1, 1.05, 1] } : {}}
-                                    transition={{ duration: 1.5, repeat: Infinity }}
-                                  >
-                                    <span className="text-3xl">{categoryIcons[product.category] || '📦'}</span>
-                                  </motion.div>
-                                )}
+                        return (
+                          <motion.div
+                            key={product.id}
+                            className="shrink-0 w-[155px] sm:w-[175px]"
+                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ delay: Math.min(index * 0.1, 0.6), type: 'spring' as const, stiffness: 280, damping: 22 }}
+                          >
+                            {/* 3. 3D Tilt Card Wrapper */}
+                            <TiltCard className="h-full">
+                              <Card
+                                className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow transition-all duration-300 hover:shadow-[0_0_20px_oklch(0.577_0.245_27.325/0.2),0_0_40px_oklch(0.577_0.245_27.325/0.1),0_8px_24px_oklch(0_0_0/0.1)] hover:-translate-y-1 hover:scale-[1.02] hover:border-red-400/40 dark:hover:border-red-600/40 r27-card-lift"
+                                onClick={() => { selectProduct(product); navigate('product') }}
+                              >
+                                <CardContent className="p-0 h-full flex flex-col">
+                                  {/* Image */}
+                                  <div className={`relative aspect-square flex items-center justify-center bg-gradient-to-br ${gradient} overflow-hidden`}>
+                                    {imageUrl ? (
+                                      <img
+                                        src={imageUrl}
+                                        alt={product.name}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                        loading="lazy"
+                                      />
+                                    ) : null}
+                                    {!imageUrl && (
+                                      <motion.div
+                                        className="h-14 w-14 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform z-10"
+                                        animate={isLowStock ? { scale: [1, 1.05, 1] } : {}}
+                                        transition={{ duration: 1.5, repeat: Infinity }}
+                                      >
+                                        <span className="text-3xl">{categoryIcons[product.category] || '📦'}</span>
+                                      </motion.div>
+                                    )}
 
-                                {/* Discount badge */}
-                                <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[10px] px-1.5 py-0 font-bold shadow-sm">
-                                  <TrendingDown className="h-2.5 w-2.5 mr-0.5" />
-                                  -{discount}%
-                                </Badge>
+                                    {/* Discount badge */}
+                                    <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[10px] px-1.5 py-0 font-bold shadow-sm r27-badge-pulse">
+                                      <TrendingDown className="h-2.5 w-2.5 mr-0.5" />
+                                      -{discount}%
+                                    </Badge>
 
-                                {/* Low stock pulsing indicator */}
-                                {isLowStock && (
-                                  <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="absolute top-2 right-2"
-                                  >
-                                    <motion.div
-                                      animate={{ opacity: [1, 0.6, 1] }}
-                                      transition={{ duration: 1.2, repeat: Infinity }}
-                                      className="flex items-center gap-0.5 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm badge-floating"
-                                    >
-                                      <AlertTriangle className="h-2.5 w-2.5" />
-                                      Últimas!
-                                    </motion.div>
-                                  </motion.div>
-                                )}
-                              </div>
+                                    {/* 4. Urgency tag with shaking micro-animation */}
+                                    {isLowStock && (
+                                      <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="absolute top-2 right-2"
+                                      >
+                                        <UrgencyBadge>
+                                          <motion.div
+                                            animate={{ opacity: [1, 0.6, 1] }}
+                                            transition={{ duration: 1.2, repeat: Infinity }}
+                                            className="flex items-center gap-0.5 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm badge-floating"
+                                          >
+                                            <AlertTriangle className="h-2.5 w-2.5" />
+                                            Últimas!
+                                          </motion.div>
+                                        </UrgencyBadge>
+                                      </motion.div>
+                                    )}
 
-                              {/* Info */}
-                              <div className="p-2.5 flex flex-col flex-1">
-                                <p className="text-[10px] text-muted-foreground">{product.storeName}</p>
-                                <h3 className="text-xs font-semibold mt-0.5 line-clamp-2 leading-tight min-h-[1.75rem]">
-                                  {product.name}
-                                </h3>
-
-                                <div className="mt-auto pt-2">
-                                  <div className="flex items-baseline gap-1.5">
-                                    <span className="text-sm font-extrabold text-red-600 dark:text-red-400">{formatBRL(product.price)}</span>
-                                    {product.comparePrice && (
-                                      <span className="text-[10px] text-muted-foreground line-through-animated">
-                                        {formatBRL(product.comparePrice)}
-                                      </span>
+                                    {/* Quase esgotando! for critically low but not "last" */}
+                                    {isCriticallyLow && !isLowStock && (
+                                      <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="absolute top-2 right-2"
+                                      >
+                                        <UrgencyBadge>
+                                          <div className="flex items-center gap-0.5 bg-amber-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm">
+                                            <AlertTriangle className="h-2.5 w-2.5" />
+                                            Quase esgotando!
+                                          </div>
+                                        </UrgencyBadge>
+                                      </motion.div>
                                     )}
                                   </div>
 
-                                  {/* Stock progress */}
-                                  <div className="mt-2">
-                                    <div className="flex items-center justify-between mb-1">
-                                      <span className="text-[9px] text-muted-foreground">
-                                        {product.stock} restantes
-                                      </span>
-                                      <span className="text-[9px] font-bold text-red-600 dark:text-red-400">
-                                        {product.soldPercent}% vendido
-                                      </span>
-                                    </div>
-                                    <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                                      <motion.div
-                                        className={`h-full rounded-full ${isLowStock ? 'bg-red-500' : 'bg-gradient-to-r from-red-500 to-orange-500'}`}
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${product.soldPercent}%` }}
-                                        transition={{ delay: 0.3 + index * 0.1, duration: 0.8, ease: 'easeOut' }}
-                                      />
+                                  {/* Info */}
+                                  <div className="p-2.5 flex flex-col flex-1">
+                                    <p className="text-[10px] text-muted-foreground">{product.storeName}</p>
+                                    <h3 className="text-xs font-semibold mt-0.5 line-clamp-2 leading-tight min-h-[1.75rem]">
+                                      {product.name}
+                                    </h3>
+
+                                    <div className="mt-auto pt-2">
+                                      <div className="flex items-baseline gap-1.5">
+                                        {/* 6. Price change animation: scale-bounce + color transition */}
+                                        <AnimatedPrice
+                                          price={product.price}
+                                          hasCompare={!!product.comparePrice}
+                                        />
+                                        {product.comparePrice && (
+                                          <span className="text-[10px] text-muted-foreground line-through-animated">
+                                            {formatBRL(product.comparePrice)}
+                                          </span>
+                                        )}
+                                      </div>
+
+                                      {/* 2. Stock bar animation with glow */}
+                                      <div className="mt-2">
+                                        <div className="flex items-center justify-between mb-1">
+                                          <span className="text-[9px] text-muted-foreground">
+                                            {product.stock} restantes
+                                          </span>
+                                          <span className="text-[9px] font-bold text-red-600 dark:text-red-400">
+                                            {product.soldPercent}% vendido
+                                          </span>
+                                        </div>
+                                        <div className="relative h-1.5 bg-muted rounded-full overflow-visible">
+                                          {/* Pulsing red glow for critically low stock */}
+                                          {isCriticallyLow && (
+                                            <motion.div
+                                              className="absolute top-0 left-0 h-1.5 rounded-full"
+                                              animate={{
+                                                width: `${product.soldPercent}%`,
+                                                boxShadow: '0 0 10px 3px rgba(239,68,68,0.5)',
+                                              }}
+                                              initial={{ width: 0 }}
+                                              transition={{
+                                                width: { delay: 0.3 + index * 0.1, duration: 0.8, ease: 'easeOut' as const },
+                                                boxShadow: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' as const },
+                                              }}
+                                              style={{ zIndex: 0 }}
+                                            />
+                                          )}
+                                          {/* The actual progress bar with enhanced gradient */}
+                                          <motion.div
+                                            className={`h-full rounded-full relative ${isLowStock ? 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500 flash-stock-bar-glow' : 'bg-gradient-to-r from-red-500 via-orange-500 to-amber-400'} ${isCriticallyLow ? 'flash-stock-pulse' : ''} r27-stagger-fill`}
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${product.soldPercent}%` }}
+                                            transition={{ delay: 0.3 + index * 0.1, duration: 0.8, ease: 'easeOut' as const }}
+                                            style={{ zIndex: 1 }}
+                                          />
+                                        </div>
+                                      </div>
+
+                                      {/* Add to cart button */}
+                                      <motion.div className="mt-2">
+                                        <Button
+                                          size="sm"
+                                          className="w-full h-7 text-[10px] bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-0 gap-1 btn-smooth ripple-effect flash-buy-btn-shimmer relative overflow-hidden r27-cta-shimmer"
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            addToCart(product, product.storeName || 'Loja')
+                                            toast.success(`${product.name} adicionado!`)
+                                            fireConfettiFromElement(e.currentTarget)
+                                          }}
+                                        >
+                                          <ShoppingCart className="h-3 w-3" />
+                                          Comprar
+                                        </Button>
+                                      </motion.div>
                                     </div>
                                   </div>
+                                </CardContent>
+                              </Card>
+                            </TiltCard>
+                          </motion.div>
+                        )
+                      })}
 
-                                  {/* Add to cart button */}
-                                  <motion.div className="mt-2">
-                                    <Button
-                                      size="sm"
-                                      className="w-full h-7 text-[10px] bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-0 gap-1 btn-smooth ripple-effect"
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        addToCart(product, product.storeName || 'Loja')
-                                        toast.success(`${product.name} adicionado!`)
-                                      }}
-                                    >
-                                      <ShoppingCart className="h-3 w-3" />
-                                      Comprar
-                                    </Button>
-                                  </motion.div>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      )
-                    })}
+                      {/* Empty state */}
+                      {!isLoading && products.length === 0 && !error && (
+                        <div className="flex items-center justify-center w-full h-48">
+                          <p className="text-sm text-muted-foreground">Nenhuma oferta disponível no momento</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-                    {/* Empty state */}
-                    {!isLoading && products.length === 0 && !error && (
-                      <div className="flex items-center justify-center w-full h-48">
-                        <p className="text-sm text-muted-foreground">Nenhuma oferta disponível no momento</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </motion.div>
+            {/* Scroll buttons */}
+            {products.length > 0 && (
+              <>
+                <button
+                  onClick={() => scroll('left')}
+                  className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors z-10 hidden sm:flex"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => scroll('right')}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors z-10 hidden sm:flex"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </>
             )}
-          </AnimatePresence>
+          </div>
 
-          {/* Scroll buttons */}
-          {products.length > 0 && (
-            <>
-              <button
-                onClick={() => scroll('left')}
-                className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors z-10 hidden sm:flex"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => scroll('right')}
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors z-10 hidden sm:flex"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* Bottom fire decoration with shimmer */}
-        <div className="h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 relative overflow-hidden">
-          <motion.div
-            className="absolute inset-0"
-            animate={{ x: ['-100%', '200%'] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
-          >
-            <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-          </motion.div>
+          {/* Sale progress bar with gradient animation */}
+          <div className="h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 relative overflow-hidden r17-flash-progress-sweep">
+            <motion.div
+              className="absolute inset-0"
+              animate={{ x: ['-100%', '200%'] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
+            >
+              <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+            </motion.div>
+          </div>
         </div>
       </div>
+      {/* Floating background urgency sparkles — 8 fire/lightning themed particles */}
+      <motion.div
+        className="absolute top-8 right-6 w-1 h-1 rounded-full bg-amber-400/40 pointer-events-none"
+        animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0.5 }}
+      />
+      <motion.div
+        className="absolute top-12 left-8 w-1.5 h-1.5 rounded-full bg-red-400/30 pointer-events-none"
+        animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0] }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 1.2 }}
+      />
+      <motion.div
+        className="absolute top-20 right-12 w-2 h-2 rounded-full bg-orange-400/30 pointer-events-none"
+        animate={{ y: [0, -14, -28], opacity: [0, 0.5, 0], scale: [0.5, 1, 0.3] }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: 'easeOut' as const, delay: 0.2 }}
+      />
+      <motion.div
+        className="absolute top-6 left-1/3 w-1 h-1 rounded-full bg-yellow-400/40 pointer-events-none"
+        animate={{ y: [0, -8, -18], opacity: [0, 0.7, 0] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.8 }}
+      />
+      <motion.div
+        className="absolute top-16 right-1/4 w-1.5 h-1.5 rounded-full bg-amber-500/25 pointer-events-none"
+        animate={{ y: [0, -10, -22], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.2] }}
+        transition={{ duration: 3.8, repeat: Infinity, ease: 'easeOut' as const, delay: 1.6 }}
+      />
+      <motion.div
+        className="absolute top-4 left-1/2 w-1 h-1 rounded-full bg-red-500/25 pointer-events-none"
+        animate={{ y: [0, -12, -26], opacity: [0, 0.5, 0], scale: [0.4, 0.8, 0] }}
+        transition={{ duration: 3.4, repeat: Infinity, ease: 'easeOut' as const, delay: 2.0 }}
+      />
+      {/* Additional fire emoji particles */}
+      <motion.div
+        className="absolute top-10 right-[30%] w-3 h-3 pointer-events-none text-xs"
+        animate={{ y: [0, -16, -30], opacity: [0, 0.6, 0], scale: [0.5, 1, 0.3] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: 'easeOut' as const, delay: 1.0 }}
+      >🔥</motion.div>
+      <motion.div
+        className="absolute top-14 left-[20%] w-3 h-3 pointer-events-none text-[10px]"
+        animate={{ y: [0, -14, -26], opacity: [0, 0.5, 0], scale: [0.6, 0.9, 0.2] }}
+        transition={{ duration: 4.0, repeat: Infinity, ease: 'easeOut' as const, delay: 2.8 }}
+      >✨</motion.div>
     </motion.section>
   )
 }

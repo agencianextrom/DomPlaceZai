@@ -45,37 +45,62 @@ export function LoyaltyTier() {
   const CurrentIcon = currentTier.icon
   const NextIcon = nextTier?.icon
 
+  // Sparkle particles for tier change effect
+  const sparkles = [...Array(8)].map((_, i) => ({
+    delay: i * 0.08,
+    angle: (i * 45) * (Math.PI / 180),
+    distance: 18 + Math.random() * 12,
+  }))
+
   return (
     <div className="space-y-4">
-      {/* Current Tier Card */}
+      {/* Current Tier Card — Enhanced with glow */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${currentTier.color} p-[2px]`}
+        initial={{ opacity: 0, y: 12, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: 'spring' as const, stiffness: 300, damping: 22 }}
+        className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${currentTier.color} p-[2px] loyalty-tier-glow-card r27-tier-glow`}
       >
         <div className="rounded-2xl bg-card p-4">
-          {/* Decorative glowing orb */}
-          <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${currentTier.color} opacity-10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/4`} />
+          {/* Decorative glowing orb — enhanced */}
+          <motion.div
+            className={`absolute top-0 right-0 w-40 h-40 bg-gradient-to-br ${currentTier.color} opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4`}
+            animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.18, 0.1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+          />
+          {/* Secondary glow orb */}
+          <motion.div
+            className={`absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br ${currentTier.color} opacity-[0.06] rounded-full blur-2xl translate-y-1/2 -translate-x-1/4`}
+            animate={{ scale: [1, 1.2, 1], opacity: [0.06, 0.12, 0.06] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.5 }}
+          />
           
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-3">
+              {/* Rotating tier badge — enhanced */}
               <motion.div
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${currentTier.color} flex items-center justify-center shadow-lg`}
+                animate={{ rotate: [0, 8, -8, 0], scale: [1, 1.06, 1] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${currentTier.color} flex items-center justify-center shadow-lg loyalty-tier-badge-rotate r27-tier-shimmer`}
               >
                 <CurrentIcon className="h-7 w-7 text-white" />
+                {/* Sparkle ring around badge */}
+                <motion.div
+                  className="absolute inset-0 rounded-2xl border-2 border-white/20"
+                  animate={{ scale: [1, 1.12, 1], opacity: [0.2, 0.4, 0.2] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+                />
               </motion.div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold">{currentTier.name}</h3>
-                  <Badge className="text-[9px] bg-white/20 text-white border-0 backdrop-blur-sm">Nível {currentTierIndex + 1}</Badge>
+                  <h3 className="text-lg font-bold loyalty-tier-shimmer-name r27-unlock-text">{currentTier.name}</h3>
+                  <Badge className="text-[9px] bg-white/20 text-white border-0 backdrop-blur-sm loyalty-tier-badge-pulse">Nível {currentTierIndex + 1}</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground">{currentXP.toLocaleString('pt-BR')} XP acumulados</p>
               </div>
             </div>
             <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
+              animate={{ scale: [1, 1.08, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
               className="text-right"
             >
@@ -83,8 +108,27 @@ export function LoyaltyTier() {
               <p className="text-[10px] text-muted-foreground">de 5 níveis</p>
             </motion.div>
           </div>
+          {/* Sparkle particles on current tier */}
+          <div className="absolute top-2 right-2 pointer-events-none" aria-hidden="true">
+            {sparkles.map((s, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 rounded-full"
+                style={{
+                  background: `linear-gradient(135deg, ${currentTier.color.includes('yellow') ? 'oklch(0.85 0.14 70)' : 'rgba(255,255,255,0.5)'}, transparent)`,
+                }}
+                animate={{
+                  x: [0, Math.cos(s.angle) * s.distance, 0],
+                  y: [0, Math.sin(s.angle) * s.distance, 0],
+                  scale: [0, 1, 0],
+                  opacity: [0, 0.8, 0],
+                }}
+                transition={{ duration: 2, repeat: Infinity, delay: s.delay + 1, ease: 'easeOut' as const }}
+              />
+            ))}
+          </div>
 
-          {/* Progress to next tier */}
+          {/* Progress to next tier — animated fill with glow */}
           {nextTier && (
             <div className="mt-4 relative z-10">
               <div className="flex items-center justify-between text-xs mb-1.5">
@@ -92,22 +136,49 @@ export function LoyaltyTier() {
                 <span className="text-muted-foreground">{nextTier.maxXP - currentXP} XP para <span className={nextTier.textColor}>{nextTier.name}</span></span>
                 <span className={nextTier.textColor}>{nextTier.name}</span>
               </div>
-              <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+              <div className="h-2.5 bg-muted rounded-full overflow-hidden loyalty-tier-progress-track r27-bar-particles">
+                {/* Animated glow behind progress bar */}
+                <motion.div
+                  className="absolute inset-0 rounded-full loyalty-tier-progress-glow"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressInTier}%` }}
+                  transition={{ duration: 1.4, ease: 'easeOut' as const, delay: 0.3 }}
+                  style={{
+                    background: `linear-gradient(90deg, ${currentTier.color.includes('yellow') ? 'oklch(0.85 0.14 70 / 0.15)' : 'oklch(0.65 0.12 155 / 0.15)'}, transparent)`,
+                  }}
+                />
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${progressInTier}%` }}
-                  transition={{ duration: 1.2, ease: 'easeOut', delay: 0.3 }}
-                  className={`h-full rounded-full bg-gradient-to-r ${currentTier.color}`}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                  className={`h-full rounded-full bg-gradient-to-r ${currentTier.color} relative`}
                 />
+                {/* Shimmer sweep on progress */}
+                <motion.div
+                  className="absolute inset-0 rounded-full overflow-hidden"
+                >
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    animate={{ x: ['-100%', '200%'] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
+                  >
+                    <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                  </motion.div>
+                </motion.div>
               </div>
-              <p className="text-[10px] text-muted-foreground mt-1 text-center">{Math.round(progressInTier)}% do próximo nível</p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5 }}
+                className="text-[10px] text-muted-foreground mt-1 text-center"
+              >{Math.round(progressInTier)}% do próximo nível</motion.p>
             </div>
           )}
         </div>
       </motion.div>
 
-      {/* Tier Journey */}
-      <Card className="border-border/50 overflow-hidden">
+      {/* Tier Journey — Enhanced with hover glow */}
+      <Card className="border-border/50 overflow-hidden loyalty-tier-journey-card">
         <CardContent className="p-0">
           <div className="p-3 flex items-center justify-between">
             <h4 className="text-xs font-semibold">Jornada de Fidelidade</h4>
@@ -159,10 +230,15 @@ export function LoyaltyTier() {
                   transition={{ delay: i * 0.08 }}
                   className={`flex-1 flex flex-col items-center py-2.5 relative ${isCurrent ? 'bg-primary/5' : ''} ${i < tiers.length - 1 ? 'border-r border-border/30' : ''}`}
                 >
-                  <div className={`h-8 w-8 rounded-xl flex items-center justify-center transition-all ${isReached ? `bg-gradient-to-br ${tier.color} shadow-md` : 'bg-muted'}`}>
+                  <motion.div
+                    className={`h-8 w-8 rounded-xl flex items-center justify-center transition-all ${isReached ? `bg-gradient-to-br ${tier.color} shadow-md loyalty-tier-icon-glow` : 'bg-muted'} ${isCurrent ? 'r27-tier-glow' : ''}${!isReached ? ' r27-lock-overlay' : ''}`}
+                    animate={isCurrent ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+                    transition={{ duration: 2, repeat: isCurrent ? Infinity : 0, ease: 'easeInOut' as const }}
+                    whileHover={{ scale: 1.15, rotate: 8 }}
+                  >
                     <TierIcon className={`h-4 w-4 ${isReached ? 'text-white' : 'text-muted-foreground'}`} />
-                  </div>
-                  <p className={`text-[9px] font-medium mt-1 ${isReached ? tier.textColor : 'text-muted-foreground'}`}>{tier.name}</p>
+                  </motion.div>
+                  <p className={`text-[9px] font-medium mt-1 ${isReached ? tier.textColor : 'text-muted-foreground'}`}>{tier.name}{isReached && <span className="ml-0.5 r27-unlock-text text-[8px]">Desbloqueado!</span>}</p>
                   {isCurrent && (
                     <motion.div
                       layoutId="tier-indicator"

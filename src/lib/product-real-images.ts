@@ -4,7 +4,7 @@
  * Uses Unsplash's direct image CDN for reliable delivery.
  */
 
-export const PRODUCT_REAL_IMAGES: Record<string, string[]> = {
+export const PRODUCT_REAL_IMAGES: Record<string, string[] | Record<string, string>> = {
   // === Mercado do Zé (FOOD) ===
   'arroz-tio-joao-5kg': [
     'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop',
@@ -161,8 +161,9 @@ export const PRODUCT_REAL_IMAGES: Record<string, string[]> = {
  * Falls back to an array with just the provided fallback URL.
  */
 export function getProductRealImages(slug: string, fallback?: string): string[] {
-  if (PRODUCT_REAL_IMAGES[slug]) {
-    return PRODUCT_REAL_IMAGES[slug]
+  const images = PRODUCT_REAL_IMAGES[slug]
+  if (images && Array.isArray(images)) {
+    return images
   }
   if (fallback) {
     return [fallback]

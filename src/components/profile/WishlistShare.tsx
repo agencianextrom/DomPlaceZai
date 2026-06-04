@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Heart, Share2, X, Check, Copy, QrCode, MessageCircle, ExternalLink,
-  ShoppingBag
+  Heart, Share2, X, Check, Copy, QrCode, MessageCircle,
+  ShoppingBag, Sparkles, PartyPopper
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +16,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
 import QRCode from 'qrcode'
+import { fireConfettiFromElement } from '@/lib/confetti'
 
 interface WishlistItem {
   id: string
@@ -63,6 +64,14 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
   const [qrOpen, setQrOpen] = useState(false)
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
   const [qrLoading, setQrLoading] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
+  const [showConfetti, setShowConfetti] = useState(false)
+  const copyBtnRef = useRef<HTMLButtonElement>(null)
+
+  // Reset selectedIds when items change
+  useEffect(() => {
+    setSelectedIds(new Set(items.map(i => i.id)))
+  }, [items])
 
   const toggleItem = (id: string) => {
     const newSet = new Set(selectedIds)
@@ -79,7 +88,7 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
     }
   }
 
-  const selectedItems = items.filter(i => selectedIds.has(i.id))
+  const selectedItems = useMemo(() => items.filter(i => selectedIds.has(i.id)), [items, selectedIds])
   const totalValue = selectedItems.reduce((sum, i) => sum + i.price, 0)
   const shareLink = `https://domplace.com/wishlist/${Date.now().toString(36)}`
 
@@ -100,14 +109,22 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
     toast.success('Lista compartilhada no WhatsApp!')
   }
 
-  const handleCopyLink = async () => {
+  const handleCopyLink = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(shareLink)
+      setLinkCopied(true)
+
+      // Fire confetti from the button element
+      if (copyBtnRef.current) {
+        fireConfettiFromElement(copyBtnRef.current)
+      }
+
       toast.success('Link copiado para a área de transferência!')
+      setTimeout(() => setLinkCopied(false), 2500)
     } catch {
       toast.error('Não foi possível copiar o link')
     }
-  }
+  }, [shareLink])
 
   const handleOpenQR = async () => {
     if (selectedItems.length === 0) {
@@ -119,7 +136,6 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
     setQrLoading(true)
     setQrDataUrl(null)
 
-    // The QR code encodes the wishlist text (compact format)
     const text = generateWishlistText(selectedItems)
 
     try {
@@ -134,7 +150,6 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
       })
       setQrDataUrl(dataUrl)
     } catch {
-      // Fallback: show link instead
       setQrDataUrl(null)
       toast.error('Não foi possível gerar o QR Code. Copie o link ao invés.')
     } finally {
@@ -241,7 +256,6 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
                       onCheckedChange={() => toggleItem(item.id)}
                       className="shrink-0"
                     />
-                    {/* Product mini image */}
                     <div className={`h-11 w-11 rounded-lg bg-gradient-to-br ${categoryGradients[item.category] || 'from-muted to-muted/50'} flex items-center justify-center shrink-0`}>
                       <span className="text-lg">{categoryEmojis[item.category] || '📦'}</span>
                     </div>
@@ -256,6 +270,23 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
             </AnimatePresence>
           </div>
 
+          {/* Price Total Footer */}
+          <div className="px-4 py-2 bg-muted/30 border-t border-border/50">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground font-medium">
+                Total da seleção ({selectedItems.length} {selectedItems.length === 1 ? 'item' : 'itens'})
+              </span>
+              <motion.span
+                key={totalValue}
+                initial={{ scale: 1.15 }}
+                animate={{ scale: 1 }}
+                className="text-base font-extrabold text-primary"
+              >
+                {formatBRL(totalValue)}
+              </motion.span>
+            </div>
+          </div>
+
           {/* Share Options */}
           <div className="p-4 border-t border-border bg-background shrink-0 space-y-2">
             <Button
@@ -267,12 +298,48 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
             </Button>
             <div className="grid grid-cols-2 gap-2">
               <Button
+                ref={copyBtnRef}
                 variant="outline"
-                className="h-10 gap-2"
+                className={`h-10 gap-2 relative overflow-hidden transition-all ${linkCopied ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400' : ''}`}
                 onClick={handleCopyLink}
               >
-                <Copy className="h-4 w-4" />
-                Copiar Link
+                <AnimatePresence mode="wait">
+                  {linkCopied ? (
+                    <motion.span
+                      key="copied"
+                      initial={{ scale: 0, rotate: -90 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      exit={{ scale: 0, rotate: 90 }}
+                      className="flex items-center gap-2"
+                    >
+                      <Check className="h-4 w-4" />
+                      <Sparkles className="h-3 w-3" />
+                      Copiado!
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="copy"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="flex items-center gap-2"
+                    >
+                      <Copy className="h-4 w-4" />
+                      Copiar Link
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+                {/* Success glow effect */}
+                <AnimatePresence>
+                  {linkCopied && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 0.3, scale: 1.5 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 bg-emerald-400 rounded-lg pointer-events-none"
+                    />
+                  )}
+                </AnimatePresence>
               </Button>
               <Button
                 variant="outline"
@@ -291,7 +358,6 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
       {/* QR Code Dialog */}
       <Dialog open={qrOpen} onOpenChange={setQrOpen}>
         <DialogContent className="max-w-xs p-0 sm:rounded-2xl rounded-t-2xl gap-0 overflow-hidden">
-          {/* Header */}
           <div className="bg-gradient-to-r from-primary to-emerald-600 p-4 text-white text-center">
             <DialogTitle className="text-base font-bold flex items-center justify-center gap-2 text-white">
               <QrCode className="h-5 w-5" />
@@ -302,7 +368,6 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
             </DialogDescription>
           </div>
 
-          {/* QR Content */}
           <div className="p-6 flex flex-col items-center gap-4">
             {qrLoading ? (
               <div className="h-56 w-56 rounded-xl bg-muted/50 animate-pulse flex items-center justify-center">
@@ -327,7 +392,6 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
             </p>
           </div>
 
-          {/* Actions */}
           <div className="p-4 border-t border-border bg-muted/30 flex flex-col gap-2">
             <Button
               variant="outline"

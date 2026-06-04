@@ -9,9 +9,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
 import { resolveProductImage } from '@/lib/product-images'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useTransform, animate as motionAnimate } from 'framer-motion'
 import { ProductCard } from '@/components/product/ProductCard'
 import { PromoCodeWidget } from '@/components/promotions/PromoCodeWidget'
+import { CartSuggestions } from '@/components/cart/CartSuggestions'
+import { CartTimer } from '@/components/cart/CartTimer'
 import { toast } from 'sonner'
 import { getDeliveryEstimate } from '@/lib/delivery-estimate'
 import type { ProductData, CartItemData } from '@/store/useAppStore'
@@ -248,6 +250,21 @@ function CrossSellSection({ cartItems }: { cartItems: CartItemData[] }) {
   )
 }
 
+// Animated counting-up price component
+function AnimatedPrice({ value }: { value: number }) {
+  const motionVal = useMotionValue(0)
+  const display = useTransform(motionVal, (v) => formatBRL(v))
+  const [text, setText] = useState(formatBRL(0))
+
+  useEffect(() => {
+    const unsubscribe = display.on('change', (v) => setText(v))
+    motionAnimate(motionVal, value, { duration: 0.6, ease: 'easeOut' })
+    return unsubscribe
+  }, [value, motionVal, display])
+
+  return <span className="text-primary">{text}</span>
+}
+
 export function CartView() {
   const {
     cartItems,
@@ -445,6 +462,57 @@ export function CartView() {
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24 relative overflow-hidden">
+        {/* CSS keyframes for floating emoji animation */}
+        <style>{`
+          @keyframes float-up-fade {
+            0% { transform: translateY(0) scale(1); opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-60px) scale(0.6); opacity: 0; }
+          }
+          @keyframes gradient-pulse-cta {
+            0%, 100% { background-size: 100% 100%; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+            50% { background-size: 120% 100%; box-shadow: 0 4px 25px rgba(16, 185, 129, 0.5); }
+          }
+          .cart-float-emoji {
+            animation: float-up-fade 3s ease-in-out infinite;
+          }
+          .cart-cta-gradient-pulse {
+            animation: gradient-pulse-cta 2s ease-in-out infinite;
+          }
+        `}</style>
+
+        {/* Floating emoji elements — 6 items with different paths and speeds */}
+        <motion.span
+          animate={{ y: [0, -30, 0], x: [0, 12, 0], rotate: [0, 20, 0] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0 }}
+          className="absolute top-[12%] left-[8%] text-3xl pointer-events-none select-none"
+        >🍎</motion.span>
+        <motion.span
+          animate={{ y: [0, -25, 0], x: [0, -15, 0], rotate: [0, -18, 0] }}
+          transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
+          className="absolute top-[18%] right-[12%] text-2xl pointer-events-none select-none"
+        >🛒</motion.span>
+        <motion.span
+          animate={{ y: [0, -35, 0], x: [0, 8, 0], rotate: [0, 12, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }}
+          className="absolute bottom-[38%] left-[18%] text-xl pointer-events-none select-none"
+        >📦</motion.span>
+        <motion.span
+          animate={{ y: [0, -20, 0], x: [0, -10, 0], rotate: [0, -15, 0] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 2.1 }}
+          className="absolute bottom-[42%] right-[8%] text-2xl pointer-events-none select-none"
+        >🎁</motion.span>
+        <motion.span
+          animate={{ y: [0, -28, 0], x: [0, 14, 0], rotate: [0, 22, 0] }}
+          transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+          className="absolute top-[40%] left-[5%] text-xl pointer-events-none select-none"
+        >🌿</motion.span>
+        <motion.span
+          animate={{ y: [0, -22, 0], x: [0, -12, 0], rotate: [0, -10, 0] }}
+          transition={{ duration: 3.3, repeat: Infinity, ease: 'easeInOut', delay: 1.8 }}
+          className="absolute top-[55%] right-[15%] text-lg pointer-events-none select-none"
+        >🍞</motion.span>
+
         {/* Morph blob background decoration */}
         <div className="morph-blob absolute top-1/4 -left-20 w-48 h-48 bg-primary/5" style={{ animationDelay: '-2s' }} />
         <div className="morph-blob absolute bottom-1/4 -right-16 w-36 h-36 bg-accent/5" style={{ animationDelay: '-5s' }} />
@@ -473,6 +541,14 @@ export function CartView() {
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
             >
               <ShoppingBag className="h-16 w-16 text-primary/40" />
+            </motion.div>
+            {/* Bouncing micro-animation on the cart circle */}
+            <motion.div
+              animate={{ y: [0, -6, -3, -8, 0], rotate: [0, 3, -2, 4, 0] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -top-2 right-0"
+            >
+              <span className="text-lg">🛒</span>
             </motion.div>
 
             {/* Floating emoji accents */}
@@ -552,7 +628,7 @@ export function CartView() {
             </Button>
             <Button
               onClick={() => navigate('home')}
-              className="h-12 px-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-glow btn-shine shadow-lg shadow-primary/20"
+              className="h-12 px-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-glow btn-shine shadow-lg shadow-primary/20 cart-cta-gradient-pulse"
             >
               Ver lojas
               <Store className="h-4 w-4 ml-2" />
@@ -870,11 +946,40 @@ export function CartView() {
             <p className="text-sm">Adicione mais {formatBRL(remainingForFree)} e ganhe frete grátis!</p>
           </motion.div>
         )}
-      </div>
 
-      {/* Bottom summary */}
-      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-4 pb-20 md:pb-4">
-        <div className="max-w-3xl mx-auto">
+        {/* Cart Suggestions - Frequently bought together */}
+        {cartItems.length > 0 && <CartSuggestions />}
+
+        {/* Cart Reservation Timer */}
+        {cartItems.length > 0 && <CartTimer />}
+      </div>
+      <style>{`
+        @keyframes checkout-shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        .checkout-shimmer-btn {
+          position: relative;
+          overflow: hidden;
+        }
+        .checkout-shimmer-btn::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+          background-size: 200% 100%;
+          animation: checkout-shimmer 2.5s ease-in-out infinite;
+          pointer-events: none;
+        }
+      `}</style>
+      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 px-4 py-4 pb-20 md:pb-4">
+        {/* Gradient border wrapper */}
+        <div className="max-w-3xl mx-auto relative">
+          {/* Gradient border accents */}
+          <div className="absolute -top-px left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent rounded-full" />
+          <div className="absolute -left-px top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/40 via-primary to-primary/40 rounded-full" />
+          <div className="absolute -right-px top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/40 via-primary to-primary/40 rounded-full" />
+          <div className="bg-background/98 backdrop-blur-xl border border-primary/10 rounded-xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)] px-4 py-4">
           <div className="space-y-1.5 text-sm">
             <div className="flex justify-between text-muted-foreground">
               <span>Subtotal</span>
@@ -905,7 +1010,7 @@ export function CartView() {
             <Separator className="my-2" />
             <div className="flex justify-between font-bold text-base">
               <span>Total</span>
-              <span className="text-primary">{formatBRL(total)}</span>
+              <AnimatedPrice value={total} />
             </div>
           </div>
           <div className="flex gap-2 mt-3">
@@ -922,12 +1027,18 @@ export function CartView() {
               </Button>
             </motion.div>
             <Button
-              className="flex-1 h-12 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl shadow-lg shadow-primary/20"
+              className="flex-1 h-12 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl shadow-lg shadow-primary/20 checkout-shimmer-btn"
               onClick={handleCheckout}
               disabled={hasOutOfStock}
             >
-              {hasOutOfStock ? 'Remover itens indisponíveis' : 'Finalizar Compra'}
-              <ArrowRight className="h-5 w-5 ml-2" />
+              <motion.span
+                className="flex items-center justify-center gap-2"
+                whileHover={{ x: 4 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              >
+                <span>{hasOutOfStock ? 'Remover itens indisponíveis' : 'Finalizar Compra'}</span>
+                {!hasOutOfStock && <ArrowRight className="h-5 w-5" />}
+              </motion.span>
             </Button>
           </div>
           <p className="text-center mt-2">
@@ -935,6 +1046,7 @@ export function CartView() {
               Continue comprando
             </button>
           </p>
+          </div>
         </div>
       </div>
     </div>

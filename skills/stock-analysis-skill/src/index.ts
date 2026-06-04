@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * index.ts — Skill 主入口
  *

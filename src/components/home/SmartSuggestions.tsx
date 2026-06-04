@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Sparkles, ChevronRight, Star, Store, TrendingUp,
   RefreshCw, Package
@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useAppStore, type ProductData } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
 import { resolveProductImage } from '@/lib/product-images'
+import { cachedFetch } from '@/lib/api-cache'
 
 const gradients = [
   'from-emerald-100 to-green-200 dark:from-emerald-900/30 dark:to-green-800/30',
@@ -89,7 +90,7 @@ function mapApiToProduct(p: ApiProduct): ProductData {
 const containerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.08 },
+    transition: { staggerChildren: 0.12 },
   },
 }
 
@@ -131,16 +132,12 @@ export function SmartSuggestions() {
     setError(false)
     try {
       const [featuredRes, dealsRes] = await Promise.all([
-        fetch('/api/products?isFeatured=true&limit=8'),
-        fetch('/api/products?isOffer=true&limit=4'),
+        cachedFetch('/api/products?isFeatured=true&limit=8'),
+        cachedFetch('/api/products?isOffer=true&limit=4'),
       ])
 
-      if (!featuredRes.ok || !dealsRes.ok) {
-        throw new Error('Failed to fetch products')
-      }
-
-      const featuredData = await featuredRes.json()
-      const dealsData = await dealsRes.json()
+      const featuredData = featuredRes
+      const dealsData = dealsRes
 
       // Deduplicate: if product appears in both, prefer featured list
       const featuredProducts = (featuredData.products || []).map(mapApiToProduct)
@@ -229,20 +226,54 @@ export function SmartSuggestions() {
   const displayProducts = products.length > 0 ? products : dealProducts.slice(0, 4)
 
   return (
-    <section className="mt-4">
+    <section className="mt-4 relative overflow-hidden">
+      {/* 5 floating sparkle particles */}
+      <motion.div className="absolute top-2 right-4 w-1.5 h-1.5 rounded-full bg-amber-400/30 pointer-events-none" animate={{ y: [0, -10, -20], opacity: [0, 0.6, 0], scale: [0.4, 1, 0.2] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0 }} />
+      <motion.div className="absolute top-4 left-1/3 w-1 h-1 rounded-full bg-emerald-400/25 pointer-events-none" animate={{ y: [0, -12, -24], opacity: [0, 0.5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.6 }} />
+      <motion.div className="absolute top-1 right-1/4 w-2 h-2 rounded-full bg-yellow-400/25 pointer-events-none" animate={{ y: [0, -8, -18], opacity: [0, 0.4, 0], scale: [0.5, 0.8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeOut' as const, delay: 1.2 }} />
+      <motion.div className="absolute top-6 left-12 w-1 h-1 rounded-full bg-primary/20 pointer-events-none" animate={{ y: [0, -14, -28], opacity: [0, 0.5, 0], scale: [0.3, 0.7, 0] }} transition={{ duration: 3.8, repeat: Infinity, ease: 'easeOut' as const, delay: 1.8 }} />
+      <motion.div className="absolute top-3 right-16 w-1.5 h-1.5 rounded-full bg-orange-400/20 pointer-events-none" animate={{ y: [0, -10, -22], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.3] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 2.4 }} />
+
+      {/* Floating gradient orb in background */}
+      <motion.div
+        className="absolute top-8 left-[15%] w-32 h-32 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, oklch(0.78 0.16 70 / 0.12) 0%, transparent 70%)' }}
+        animate={{ y: [0, -20, 0], x: [0, 12, 0], scale: [1, 1.25, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' as const }}
+        aria-hidden="true"
+      />
+      <motion.div
+        className="absolute bottom-4 right-[10%] w-24 h-24 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, oklch(0.45 0.1 155 / 0.10) 0%, transparent 70%)' }}
+        animate={{ y: [0, 14, 0], x: [0, -10, 0], scale: [1, 1.2, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' as const, delay: 2 }}
+        aria-hidden="true"
+      />
+
       {/* Section Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+          <motion.div
+            className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center"
+            animate={{ rotate: [0, 8, -8, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          >
             <Sparkles className="h-4 w-4 text-white" />
-          </div>
+          </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold">Sugestões para Você</h2>
+            <h2 className="text-base sm:text-lg font-bold r17-smart-header-shimmer r28-badge-shimmer">Sugestões para Você</h2>
             <p className="text-[11px] text-muted-foreground hidden sm:block">
               Produtos selecionados especialmente para você
             </p>
           </div>
         </div>
+        {/* Animated arrow indicator */}
+        <motion.div
+          animate={{ x: [0, 4, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        >
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </motion.div>
       </div>
 
       {/* Loading skeleton */}
@@ -270,11 +301,12 @@ export function SmartSuggestions() {
               <motion.div
                 key={product.id}
                 variants={cardVariants}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                className="shrink-0 w-[170px] sm:w-[200px]"
+                transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
+                className="shrink-0 w-[170px] sm:w-[200px] r28-stagger-enter"
+                style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 <Card
-                  className="border-border/50 overflow-hidden cursor-pointer hover:shadow-lg hover:border-primary/20 transition-all card-premium-hover h-full"
+                  className="border-border/50 overflow-hidden cursor-pointer r17-smart-card-hover r28-smart-card-lift h-full glassmorphism-strong r17-smart-glass-card r28-smart-gradient-border"
                   onClick={() => handleProductClick(product)}
                 >
                   {/* Image */}
@@ -286,7 +318,7 @@ export function SmartSuggestions() {
 
                     {/* Discount badge */}
                     {discount > 0 && (
-                      <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[9px] px-1.5 py-0 font-bold">
+                      <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[9px] px-1.5 py-0 font-bold r28-badge-shimmer">
                         -{discount}%
                       </Badge>
                     )}
@@ -317,9 +349,9 @@ export function SmartSuggestions() {
                       )}
                     </div>
 
-                    {/* Rating */}
+                    {/* Rating with glow */}
                     <div className="flex items-center gap-1 mt-1">
-                      <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                      <Star className="h-3 w-3 text-amber-500 fill-amber-500 r17-smart-star-glow" />
                       <span className="text-[11px] font-medium">{product.rating}</span>
                       <span className="text-[10px] text-muted-foreground">({product.totalReviews})</span>
                     </div>
@@ -337,7 +369,7 @@ export function SmartSuggestions() {
             )
           })}
 
-          {/* "Ver mais" button */}
+          {/* "Ver mais" button with animated arrow */}
           <motion.div
             variants={cardVariants}
             className="shrink-0 w-[100px] sm:w-[120px] flex items-end"
@@ -347,7 +379,12 @@ export function SmartSuggestions() {
               className="w-full h-full min-h-[200px] sm:min-h-[240px] rounded-xl border-dashed border-2 border-primary/30 text-primary hover:bg-primary/5 hover:border-primary/50 flex flex-col items-center justify-center gap-2"
               onClick={() => { useAppStore.getState().setSearchQuery('recomendados'); useAppStore.getState().openSearch() }}
             >
-              <ChevronRight className="h-5 w-5" />
+              <motion.div
+                animate={{ x: [0, 3, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const }}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </motion.div>
               <span className="text-xs font-semibold">Ver mais</span>
             </Button>
           </motion.div>

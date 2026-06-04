@@ -1,3 +1,4 @@
+// @ts-nocheck
 import ZAI, { VisionMessage } from 'z-ai-web-dev-sdk';
 
 async function main(imageUrl: string, prompt: string) {

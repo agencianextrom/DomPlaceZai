@@ -237,13 +237,21 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.06 },
+    transition: { staggerChildren: 0.08 },
   },
 }
 
 const itemVariants = {
   hidden: { opacity: 0, y: 16 },
   visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } },
+}
+
+const statCardVariants = {
+  hidden: { opacity: 0, scale: 0.85, y: 12 },
+  visible: {
+    opacity: 1, scale: 1, y: 0,
+    transition: { type: 'spring' as const, stiffness: 350, damping: 22 },
+  },
 }
 
 function formatBRL(value: number) {
@@ -308,16 +316,18 @@ function StatCard({
 }) {
   return (
     <motion.div
-      variants={itemVariants}
+      variants={statCardVariants}
       initial="hidden"
       animate="visible"
       transition={{ delay }}
+      whileHover={{ y: -4, transition: { type: 'spring', stiffness: 400, damping: 20 } }}
     >
-      <Card className="border-border/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 overflow-hidden relative">
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-emerald-400 to-accent/60 opacity-60" />
-        <CardContent className="p-4">
+      <Card className="border-border/50 overflow-hidden relative group hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-default">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-emerald-400 to-accent/60 opacity-60 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-primary/5 via-transparent to-emerald-400/5" />
+        <CardContent className="p-4 relative">
           <div className="flex items-start justify-between">
-            <div className={`h-10 w-10 rounded-xl ${gradient || 'bg-gradient-to-br from-primary/15 to-primary/5'} flex items-center justify-center shrink-0`}>
+            <div className={`h-10 w-10 rounded-xl ${gradient || 'bg-gradient-to-br from-primary/15 to-primary/5'} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300`}>
               <Icon className="h-5 w-5 text-primary" />
             </div>
             <Badge
@@ -1423,11 +1433,19 @@ export function StoreDashboard() {
                   className="space-y-4"
                 >
                   {/* Stats Grid: Vendas Hoje, Pedidos, Avaliação, Faturamento Mensal */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="relative">
+                    {/* Gradient mesh background behind stats grid */}
+                    <div className="absolute -inset-4 -z-10 overflow-hidden rounded-2xl">
+                      <div className="absolute top-0 left-1/4 h-32 w-32 bg-primary/8 rounded-full blur-3xl animate-pulse" />
+                      <div className="absolute bottom-0 right-1/4 h-28 w-28 bg-emerald-400/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-36 w-36 bg-teal-400/6 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
                     <StatCard icon={DollarSign} label="Vendas Hoje" value={`R$ ${todayRevenue}`} trend={{ value: '+15%', positive: true }} delay={0} gradient="bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/30 dark:to-emerald-800/10" />
                     <StatCard icon={ShoppingCart} label="Pedidos Hoje" value={String(todayOrders)} trend={{ value: '+8%', positive: true }} delay={0.06} gradient="bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/10" />
                     <StatCard icon={Star} label="Avaliação" value={`${ratingValue} ⭐`} suffix={`/ ${stats?.totalReviews || 0} avaliações`} trend={{ value: '+0.2', positive: true }} delay={0.12} gradient="bg-gradient-to-br from-yellow-100 to-yellow-50 dark:from-yellow-900/30 dark:to-yellow-800/10" />
                     <StatCard icon={Package} label="Produtos Ativos" value={`${stats?.activeProducts || 0}/${stats?.totalProducts || 0}`} suffix={inactiveProducts > 0 ? `${inactiveProducts} inativos` : undefined} trend={{ value: inactiveProducts > 0 ? `${inactiveProducts} inativos` : 'Todos ativos', positive: inactiveProducts === 0 }} delay={0.18} gradient="bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/30 dark:to-teal-800/10" />
+                    </div>
                   </div>
 
                   {/* Revenue Mini Chart (div-based for mobile) */}
@@ -1453,7 +1471,7 @@ export function StoreDashboard() {
                                   initial={{ height: 0 }}
                                   animate={{ height: `${height}%` }}
                                   transition={{ delay: 0.3 + i * 0.06, duration: 0.5, type: 'spring' }}
-                                  className={`w-full rounded-t-md ${isToday ? 'bg-gradient-to-t from-primary to-emerald-400' : 'bg-primary/20 hover:bg-primary/40'} transition-colors min-h-[4px]`}
+                                  className={`w-full rounded-t-md min-h-[4px] ${isToday ? 'bg-gradient-to-t from-primary via-emerald-500 to-emerald-400 shadow-[0_0_8px_oklch(0.7_0.15_155/0.3)]' : 'bg-gradient-to-t from-primary/15 to-primary/30 hover:from-primary/25 hover:to-primary/50'} transition-colors`}
                                 />
                                 <span className={`text-[9px] ${isToday ? 'font-bold text-primary' : 'text-muted-foreground'}`}>{d.name}</span>
                               </div>

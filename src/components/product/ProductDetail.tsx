@@ -10,12 +10,35 @@ import { formatBRL, CategoryIcon } from './ProductCard'
 import { StarRating } from '@/components/ui/StarRating'
 import { ShareButton } from './ShareButton'
 import { ProductReviews } from './ProductReviews'
+import { ReviewVideoGallery } from './ReviewVideoGallery'
+import { NutritionalInfo } from './NutritionalInfo'
+import { BulkBuyCalculator } from './BulkBuyCalculator'
+import { QRCodeProduct } from './QRCodeProduct'
+import { ProductBundleDeal } from './ProductBundleDeal'
 import { ProductGallery } from './ProductGallery'
+import { ProductImageZoom } from './ProductImageZoom'
 import { DeliveryTimeCalculator } from './DeliveryTimeCalculator'
 import { PriceDropAlert } from './PriceDropAlert'
 import { SocialProofBadges } from './SocialProofBadges'
 import { StockUrgency } from './StockUrgency'
+import { ProductShareBar } from './ProductShareBar'
+import { ProductVirtualTryOn } from './ProductVirtualTryOn'
+import { SellerInfo } from './SellerInfo'
+import { AllergenAlert } from './AllergenAlert'
+import { ProductCarbonFootprint } from './ProductCarbonFootprint'
+import { ProductOriginMap } from './ProductOriginMap'
+import { ProductBundlesSlider } from './ProductBundlesSlider'
+import { ProductSizeGuide } from './ProductSizeGuide'
+import { PriceHistoryChart } from './PriceHistoryChart'
+import { SimilarProducts } from './SimilarProducts'
+import { ProductVideos } from './ProductVideos'
+import { RelatedCollections } from './RelatedCollections'
+import { ProductFAQ } from './ProductFAQ'
+import { ProductWarranty } from './ProductWarranty'
+import { ProductInstallationGuide } from './ProductInstallationGuide'
+import { ProductSpecsTable } from './ProductSpecsTable'
 import { QuantityStepper } from '@/components/ui/QuantityStepper'
+import { QuantityStepperEnhanced } from '@/components/product/QuantityStepper'
 import { resolveProductImage } from '@/lib/product-images'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
@@ -87,7 +110,7 @@ function ProductGridSkeleton() {
 }
 
 export function ProductDetail({ product }: ProductDetailProps) {
-  const { goBack, navigate, selectStore, addToCart, isFavoriteProduct, toggleFavoriteProduct } = useAppStore()
+  const { goBack, navigate, selectStore, addToCart, isFavoriteProduct, toggleFavoriteProduct, addRecentlyViewed } = useAppStore()
   const [quantity, setQuantity] = useState(1)
   const [selectedVariation, setSelectedVariation] = useState<string | null>(null)
   const [showFullDescription, setShowFullDescription] = useState(false)
@@ -95,9 +118,15 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const [frequentlyBoughtTogether, setFrequentlyBoughtTogether] = useState<DisplayRelatedProduct[]>([])
   const [showStickyBar, setShowStickyBar] = useState(false)
   const [bundleAdded, setBundleAdded] = useState(false)
+  const [isImageZoomOpen, setIsImageZoomOpen] = useState(false)
   const [isLoadingRelated, setIsLoadingRelated] = useState(true)
   const buySectionRef = useRef<HTMLDivElement>(null)
   
+  // Track product as recently viewed on mount
+  useEffect(() => {
+    addRecentlyViewed(product)
+  }, [product.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const isFav = isFavoriteProduct(product.id)
   const discount = product.comparePrice
     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
@@ -220,7 +249,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
   }
   
   return (
-    <div className="max-w-3xl mx-auto pb-28 md:pb-24">
+    <div className="max-w-3xl mx-auto pb-28 md:pb-24 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
       {/* Header */}
       <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center justify-between">
@@ -243,14 +272,23 @@ export function ProductDetail({ product }: ProductDetailProps) {
         </div>
       </div>
       
-      {/* Large Product Image — ProductGallery component */}
-      <ProductGallery
-        images={product.images && product.images !== '[]' ? JSON.parse(product.images) : undefined}
-        productName={product.name}
-        category={product.category}
-        count={5}
-        productSlug={product.slug}
-      />
+      {/* Large Product Image — ProductGallery component with animated entrance */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <ProductGallery product={product} onImageClick={() => setIsImageZoomOpen(true)} />
+        {/* Full-screen Image Zoom */}
+        <ProductImageZoom
+          product={product}
+          isOpen={isImageZoomOpen}
+          onClose={() => setIsImageZoomOpen(false)}
+        />
+      </motion.div>
+      
+      {/* Product Videos Section */}
+      <ProductVideos product={product} />
       
       {/* Info */}
       <div className="px-1 mt-4">
@@ -328,6 +366,20 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </motion.div>
         )}
 
+        {/* Price History Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <PriceHistoryChart
+            currentPrice={product.price}
+            productName={product.name}
+          />
+        </motion.div>
+
         {/* Price */}
         {!product.comparePrice && (
           <motion.div 
@@ -336,7 +388,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
             transition={{ delay: 0.2 }}
             className="flex items-baseline gap-3 mt-3"
           >
-            <span className="text-2xl sm:text-3xl font-bold text-primary">{formatBRL(product.price)}</span>
+            <span className="text-2xl sm:text-3xl font-bold text-primary r28-price-pulse">{formatBRL(product.price)}</span>
           </motion.div>
         )}
 
@@ -371,12 +423,18 @@ export function ProductDetail({ product }: ProductDetailProps) {
         </motion.div>
 
         {/* Social Proof - full badges below main image */}
-        <SocialProofBadges
-          productId={product.id}
-          productName={product.name}
-          variant="detail"
-          totalReviews={product.totalReviews}
-        />
+        <motion.div
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ repeat: Infinity, duration: 3 }}
+          className="inline-block"
+        >
+          <SocialProofBadges
+            productId={product.id}
+            productName={product.name}
+            variant="detail"
+            totalReviews={product.totalReviews}
+          />
+        </motion.div>
 
         <StockUrgency product={product} variant="detail" />
 
@@ -507,21 +565,201 @@ export function ProductDetail({ product }: ProductDetailProps) {
         
         <Separator className="my-4" />
         
-        {/* Quantity - using QuantityStepper component */}
+        {/* Quantity - using Enhanced QuantityStepper component */}
         <div ref={buySectionRef}>
-          <QuantityStepper
+          <QuantityStepperEnhanced
+            product={product}
             value={quantity}
             onChange={setQuantity}
-            min={1}
-            max={product.stock}
-            size="md"
-            showLabel
-            label="Quantidade"
+            onAddToCart={handleAddToCart}
           />
+          <div className="mt-2 relative r28-cart-glow rounded-lg pointer-events-none" aria-hidden="true" />
         </div>
 
         <Separator className="my-4" />
-        
+
+        {/* Product Share Bar — glassmorphism action bar */}
+        <ProductShareBar product={product} />
+
+        {/* Virtual Try-On — Experimente Virtual */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductVirtualTryOn product={product} />
+        </motion.div>
+
+        {/* Seller Info Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <SellerInfo storeId={product.storeId} storeName={product.storeName} />
+        </motion.div>
+
+        <Separator className="my-4" />
+
+        {/* Related Collections */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <RelatedCollections
+            category={product.category}
+            price={product.price}
+            tags={product.tags}
+          />
+        </motion.div>
+
+        <Separator className="my-4" />
+
+        {/* Product FAQ — Perguntas Frequentes */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductFAQ
+            productId={product.id}
+            category={product.category}
+            productName={product.name}
+          />
+        </motion.div>
+
+        {/* Product Warranty — Garantia do Produto */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductWarranty
+            productId={product.id}
+            productName={product.name}
+            basePrice={product.price}
+          />
+        </motion.div>
+
+        {/* Product Installation Guide — Guia de Instalação */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductInstallationGuide category={product.category} />
+        </motion.div>
+
+        {/* Product Specs Table — Especificações Técnicas */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductSpecsTable
+            category={product.category}
+            productName={product.name}
+          />
+        </motion.div>
+
+        <Separator className="my-4" />
+
+        {/* QR Code — share product */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+        >
+          <QRCodeProduct productId={product.id} productName={product.name} price={product.price} />
+          <Separator className="mt-4" />
+        </motion.div>
+
+        {/* Nutritional Info — for food products */}
+        {(product.category === 'FOOD' || product.category === 'HEALTH') && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3 }}
+          >
+            <BulkBuyCalculator price={product.price} />
+            <NutritionalInfo product={product} />
+            <Separator className="mt-4" />
+          </motion.div>
+        )}
+
+        {/* Allergen Alert — for FOOD category products */}
+        {product.category === 'FOOD' && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3 }}
+          >
+            <AllergenAlert
+              productName={product.name}
+              description={product.description || undefined}
+              tags={product.tags}
+              category={product.category}
+            />
+            <Separator className="mt-4" />
+          </motion.div>
+        )}
+
+        {/* Product Carbon Footprint — Pegada de Carbono */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductCarbonFootprint />
+        </motion.div>
+
+        {/* Product Origin Map — Origem do Produto */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductOriginMap />
+        </motion.div>
+
+        {/* Product Bundles Slider — Combos Imperdíveis */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductBundlesSlider />
+        </motion.div>
+
+        {/* Product Size Guide — for FASHION/SHOES/ACCESSORIES categories */}
+        {(product.category === 'FASHION' || product.category === 'SHOES' || product.category === 'ACCESSORIES' || product.category === 'BEAUTY') && (
+          <ProductSizeGuide productId={product.id} category={product.category} />
+        )}
+
         {/* Reviews */}
         <ProductReviews 
           productId={product.id} 
@@ -529,24 +767,87 @@ export function ProductDetail({ product }: ProductDetailProps) {
           totalReviews={product.totalReviews} 
         />
 
+        {/* Review Video Gallery — Vídeos de Avaliação */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ReviewVideoGallery />
+        </motion.div>
+
+        {/* Similar Products */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <SimilarProducts
+            currentProductId={product.id}
+            category={product.category}
+            storeId={product.storeId}
+            currentStoreName={product.storeName || ''}
+          />
+        </motion.div>
+
+        {/* Product Bundle Deal */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+          className="mt-4"
+        >
+          <ProductBundleDeal
+            category={product.category}
+            currentProductId={product.id}
+          />
+        </motion.div>
+
         <Separator className="my-4" />
 
-        {/* Frequently bought together */}
+        {/* Frequently bought together — animated bundle section */}
         {frequentlyBoughtTogether.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 16, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ type: 'spring', stiffness: 260, damping: 24 }}
             className="mt-2"
           >
             <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <ShoppingCart className="h-4 w-4 text-primary" />
+              <motion.div
+                animate={{ rotate: [0, -8, 8, -4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
+              >
+                <ShoppingCart className="h-4 w-4 text-primary" />
+              </motion.div>
               Compre junto
-              <Badge variant="secondary" className="text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-800/30">
-                Economize {formatBRL(bundleDiscount)}
-              </Badge>
+              <motion.div
+                animate={{
+                  boxShadow: [
+                    '0 0 0 0 oklch(0.85 0.17 85 / 0)',
+                    '0 0 0 4px oklch(0.85 0.17 85 / 0.3)',
+                    '0 0 0 0 oklch(0.85 0.17 85 / 0)',
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Badge variant="secondary" className="text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-800/30 font-bold">
+                  Economize {formatBRL(bundleDiscount)}
+                </Badge>
+              </motion.div>
             </h3>
-            <Card className="border-primary/20 overflow-hidden">
+            <motion.div
+              animate={{
+                borderColor: ['oklch(0.45 0.1 155 / 0.15)', 'oklch(0.45 0.1 155 / 0.35)', 'oklch(0.45 0.1 155 / 0.15)'],
+              }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <Card className="border-primary/20 overflow-hidden">
               <CardContent className="p-4">
                 <div className="flex flex-col sm:flex-row items-center gap-3">
                   {/* Main product */}
@@ -655,6 +956,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 </div>
               </CardContent>
             </Card>
+            </motion.div>
           </motion.div>
         )}
 
@@ -818,13 +1120,15 @@ export function ProductDetail({ product }: ProductDetailProps) {
                     <ShoppingCart className="h-4 w-4 mr-2" />
                     Adicionar
                   </Button>
-                  <Button
-                    className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine"
-                    onClick={handleBuyNow}
-                  >
-                    <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
-                    Comprar agora
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine"
+                      onClick={handleBuyNow}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
+                      Comprar agora
+                    </Button>
+                  </motion.div>
                 </div>
               </div>
               {/* iOS safe area */}
@@ -853,13 +1157,15 @@ export function ProductDetail({ product }: ProductDetailProps) {
                     <ShoppingCart className="h-4 w-4 mr-2" />
                     Adicionar
                   </Button>
-                  <Button
-                    className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine"
-                    onClick={handleBuyNow}
-                  >
-                    <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
-                    Comprar agora
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      className="h-12 px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold btn-glow btn-shine"
+                      onClick={handleBuyNow}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2 sm:hidden" />
+                      Comprar agora
+                    </Button>
+                  </motion.div>
                 </div>
               </div>
               <ShareButton productName={product.name} productPrice={product.price} storeName={product.storeName || 'Loja'} />

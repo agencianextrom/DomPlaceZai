@@ -107,9 +107,9 @@ export function OrderFilter({
   }, [orders])
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 r31-filter-shimmer">
       {/* Status Tab Pills */}
-      <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+      <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1 r31-result-enter">
         {statusTabs.map((tab) => {
           const Icon = tab.icon
           const isActive = activeFilter === tab.value
@@ -124,7 +124,7 @@ export function OrderFilter({
                 relative shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold
                 transition-all duration-200 border
                 ${isActive
-                  ? `${tab.activeColor} border-transparent shadow-md`
+                  ? `${tab.activeColor} border-transparent shadow-md r31-pill-active`
                   : `${tab.color} border-transparent hover:opacity-80`
                 }
               `}
@@ -148,7 +148,7 @@ export function OrderFilter({
                 <motion.div
                   layoutId="order-filter-indicator"
                   className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-4 rounded-full bg-current"
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  transition={{ type: 'spring' as const, stiffness: 500, damping: 30 }}
                 />
               )}
             </motion.button>
@@ -157,7 +157,7 @@ export function OrderFilter({
       </div>
 
       {/* Secondary filters row */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2 flex-wrap r31-clear-glow">
         {/* Date filter pills */}
         <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar">
           <Calendar className="h-3.5 w-3.5 text-muted-foreground shrink-0 mr-1" />

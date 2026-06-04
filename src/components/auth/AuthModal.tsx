@@ -19,6 +19,7 @@ import { useAppStore } from '@/store/useAppStore'
 import { useAuth } from '@/hooks/useAuth'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useMemo } from 'react'
 import dynamic from 'next/dynamic'
 
 // Dynamic import Turnstile to avoid SSR issues
@@ -61,6 +62,43 @@ const FacebookIcon = () => (
   </svg>
 )
 
+// Floating particle component
+function FloatingParticle({ index }: { index: number }) {
+  const config = useMemo(() => ({
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: 3 + Math.random() * 5,
+    duration: 8 + Math.random() * 12,
+    delay: Math.random() * 4,
+    opacity: 0.1 + Math.random() * 0.15,
+  }), [])
+  const colors = ['from-primary/40 to-emerald-400/30', 'from-purple-400/30 to-pink-400/20', 'from-teal-400/30 to-cyan-400/20', 'from-amber-400/20 to-orange-400/20']
+  const color = colors[index % colors.length]
+  return (
+    <motion.div
+      className={`absolute rounded-full bg-gradient-to-br ${color} blur-sm pointer-events-none`}
+      style={{
+        left: `${config.x}%`,
+        top: `${config.y}%`,
+        width: config.size,
+        height: config.size,
+      }}
+      animate={{
+        y: [0, -30, 10, -20, 0],
+        x: [0, 15, -10, 20, 0],
+        opacity: [config.opacity, config.opacity * 1.5, config.opacity * 0.5, config.opacity * 1.2, config.opacity],
+        scale: [1, 1.3, 0.8, 1.1, 1],
+      }}
+      transition={{
+        duration: config.duration,
+        delay: config.delay,
+        repeat: Infinity,
+        ease: 'easeInOut',
+      }}
+    />
+  )
+}
+
 export function AuthModal() {
   const { isAuthModalOpen, closeAuthModal } = useAppStore()
   const { login, register } = useAuth()
@@ -81,6 +119,8 @@ export function AuthModal() {
   const [regConfirmPassword, setRegConfirmPassword] = useState('')
   const [regTermsAccepted, setRegTermsAccepted] = useState(false)
   const [regRole, setRegRole] = useState<RegisterRole>('USER')
+
+  const [activeTab, setActiveTab] = useState('login')
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -173,6 +213,41 @@ export function AuthModal() {
         >
           <X className="h-4 w-4" />
         </button>
+        {/* ── Animated floating particles ── */}
+        {Array.from({ length: 12 }).map((_, i) => (
+          <FloatingParticle key={`particle-${i}`} index={i} />
+        ))}
+        {/* ── 3-4 Floating gradient orbs with slow movement ── */}
+        <motion.div
+          className="absolute -top-10 -left-10 h-28 w-28 rounded-full bg-gradient-to-r from-primary/20 to-emerald-400/20 blur-2xl pointer-events-none"
+          animate={{ y: [0, -12, 6, -8, 0], x: [0, 5, -3, 4, 0], scale: [1, 1.1, 0.95, 1.05, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute top-1/3 -right-8 h-20 w-20 rounded-full bg-gradient-to-r from-purple-500/15 to-pink-500/15 blur-xl pointer-events-none"
+          animate={{ y: [0, 10, -6, 8, 0], x: [0, -6, 4, -8, 0], scale: [1, 0.9, 1.1, 0.95, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 left-1/4 h-16 w-16 rounded-full bg-gradient-to-r from-teal-400/15 to-cyan-400/15 blur-lg pointer-events-none"
+          animate={{ x: [0, 8, -12, 6, 0], y: [0, -8, 4, -6, 0], scale: [1, 1.08, 0.92, 1.05, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
+        <motion.div
+          className="absolute top-1/2 right-1/3 h-14 w-14 rounded-full bg-gradient-to-r from-amber-400/10 to-orange-400/10 blur-md pointer-events-none"
+          animate={{ y: [0, -10, 5, -7, 0], x: [0, 6, -4, 8, 0], scale: [1, 1.12, 0.88, 1.06, 1] }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+        />
+
+        {/* ── Subtle noise texture overlay ── */}
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none z-[1]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat',
+          }}
+        />
+
         <Tabs defaultValue="login" className="w-full">
           {/* -- Header with gradient -- */}
           <div className="bg-gradient-to-br from-primary via-emerald-600 to-teal-600 px-6 pt-6 pb-4 sticky top-0 z-10">
@@ -194,11 +269,16 @@ export function AuthModal() {
                     Acesse sua conta ou cadastre-se
                   </DialogDescription>
                 </DialogHeader>
-                <TabsList className="mt-4 bg-white/20 h-10 p-0.5 rounded-lg w-full">
-                  <TabsTrigger value="login" className="flex-1 rounded-md text-white data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200">
+                <TabsList className="mt-4 bg-white/20 h-10 p-0.5 rounded-lg w-full relative">
+                  <motion.div
+                    className="absolute top-0.5 bottom-0.5 rounded-md bg-white shadow-[0_0_12px_rgba(255,255,255,0.3)]"
+                    animate={{ left: activeTab === 'login' ? '2px' : 'calc(50%)', width: 'calc(50% - 2px)' }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                  <TabsTrigger value="login" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10" onClick={() => setActiveTab('login')}>
                     Entrar
                   </TabsTrigger>
-                  <TabsTrigger value="register" className="flex-1 rounded-md text-white data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200">
+                  <TabsTrigger value="register" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10" onClick={() => setActiveTab('register')}>
                     Cadastrar
                   </TabsTrigger>
                 </TabsList>
@@ -208,10 +288,13 @@ export function AuthModal() {
 
           {/* -- Login Tab -- */}
           <TabsContent value="login" className="p-6 mt-0">
+            <AnimatePresence mode="wait">
             <motion.form
-              initial={{ opacity: 0, x: 20 }}
+              key="login-form"
+              initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.25 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
               onSubmit={handleLogin}
               className="space-y-4"
             >
@@ -278,24 +361,31 @@ export function AuthModal() {
                 </p>
               )}
 
-              <Button
-                type="submit"
-                className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center gap-2"
-                  >
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Entrando...
-                  </motion.div>
-                ) : (
-                  'Entrar'
-                )}
-              </Button>
+              <div className="relative overflow-hidden rounded-lg">
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+                  animate={{ translateX: ['100%', '-100%'] }}
+                  transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' }}
+                />
+                <Button
+                  type="submit"
+                  className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60 relative"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-2"
+                    >
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Entrando...
+                    </motion.div>
+                  ) : (
+                    'Entrar'
+                  )}
+                </Button>
+              </div>
 
               <div className="relative flex items-center justify-center">
                 <Separator className="flex-1" />
@@ -329,14 +419,18 @@ export function AuthModal() {
                 </Button>
               )}
             </motion.form>
+            </AnimatePresence>
           </TabsContent>
 
           {/* -- Register Tab -- */}
           <TabsContent value="register" className="p-6 mt-0">
+            <AnimatePresence mode="wait">
             <motion.form
-              initial={{ opacity: 0, x: 20 }}
+              key="register-form"
+              initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.25 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
               onSubmit={handleRegister}
               className="space-y-3"
             >
@@ -348,15 +442,23 @@ export function AuthModal() {
                     <motion.button
                       key={option.value}
                       type="button"
-                      whileTap={{ scale: 0.97 }}
+                      whileHover={{ y: -3, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
+                      whileTap={{ scale: 0.95 }}
+                      animate={regRole === option.value ? { scale: [1, 1.08, 1], borderColor: 'oklch(0.7 0.15 155)' } : { scale: 1 }}
+                      transition={regRole === option.value ? { duration: 0.4, type: 'spring', stiffness: 400, damping: 15 } : { duration: 0.2 }}
                       onClick={() => setRegRole(option.value)}
-                      className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 text-center transition-all duration-200 ${
+                      className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 text-center transition-colors duration-200 ${
                         regRole === option.value
-                          ? 'border-primary bg-primary/5 text-primary shadow-[0_2px_8px_oklch(0.45_0.1_155/0.1)]'
+                          ? 'border-primary bg-primary/5 text-primary shadow-[0_2px_12px_oklch(0.45_0.15_155/0.15)]'
                           : 'border-border hover:border-muted-foreground/30 hover:bg-muted/50'
                       }`}
                     >
-                      {option.icon}
+                      <motion.div
+                        animate={regRole === option.value ? { rotate: [0, -5, 5, 0] } : {}}
+                        transition={{ duration: 0.4, type: 'spring', stiffness: 300 }}
+                      >
+                        {option.icon}
+                      </motion.div>
                       <span className="text-xs font-medium">{option.label}</span>
                       <span className="text-[9px] text-muted-foreground leading-tight">{option.description}</span>
                     </motion.button>
@@ -495,24 +597,31 @@ export function AuthModal() {
                 </label>
               </div>
 
-              <Button
-                type="submit"
-                className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center gap-2"
-                  >
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Cadastrando...
-                  </motion.div>
-                ) : (
-                  'Criar Conta'
-                )}
-              </Button>
+              <div className="relative overflow-hidden rounded-lg">
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+                  animate={{ translateX: ['100%', '-100%'] }}
+                  transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' }}
+                />
+                <Button
+                  type="submit"
+                  className="w-full h-11 bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all duration-200 disabled:opacity-60 relative"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-2"
+                    >
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Cadastrando...
+                    </motion.div>
+                  ) : (
+                    'Criar Conta'
+                  )}
+                </Button>
+              </div>
 
               <div className="relative flex items-center justify-center">
                 <Separator className="flex-1" />
@@ -546,6 +655,7 @@ export function AuthModal() {
                 </Button>
               )}
             </motion.form>
+            </AnimatePresence>
           </TabsContent>
         </Tabs>
       </DialogContent>

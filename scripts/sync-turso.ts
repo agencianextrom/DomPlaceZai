@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Sync Prisma schema to Turso remote database
  * Connects to Turso using @libsql/client and applies missing columns/tables

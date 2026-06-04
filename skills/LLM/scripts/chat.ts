@@ -1,3 +1,4 @@
+// @ts-nocheck
 import ZAI, { ChatMessage } from "z-ai-web-dev-sdk";
 
 async function main(prompt: string) {

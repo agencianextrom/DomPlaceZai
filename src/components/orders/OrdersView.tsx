@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff, Truck, MapPin, Filter, ArrowUpDown, X, Loader2, RefreshCw, PackageCheck, AlertTriangle } from 'lucide-react'
+import { ClipboardList, Package, CheckCircle2, XCircle, Clock, ChevronRight, Star, Store, Eye, RotateCcw, StarOff, Truck, MapPin, Filter, ArrowUpDown, X, Loader2, RefreshCw, PackageCheck, AlertTriangle, Ban, Undo2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -9,11 +9,16 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
 import { DeliveryTracker } from './DeliveryTracker'
+import { OrderTimeline } from './OrderTimeline'
+import { TipCalculator } from './TipCalculator'
 import { OrderMap } from './OrderMap'
 import { RateOrderModal } from './RateOrderModal'
+import { OrderCancelModal } from './OrderCancelModal'
+import { ReturnRequestModal } from './ReturnRequestModal'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import type { OrderData } from '@/store/useAppStore'
+import { OrderInvoiceModal, type InvoiceItem } from './OrderInvoice'
 
 const statusConfig: Record<string, { label: string; color: string; icon: any; gradient: string }> = {
   PENDING: { label: 'Pendente', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock, gradient: 'badge-gradient-amber' },
@@ -97,6 +102,20 @@ function getSortFn(sortValue: string): ((a: OrderData, b: OrderData) => number) 
   }
 }
 
+// Status-based left border color
+function getStatusBorderColor(status: string): string {
+  switch (status) {
+    case 'DELIVERED': return 'border-l-4 border-l-emerald-500'
+    case 'DELIVERING': return 'border-l-4 border-l-blue-500'
+    case 'CONFIRMED': return 'border-l-4 border-l-yellow-500'
+    case 'PREPARING': return 'border-l-4 border-l-orange-500'
+    case 'CANCELLED': return 'border-l-4 border-l-red-500'
+    case 'READY': return 'border-l-4 border-l-emerald-400'
+    case 'PENDING': return 'border-l-4 border-l-amber-400'
+    default: return 'border-l-4 border-l-gray-300'
+  }
+}
+
 // Loading skeleton for orders
 function OrdersSkeleton() {
   return (
@@ -122,6 +141,9 @@ function OrdersSkeleton() {
 export function OrdersView() {
   const { navigate, selectOrder, selectedOrderTab, addToCart, setSelectedOrderTab, currentUser } = useAppStore()
   const [ratingOrder, setRatingOrder] = useState<OrderData | null>(null)
+  const [cancelOrder, setCancelOrder] = useState<OrderData | null>(null)
+  const [returnOrder, setReturnOrder] = useState<OrderData | null>(null)
+  const [invoiceOrder, setInvoiceOrder] = useState<OrderData | null>(null)
   const [orders, setOrders] = useState<OrderData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -211,10 +233,12 @@ export function OrdersView() {
     if (order.items) {
       let addedCount = 0
       let totalQty = 0
+      const addedProductIds: string[] = []
 
       order.items.forEach(item => {
+        const fakeId = `reorder-${item.productName}-${order.id}`
         addToCart({
-          id: `reorder-${item.productName}`,
+          id: fakeId,
           storeId: order.storeId,
           storeName: order.storeName,
           name: item.productName,
@@ -233,13 +257,32 @@ export function OrdersView() {
           variations: null,
           category: 'FOOD',
         }, order.storeName || 'Loja', item.quantity)
+        addedProductIds.push(fakeId)
         addedCount++
         totalQty += item.quantity
       })
 
       if (addedCount > 0) {
-        toast.success(`${totalQty} itens de ${addedCount} produtos adicionados ao carrinho!`, {
+        toast.success(`${totalQty} itens adicionados ao carrinho!`, {
           description: `Repetindo pedido #${order.orderNumber}`,
+          action: (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 text-xs gap-1 mt-2"
+              onClick={() => {
+                toast.dismiss()
+                // Undo: remove reordered items from cart
+                addedProductIds.forEach(id => {
+                  useAppStore.getState().removeFromCart(id)
+                })
+                toast.info('Itens removidos do carrinho')
+              }}
+            >
+              Desfazer
+            </Button>
+          ),
+          duration: 8000,
         })
       }
 
@@ -407,31 +450,80 @@ export function OrdersView() {
                 </div>
               )}
 
-              {/* Empty state */}
+              {/* Empty state with floating emoji animations */}
               {!isLoading && !error && filteredOrders.length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Package className="h-12 w-12 mx-auto mb-3 text-muted-foreground/30" />
-                  <p className="font-medium">Nenhum pedido encontrado</p>
-                  <p className="text-xs text-muted-foreground mt-1 mb-4">
-                    {orders.length === 0
-                      ? 'Faça sua primeira compra para ver seus pedidos aqui'
-                      : 'Nenhum pedido corresponde aos filtros selecionados'
+                <div className="text-center py-16 text-muted-foreground relative overflow-hidden">
+                  {/* Floating emoji keyframes */}
+                  <style>{`
+                    @keyframes orders-float-1 {
+                      0%, 100% { transform: translateY(0px) rotate(0deg); }
+                      50% { transform: translateY(-12px) rotate(10deg); }
                     }
-                  </p>
-                  {orders.length === 0 && (
-                    <Button onClick={() => navigate('home')} size="sm" className="gap-1">
-                      <Store className="h-3 w-3" />
-                      Explorar lojas
-                    </Button>
-                  )}
-                  {hasActiveFilters && (
-                    <button
-                      onClick={clearFilters}
-                      className="block mx-auto text-sm text-primary hover:underline mt-2"
-                    >
-                      Limpar filtros
-                    </button>
-                  )}
+                    @keyframes orders-float-2 {
+                      0%, 100% { transform: translateY(0px) rotate(0deg); }
+                      50% { transform: translateY(-8px) rotate(-8deg); }
+                    }
+                    @keyframes orders-float-3 {
+                      0%, 100% { transform: translateY(0px) scale(1); }
+                      50% { transform: translateY(-15px) scale(1.1); }
+                    }
+                    @keyframes orders-pulse-cta {
+                      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+                      50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+                    }
+                    .orders-cta-pulse {
+                      animation: orders-pulse-cta 2s ease-in-out infinite;
+                    }
+                  `}</style>
+
+                  {/* Floating emoji decorations */}
+                  <span className="absolute top-6 left-[15%] text-2xl pointer-events-none select-none" style={{ animation: 'orders-float-1 3s ease-in-out infinite' }}>📦</span>
+                  <span className="absolute top-12 right-[20%] text-3xl pointer-events-none select-none" style={{ animation: 'orders-float-2 3.5s ease-in-out 0.5s infinite' }}>🛒</span>
+                  <span className="absolute bottom-16 left-[25%] text-2xl pointer-events-none select-none" style={{ animation: 'orders-float-3 4s ease-in-out 1s infinite' }}>🎁</span>
+                  <span className="absolute bottom-20 right-[15%] text-xl pointer-events-none select-none" style={{ animation: 'orders-float-1 3.2s ease-in-out 1.5s infinite' }}>✨</span>
+                  <span className="absolute top-20 left-[45%] text-lg pointer-events-none select-none" style={{ animation: 'orders-float-2 2.8s ease-in-out 0.8s infinite' }}>🏷️</span>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="relative z-10"
+                  >
+                    <div className="relative inline-block">
+                      <motion.div
+                        animate={{ y: [0, -6, 0] }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        <Package className="h-14 w-14 mx-auto mb-3 text-muted-foreground/25" />
+                      </motion.div>
+                    </div>
+                    <p className="font-medium text-base">Nenhum pedido encontrado</p>
+                    <p className="text-xs text-muted-foreground mt-1 mb-5">
+                      {orders.length === 0
+                        ? 'Faça sua primeira compra para ver seus pedidos aqui'
+                        : 'Nenhum pedido corresponde aos filtros selecionados'
+                      }
+                    </p>
+                    {orders.length === 0 && (
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Button onClick={() => navigate('home')} size="sm" className="gap-1.5 orders-cta-pulse">
+                          <Store className="h-3.5 w-3.5" />
+                          Explorar lojas
+                        </Button>
+                      </motion.div>
+                    )}
+                    {hasActiveFilters && (
+                      <button
+                        onClick={clearFilters}
+                        className="block mx-auto text-sm text-primary hover:underline mt-2"
+                      >
+                        Limpar filtros
+                      </button>
+                    )}
+                  </motion.div>
                 </div>
               )}
 
@@ -444,11 +536,15 @@ export function OrdersView() {
                     return (
                       <motion.div
                         key={order.id}
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        whileHover={{ y: -2, transition: { duration: 0.2 } }}
-                        className="w-full bg-card rounded-xl border border-border p-4 hover:shadow-md hover:border-primary/15 transition-all order-card-enhanced hover-glow-soft"
+                        transition={{
+                          delay: idx * 0.1,
+                          duration: 0.5,
+                          ease: [0.25, 0.46, 0.45, 0.94],
+                        }}
+                        whileHover={{ y: -3, scale: 1.01, transition: { duration: 0.2 } }}
+                        className={`w-full bg-card rounded-xl border border-border p-4 hover:shadow-lg hover:border-primary/20 transition-all order-card-enhanced hover-glow-soft ${getStatusBorderColor(order.status)}`}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2 min-w-0">
@@ -456,8 +552,14 @@ export function OrdersView() {
                             <span className="font-semibold text-sm truncate">{order.storeName}</span>
                           </div>
                           <Badge className={`${config.gradient} border-0 text-[10px] font-semibold shrink-0 ml-2`}>
-                            <StatusIcon className="h-3 w-3 mr-1" />
-                            {config.label}
+                            <motion.span
+                              animate={{ scale: [1, 1.15, 1] }}
+                              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.15 }}
+                              className="inline-flex items-center"
+                            >
+                              <StatusIcon className="h-3 w-3 mr-1" />
+                              {config.label}
+                            </motion.span>
                           </Badge>
                         </div>
 
@@ -503,7 +605,7 @@ export function OrdersView() {
                                   </motion.div>
                                   {i < 3 && (
                                     <motion.div
-                                      className={`h-[2px] flex-1 rounded-full ${i < stepIdx ? 'bg-primary' : 'bg-muted'}`}
+                                      className={`h-[2px] flex-1 rounded-full overflow-hidden ${i < stepIdx ? 'bg-gradient-to-r from-primary to-emerald-400' : 'bg-muted'}`}
                                       initial={{ scaleX: 0 }}
                                       animate={{ scaleX: 1 }}
                                       transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}
@@ -527,10 +629,21 @@ export function OrdersView() {
                         )}
 
                         <div className="flex items-center justify-between mt-3">
-                          <span className="font-bold text-primary text-gradient-primary">{formatBRL(order.total)}</span>
+                          <span className="font-bold text-primary text-gradient-primary text-lg">{formatBRL(order.total)}</span>
                           <div className="flex gap-2">
                             {order.status === 'DELIVERED' && (
                               <>
+                                <motion.div whileTap={{ scale: 0.95 }}>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 text-xs gap-1 border-orange-300 text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:border-orange-800 dark:hover:bg-orange-900/20"
+                                    onClick={() => setReturnOrder(order)}
+                                  >
+                                    <Undo2 className="h-3 w-3" />
+                                    Devolver
+                                  </Button>
+                                </motion.div>
                                 <Button
                                   variant="outline"
                                   size="sm"
@@ -550,6 +663,30 @@ export function OrdersView() {
                                 </Button>
                               </>
                             )}
+                            {(order.status === 'PENDING' || order.status === 'CONFIRMED') && (
+                              <motion.div whileTap={{ scale: 0.95 }}>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-8 text-xs gap-1 border-red-300 text-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/20"
+                                  onClick={() => setCancelOrder(order)}
+                                >
+                                  <Ban className="h-3 w-3" />
+                                  Cancelar
+                                </Button>
+                              </motion.div>
+                            )}
+                            <motion.div whileTap={{ scale: 0.95 }}>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 text-xs gap-1 border-primary/30 text-primary hover:bg-primary/5"
+                                onClick={() => setInvoiceOrder(order)}
+                              >
+                                <ClipboardList className="h-3 w-3" />
+                                Nota Fiscal
+                              </Button>
+                            </motion.div>
                             <Button
                               variant="outline"
                               size="sm"
@@ -580,12 +717,67 @@ export function OrdersView() {
         isOpen={!!ratingOrder}
         onClose={() => setRatingOrder(null)}
       />
+
+      {/* Cancel Order Modal */}
+      <OrderCancelModal
+        orderNumber={cancelOrder?.orderNumber || ''}
+        orderItems={(cancelOrder?.items || []).map(item => ({
+          name: item.productName,
+          price: item.price,
+          qty: item.quantity,
+        }))}
+        orderTotal={cancelOrder?.total || 0}
+        isOpen={!!cancelOrder}
+        onClose={() => setCancelOrder(null)}
+        onCancel={(reason) => {
+          toast.success('Pedido cancelado com sucesso', {
+            description: `Motivo: ${reason}`,
+          })
+          fetchOrders()
+          setCancelOrder(null)
+        }}
+      />
+
+      {/* Invoice Modal */}
+      <OrderInvoiceModal
+        isOpen={!!invoiceOrder}
+        onClose={() => setInvoiceOrder(null)}
+        orderNumber={invoiceOrder?.orderNumber || ''}
+        items={(invoiceOrder?.items || []).map((item): InvoiceItem => ({ name: item.productName, qty: item.quantity, price: item.price }))}
+        total={invoiceOrder?.total || 0}
+        discount={invoiceOrder?.discount || 0}
+        deliveryFee={invoiceOrder?.deliveryFee || 0}
+        paymentMethod={invoiceOrder?.paymentMethod || ''}
+        status={invoiceOrder?.status || ''}
+        storeName={invoiceOrder?.storeName || ''}
+        date={invoiceOrder?.createdAt || ''}
+      />
+
+      {/* Return Request Modal */}
+      <ReturnRequestModal
+        orderNumber={returnOrder?.orderNumber || ''}
+        orderItems={(returnOrder?.items || []).map((item, idx) => ({
+          id: `${returnOrder!.id}-${idx}`,
+          name: item.productName,
+          price: item.price,
+          qty: item.quantity,
+          image: (item as any).productImage || undefined,
+        }))}
+        isOpen={!!returnOrder}
+        onClose={() => setReturnOrder(null)}
+        onSubmit={(data) => {
+          toast.success('Solicitação de devolução enviada', {
+            description: `${data.items.length} item(ns) · ${formatBRL(data.items.reduce((s, i) => s + i.price * i.qty, 0))}`,
+          })
+          setReturnOrder(null)
+        }}
+      />
     </div>
   )
 }
 
 export function OrderDetail() {
-  const { selectedOrder, goBack, addToCart, navigate } = useAppStore()
+  const { selectedOrder, goBack, addToCart, navigate, removeFromCart } = useAppStore()
 
   if (!selectedOrder) return null
 
@@ -598,10 +790,12 @@ export function OrderDetail() {
     if (order.items) {
       let addedCount = 0
       let totalQty = 0
+      const addedProductIds: string[] = []
 
       order.items.forEach(item => {
+        const fakeId = `reorder-${item.productName}-${order.id}`
         addToCart({
-          id: `reorder-${item.productName}`,
+          id: fakeId,
           storeId: order.storeId,
           storeName: order.storeName,
           name: item.productName,
@@ -620,13 +814,31 @@ export function OrderDetail() {
           variations: null,
           category: 'FOOD',
         }, order.storeName || 'Loja', item.quantity)
+        addedProductIds.push(fakeId)
         addedCount++
         totalQty += item.quantity
       })
 
       if (addedCount > 0) {
-        toast.success(`${totalQty} itens de ${addedCount} produtos adicionados ao carrinho!`, {
+        toast.success(`${totalQty} itens adicionados ao carrinho!`, {
           description: `Repetindo pedido #${order.orderNumber}`,
+          action: (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 text-xs gap-1 mt-2"
+              onClick={() => {
+                toast.dismiss()
+                addedProductIds.forEach(id => {
+                  removeFromCart(id)
+                })
+                toast.info('Itens removidos do carrinho')
+              }}
+            >
+              Desfazer
+            </Button>
+          ),
+          duration: 8000,
         })
       }
 
@@ -703,43 +915,26 @@ export function OrderDetail() {
           />
         )}
 
-        {/* Timeline */}
+        {/* Timeline - Enhanced with OrderTimeline */}
         {order.status !== 'CANCELLED' && !['DELIVERING', 'PREPARING', 'CONFIRMED'].includes(order.status) && (
-          <div className="bg-card rounded-xl border border-border p-4">
-            <h3 className="font-semibold text-sm mb-4">Acompanhamento</h3>
-            <div className="space-y-4">
-              {statusTimeline.map((status, idx) => {
-                const isActive = idx <= currentStepIdx
-                const isCurrent = status === order.status
-                const stepConfig = statusConfig[status]
-                const StepIcon = stepConfig.icon
-                return (
-                  <div key={status} className="flex gap-3">
-                    <div className="flex flex-col items-center">
-                      <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                        isActive
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground'
-                      } ${isCurrent ? 'ring-4 ring-primary/20' : ''}`}>
-                        <StepIcon className="h-4 w-4" />
-                      </div>
-                      {idx < statusTimeline.length - 1 && (
-                        <div className={`h-8 w-0.5 ${isActive ? 'bg-primary' : 'bg-muted'}`} />
-                      )}
-                    </div>
-                    <div className="pb-4">
-                      <p className={`text-sm font-medium ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
-                        {stepConfig.label}
-                      </p>
-                      {isCurrent && (
-                        <p className="text-xs text-muted-foreground mt-0.5">Etapa atual</p>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+          <OrderTimeline
+            orderNumber={order.orderNumber}
+            status={order.status}
+            estimatedMinutes={30}
+            storeName={order.storeName || undefined}
+            createdAt={order.createdAt}
+          />
+        )}
+
+        {/* OrderTimeline for active orders */}
+        {['DELIVERING', 'PREPARING', 'CONFIRMED'].includes(order.status) && (
+          <OrderTimeline
+            orderNumber={order.orderNumber}
+            status={order.status}
+            estimatedMinutes={25}
+            storeName={order.storeName || undefined}
+            createdAt={order.createdAt}
+          />
         )}
 
         {/* Items */}
@@ -799,12 +994,22 @@ export function OrderDetail() {
         )}
 
         {order.status === 'DELIVERING' && (
-          <Button variant="outline" className="w-full gap-2" onClick={() => {
-            const phone = '919998887766'
-            window.open(`https://wa.me/55${phone}`, '_blank')
-          }}>
-            Falar com entregador
-          </Button>
+          <>
+            <Button variant="outline" className="w-full gap-2" onClick={() => {
+              // TODO: Should come from store/driver data (order.driver.phone)
+              const WHATSAPP_SUPPORT_PHONE = '919998887766'
+              window.open(`https://wa.me/55${WHATSAPP_SUPPORT_PHONE}`, '_blank')
+            }}>
+              Falar com entregador
+            </Button>
+
+            <TipCalculator
+              driverName="Carlos Silva"
+              driverRating={4.8}
+              driverVehicle="Moto Honda CG 160"
+              orderTotal={order.total || 0}
+            />
+          </>
         )}
       </div>
     </div>

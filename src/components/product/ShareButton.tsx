@@ -44,7 +44,7 @@ export function ShareButton({ productName, productPrice, storeName }: ShareButto
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="flex-1 h-12 border-primary/30 text-primary hover:bg-primary/5"
+          className="flex-1 h-12 border-primary/30 text-primary hover:bg-primary/5 r31-share-pop"
         >
           <Share2 className="h-4 w-4 mr-2" />
           Compartilhar
@@ -54,9 +54,9 @@ export function ShareButton({ productName, productPrice, storeName }: ShareButto
         <div className="space-y-1">
           <button
             onClick={handleWhatsApp}
-            className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors text-left"
+            className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors text-left r31-ripple"
           >
-            <div className="h-10 w-10 rounded-full bg-emerald-100 dark:bg-emerald-900/20 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-full bg-emerald-100 dark:bg-emerald-900/20 flex items-center justify-center shrink-0 r31-social-glow">
               <MessageCircle className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
@@ -66,11 +66,11 @@ export function ShareButton({ productName, productPrice, storeName }: ShareButto
           </button>
           <button
             onClick={handleCopyLink}
-            className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors text-left"
+            className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors text-left r31-ripple"
           >
-            <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0 r31-social-glow">
               {copied ? (
-                <Check className="h-5 w-5 text-emerald-600" />
+                <Check className="h-5 w-5 text-emerald-600 r31-copied-check" />
               ) : (
                 <Copy className="h-5 w-5 text-muted-foreground" />
               )}

@@ -39,6 +39,7 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
   const [openOnly, setOpenOnly] = useState(false)
   const [sortBy, setSortBy] = useState<SortOption>('relevance')
   const [showFilters, setShowFilters] = useState(false)
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
 
   // Check if store is currently open
   const isStoreOpen = (store: StoreData) => {
@@ -123,21 +124,51 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
         </motion.button>
       </div>
 
-      {/* Search input */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      {/* Search input with glassmorphism */}
+      <motion.div
+        className="relative glassmorphism-strong rounded-xl overflow-hidden"
+        animate={{ boxShadow: isSearchFocused
+          ? '0 0 0 3px oklch(0.45 0.1 155 / 0.2), 0 8px 24px oklch(0 0 0 / 0.08)'
+          : '0 2px 8px oklch(0 0 0 / 0.04)'
+        }}
+        transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
+      >
+        {/* Pulsing search icon with gradient ring */}
+        <motion.div
+          className="absolute left-3 top-1/2 -translate-y-1/2 z-10"
+          animate={isSearchFocused
+            ? { scale: [1, 1.15, 1], opacity: 1 }
+            : { scale: 1, opacity: 0.7 }
+          }
+          transition={{ duration: 0.8, repeat: isSearchFocused ? Infinity : 0, ease: 'easeInOut' }}
+        >
+          <div className="relative">
+            <Search className={`h-4 w-4 ${isSearchFocused ? 'text-primary' : 'text-muted-foreground'} transition-colors`} />
+            {isSearchFocused && (
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 2.2, opacity: 0 }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+                style={{ background: 'conic-gradient(from 0deg, oklch(0.45 0.1 155 / 0.3), oklch(0.78 0.16 70 / 0.3), oklch(0.45 0.1 155 / 0.3))' }}
+              />
+            )}
+          </div>
+        </motion.div>
         <Input
           placeholder="Buscar por nome, categoria ou bairro..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-10 h-10 search-pulse bg-card border-border/50"
+          onFocus={() => setIsSearchFocused(true)}
+          onBlur={() => setIsSearchFocused(false)}
+          className="pl-10 h-10 bg-transparent border-0 focus-visible:ring-0 store-search-expand store-search-shimmer"
         />
         {query && (
           <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
-      </div>
+      </motion.div>
 
       {/* Filters */}
       <AnimatePresence>
@@ -188,14 +219,17 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
               <div>
                 <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Ordenar por</p>
                 <div className="flex gap-1.5">
-                  {(Object.keys(sortLabels) as SortOption[]).map(opt => (
-                    <button
+                  {(Object.keys(sortLabels) as SortOption[]).map((opt, optIdx) => (
+                    <motion.button
                       key={opt}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.05 + optIdx * 0.05, type: 'spring' as const, stiffness: 350, damping: 20 }}
                       onClick={() => setSortBy(opt)}
                       className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all ${sortBy === opt ? 'bg-primary/10 text-primary border-primary/30' : 'border-border text-muted-foreground hover:border-primary/30'}`}
                     >
                       {sortLabels[opt]}
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               </div>
@@ -206,14 +240,20 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
 
       {/* Results count */}
       <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
+        <motion.p
+          key={filtered.length}
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
+          className="text-xs text-muted-foreground"
+        >
           {filtered.length} loja{filtered.length !== 1 ? 's' : ''} encontrada{filtered.length !== 1 ? 's' : ''}
           {(query || activeCategory || openOnly) && (
             <button onClick={() => { setQuery(''); setActiveCategory(null); setOpenOnly(false) }} className="text-primary hover:underline ml-1">
               Limpar filtros
             </button>
           )}
-        </p>
+        </motion.p>
       </div>
 
       {/* Store list */}

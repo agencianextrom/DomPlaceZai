@@ -118,27 +118,41 @@ export function SocialProofBadges({
       transition={{ delay: 0.2 }}
       className="flex flex-wrap gap-2 mt-3"
     >
-      {badges.map((badge, i) => (
-        <motion.div
-          key={badge.id}
-          initial={{ opacity: 0, scale: 0.85, y: 8 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{
-            delay: 0.2 + i * 0.08,
-            type: 'spring',
-            stiffness: 400,
-            damping: 25,
-          }}
-          whileHover={{ scale: 1.05, y: -1 }}
-        >
-          <Badge
-            variant="outline"
-            className={`text-xs font-medium px-2.5 py-1 rounded-full border ${badge.color} ${badge.bg} cursor-default transition-shadow hover:shadow-sm`}
+      {badges.map((badge, i) => {
+        const isBoughtBadge = badge.id === 'bought'
+        return (
+          <motion.div
+            key={badge.id}
+            initial={{ opacity: 0, scale: 0.85, y: 8 }}
+            animate={isBoughtBadge
+              ? { opacity: 1, scale: [1, 1.04, 1], y: 0 }
+              : { opacity: 1, scale: 1, y: 0 }
+            }
+            transition={{
+              delay: 0.2 + i * 0.08,
+              type: 'spring',
+              stiffness: 400,
+              damping: 25,
+              ...(isBoughtBadge ? { scale: { duration: 2.5, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' } } : {}),
+            }}
+            whileHover={{ scale: 1.05, y: -1 }}
           >
-            {badge.text}
-          </Badge>
-        </motion.div>
-      ))}
+            <Badge
+              variant="outline"
+              className={`text-xs font-medium px-2.5 py-1 rounded-full border ${badge.color} ${badge.bg} cursor-default transition-shadow hover:shadow-sm ${isBoughtBadge ? 'ring-1 ring-amber-300/40 dark:ring-amber-700/40' : ''}`}
+            >
+              {isBoughtBadge && (
+                <motion.span
+                  className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400 mr-1"
+                  animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              )}
+              {badge.text}
+            </Badge>
+          </motion.div>
+        )
+      })}
     </motion.div>
   )
 }

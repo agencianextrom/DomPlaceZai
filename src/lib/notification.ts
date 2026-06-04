@@ -28,8 +28,10 @@ async function initializeFirebase(): Promise<unknown> {
     const firebase = await import('firebase/app')
     await import('firebase/messaging')
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fb = firebase as any
+    if (!fb.apps?.length) {
+      fb.initializeApp({
         apiKey: FIREBASE_API_KEY,
         authDomain: `${FIREBASE_PROJECT_ID}.firebaseapp.com`,
         projectId: FIREBASE_PROJECT_ID,
@@ -39,7 +41,7 @@ async function initializeFirebase(): Promise<unknown> {
       })
     }
 
-    messagingInstance = firebase.messaging()
+    messagingInstance = fb.messaging()
     firebaseInitialized = true
     return messagingInstance
   } catch (error: unknown) {

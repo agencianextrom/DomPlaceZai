@@ -38,8 +38,9 @@ export function saveCartToStorage(items: CartItemData[]): void {
     }))
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(serialized))
     localStorage.setItem(CART_TIMESTAMP_KEY, Date.now().toString())
-  } catch {
-    // localStorage may be full or unavailable - silently fail
+  } catch (e) {
+    // localStorage may be full or unavailable — log for debugging
+    console.error('[cart-persistence] Failed to save cart:', e)
   }
 }
 

@@ -1,13 +1,15 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { ShieldCheck, HelpCircle, FileText, Lock, ArrowUp, QrCode, CreditCard, Banknote, Smartphone, Heart, MessageCircle, Instagram, Facebook, Phone, Mail, MapPin, Download, Store, Users, HeadphonesIcon, ChevronRight } from 'lucide-react'
+import { ShieldCheck, HelpCircle, FileText, Lock, ArrowUp, QrCode, CreditCard, Banknote, Heart, MessageCircle, Instagram, Facebook, Phone, Mail, MapPin, Download, Store, Users, HeadphonesIcon, ChevronRight } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { useAppStore } from '@/store/useAppStore'
+import { ScrollReveal } from '@/lib/use-scroll-reveal'
+import { FloatingParticles } from '@/components/effects/FloatingParticles'
 
 const footerCategories = [
   'Alimentação',
@@ -42,11 +44,64 @@ const paymentMethods = [
   { name: 'Dinheiro', icon: Banknote, label: 'Dinheiro' },
 ]
 
+/* ─── Framer Motion animation variants ─── */
+const footerFadeInVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 200, damping: 25, delay: 0.1 },
+  },
+}
+
+const backToTopVariants = {
+  hidden: { opacity: 0, scale: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 300, damping: 20 },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0,
+    y: 20,
+    transition: { duration: 0.2 },
+  },
+}
+
+const socialBounceVariants = {
+  rest: { scale: 1, y: 0 },
+  hover: {
+    scale: 1.2,
+    y: -3,
+    transition: { type: 'spring' as const, stiffness: 400, damping: 15 },
+  },
+}
+
+const logoHoverVariants = {
+  rest: { scale: 1, filter: 'drop-shadow(0 0 0px transparent)' },
+  hover: {
+    scale: 1.08,
+    filter: 'drop-shadow(0 0 8px oklch(0.45 0.1 155 / 0.5))',
+    transition: { type: 'spring' as const, stiffness: 300, damping: 20 },
+  },
+}
+
+const waveVariants = {
+  animate: {
+    d: [
+      'M0,40 C180,80 360,0 540,40 C720,80 900,0 1080,40 C1260,80 1440,0 1620,40 C1800,80 1980,0 2160,40 L2160,0 L0,0 Z',
+      'M0,40 C180,0 360,80 540,40 C720,0 900,80 1080,40 C1260,0 1440,80 1620,40 C1800,0 1980,80 2160,40 L2160,0 L0,0 Z',
+    ],
+  },
+}
+
 export function Footer() {
   const [email, setEmail] = useState('')
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [subscribed, setSubscribed] = useState(false)
-  const [gradientAngle, setGradientAngle] = useState(0)
+  const [isEmailFocused, setIsEmailFocused] = useState(false)
   const navigate = useAppStore((s) => s.navigate)
 
   const scrollToTop = useCallback(() => {
@@ -59,13 +114,6 @@ export function Footer() {
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setGradientAngle((prev) => (prev + 0.3) % 360)
-    }, 50)
-    return () => clearInterval(interval)
   }, [])
 
   const handleSubscribe = useCallback(() => {
@@ -101,22 +149,128 @@ export function Footer() {
   }, [navigate])
 
   return (
-    <div className="relative mt-auto">
-      {/* Gradient mesh decorative background */}
-      <div className="gradient-mesh-2 absolute inset-0 pointer-events-none" />
-      <footer className="bg-secondary/30 relative">
-        {/* Glassmorphism top edge with gradient divider */}
+    <motion.div
+      className="relative mt-auto"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: '-50px' }}
+      variants={footerFadeInVariants}
+    >
+      {/* ──────────────────────────────────────
+          FEATURE 1: Animated Wave SVG Divider
+          ────────────────────────────────────── */}
+      <motion.div
+        className="relative w-full overflow-hidden leading-[0] -mb-px"
+        animate={{ y: [0, -3, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <svg
+          viewBox="0 0 2160 60"
+          preserveAspectRatio="none"
+          className="relative w-full h-[40px] sm:h-[50px] md:h-[60px]"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="oklch(0.45 0.1 155 / 0.15)" />
+              <stop offset="50%" stopColor="oklch(0.55 0.08 140 / 0.2)" />
+              <stop offset="100%" stopColor="oklch(0.78 0.16 70 / 0.1)" />
+            </linearGradient>
+            <linearGradient id="wave-fade-to-footer" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="oklch(0.45 0.1 155 / 0.0)" />
+              <stop offset="40%" stopColor="oklch(0.55 0.08 140 / 0.12)" />
+              <stop offset="100%" stopColor="oklch(0.95 0.02 120 / 0.9)" />
+            </linearGradient>
+          </defs>
+          <motion.path
+            fill="url(#wave-fade-to-footer)"
+            variants={waveVariants}
+            animate="animate"
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              repeatType: 'reverse',
+              ease: 'easeInOut',
+            }}
+          />
+          <motion.path
+            fill="url(#wave-gradient)"
+            animate={{
+              d: [
+                'M0,35 C240,65 480,5 720,35 C960,65 1200,5 1440,35 C1680,65 1920,5 2160,35 L2160,0 L0,0 Z',
+                'M0,35 C240,5 480,65 720,35 C960,5 1200,65 1440,35 C1680,5 1920,65 2160,35 L2160,0 L0,0 Z',
+              ],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              repeatType: 'reverse',
+              ease: 'easeInOut',
+            }}
+          />
+          {/* Decorative dots along wave */}
+          {[360, 720, 1080, 1440, 1800].map((cx, i) => (
+            <motion.circle
+              key={cx}
+              cx={cx}
+              cy={30 + (i % 2 === 0 ? 8 : -3)}
+              r="1.5"
+              fill="oklch(0.45 0.1 155)"
+              fillOpacity="0.15"
+              animate={{ opacity: [0.15, 0.4, 0.15] }}
+              transition={{ duration: 3, delay: i * 0.5, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          ))}
+        </svg>
+      </motion.div>
+
+      {/* ──────────────────────────────────────
+          FEATURE 2: Animated Gradient Mesh Background
+          ────────────────────────────────────── */}
+      <footer className="footer-glass relative footer-gradient-mesh">
+        {/* Animated gradient orbs */}
+        <div className="footer-mesh-orb footer-mesh-orb-1" />
+        {/* Floating gradient orbs */}
+        <div className="footer-orb footer-orb-1" />
+        <div className="footer-orb footer-orb-2" />
+        <div className="footer-orb footer-orb-3" />
+        <div className="footer-mesh-orb footer-mesh-orb-2" />
+        <div className="footer-mesh-orb footer-mesh-orb-3" />
+        <div className="gradient-mesh-2 absolute inset-0 pointer-events-none" />
+
+        {/* Top glassmorphism edge + gradient line */}
         <div className="absolute inset-x-0 -top-4 h-4 bg-gradient-to-b from-transparent via-background/80 to-background pointer-events-none" />
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8 relative z-10">
-          {/* Newsletter section with animated gradient */}
+          {/* Newsletter section with animated gradient shimmer border */}
           <motion.div
-            className="mb-8 p-4 sm:p-6 rounded-xl border border-primary/10 overflow-hidden relative"
-            style={{
-              background: `linear-gradient(${gradientAngle}deg, rgba(16,185,129,0.05) 0%, rgba(16,185,129,0.1) 40%, rgba(245,158,11,0.05) 100%)`,
+            className="mb-8 p-4 sm:p-6 rounded-xl overflow-hidden relative"
+            animate={{
+              background: [
+                `linear-gradient(0deg, rgba(16,185,129,0.05) 0%, rgba(16,185,129,0.1) 40%, rgba(245,158,11,0.05) 100%)`,
+                `linear-gradient(90deg, rgba(16,185,129,0.05) 0%, rgba(16,185,129,0.1) 40%, rgba(245,158,11,0.05) 100%)`,
+                `linear-gradient(180deg, rgba(16,185,129,0.05) 0%, rgba(16,185,129,0.1) 40%, rgba(245,158,11,0.05) 100%)`,
+                `linear-gradient(270deg, rgba(16,185,129,0.05) 0%, rgba(16,185,129,0.1) 40%, rgba(245,158,11,0.05) 100%)`,
+                `linear-gradient(360deg, rgba(16,185,129,0.05) 0%, rgba(16,185,129,0.1) 40%, rgba(245,158,11,0.05) 100%)`,
+              ],
             }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
           >
+            {/* Animated gradient shimmer border */}
+            <motion.div
+              className="absolute inset-[-2px] rounded-xl pointer-events-none"
+              animate={{
+                background: [
+                  `conic-gradient(from 0deg, rgba(16,185,129,0.5), rgba(245,158,11,0.4), rgba(99,102,241,0.4), rgba(236,72,153,0.4), rgba(16,185,129,0.5))`,
+                  `conic-gradient(from 90deg, rgba(16,185,129,0.5), rgba(245,158,11,0.4), rgba(99,102,241,0.4), rgba(236,72,153,0.4), rgba(16,185,129,0.5))`,
+                  `conic-gradient(from 180deg, rgba(16,185,129,0.5), rgba(245,158,11,0.4), rgba(99,102,241,0.4), rgba(236,72,153,0.4), rgba(16,185,129,0.5))`,
+                  `conic-gradient(from 270deg, rgba(16,185,129,0.5), rgba(245,158,11,0.4), rgba(99,102,241,0.4), rgba(236,72,153,0.4), rgba(16,185,129,0.5))`,
+                  `conic-gradient(from 360deg, rgba(16,185,129,0.5), rgba(245,158,11,0.4), rgba(99,102,241,0.4), rgba(236,72,153,0.4), rgba(16,185,129,0.5))`,
+                ],
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+            />
             {/* Subtle animated gradient orbs */}
             <motion.div
               className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-primary/5 blur-2xl"
@@ -128,6 +282,7 @@ export function Footer() {
               animate={{ x: [0, -15, 0], y: [0, 20, 0], scale: [1, 1.1, 1] }}
               transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
             />
+            <FloatingParticles count={10} color="oklch(0.45 0.1 155)" maxSize={3} className="opacity-30" />
 
             <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="flex-1">
@@ -137,17 +292,21 @@ export function Footer() {
                 </p>
               </div>
               <div className="flex w-full sm:w-auto gap-2">
+                <motion.div animate={isEmailFocused ? { y: [0, -2, 0], scale: [1, 1.01, 1] } : {}} transition={{ duration: 0.5, ease: 'easeInOut' }}>
                 <Input
                   type="email"
                   placeholder="seu@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-9 text-sm bg-background border-primary/20 flex-1 sm:w-52"
+                  onFocus={() => setIsEmailFocused(true)}
+                  onBlur={() => setIsEmailFocused(false)}
+                  className={`h-9 text-sm bg-background border-primary/20 flex-1 sm:w-52 transition-all duration-300 ${isEmailFocused ? 'shadow-[0_0_0_2px_oklch(0.45_0.1_155/0.3),0_0_12px_oklch(0.45_0.1_155/0.1)]' : ''}`}
                   onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
                 />
+                </motion.div>
                 <Button
                   size="sm"
-                  className="h-9 px-4 text-sm shrink-0"
+                  className="h-9 px-4 text-sm shrink-0 card-shine"
                   onClick={handleSubscribe}
                   disabled={subscribed}
                 >
@@ -169,14 +328,38 @@ export function Footer() {
             </AnimatePresence>
           </motion.div>
 
-          {/* Main Footer Columns */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          {/* Main Footer Columns — staggered reveal */}
+          <motion.div
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.15 } },
+            }}
+          >
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 25 } },
+              }}
+            >
             {/* Column 1: Brand + About */}
             <div className="col-span-2 sm:col-span-1">
-              <div className="flex items-center gap-2 mb-3">
+              {/* ──────────────────────────────────────
+                  FEATURE 3: Logo Animation on Hover
+                  ────────────────────────────────────── */}
+              <motion.div
+                className="flex items-center gap-2 mb-3 cursor-pointer"
+                variants={logoHoverVariants}
+                initial="rest"
+                whileHover="hover"
+              >
                 <img src="/domplace-logo.png" alt="DomPlace" className="h-8 w-8 rounded-lg" />
-                <span className="font-bold text-lg gradient-text">DomPlace</span>
-              </div>
+                <span className="font-bold text-lg footer-brand-shimmer">DomPlace</span>
+                {/* Animated gradient accent line under brand */}
+                <div className="footer-accent-line h-[2px] w-12 rounded-full mt-0.5" />
+              </motion.div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                 Seu marketplace local em Dom Eliseu, Pará. Conectando a comunidade local com os melhores produtos e serviços.
               </p>
@@ -205,41 +388,75 @@ export function Footer() {
                 </div>
               </div>
 
-              {/* Social Media with proper Lucide icons */}
+              {/* ──────────────────────────────────────
+                  FEATURE 4: Social Link Hover Effects
+                  ────────────────────────────────────── */}
               <div className="flex gap-2">
-                <a
+                <motion.a
                   href="https://wa.me/5591999999999"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center transition-all duration-300 hover:bg-green-600 hover:text-white hover:scale-110 hover:shadow-lg hover:shadow-green-600/20"
+                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-green-600 hover:text-white hover:shadow-lg hover:shadow-green-600/20 transition-all duration-300 relative"
                   aria-label="WhatsApp"
+                  whileHover={{ scale: 1.25, y: -4, boxShadow: '0 4px 16px oklch(0.45 0.1 155 / 0.3)' }}
+                  whileTap={{ scale: 0.85 }}
                 >
-                  <MessageCircle className="h-4 w-4" />
-                </a>
-                <a
+                  <motion.span
+                    className="absolute inset-0 rounded-full border-2 border-green-500/40 pointer-events-none"
+                    animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+                  />
+                  <MessageCircle className="h-4 w-4 relative z-10" />
+                </motion.a>
+                <motion.a
                   href="#"
-                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center transition-all duration-300 hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 hover:text-white hover:scale-110 hover:shadow-lg"
+                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 hover:text-white hover:shadow-lg transition-all duration-300 relative"
                   aria-label="Instagram"
+                  whileHover={{ scale: 1.25, y: -4, boxShadow: '0 4px 16px oklch(0.6 0.2 300 / 0.3)' }}
+                  whileTap={{ scale: 0.85 }}
                 >
-                  <Instagram className="h-4 w-4" />
-                </a>
-                <a
+                  <motion.span
+                    className="absolute inset-0 rounded-full border-2 border-purple-500/40 pointer-events-none"
+                    animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut', delay: 0.5 }}
+                  />
+                  <Instagram className="h-4 w-4 relative z-10" />
+                </motion.a>
+                <motion.a
                   href="#"
-                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center transition-all duration-300 hover:bg-blue-600 hover:text-white hover:scale-110 hover:shadow-lg hover:shadow-blue-600/20"
+                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300 relative"
                   aria-label="Facebook"
+                  whileHover={{ scale: 1.25, y: -4, boxShadow: '0 4px 16px oklch(0.5 0.15 250 / 0.3)' }}
+                  whileTap={{ scale: 0.85 }}
                 >
-                  <Facebook className="h-4 w-4" />
-                </a>
+                  <motion.span
+                    className="absolute inset-0 rounded-full border-2 border-blue-500/40 pointer-events-none"
+                    animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut', delay: 1 }}
+                  />
+                  <Facebook className="h-4 w-4 relative z-10" />
+                </motion.a>
               </div>
             </div>
-            
+
+            </motion.div>
+
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 25 } },
+              }}
+            >
             {/* Column 2: Sobre + Categorias */}
             <div>
               <h4 className="font-semibold text-sm mb-3">Sobre</h4>
               <ul className="space-y-2 mb-5">
                 {['Sobre o DomPlace', 'Central de Ajuda', 'Trabalhe Conosco', 'Blog'].map((link) => (
                   <li key={link}>
-                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors hover:translate-x-0.5 transition-transform duration-200 inline-flex items-center gap-1">
+                    {/* ──────────────────────────────────────
+                        FEATURE 6: Link Hover Underline Animation
+                        ────────────────────────────────────── */}
+                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors hover:translate-x-0.5 transition-transform duration-200 inline-flex items-center gap-1 footer-link-hover">
                       <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                       {link}
                     </button>
@@ -253,7 +470,7 @@ export function Footer() {
                   <li key={cat}>
                     <button
                       onClick={() => handleCategoryClick(cat)}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors hover:translate-x-0.5 transition-transform duration-200"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors hover:translate-x-0.5 transition-transform duration-200 footer-link-hover"
                     >
                       {cat}
                     </button>
@@ -261,7 +478,15 @@ export function Footer() {
                 ))}
               </ul>
             </div>
-            
+
+            </motion.div>
+
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 25 } },
+              }}
+            >
             {/* Column 3: Para Lojistas */}
             <div>
               <h4 className="font-semibold text-sm mb-3">Para Lojistas</h4>
@@ -270,7 +495,7 @@ export function Footer() {
                   <li key={link.label}>
                     <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group w-full">
                       <link.icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                      <span className="group-hover:translate-x-0.5 transition-transform duration-200">{link.label}</span>
+                      <span className="group-hover:translate-x-0.5 transition-transform duration-200 footer-link-hover">{link.label}</span>
                     </button>
                   </li>
                 ))}
@@ -285,26 +510,36 @@ export function Footer() {
                       className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group w-full"
                     >
                       <link.icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                      <span className="group-hover:translate-x-0.5 transition-transform duration-200">{link.label}</span>
+                      <span className="group-hover:translate-x-0.5 transition-transform duration-200 footer-link-hover">{link.label}</span>
                     </button>
                   </li>
                 ))}
               </ul>
             </div>
-            
+
+            </motion.div>
+
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 25 } },
+              }}
+            >
             {/* Column 4: Payment + App Download */}
             <div className="space-y-5">
               <div>
                 <h4 className="font-semibold text-sm mb-3">Formas de Pagamento</h4>
                 <div className="flex flex-wrap gap-2">
                   {paymentMethods.map((method) => (
-                    <div
+                    <motion.div
                       key={method.name}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary/80 text-xs font-medium text-muted-foreground border border-border/50"
+                      whileHover={{ scale: 1.05, boxShadow: '0 0 16px oklch(0.45 0.1 155 / 0.3), 0 0 4px oklch(0.45 0.1 155 / 0.15)' }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary/80 text-xs font-medium text-muted-foreground border border-border/50 cursor-default"
                     >
                       <method.icon className="h-3.5 w-3.5" />
                       {method.label}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
@@ -312,13 +547,27 @@ export function Footer() {
               {/* PWA Install Prompt */}
               <div>
                 <h4 className="font-semibold text-sm mb-3">Baixe o App</h4>
-                <Button
-                  onClick={handlePWAInstall}
-                  className="w-full flex items-center justify-center gap-2 h-10 rounded-xl bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground text-sm font-semibold btn-glow btn-shine"
+                <motion.div
+                  className="relative group"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <Download className="h-4 w-4" />
-                  Instalar App
-                </Button>
+                  {/* Animated gradient border — always visible, shimmer on hover */}
+                  <div
+                    className="absolute -inset-[2px] rounded-xl bg-gradient-to-r from-primary via-emerald-400 to-teal-500 opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      backgroundSize: '300% 100%',
+                      animation: 'pill-shimmer 3s ease-in-out infinite',
+                    }}
+                  />
+                  <Button
+                    onClick={handlePWAInstall}
+                    className="relative w-full flex items-center justify-center gap-2 h-10 rounded-xl bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground text-sm font-semibold btn-glow btn-shine"
+                  >
+                    <Download className="h-4 w-4" />
+                    Instalar App
+                  </Button>
+                </motion.div>
                 <p className="text-[11px] text-muted-foreground mt-2 text-center">
                   Acesso rápido sem abrir o navegador
                 </p>
@@ -340,52 +589,75 @@ export function Footer() {
                 </div>
               </div>
             </div>
-          </div>
-          
+            </motion.div>
+          </motion.div>
+
           {/* Marquee scroll partners/payment section */}
-          <div className="marquee-scroll py-4 -mx-4 px-4 border-y border-border/50 mb-4">
+          <div className="marquee-scroll py-4 -mx-4 px-4 border-y border-border/50 mb-4" aria-label="Métodos de pagamento aceitos">
             <div className="inline-flex items-center gap-8">
-              {[...paymentMethods, ...paymentMethods, ...paymentMethods, ...paymentMethods].map((method, i) => (
+              {paymentMethods.map((method, i) => (
                 <div
-                  key={`marquee-${i}`}
+                  key={`marquee-original-${i}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/50 text-xs font-medium text-muted-foreground/60 shrink-0 select-none"
                 >
                   <method.icon className="h-3 w-3" />
                   {method.label}
                 </div>
               ))}
+              {/* Duplicated copies for infinite scroll effect — hidden from screen readers */}
+              <div aria-hidden="true">
+                {[...paymentMethods, ...paymentMethods, ...paymentMethods].map((method, i) => (
+                  <div
+                    key={`marquee-dup-${i}`}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/50 text-xs font-medium text-muted-foreground/60 shrink-0 select-none"
+                  >
+                    <method.icon className="h-3 w-3" />
+                    {method.label}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
           <Separator className="my-4" />
-          
+
           {/* Copyright */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
             <p>DomPlace © {new Date().getFullYear()} — Todos os direitos reservados.</p>
+            {/* ──────────────────────────────────────
+                FEATURE 7: Heartbeat "Feito com ❤️" Animation
+                ────────────────────────────────────── */}
             <p className="flex items-center gap-1.5">
-              Feito com <Heart className="h-3 w-3 text-red-500 fill-red-500" /> em Dom Eliseu, PA
+              Feito com{' '}
+              <span className="footer-heartbeat">
+                <Heart className="h-3 w-3 text-red-500 fill-red-500" />
+              </span>{' '}
+              em Dom Eliseu, PA
             </p>
           </div>
         </div>
 
-        {/* Back to top button */}
+        {/* ──────────────────────────────────────
+            FEATURE 5: Scroll-to-top Animated Button
+            ────────────────────────────────────── */}
         <AnimatePresence>
           {showBackToTop && (
             <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
+              variants={backToTopVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={scrollToTop}
-              className="fixed bottom-24 md:bottom-6 right-4 z-40 h-10 w-10 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary/90 transition-colors"
+              className="fixed bottom-24 md:bottom-6 right-4 z-40 h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors footer-scroll-top"
               aria-label="Voltar ao topo"
             >
-              <ArrowUp className="h-5 w-5" />
+              <ArrowUp className="h-5 w-5 footer-chevron-bounce" />
             </motion.button>
           )}
         </AnimatePresence>
       </footer>
-    </div>
+    </motion.div>
   )
 }

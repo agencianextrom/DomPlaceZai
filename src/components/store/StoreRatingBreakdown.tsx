@@ -19,6 +19,32 @@ interface StoreRatingBreakdownProps {
   ratingDistribution?: RatingDistributionItem[]
 }
 
+// Stagger container for bars
+const barStaggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.3,
+    },
+  },
+}
+
+// Individual bar entrance variant
+const barEntranceVariant = {
+  hidden: { opacity: 0, scaleX: 0 },
+  visible: {
+    opacity: 1,
+    scaleX: 1,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 200,
+      damping: 20,
+    },
+  },
+}
+
 function AnimatedCounter({ target, duration = 1.2 }: { target: number; duration?: number }) {
   const [count, setCount] = useState(0)
   const [isDone, setIsDone] = useState(false)
@@ -100,7 +126,7 @@ export function StoreRatingBreakdown({ rating, totalReviews, storeName, ratingDi
                   <motion.div
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 20 }}
+                    transition={{ delay: 0.2, type: 'spring' as const, stiffness: 300, damping: 20 }}
                     className="relative"
                   >
                     <span className="text-5xl font-black bg-gradient-to-br from-amber-500 to-orange-600 bg-clip-text text-transparent">
@@ -109,10 +135,23 @@ export function StoreRatingBreakdown({ rating, totalReviews, storeName, ratingDi
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ delay: 0.4, type: 'spring' }}
+                      transition={{ delay: 0.4, type: 'spring' as const }}
                       className="absolute -top-1 -right-3"
                     >
-                      <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                      {/* Star with glow animation */}
+                      <motion.span
+                        className="srb-star-glow inline-block"
+                        animate={{
+                          filter: [
+                            'drop-shadow(0 0 2px rgba(245,158,11,0.4))',
+                            'drop-shadow(0 0 8px rgba(245,158,11,0.8))',
+                            'drop-shadow(0 0 2px rgba(245,158,11,0.4))',
+                          ],
+                        }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                      </motion.span>
                     </motion.div>
                   </motion.div>
                 </div>
@@ -124,27 +163,64 @@ export function StoreRatingBreakdown({ rating, totalReviews, storeName, ratingDi
                 </p>
               </div>
 
-              {/* Right - Bar chart */}
+              {/* Right - Bar chart with staggered entrance */}
               <div className="flex-1 min-w-0 space-y-2.5">
-                {distribution.length > 0 ? distribution.map((item) => (
-                  <div key={item.stars} className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 w-8 shrink-0">
-                      <span className="text-xs font-bold text-foreground">{item.stars}</span>
-                      <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                    </div>
-                    <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden">
+                {distribution.length > 0 ? (
+                  <motion.div
+                    className="space-y-2.5"
+                    variants={barStaggerContainer}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {distribution.map((item) => (
                       <motion.div
-                        className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500"
-                        initial={{ width: 0 }}
-                        animate={{ width: animatedIn ? `${item.percentage}%` : 0 }}
-                        transition={{ delay: 0.3 + (5 - item.stars) * 0.12, duration: 0.7, ease: 'easeOut' }}
-                      />
-                    </div>
-                    <span className="text-[10px] text-muted-foreground w-9 text-right shrink-0 tabular-nums">
-                      {item.percentage}%
-                    </span>
-                  </div>
-                )) : (
+                        key={item.stars}
+                        variants={barEntranceVariant}
+                        className="flex items-center gap-2 group/row relative"
+                      >
+                        <div className="flex items-center gap-1 w-8 shrink-0">
+                          <span className="text-xs font-bold text-foreground">{item.stars}</span>
+                          <motion.span
+                            className="srb-star-glow inline-block"
+                            animate={{
+                              filter: [
+                                'drop-shadow(0 0 1px rgba(245,158,11,0.3))',
+                                'drop-shadow(0 0 4px rgba(245,158,11,0.6))',
+                                'drop-shadow(0 0 1px rgba(245,158,11,0.3))',
+                              ],
+                            }}
+                            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: (5 - item.stars) * 0.3 }}
+                          >
+                            <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                          </motion.span>
+                        </div>
+                        <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden">
+                          <motion.div
+                            className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 srb-bar-fill relative overflow-hidden"
+                            initial={{ width: 0 }}
+                            animate={{ width: animatedIn ? `${item.percentage}%` : 0 }}
+                            transition={{ delay: 0.3 + (5 - item.stars) * 0.1, duration: 0.7, ease: 'easeOut' }}
+                          >
+                            {/* Shimmer overlay on the fill bar */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent srb-bar-entrance" />
+                          </motion.div>
+                        </div>
+                        <span className="text-[10px] text-muted-foreground w-9 text-right shrink-0 tabular-nums">
+                          {item.percentage}%
+                        </span>
+
+                        {/* Tooltip on hover showing exact count */}
+                        <motion.div
+                          className="srb-tooltip absolute -top-7 left-1/2 -translate-x-1/2 bg-foreground text-background text-[9px] font-semibold px-2 py-0.5 rounded-md opacity-0 group-hover/row:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10"
+                          initial={{ y: 4, opacity: 0 }}
+                          whileHover={{ y: 0, opacity: 1 }}
+                        >
+                          {item.count} avaliações
+                        </motion.div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
                   <p className="text-xs text-muted-foreground text-center py-4">
                     Nenhuma avaliação ainda
                   </p>
@@ -203,14 +279,16 @@ export function StoreRatingBreakdown({ rating, totalReviews, storeName, ratingDi
                     <sentiment.icon className={`h-4 w-4 mx-auto mb-1 ${sentiment.color}`} />
                     <p className="text-lg font-bold">{sentiment.value}%</p>
                     <p className="text-[9px] text-muted-foreground">{sentiment.label}</p>
-                    {/* Mini progress bar */}
+                    {/* Mini progress bar with shimmer */}
                     <div className="mt-1.5 h-1 bg-muted/50 rounded-full overflow-hidden">
                       <motion.div
-                        className={`h-full rounded-full bg-gradient-to-r ${sentiment.barColor}`}
+                        className={`h-full rounded-full bg-gradient-to-r ${sentiment.barColor} srb-bar-fill relative overflow-hidden`}
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.min(sentiment.value, 100)}%` }}
                         transition={{ delay: 0.8 + idx * 0.1, duration: 0.8, ease: 'easeOut' }}
-                      />
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent srb-bar-entrance" />
+                      </motion.div>
                     </div>
                   </motion.div>
                 ))}

@@ -161,7 +161,7 @@ function QuickAddContent({ product }: { product: ProductData }) {
                   onClick={() => setSelectedVariation(v)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                     isSelected
-                      ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                      ? 'bg-primary text-primary-foreground border-primary shadow-sm r32-variant-glow'
                       : 'bg-card text-muted-foreground border-border hover:border-primary/30'
                   }`}
                 >
@@ -248,7 +248,7 @@ function QuickAddContent({ product }: { product: ProductData }) {
           exit={{ opacity: 0, y: -10 }}
         >
           {added ? (
-            <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-base font-semibold gap-2">
+            <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-base font-semibold gap-2 r32-added-bounce">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -261,7 +261,7 @@ function QuickAddContent({ product }: { product: ProductData }) {
           ) : (
             <Button
               onClick={handleAddToCart}
-              className="w-full h-12 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground hover:from-primary/90 hover:to-emerald-600/90 rounded-xl text-base font-semibold btn-glow gap-2"
+              className="w-full h-12 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground hover:from-primary/90 hover:to-emerald-600/90 rounded-xl text-base font-semibold btn-glow gap-2 r32-quick-pop"
             >
               <motion.div
                 animate={cartBounce ? { y: [0, -8, 0], rotate: [0, -15, 0] } : {}}
@@ -301,7 +301,7 @@ export function ProductQuickAdd({ editMode = false, initialQuantity = 1 }: Produ
 
   return (
     <Drawer open={isQuickAddOpen} onOpenChange={(open) => { if (!open) closeQuickAdd() }}>
-      <DrawerContent className="max-h-[85vh]">
+      <DrawerContent className="max-h-[85vh] r32-overlay-fade">
         <DrawerHeader className="sr-only">
           <DrawerTitle>Adicionar {product?.name}</DrawerTitle>
           <DrawerDescription>Selecione quantidade e variações</DrawerDescription>

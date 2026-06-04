@@ -35,6 +35,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
   const [reviewText, setReviewText] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [textareaFocused, setTextareaFocused] = useState(false)
 
   // Photo upload state
   const [photos, setPhotos] = useState<{ file: File; previewUrl: string; uploadedUrl: string | null; progress: number; uploading: boolean; error: string | null }[]>([])
@@ -135,6 +136,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
     if (!canSubmit) return
     setIsSubmitting(true)
     setUploadingPhotos(true)
+    setSubmitted(false)
 
     // Wait for any pending uploads
     const allUploaded = photos.every(p => p.uploadedUrl !== null || !p.uploading)
@@ -177,6 +179,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
       setRatings({})
       setHoverRatings({})
       setReviewText('')
+      setTextareaFocused(false)
       // Clean up preview URLs
       photos.forEach(p => URL.revokeObjectURL(p.previewUrl))
       setPhotos([])
@@ -195,60 +198,132 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
         >
-          {/* Backdrop */}
+          {/* Backdrop with glassmorphism */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={handleClose}
           />
 
           {/* Modal */}
           <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="relative bg-background rounded-t-2xl sm:rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
+            initial={{ y: 100, opacity: 0, scale: 0.9 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 100, opacity: 0, scale: 0.9 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+            className="relative bg-background/80 backdrop-blur-xl rounded-t-2xl sm:rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-border/30 r29-modal-enter"
           >
             {submitted ? (
-              /* Success State */
+              /* Success State with confetti */
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-8 text-center"
+                className="p-8 text-center relative overflow-hidden"
               >
+                {/* Confetti burst */}
+                <div className="absolute inset-0 pointer-events-none">
+                  {Array.from({ length: 20 }).map((_, i) => {
+                    const colors = ['#f59e0b', '#ef4444', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
+                    const startX = 50 + (Math.random() - 0.5) * 20
+                    const angle = (Math.PI * 2 * i) / 20
+                    const distance = 60 + Math.random() * 80
+                    const endX = startX + Math.cos(angle) * distance
+                    const endY = 50 + Math.sin(angle) * distance
+                    return (
+                      <motion.div
+                        key={i}
+                        className="absolute rounded-sm"
+                        style={{
+                          width: `${4 + Math.random() * 4}px`,
+                          height: `${4 + Math.random() * 6}px`,
+                          backgroundColor: colors[i % colors.length],
+                          left: `${startX}%`,
+                          top: '50%',
+                        }}
+                        initial={{ x: 0, y: 0, scale: 0, opacity: 1, rotate: 0 }}
+                        animate={{
+                          x: `${endX - startX}%`,
+                          y: `${endY - 50}%`,
+                          scale: [0, 1.2, 0.8, 0],
+                          opacity: [0, 1, 1, 0],
+                          rotate: (Math.random() - 0.5) * 720,
+                        }}
+                        transition={{
+                          duration: 1.2,
+                          delay: 0.1 + i * 0.03,
+                          ease: [0, 0, 0.2, 1],
+                        }}
+                      />
+                    )
+                  })}
+                </div>
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                  className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto mb-4 shadow-lg"
+                  transition={{ type: 'spring' as const, stiffness: 200, damping: 15 }}
+                  className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto mb-4 shadow-lg relative z-10"
                 >
-                  <Check className="h-10 w-10 text-white" strokeWidth={3} />
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 5, 0] }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                  >
+                    <Check className="h-10 w-10 text-white" strokeWidth={3} />
+                  </motion.div>
                 </motion.div>
-                <h3 className="text-xl font-bold mb-2">Avaliação Enviada! ⭐</h3>
-                <p className="text-sm text-muted-foreground max-w-xs mx-auto mb-2">
+                <motion.h3
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-xl font-bold mb-2 relative z-10"
+                >
+                  Avaliação Enviada! ⭐
+                </motion.h3>
+                <motion.p
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.35 }}
+                  className="text-sm text-muted-foreground max-w-xs mx-auto mb-2 relative z-10"
+                >
                   Obrigado por avaliar seu pedido #{order.orderNumber}. Sua opinião ajuda a melhorar nossos serviços!
-                </p>
-                {/* Stars display */}
-                <div className="flex items-center justify-center gap-1 mt-3 mb-6">
+                </motion.p>
+                {/* Stars display with golden glow trail */}
+                <motion.div
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="flex items-center justify-center gap-1 mt-3 mb-6 relative z-10"
+                >
                   {[1, 2, 3, 4, 5].map((s) => (
                     <motion.div
                       key={s}
                       initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.3 + s * 0.1, type: 'spring' }}
+                      animate={{
+                        scale: 1,
+                        opacity: 1,
+                        filter: s <= overallRating
+                          ? ['drop-shadow(0 0 0px oklch(0.80 0.17 85 / 0))', 'drop-shadow(0 0 8px oklch(0.80 0.17 85 / 0.7))', 'drop-shadow(0 0 0px oklch(0.80 0.17 85 / 0))']
+                          : 'drop-shadow(0 0 0px oklch(0 0 0 / 0))',
+                      }}
+                      transition={{ delay: 0.5 + s * 0.1, type: 'spring' as const }}
                     >
                       <Star
                         className={`h-8 w-8 ${s <= overallRating ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground/30'}`}
                       />
                     </motion.div>
                   ))}
-                </div>
-                <Button className="w-full h-11" onClick={handleClose}>
-                  Fechar
-                </Button>
+                </motion.div>
+                <motion.div
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="relative z-10"
+                >
+                  <Button className="w-full h-11" onClick={handleClose}>
+                    Fechar
+                  </Button>
+                </motion.div>
               </motion.div>
             ) : (
               /* Rating Form */
@@ -284,13 +359,35 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                     key={overallRating}
                     initial={{ scale: 1.3 }}
                     animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
+                    transition={{ type: 'spring' as const, stiffness: 300 }}
                   >
                     {overallRating || '–'}
                   </motion.p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {overallRating >= 4 ? 'Excelente!' : overallRating >= 3 ? 'Bom' : overallRating > 0 ? 'Regular' : 'Avalie abaixo'}
                   </p>
+                </div>
+
+                {/* Emoji reaction row */}
+                <div className="flex items-center justify-center gap-3 mb-5">
+                  {['😡', '😕', '😐', '😊', '🤩'].map((emoji, idx) => (
+                    <motion.button
+                      key={emoji}
+                      whileTap={{ scale: 0.7 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 + idx * 0.06, type: 'spring' as const, stiffness: 400, damping: 15 }}
+                      onClick={() => {
+                        const rating = idx + 1
+                        ratingCategories.forEach(cat => handleSetRating(cat.id, rating))
+                      }}
+                      className="text-2xl hover:scale-125 active:scale-90 transition-transform cursor-pointer emoji-bounce"
+                      style={{ animationDelay: `${idx * 0.1}s` }}
+                      aria-label={`Reação ${emoji}`}
+                    >
+                      {emoji}
+                    </motion.button>
+                  ))}
                 </div>
 
                 {/* Category Ratings */}
@@ -332,7 +429,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                             <motion.button
                               key={star}
                               whileHover={{ scale: 1.2 }}
-                              whileTap={{ scale: 0.85 }}
+                              whileTap={{ scale: 0.9 }}
                               onMouseEnter={() => setHoverRatings(prev => ({ ...prev, [category.id]: star }))}
                               onMouseLeave={() => setHoverRatings(prev => ({ ...prev, [category.id]: 0 }))}
                               onClick={() => handleSetRating(category.id, star)}
@@ -343,13 +440,16 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                                 animate={{
                                   scale: star <= displayRating ? 1 : 0.85,
                                   opacity: star <= displayRating ? 1 : 0.3,
+                                  filter: star <= displayRating
+                                    ? ['drop-shadow(0 0 0px rgba(234, 179, 8, 0))', 'drop-shadow(0 0 6px rgba(234, 179, 8, 0.6))', 'drop-shadow(0 0 0px rgba(234, 179, 8, 0))']
+                                    : 'drop-shadow(0 0 0px rgba(0, 0, 0, 0))',
                                 }}
-                                transition={{ duration: 0.15 }}
+                                transition={{ duration: 0.2, ease: 'easeOut' }}
                               >
                                 <Star
                                   className={`h-8 w-8 transition-colors ${
                                     star <= displayRating
-                                      ? 'text-amber-500 fill-amber-500'
+                                      ? 'text-amber-500 fill-amber-500 r29-star-glow'
                                       : 'text-muted-foreground/30'
                                   }`}
                                 />
@@ -367,13 +467,22 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                 {/* Text review */}
                 <div>
                   <label className="font-medium text-sm mb-2 block">Comentário (opcional)</label>
-                  <Textarea
-                    placeholder="Conte como foi a sua experiência com esta loja..."
-                    value={reviewText}
-                    onChange={(e) => setReviewText(e.target.value.slice(0, MAX_CHARS))}
-                    rows={3}
-                    className="resize-none text-sm"
-                  />
+                  <div className="relative">
+                    <motion.div
+                      className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-amber-400/40 via-orange-400/40 to-amber-400/40 pointer-events-none"
+                      animate={{ opacity: textareaFocused ? 1 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                    <Textarea
+                      placeholder="Conte como foi a sua experiência com esta loja..."
+                      value={reviewText}
+                      onChange={(e) => setReviewText(e.target.value.slice(0, MAX_CHARS))}
+                      rows={3}
+                      className="resize-none text-sm focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 transition-shadow relative z-10"
+                      onFocus={() => setTextareaFocused(true)}
+                      onBlur={() => setTextareaFocused(false)}
+                    />
+                  </div>
                   <div className="flex items-center justify-between mt-1">
                     <p className="text-[10px] text-muted-foreground">
                       Seu comentário ajuda outros compradores
@@ -397,9 +506,10 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                         {photos.map((photo, idx) => (
                           <motion.div
                             key={photo.previewUrl}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
+                            initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
+                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                            exit={{ opacity: 0, scale: 0.5, y: 20 }}
+                            transition={{ type: 'spring' as const, stiffness: 350, damping: 22 }}
                             className="relative h-20 w-20 rounded-xl overflow-hidden border-2 border-border shrink-0"
                           >
                             <img
@@ -461,7 +571,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                   {photos.length === 0 && (
                     <motion.button
                       whileHover={{ borderColor: 'oklch(0.45 0.1 155)' }}
-                      className="w-full h-20 border-2 border-dashed border-border rounded-xl flex items-center justify-center gap-2 text-muted-foreground hover:bg-muted/30 transition-colors"
+                      className="w-full h-20 border-2 border-dashed border-border rounded-xl flex items-center justify-center gap-2 text-muted-foreground hover:bg-muted/30 transition-colors r29-photo-upload"
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <ImageIcon className="h-5 w-5" />
@@ -482,7 +592,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
 
                 {/* Submit */}
                 <Button
-                  className="w-full h-12 mt-5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold btn-glow gap-2"
+                  className="w-full h-12 mt-5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold btn-glow gap-2 relative overflow-hidden quick-view-shimmer r29-submit-shimmer"
                   onClick={handleSubmit}
                   disabled={!canSubmit || isSubmitting || uploadingPhotos}
                 >

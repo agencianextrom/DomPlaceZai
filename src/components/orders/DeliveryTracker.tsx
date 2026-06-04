@@ -1,12 +1,14 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { MapPin, Phone, MessageCircle, Clock, CheckCircle, Package, Truck, ChefHat, Star, WifiOff, Loader2 } from 'lucide-react'
+import { MapPin, Phone, MessageCircle, Clock, CheckCircle, Package, Truck, ChefHat, Star, WifiOff, Loader2, Check } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDeliveryTracking } from '@/hooks/useDeliveryTracking'
+import { OrderStatusTimeline } from './OrderStatusTimeline'
+import { DeliveryMapTracker } from './DeliveryMapTracker'
 
 interface DeliveryTrackerProps {
   orderNumber: string
@@ -32,10 +34,10 @@ interface StatusHistoryEntry {
 }
 
 const steps = [
-  { id: 'confirmed', label: 'Pedido Confirmado', icon: CheckCircle, desc: 'Seu pedido foi recebido e confirmado pela loja.' },
-  { id: 'preparing', label: 'Preparando', icon: ChefHat, desc: 'A loja está preparando seus itens com carinho.' },
-  { id: 'delivering', label: 'Saiu para Entrega', icon: Truck, desc: 'O entregador está a caminho do seu endereço.' },
-  { id: 'delivered', label: 'Entregue', icon: Package, desc: 'Pedido entregue com sucesso! Bom apetite!' },
+  { id: 'confirmed', label: 'Pedido Confirmado', icon: CheckCircle, desc: 'Seu pedido foi recebido e confirmado pela loja.', estLabel: '~2 min' },
+  { id: 'preparing', label: 'Preparando', icon: ChefHat, desc: 'A loja está preparando seus itens com carinho.', estLabel: '~15 min' },
+  { id: 'delivering', label: 'Saiu para Entrega', icon: Truck, desc: 'O entregador está a caminho do seu endereço.', estLabel: '~20 min' },
+  { id: 'delivered', label: 'Entregue', icon: Package, desc: 'Pedido entregue com sucesso! Bom apetite!', estLabel: '' },
 ]
 
 // Map server statuses to step indices
@@ -266,14 +268,41 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
           </div>
         </div>
 
-        {/* ETA overlay */}
-        <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm rounded-xl px-3 py-2 text-white">
+        {/* ETA overlay with countdown animation */}
+        <motion.div
+          className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm rounded-xl px-3 py-2 text-white"
+          animate={{ scale: [1, 1.02, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        >
           <div className="flex items-center gap-1.5 text-xs opacity-80">
-            <Clock className="h-3 w-3" />
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+            >
+              <Clock className="h-3 w-3" />
+            </motion.div>
             Previsão de entrega
           </div>
-          <p className="font-bold text-sm">{effectiveEtaText}</p>
-        </div>
+          <motion.p
+            className="font-bold text-sm"
+            key={effectiveEtaText}
+            initial={{ y: 8, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+          >
+            {effectiveEtaText}
+          </motion.p>
+          <motion.div
+            className="mt-1 h-1 bg-white/20 rounded-full overflow-hidden"
+          >
+            <motion.div
+              className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full"
+              animate={{ width: isDelivered ? '100%' : `${progressPercent}%` }}
+              transition={{ duration: 1.5, ease: 'easeInOut' }}
+              initial={{ width: '0%' }}
+            />
+          </motion.div>
+        </motion.div>
 
         {/* Connection status indicator */}
         <div className="absolute top-3 right-3 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center gap-1.5">
@@ -296,141 +325,187 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
         </div>
       </div>
 
-      {/* Driver info */}
-      <Card className="border-primary/20">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-lg font-bold text-white shadow-md">
-                {driver.initials}
-              </div>
-              <div className={`absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full border-2 border-background flex items-center justify-center ${hasDriver ? 'bg-emerald-500' : 'bg-gray-400'}`}>
-                <span className="text-[7px] text-white font-bold">{hasDriver ? '🟢' : '⚫'}</span>
-              </div>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <p className="font-bold text-sm">{driver.name}</p>
-                {driver.rating > 0 && (
-                  <div className="flex items-center gap-0.5">
-                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                    <span className="text-xs font-medium">{driver.rating}</span>
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                {driver.totalDeliveries > 0 && <span>{driver.totalDeliveries} entregas</span>}
-                {driver.vehicle && (
-                  <>
-                    <span>•</span>
-                    <span>{driver.vehicle}</span>
-                  </>
-                )}
-                {!hasDriver && <span className="italic">Aguardando atribuicao de entregador</span>}
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Button size="icon" variant="outline" className="h-10 w-10 rounded-full" aria-label="Ligar para entregador" disabled={!hasDriver}>
-                <Phone className="h-4 w-4 text-primary" />
-              </Button>
-              <Button size="icon" className="h-10 w-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white" aria-label="Chat com entregador" disabled={!hasDriver}>
-                <MessageCircle className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Animated route line — gradient dashed line that draws as steps complete */}
+      <div className="relative mx-4 -mt-1">
+        <svg width="100%" height="40" viewBox="0 0 400 40" preserveAspectRatio="none" className="overflow-visible">
+          {/* Background dashed track */}
+          <line x1="40" y1="20" x2="360" y2="20" strokeDasharray="8 6" strokeWidth="2" className="stroke-border/60" />
+          {/* Store dot */}
+          <circle cx="40" cy="20" r="6" className="fill-primary" />
+          <circle cx="40" cy="20" r="3" className="fill-white" />
+          {/* Destination dot */}
+          <circle cx="360" cy="20" r="6" className="fill-red-500" />
+          <circle cx="360" cy="20" r="3" className="fill-white" />
+          {/* Animated progress dashed line */}
+          <motion.line
+            x1="40" y1="20"
+            x2="40"
+            y2="20"
+            strokeDasharray="8 6"
+            strokeWidth="2.5"
+            className="stroke-emerald-500"
+            animate={{
+              x2: 40 + (320 * progressPercent / 100),
+            }}
+            transition={{ duration: 1.5, ease: 'easeInOut' }}
+          />
+          {/* Animated vehicle marker */}
+          <motion.g
+            animate={{
+              cx: 40 + (320 * progressPercent / 100),
+            }}
+            transition={{ duration: 1.5, ease: 'easeInOut' }}
+          >
+            <motion.circle
+              cx="40" cy="20" r="10"
+              className="fill-amber-500"
+              animate={{ cx: 40 + (320 * progressPercent / 100) }}
+              transition={{ duration: 1.5, ease: 'easeInOut' }}
+            />
+            <motion.circle
+              cx="40" cy="20" r="6"
+              className="fill-amber-400"
+              animate={{ cx: 40 + (320 * progressPercent / 100) }}
+              transition={{ duration: 1.5, ease: 'easeInOut' }}
+            />
+          </motion.g>
+        </svg>
+      </div>
 
-      {/* Timeline */}
-      <Card>
-        <CardContent className="p-4">
+      {/* Map Tracker — visual delivery map with animated route */}
+      <DeliveryMapTracker
+        orderStatus={isConnected && tracking ? orderStatus : status}
+        storeAddress={storeName}
+        deliveryAddress="Casa — Rua das Flores, 123"
+        storeName={storeName}
+        eta={effectiveEtaText}
+        driverName={hasDriver ? driver.name : undefined}
+        progress={progressPercent}
+      />
+
+      {/* Driver info — enhanced glassmorphism card with gradient border */}
+      <motion.div
+        className="relative rounded-xl p-[1px]"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/60 via-emerald-500/40 to-cyan-500/60 animate-[spin_6s_linear_infinite] blur-[1px]" style={{ margin: -1 }} />
+        <Card className="border-0 rounded-[10px] overflow-hidden bg-card/70 backdrop-blur-2xl shadow-lg shadow-primary/20 ring-2 ring-primary/30 r28-avatar-pulse">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <motion.div
+                className="relative"
+                whileHover={{ scale: 1.08 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+              >
+                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center text-lg font-bold text-white shadow-lg shadow-primary/30">
+                  {driver.initials}
+                </div>
+                {/* Online status indicator with pulse rings */}
+                <div className={`absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full border-2 border-background/80 flex items-center justify-center ${hasDriver ? 'bg-emerald-500' : 'bg-gray-400'}`}>
+                  {hasDriver && (
+                    <>
+                      <motion.span
+                        className="h-2 w-2 rounded-full bg-white"
+                        animate={{ scale: [1, 1.3, 1] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      />
+                      <motion.span
+                        className="absolute inset-0 rounded-full border-2 border-emerald-400"
+                        animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
+                        transition={{ duration: 1.8, repeat: Infinity }}
+                      />
+                    </>
+                  )}
+                </div>
+              </motion.div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="font-bold text-sm">{driver.name}</p>
+                  {driver.rating > 0 && (
+                    <div className="flex items-center gap-0.5 bg-amber-50 dark:bg-amber-900/20 rounded-full px-1.5 py-0.5">
+                      <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                      <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400">{driver.rating}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                  {driver.totalDeliveries > 0 && <span>{driver.totalDeliveries} entregas</span>}
+                  {driver.vehicle && (
+                    <>
+                      <span className="text-border">•</span>
+                      <span>{driver.vehicle}</span>
+                    </>
+                  )}
+                  {!hasDriver && <span className="italic">Aguardando atribuicao de entregador</span>}
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <motion.div whileTap={{ scale: 0.9 }}>
+                  <Button size="icon" variant="outline" className="h-10 w-10 rounded-full border-primary/20 hover:border-primary/40 r28-contact-glow" aria-label="Ligar para entregador" disabled={!hasDriver}>
+                    <Phone className="h-4 w-4 text-primary" />
+                  </Button>
+                </motion.div>
+                <motion.div whileTap={{ scale: 0.9 }}>
+                  <Button size="icon" className="h-10 w-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/30 r28-contact-glow" aria-label="Chat com entregador" disabled={!hasDriver}>
+                    <MessageCircle className="h-4 w-4" />
+                  </Button>
+                </motion.div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Timeline — enhanced with animated pulse on current step */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <Card className="r28-step-ring">
+          <CardContent className="p-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-sm">Acompanhamento em tempo real</h3>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px] font-mono">
+              <Badge variant="outline" className="text-[10px] font-mono r28-eta-tick">
                 {formatElapsed(elapsed)}
               </Badge>
               {isConnected && tracking && (
-                <Badge variant="secondary" className="text-[10px] bg-primary/10 text-primary border-primary/20">
-                  {progressPercent}%
-                </Badge>
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                >
+                  <Badge variant="secondary" className="text-[10px] bg-primary/10 text-primary border-primary/20">
+                    {progressPercent}%
+                  </Badge>
+                </motion.div>
               )}
             </div>
           </div>
 
-          <div className="space-y-0">
-            {steps.map((step, idx) => {
-              const isActive = idx <= effectiveStep
-              const isCurrent = idx === effectiveStep
-              const StepIcon = step.icon
-              const stepTime = getStepTime(step.id, idx)
+          {/* Gradient progress line */}
+          <motion.div
+            className="absolute inset-x-0 top-1/2 h-0.5 bg-gradient-to-r from-primary/40 via-emerald-400/60 to-primary/40"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: effectiveStep / (steps.length - 1) }}
+            transition={{ duration: 1.5, ease: 'easeInOut' }}
+          />
 
-              return (
-                <div key={step.id} className="flex gap-3">
-                  <div className="flex flex-col items-center">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={`${step.id}-${isActive}`}
-                        initial={{ scale: 0.8 }}
-                        animate={{ scale: 1 }}
-                        className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 ${
-                          isActive
-                            ? 'bg-primary text-primary-foreground shadow-md'
-                            : 'bg-muted text-muted-foreground'
-                        } ${isCurrent ? 'ring-4 ring-primary/20' : ''}`}
-                      >
-                        {isCurrent ? (
-                          <motion.div
-                            animate={{ scale: [1, 1.1, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                          >
-                            <StepIcon className="h-4 w-4" />
-                          </motion.div>
-                        ) : (
-                          <StepIcon className="h-4 w-4" />
-                        )}
-                      </motion.div>
-                    </AnimatePresence>
-                    {idx < steps.length - 1 && (
-                      <motion.div
-                        className="w-0.5 flex-1 min-h-[24px]"
-                        initial={{ backgroundColor: 'var(--color-muted)' }}
-                        animate={{ backgroundColor: isActive ? 'var(--color-primary)' : 'var(--color-muted)' }}
-                        transition={{ duration: 0.5 }}
-                      />
-                    )}
-                  </div>
-
-                  <div className={`pb-4 ${idx === steps.length - 1 ? 'pb-0' : ''}`}>
-                    <p className={`text-sm font-medium ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
-                      {step.label}
-                    </p>
-                    {isActive && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-xs text-muted-foreground mt-0.5"
-                      >
-                        {step.desc}
-                      </motion.p>
-                    )}
-                    {isActive && stepTime && (
-                      <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="text-[10px] text-muted-foreground/70 mt-0.5"
-                      >
-                        {stepTime}
-                      </motion.p>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+          <OrderStatusTimeline
+            steps={steps.map((step, idx) => ({
+              label: step.label,
+              desc: step.desc,
+              estLabel: step.estLabel,
+              status: idx < effectiveStep ? 'completed' as const : idx === effectiveStep ? 'current' as const : 'pending' as const,
+              timestamp: getStepTime(step.id, idx) || undefined,
+              icon: step.id,
+            }))}
+          />
         </CardContent>
-      </Card>
+        </Card>
+      </motion.div>
     </div>
   )
 }

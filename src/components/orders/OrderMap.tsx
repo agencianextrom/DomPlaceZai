@@ -19,10 +19,12 @@ interface OrderMapProps {
 }
 
 // Fallback driver data used when no tracking connection is available
+// TODO: Phone should come from store/driver settings
+const WHATSAPP_SUPPORT_PHONE = '919998887766'
 const fallbackDriver = {
   name: 'Carlos Entregas',
   initials: 'CE',
-  phone: '919998887766',
+  phone: WHATSAPP_SUPPORT_PHONE,
   rating: 4.8,
   totalDeliveries: 1250,
   vehicle: 'Moto Honda CG 150',

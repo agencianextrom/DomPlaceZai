@@ -13,6 +13,8 @@ import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
+import { PaymentTracker } from './PaymentTracker'
+import { TaxBreakdown } from './TaxBreakdown'
 
 const paymentMethods = [
   { id: 'PIX', label: 'Pix', icon: QrCode, desc: 'Pagamento instantâneo', color: 'bg-teal-50 dark:bg-teal-900/10 border-teal-200 dark:border-teal-800/30' },
@@ -28,12 +30,13 @@ const deliveryTimeOptions = [
   { id: 'schedule', label: 'Agendar', desc: 'Escolher data e hora', icon: Calendar },
 ]
 
-type CheckoutStep = 'address' | 'payment' | 'confirmation'
+type CheckoutStep = 'cart' | 'address' | 'payment' | 'confirmation'
 
 const stepLabels = [
-  { id: 'address' as CheckoutStep, num: 1, title: 'Endereço' },
-  { id: 'payment' as CheckoutStep, num: 2, title: 'Pagamento' },
-  { id: 'confirmation' as CheckoutStep, num: 3, title: 'Confirmação' },
+  { id: 'cart' as CheckoutStep, num: 0, title: 'Carrinho', icon: '🛒' },
+  { id: 'address' as CheckoutStep, num: 1, title: 'Endereço', icon: '📍' },
+  { id: 'payment' as CheckoutStep, num: 2, title: 'Pagamento', icon: '💳' },
+  { id: 'confirmation' as CheckoutStep, num: 3, title: 'Confirmação', icon: '✅' },
 ]
 
 // Confetti particles configuration
@@ -92,7 +95,7 @@ function ConfettiBurst() {
 
 export function CheckoutView() {
   const { goBack, navigate, getCartGroupedByStore, getCartTotal, getCartItemCount, clearCart, currentUser, selectOrder } = useAppStore()
-  const [step, setStep] = useState<CheckoutStep>('address')
+  const [step, setStep] = useState<CheckoutStep>('address') // Start at address (cart is implicit)
   const [payment, setPayment] = useState('PIX')
   const [deliveryType, setDeliveryType] = useState<'DELIVERY' | 'PICKUP'>('DELIVERY')
   const [deliveryTime, setDeliveryTime] = useState('today-30')
@@ -169,6 +172,8 @@ export function CheckoutView() {
   const freteDiscount = appliedCoupon === 'FRETE5' ? 5.00 : 0
   const total = Math.max(0, subtotal + deliveryFees - discount - freteDiscount)
 
+  // Map current step to stepLabels index (cart=0, address=1, payment=2, confirmation=3)
+  // Since we start at 'address', offset by +1
   const currentStepIndex = stepLabels.findIndex(s => s.id === step)
 
   const handleApplyCoupon = () => {
@@ -335,13 +340,13 @@ export function CheckoutView() {
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-            className="w-28 h-28 rounded-full bg-gradient-to-br from-primary via-emerald-500 to-teal-500 flex items-center justify-center mb-6 shadow-neon-emerald relative z-10 ripple-wave"
+            transition={{ type: 'spring' as const, stiffness: 200, damping: 15 }}
+            className="w-28 h-28 rounded-full bg-gradient-to-br from-primary via-emerald-500 to-teal-500 flex items-center justify-center mb-6 shadow-neon-emerald relative z-10 ripple-wave checkout-checkmark-glow"
           >
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+              transition={{ delay: 0.3, type: 'spring' as const, stiffness: 200 }}
             >
               <Check className="h-12 w-12 text-white" />
             </motion.div>
@@ -509,9 +514,14 @@ export function CheckoutView() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-shadow-sm">Finalizar Pedido</h1>
+            <motion.h1
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
+              className="text-lg font-bold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent r32-checkout-shimmer"
+            >Finalizar Pedido</motion.h1>
 
-            {/* Step indicator */}
+            {/* Step indicator — 4-step animated progress: Carrinho → Endereço → Pagamento → Confirmação */}
             <div className="progress-steps mt-2.5">
               {stepLabels.map((s, i) => {
                 const isCompleted = i < currentStepIndex
@@ -520,11 +530,21 @@ export function CheckoutView() {
                   <div key={s.id} className="flex items-center flex-1">
                     <div className="step">
                       <motion.div
-                        animate={isCurrent ? { scale: [1, 1.15, 1] } : {}}
-                        transition={{ duration: 0.5, type: 'spring', stiffness: 300, damping: 20 }}
-                        className={`step-dot ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}
+                        animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
+                        transition={{ duration: 0.5, type: 'spring' as const, stiffness: 300, damping: 20 }}
+                        className={`step-dot ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow' : ''}`}
                       >
-                        {isCompleted ? <Check className="h-3.5 w-3.5" /> : s.num}
+                        {isCompleted ? (
+                          <motion.div
+                            initial={{ scale: 0, rotate: -90 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
+                          >
+                            <Check className="h-3.5 w-3.5" />
+                          </motion.div>
+                        ) : (
+                          <span className="text-sm">{s.icon}</span>
+                        )}
                       </motion.div>
                       <span className={`text-[10px] font-medium mt-1 hidden sm:block transition-colors duration-300 ${isCurrent ? 'text-foreground font-semibold' : isCompleted ? 'text-primary' : 'text-muted-foreground'}`}>
                         {s.title}
@@ -532,7 +552,11 @@ export function CheckoutView() {
                     </div>
                     {i < stepLabels.length - 1 && (
                       <div className="step-line">
-                        <div className={`step-line-fill ${i < currentStepIndex ? 'filled' : ''}`} />
+                        <motion.div
+                          className={`step-line-fill ${i < currentStepIndex ? 'filled' : ''}`}
+                          layout
+                          transition={{ duration: 0.6, ease: 'easeInOut' as const }}
+                        />
                       </div>
                     )}
                   </div>
@@ -549,7 +573,12 @@ export function CheckoutView() {
             <motion.div key="address" initial={{ opacity: 0, x: 20, filter: 'blur(4px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, x: -20, filter: 'blur(4px)' }} transition={{ duration: 0.35 }}>
               <div className="reveal-up" style={{ animationDelay: '0.1s' }}>
               <div className="mb-6">
-                <h3 className="font-semibold mb-3">Tipo de entrega</h3>
+                <motion.h3
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+                  className="font-semibold mb-3 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                >Tipo de entrega</motion.h3>
                 <div className="grid grid-cols-2 gap-3">
                   <motion.button
                     whileHover={{ y: -2 }}
@@ -606,17 +635,49 @@ export function CheckoutView() {
 
               {deliveryType === 'DELIVERY' && (
                 <div className="space-y-4">
-                  <h3 className="font-semibold">Endereço de entrega</h3>
+                  <motion.h3
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+                    className="font-semibold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                  >Endereço de entrega</motion.h3>
 
-                  {/* Map placeholder */}
-                  <div className="h-32 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-[0.1]" style={{
-                      backgroundImage: 'linear-gradient(rgba(0,0,0,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.2) 1px, transparent 1px)',
-                      backgroundSize: '30px 30px',
-                    }} />
-                    <div className="text-center relative z-10">
-                      <MapPin className="h-8 w-8 text-primary mx-auto mb-1" />
-                      <p className="text-xs text-muted-foreground">Localização no mapa</p>
+                  {/* Map placeholder with gradient card and pin icon */}
+                  <div className="h-32 rounded-xl overflow-hidden relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700">
+                      {/* Grid pattern */}
+                      <div className="absolute inset-0 opacity-[0.1]" style={{
+                        backgroundImage: 'linear-gradient(rgba(255,255,255,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.2) 1px, transparent 1px)',
+                        backgroundSize: '30px 30px',
+                      }} />
+                      {/* Roads */}
+                      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white/20" />
+                      <div className="absolute top-0 bottom-0 left-1/3 w-0.5 bg-white/15" />
+                      <div className="absolute top-0 bottom-0 right-1/4 w-0.5 bg-white/10" />
+                      {/* Pin animation */}
+                      <motion.div
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                        animate={{ y: [0, -6, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        <div className="h-10 w-10 rounded-full bg-amber-500 flex items-center justify-center shadow-lg border-2 border-white">
+                          <MapPin className="h-5 w-5 text-white" />
+                        </div>
+                        <motion.div
+                          className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-amber-500 rotate-45"
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        />
+                      </motion.div>
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-amber-400"
+                        animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 60, height: 60 }}
+                      />
+                    </div>
+                    <div className="absolute bottom-2 left-2 bg-black/40 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-white z-10">
+                      <p className="text-[10px] font-medium">Dom Eliseu, PA</p>
                     </div>
                   </div>
 
@@ -737,10 +798,15 @@ export function CheckoutView() {
               {/* Delivery time selector */}
               {deliveryType === 'DELIVERY' && (
                 <div className="mb-6">
-                  <h3 className="font-semibold mb-3 flex items-center gap-1.5">
+                  <motion.h3
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+                    className="font-semibold mb-3 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                  >
                     <Clock className="h-4 w-4 text-primary" />
                     Horário da entrega
-                  </h3>
+                  </motion.h3>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {deliveryTimeOptions.map((option) => {
                       const OptionIcon = option.icon
@@ -763,7 +829,7 @@ export function CheckoutView() {
                             <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                              transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
                               className="absolute top-2 right-2"
                             >
                               <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
@@ -778,25 +844,30 @@ export function CheckoutView() {
                 </div>
               )}
 
-              <h3 className="font-semibold mb-4 flex items-center gap-1.5">
+              <motion.h3
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+                className="font-semibold mb-4 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+              >
                 <CreditCard className="h-4 w-4 text-primary" />
                 Forma de pagamento
-              </h3>
+              </motion.h3>
               <div className="grid grid-cols-2 gap-3">
                 {paymentMethods.map((method) => (
                   <motion.button
                     key={method.id}
-                    whileHover={{ y: -2, boxShadow: '0 4px 16px oklch(0.45 0.1 155 / 0.08)' }}
+                    whileHover={{ y: -4, boxShadow: '0 8px 24px oklch(0.45 0.1 155 / 0.15), 0 0 0 2px oklch(0.45 0.1 155 / 0.2)' }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 relative glass-border ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card ${
                       payment === method.id
                         ? 'border-primary bg-primary/5 shadow-[0_2px_16px_oklch(0.45_0.1_155/0.1)]'
                         : 'border-border hover:border-primary/30'
                     }`}
                   >
-                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center mb-3 transition-colors duration-200 ${payment === method.id ? 'bg-primary/10' : 'bg-muted'}`}>
-                      <method.icon className={`h-5 w-5 transition-colors duration-200 ${payment === method.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center mb-3 transition-all duration-300 ${payment === method.id ? 'bg-primary/10 scale-110' : 'bg-muted'}`}>
+                      <method.icon className={`h-5 w-5 transition-all duration-300 ${payment === method.id ? 'text-primary' : 'text-muted-foreground'}`} />
                     </div>
                     <p className="font-semibold text-sm">{method.label}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{method.desc}</p>
@@ -804,7 +875,7 @@ export function CheckoutView() {
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                        transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
                         className="absolute top-2 right-2"
                       >
                         <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
@@ -816,12 +887,26 @@ export function CheckoutView() {
                 ))}
               </div>
 
+              {/* Payment Tracker — PIX status / Card / Cash */}
+              <div className="mt-4">
+                <PaymentTracker amount={total} onStatusChange={(status) => {
+                  if (status === 'confirmado') {
+                    toast.success('Pagamento confirmado via PIX!')
+                  }
+                }} />
+              </div>
+
               {/* Coupon input */}
               <div className="mt-6">
-                <h3 className="font-semibold mb-3 flex items-center gap-1.5">
+                <motion.h3
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+                  className="font-semibold mb-3 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                >
                   <Tag className="h-4 w-4 text-primary" />
                   Cupom de desconto
-                </h3>
+                </motion.h3>
                 {appliedCoupon ? (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -865,11 +950,35 @@ export function CheckoutView() {
                 <p className="text-[10px] text-muted-foreground mt-2">Experimente: ACAI10 ou FRETE5</p>
               </div>
 
-              {/* Order summary card */}
+              {/* Order summary card with animated items */}
               <Card className="mt-6 gradient-border-animated bg-card rounded-xl overflow-hidden">
                 <CardContent className="p-4">
-                  <h4 className="font-semibold text-sm mb-3 flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-primary" />Resumo do pedido</h4>
-                  <div className="space-y-2 text-sm">
+                  <motion.h4
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+                    className="font-semibold text-sm mb-3 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                  ><Shield className="h-3.5 w-3.5 text-primary" />Resumo do pedido</motion.h4>
+                  {/* Animated item-by-item list */}
+                  <div className="space-y-2 mb-3">
+                    {groups.flatMap(g => g.items).map((item, idx) => (
+                      <motion.div
+                        key={`${item.productId}-${idx}`}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.08, duration: 0.3 }}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-xs bg-primary/10 text-primary font-medium h-5 w-5 rounded flex items-center justify-center shrink-0">{item.quantity}x</span>
+                          <span className="text-muted-foreground truncate text-xs">{item.product.name}</span>
+                        </div>
+                        <span className="font-medium text-xs shrink-0 ml-2">{formatBRL(item.product.price * item.quantity)}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <Separator />
+                  <div className="space-y-2 text-sm mt-2">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Subtotal ({getCartItemCount()} itens)</span>
                       <span>{formatBRL(subtotal)}</span>
@@ -897,9 +1006,24 @@ export function CheckoutView() {
                       </div>
                     )}
                     <Separator />
+
+                    {/* Tax Breakdown — Resumo Fiscal */}
+                    <div className="mt-2">
+                      <TaxBreakdown subtotal={subtotal} />
+                    </div>
+
+                    <Separator />
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
-                      <span className="text-primary">{formatBRL(total)}</span>
+                      <motion.span
+                        key={total}
+                        initial={{ scale: 1.15, color: 'rgb(16, 185, 129)' }}
+                        animate={{ scale: 1, color: 'rgb(16, 185, 129)' }}
+                        transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+                        className="text-primary"
+                      >
+                        {formatBRL(total)}
+                      </motion.span>
                     </div>
                   </div>
 
@@ -914,6 +1038,50 @@ export function CheckoutView() {
                   ))}
                 </CardContent>
               </Card>
+
+              {/* Confidence badges — enhanced with hover and pulse */}
+              <div className="flex items-center justify-center gap-4 mt-4 py-2">
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  whileHover={{ scale: 1.08, y: -2 }}
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default"
+                >
+                  <span className="text-emerald-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  </span>
+                  Seguro
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  whileHover={{ scale: 1.08, y: -2 }}
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default"
+                >
+                  <motion.span
+                    className="text-emerald-500"
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                  </motion.span>
+                  Garantido
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  whileHover={{ scale: 1.08, y: -2 }}
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default"
+                >
+                  <span className="text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="m12 15 5 6H7Z"/></svg>
+                  </span>
+                  Frete grátis acima de R$50
+                </motion.div>
+              </div>
 
               {/* Terms */}
               <div className="mt-4 flex items-start gap-3">
@@ -935,7 +1103,7 @@ export function CheckoutView() {
                   Voltar
                 </Button>
                 <Button
-                  className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl"
+                  className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl checkout-btn-shimmer r32-confirm-shine"
                   onClick={handlePlaceOrder}
                   disabled={isProcessing || !termsAccepted}
                 >
@@ -963,8 +1131,8 @@ export function CheckoutView() {
         <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-strong border-t px-4 py-3" style={{ borderTop: '1px solid transparent', backgroundImage: 'linear-gradient(90deg, transparent, oklch(0.45 0.1 155 / 0.3), oklch(0.78 0.16 70 / 0.3), transparent)', backgroundOrigin: 'top', backgroundRepeat: 'no-repeat', backgroundSize: '100% 1px' }}>
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <div>
-              <p className="text-xs text-muted-foreground">Total</p>
-              <p className="text-lg font-bold text-primary">{formatBRL(total)}</p>
+              <p className="text-xs text-muted-foreground r32-total-pop">Total</p>
+              <p className="text-lg font-bold text-primary r32-total-pop">{formatBRL(total)}</p>
             </div>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Shield className="h-3 w-3 text-emerald-500" />

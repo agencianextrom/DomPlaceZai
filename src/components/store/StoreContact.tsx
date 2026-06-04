@@ -98,8 +98,8 @@ export function StoreContact({ store }: StoreContactProps) {
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-2xl max-h-[85vh] overflow-y-auto shadow-2xl"
+              transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+              className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-2xl max-h-[85vh] overflow-y-auto shadow-2xl r17-store-glass-panel"
             >
               {/* Handle */}
               <div className="flex justify-center pt-3 pb-2">
@@ -110,7 +110,7 @@ export function StoreContact({ store }: StoreContactProps) {
               <div className="px-5 pb-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-lg">Contato</h3>
+                    <h3 className="font-bold text-lg r29-contact-shimmer">Contato</h3>
                     <p className="text-sm text-muted-foreground">{store.name}</p>
                   </div>
                   <Button
@@ -129,7 +129,7 @@ export function StoreContact({ store }: StoreContactProps) {
                     ? 'bg-emerald-50 dark:bg-emerald-900/10'
                     : 'bg-red-50 dark:bg-red-900/10'
                 }`}>
-                  <div className={`h-2.5 w-2.5 rounded-full ${isOpenNow ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
+                <div className={`h-2.5 w-2.5 rounded-full ${isOpenNow ? 'bg-emerald-500 animate-pulse r29-hours-pulse' : 'bg-red-500'}`} />
                   <span className={`text-sm font-medium ${isOpenNow ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
                     {isOpenNow ? 'Aberto agora' : 'Fechado'}
                   </span>
@@ -186,72 +186,112 @@ export function StoreContact({ store }: StoreContactProps) {
 
                 {/* WhatsApp */}
                 {(store.whatsapp || store.phone) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1, type: 'spring' as const, stiffness: 300, damping: 25 }}
+                  >
                   <motion.button
-                    whileHover={{ y: -2 }}
+                    whileHover={{ y: -3, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleWhatsApp}
-                    className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white transition-all shadow-md"
+                    className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white transition-all shadow-md r17-store-contact-btn-glow r29-btn-lift"
                   >
-                    <div className="h-10 w-10 rounded-xl bg-white/20 flex items-center justify-center">
+                    <motion.div
+                      className="h-10 w-10 rounded-xl bg-white/20 flex items-center justify-center"
+                      whileHover={{ rotate: [0, -8, 8, 0] }}
+                      transition={{ duration: 0.4 }}
+                    >
                       <MessageCircle className="h-5 w-5" />
-                    </div>
+                    </motion.div>
                     <div className="text-left flex-1">
                       <p className="font-semibold text-sm">WhatsApp</p>
                       <p className="text-xs text-white/70">{store.whatsapp || store.phone}</p>
                     </div>
                     <ExternalLink className="h-4 w-4 text-white/60" />
                   </motion.button>
+                  </motion.div>
                 )}
 
                 {/* Phone */}
                 {store.phone && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, type: 'spring' as const, stiffness: 300, damping: 25 }}
+                  >
                   <motion.button
-                    whileHover={{ y: -2 }}
+                    whileHover={{ y: -3, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCall}
-                    className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-primary/10 hover:bg-primary/15 transition-all"
+                    className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-primary/10 hover:bg-primary/15 transition-all r17-store-contact-btn-glow r29-btn-lift"
                   >
-                    <div className="h-10 w-10 rounded-xl bg-primary/15 flex items-center justify-center">
+                    <motion.div
+                      className="h-10 w-10 rounded-xl bg-primary/15 flex items-center justify-center"
+                      whileHover={{ rotate: [0, -8, 8, 0] }}
+                      transition={{ duration: 0.4 }}
+                    >
                       <Phone className="h-5 w-5 text-primary" />
-                    </div>
+                    </motion.div>
                     <div className="text-left flex-1">
                       <p className="font-semibold text-sm">Ligar</p>
                       <p className="text-xs text-muted-foreground">{store.phone}</p>
                     </div>
                   </motion.button>
+                  </motion.div>
                 )}
 
                 {/* Email */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, type: 'spring' as const, stiffness: 300, damping: 25 }}
+                >
                 <motion.button
-                  whileHover={{ y: -2 }}
+                  whileHover={{ y: -3, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleEmail}
-                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-secondary/50 hover:bg-secondary transition-all"
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-secondary/50 hover:bg-secondary transition-all r17-store-contact-btn-glow"
                 >
-                  <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center">
+                  <motion.div
+                    className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center"
+                    whileHover={{ rotate: [0, -8, 8, 0] }}
+                    transition={{ duration: 0.4 }}
+                  >
                     <Mail className="h-5 w-5 text-muted-foreground" />
-                  </div>
+                  </motion.div>
                   <div className="text-left flex-1">
                     <p className="font-semibold text-sm">E-mail</p>
                     <p className="text-xs text-muted-foreground">Enviar mensagem por e-mail</p>
                   </div>
                 </motion.button>
+                </motion.div>
 
                 {/* Chat */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, type: 'spring' as const, stiffness: 300, damping: 25 }}
+                >
                 <motion.button
-                  whileHover={{ y: -2 }}
+                  whileHover={{ y: -3, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleChat}
-                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 hover:from-amber-100 hover:to-orange-100 dark:hover:from-amber-900/20 dark:hover:to-orange-900/20 transition-all border border-amber-200/50 dark:border-amber-800/30"
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 hover:from-amber-100 hover:to-orange-100 dark:hover:from-amber-900/20 dark:hover:to-orange-900/20 transition-all border border-amber-200/50 dark:border-amber-800/30 r17-store-contact-btn-glow"
                 >
-                  <div className="h-10 w-10 rounded-xl bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center">
+                  <motion.div
+                    className="h-10 w-10 rounded-xl bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center"
+                    whileHover={{ rotate: [0, -8, 8, 0] }}
+                    transition={{ duration: 0.4 }}
+                  >
                     <Send className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                  </div>
+                  </motion.div>
                   <div className="text-left flex-1">
                     <p className="font-semibold text-sm">Chat DomPlace</p>
                     <p className="text-xs text-muted-foreground">Converse com a loja pelo app</p>
                   </div>
                 </motion.button>
+                </motion.div>
               </div>
 
               <Separator />
@@ -262,7 +302,7 @@ export function StoreContact({ store }: StoreContactProps) {
                   <MapPin className="h-4 w-4 text-primary" />
                   Localização
                 </h4>
-                <div className="h-40 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center relative overflow-hidden">
+                <div className="h-40 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center relative overflow-hidden r29-map-overlay">
                   <div className="absolute inset-0 opacity-[0.08]" style={{
                     backgroundImage: 'linear-gradient(rgba(0,0,0,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.2) 1px, transparent 1px)',
                     backgroundSize: '24px 24px',
@@ -274,7 +314,7 @@ export function StoreContact({ store }: StoreContactProps) {
                   <div className="absolute top-8 right-10 w-12 h-12 bg-primary/10 rounded-full border-2 border-dashed border-primary/20" />
                   <div className="absolute bottom-6 right-1/3 w-8 h-8 bg-emerald-100 rounded-full border-2 border-dashed border-emerald-200 dark:bg-emerald-900/30 dark:border-emerald-700/30" />
 
-                  {/* Center pin */}
+                  {/* Center pin with pulsing glow */}
                   <motion.div
                     initial={{ y: -10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
@@ -285,9 +325,16 @@ export function StoreContact({ store }: StoreContactProps) {
                       animate={{ y: [0, -4, 0] }}
                       transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                     >
-                      <MapPin className="h-8 w-8 text-primary mx-auto" />
+                      <div className="r17-store-pin-pulse rounded-full">
+                        <MapPin className="h-8 w-8 text-primary mx-auto" />
+                      </div>
                     </motion.div>
                   </motion.div>
+                  {/* 4 floating particles near map */}
+                  <motion.div className="absolute top-3 left-4 w-1.5 h-1.5 rounded-full bg-emerald-400/30 pointer-events-none" animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0], scale: [0.5, 1, 0.3] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0.2 }} />
+                  <motion.div className="absolute bottom-6 right-6 w-1 h-1 rounded-full bg-amber-400/30 pointer-events-none" animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 1.0 }} />
+                  <motion.div className="absolute top-8 right-8 w-2 h-2 rounded-full bg-primary/20 pointer-events-none" animate={{ y: [0, -8, -16], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.2] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeOut' as const, delay: 1.8 }} />
+                  <motion.div className="absolute bottom-10 left-6 w-1 h-1 rounded-full bg-teal-400/30 pointer-events-none" animate={{ y: [0, -14, -28], opacity: [0, 0.6, 0], scale: [0.4, 0.8, 0] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 0.6 }} />
                 </div>
                 {store.address && (
                   <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">

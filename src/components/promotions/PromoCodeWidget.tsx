@@ -30,12 +30,46 @@ interface AppliedPromo {
   type: string
 }
 
+// Confetti particle component
+function ConfettiParticle({ index }: { index: number }) {
+  const colors = ['#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#ef4444']
+  const size = 6 + Math.random() * 6
+  const startX = 30 + Math.random() * 40
+
+  return (
+    <motion.div
+      className="absolute pointer-events-none"
+      style={{
+        width: size,
+        height: size,
+        backgroundColor: colors[index % colors.length],
+        borderRadius: index % 2 === 0 ? '50%' : '2px',
+        left: `${startX}%`,
+        top: '40%',
+      }}
+      initial={{ opacity: 1, y: 0, scale: 0, rotate: 0 }}
+      animate={{
+        opacity: [1, 1, 0],
+        y: [0, -60 - index * 20, -120 - index * 30],
+        x: [(index % 2 === 0 ? -1 : 1) * (10 + index * 5), (index % 2 === 0 ? -1 : 1) * (30 + index * 8), (index % 2 === 0 ? -1 : 1) * (50 + index * 10)],
+        scale: [0, 1, 0.5],
+        rotate: [0, 180 + index * 45, 360 + index * 90],
+      }}
+      transition={{
+        duration: 1.2,
+        ease: 'easeOut' as const,
+      }}
+    />
+  )
+}
+
 export function PromoCodeWidget() {
   const [promoInput, setPromoInput] = useState('')
   const [appliedPromos, setAppliedPromos] = useState<AppliedPromo[]>([])
   const [applyingCode, setApplyingCode] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [successAnimation, setSuccessAnimation] = useState(false)
+  const [shakeError, setShakeError] = useState(false)
   const [apiPromotions, setApiPromotions] = useState<PromoCode[]>([])
   const [isLoadingPromos, setIsLoadingPromos] = useState(true)
 
@@ -81,14 +115,19 @@ export function PromoCodeWidget() {
   const handleApplyCode = () => {
     const code = promoInput.trim().toUpperCase()
     setError(null)
+    setShakeError(false)
 
     if (!code) {
       setError('Digite um código promocional')
+      setShakeError(true)
+      setTimeout(() => setShakeError(false), 600)
       return
     }
 
     if (appliedPromos.some(p => p.code === code)) {
       setError('Este cupom já foi aplicado')
+      setShakeError(true)
+      setTimeout(() => setShakeError(false), 600)
       return
     }
 
@@ -119,12 +158,16 @@ export function PromoCodeWidget() {
         } else {
           const errorMsg = data.error || 'Código inválido ou expirado'
           setError(errorMsg)
+          setShakeError(true)
+          setTimeout(() => setShakeError(false), 600)
           toast.error(errorMsg)
         }
         setApplyingCode(null)
       })
       .catch(() => {
         setError('Erro de conexão. Tente novamente.')
+        setShakeError(true)
+        setTimeout(() => setShakeError(false), 600)
         toast.error('Erro de conexão. Tente novamente.')
         setApplyingCode(null)
       })
@@ -142,27 +185,48 @@ export function PromoCodeWidget() {
 
   return (
     <div className="space-y-3">
-      {/* Promo code input */}
-      <Card className="border-primary/20 overflow-hidden">
-        <CardContent className="p-4">
+      {/* Promo code input — Glassmorphism card */}
+      <Card className="border-primary/20 overflow-hidden promo-glass relative">
+        {/* Floating discount tag particles */}
+        {[...Array(4)].map((_, i) => (
+          <div
+            key={`promo-tag-${i}`}
+            className="promo-tag-float absolute pointer-events-none"
+            style={{
+              left: `${10 + i * 25}%`,
+              animationDelay: `${i * 1.2}s`,
+              animationDuration: `${5 + i}s`,
+            }}
+          >
+            <Tag className="h-3 w-3 text-primary/8 dark:text-primary/12 rotate-12" />
+          </div>
+        ))}
+
+        <CardContent className="p-4 relative z-10">
           <div className="flex items-center gap-2 mb-3">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center">
+            <motion.div
+              className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: 'spring' as const, stiffness: 300, damping: 15 }}
+            >
               <Tag className="h-4 w-4 text-white" />
-            </div>
+            </motion.div>
             <div>
               <span className="text-sm font-semibold">Código Promocional</span>
               <p className="text-[10px] text-muted-foreground -mt-0.5">Aplique seu cupom de desconto</p>
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <motion.div
+            className={`flex gap-2 ${shakeError ? 'promo-shake' : ''}`}
+          >
             <div className="flex-1 relative">
               <Input
                 placeholder="Digite seu cupom..."
                 value={promoInput}
                 onChange={(e) => { setPromoInput(e.target.value); setError(null) }}
                 onKeyDown={(e) => e.key === 'Enter' && handleApplyCode()}
-                className="flex-1 h-10 uppercase pr-8"
+                className="flex-1 h-10 uppercase pr-8 promo-input-glow"
                 disabled={applyingCode !== null}
               />
               {promoInput && (
@@ -174,25 +238,28 @@ export function PromoCodeWidget() {
                 </button>
               )}
             </div>
-            <Button
-              onClick={handleApplyCode}
-              disabled={!promoInput.trim() || applyingCode !== null}
-              className="h-10 px-5 bg-gradient-to-r from-primary to-emerald-600 text-white hover:from-primary/90 hover:to-emerald-600/90 gap-1.5"
-            >
-              {applyingCode ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
-                />
-              ) : (
-                <>
-                  <Tag className="h-4 w-4" />
-                  Aplicar
-                </>
-              )}
-            </Button>
-          </div>
+            {/* Apply button with shimmer — wrapped in motion.div since Button doesn't support whileHover */}
+            <motion.div whileTap={{ scale: 0.95 }} className="shrink-0">
+              <Button
+                onClick={handleApplyCode}
+                disabled={!promoInput.trim() || applyingCode !== null}
+                className="h-10 px-5 bg-gradient-to-r from-primary to-emerald-600 text-white hover:from-primary/90 hover:to-emerald-600/90 gap-1.5 promo-btn-shimmer relative overflow-hidden"
+              >
+                {applyingCode ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
+                  />
+                ) : (
+                  <>
+                    <Tag className="h-4 w-4" />
+                    Aplicar
+                  </>
+                )}
+              </Button>
+            </motion.div>
+          </motion.div>
 
           {/* Error message */}
           <AnimatePresence>
@@ -209,31 +276,40 @@ export function PromoCodeWidget() {
             )}
           </AnimatePresence>
 
-          {/* Success animation */}
+          {/* Success animation with confetti */}
           <AnimatePresence>
             {successAnimation && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                className="mt-2 flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-lg px-3 py-2"
+                className="mt-2 relative"
               >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                >
-                  <Check className="h-4 w-4" />
-                </motion.div>
-                <span className="text-xs font-semibold">Cupom aplicado com sucesso!</span>
-                <motion.div
-                  className="ml-auto"
-                  initial={{ scale: 0, rotate: -30 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: 'spring', delay: 0.2 }}
-                >
-                  <PartyPopper className="h-4 w-4" />
-                </motion.div>
+                {/* Confetti particles */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <ConfettiParticle key={`confetti-${i}`} index={i} />
+                  ))}
+                </div>
+
+                <div className="relative bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-lg px-3 py-2 flex items-center gap-2">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
+                  >
+                    <Check className="h-4 w-4" />
+                  </motion.div>
+                  <span className="text-xs font-semibold">Cupom aplicado com sucesso!</span>
+                  <motion.div
+                    className="ml-auto"
+                    initial={{ scale: 0, rotate: -30 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring' as const, delay: 0.2 }}
+                  >
+                    <PartyPopper className="h-4 w-4" />
+                  </motion.div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -327,11 +403,17 @@ export function PromoCodeWidget() {
               {availablePromos.map((promo) => (
                 <motion.div
                   key={promo.code}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, type: 'spring' as const, stiffness: 200, damping: 20 }}
+                  whileHover={{
+                    scale: 1.01,
+                    y: -2,
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+                    transition: { duration: 0.2 },
+                  }}
                 >
-                  <Card className="border-border/50 hover:shadow-sm transition-shadow overflow-hidden cursor-pointer group"
+                  <Card className="border-border/50 transition-shadow overflow-hidden cursor-pointer group"
                     onClick={() => {
                       setPromoInput(promo.code)
                       setError(null)

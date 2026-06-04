@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from '@libsql/client'
 
 const url = process.env.TURSO_URL!

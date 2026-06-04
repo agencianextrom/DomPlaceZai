@@ -20,6 +20,7 @@ import { WelcomeModal } from '@/components/onboarding/WelcomeModal'
 import { AIChatBot } from '@/components/chat/AIChatBot'
 import { CookieConsent } from '@/components/layout/CookieConsent'
 import { ViewTransition } from '@/components/layout/ViewTransition'
+import { SectionDivider } from '@/components/layout/SectionDivider'
 import { QuickInfo } from '@/components/home/QuickInfo'
 import { FlashSale } from '@/components/home/FlashSale'
 import { CityNews } from '@/components/home/CityNews'
@@ -32,17 +33,41 @@ import { AdminDashboard } from '@/components/dashboard/AdminDashboard'
 import { SmartSuggestions } from '@/components/home/SmartSuggestions'
 import { RecentOrders } from '@/components/home/RecentOrders'
 import { FeedActivity } from '@/components/home/FeedActivity'
+import { NeighborhoodFeed } from '@/components/home/NeighborhoodFeed'
+import { StoreReviews } from '@/components/home/StoreReviews'
+import { RecipeSuggestions } from '@/components/home/RecipeSuggestions'
+import { CommunityHighlights } from '@/components/home/CommunityHighlights'
+import { RecentlyViewed } from '@/components/product/RecentlyViewed'
+import { ProductBattle } from '@/components/home/ProductBattle'
+import { RecentlyViewedHome } from '@/components/home/RecentlyViewed'
 import { SupportCenter } from '@/components/support/SupportCenter'
 import { ProductQuickView } from '@/components/product/ProductQuickView'
+import { StoreQuickView } from '@/components/store/StoreQuickView'
+import { PriceDropTicker } from '@/components/home/PriceDropTicker'
+import { DealOfTheDay } from '@/components/home/DealOfTheDay'
 import { StoreSearch } from '@/components/home/StoreSearch'
 import { LoyaltyTier } from '@/components/profile/LoyaltyTier'
+import { LoyaltyWidget } from '@/components/home/LoyaltyWidget'
+import { ShoppingTimeline } from '@/components/home/ShoppingTimeline'
+import { LiveDropAlert } from '@/components/home/LiveDropAlert'
+import { BudgetPlanner } from '@/components/home/BudgetPlanner'
 import { WishlistShare } from '@/components/profile/WishlistShare'
 import { StoreFavorites } from '@/components/home/StoreFavorites'
-import { OrderTimeline } from '@/components/profile/OrderTimeline'
+// FavoritesView defined locally below
+import { OrderTimeline as ProfileOrderTimeline } from '@/components/profile/OrderTimeline'
+import { OrderTimeline } from '@/components/orders/OrderTimeline'
 import { SpinWheel } from '@/components/promotions/SpinWheel'
-import { DailyRewards } from '@/components/promotions/DailyRewards'
+import { DailyRewards as PromotionsDailyRewards } from '@/components/promotions/DailyRewards'
+import { DailyRewards } from '@/components/home/DailyRewards'
+import { StoreDirectory } from '@/components/store/StoreDirectory'
 import { MapStoreLocator } from '@/components/home/MapStoreLocator'
 import { DailyDeals } from '@/components/home/DailyDeals'
+import { PromoBanner } from '@/components/home/PromoBanner'
+import { TopRatedPicks } from '@/components/home/TopRatedPicks'
+import { GiftGuide } from '@/components/home/GiftGuide'
+import { WeatherWidget } from '@/components/home/WeatherWidget'
+import { ComboBuilder } from '@/components/home/ComboBuilder'
+import { ProductBundlesSlider } from '@/components/product/ProductBundlesSlider'
 import { DeliveryFeeCalculator } from '@/components/home/DeliveryFeeCalculator'
 import { NeighborhoodSelector } from '@/components/home/NeighborhoodSelector'
 import { ProductQuickAdd } from '@/components/product/ProductQuickAdd'
@@ -50,6 +75,27 @@ import { UrgencyStrip } from '@/components/home/UrgencyStrip'
 import { DriverDashboard } from '@/components/driver/DriverDashboard'
 import { AffiliateDashboard } from '@/components/affiliate/AffiliateDashboard'
 import { PWAInstallPrompt } from '@/components/pwa/PWAInstallPrompt'
+import { StoreOpenStatus } from '@/components/home/StoreOpenStatus'
+import { FlashCoupon } from '@/components/home/FlashCoupon'
+import { TrendingCategories } from '@/components/home/TrendingCategories'
+import { BrandSpotlight } from '@/components/home/BrandSpotlight'
+import { CommunityEvents } from '@/components/home/CommunityEvents'
+import { WeeklySpecials } from '@/components/home/WeeklySpecials'
+import { CustomerReviewsHighlight } from '@/components/home/CustomerReviewsHighlight'
+import { QuickAddDrawer } from '@/components/home/QuickAddDrawer'
+import { StoreRatingsOverview } from '@/components/home/StoreRatingsOverview'
+import { ProductLaunchCountdown } from '@/components/home/ProductLaunchCountdown'
+import { CompareProductsCTA } from '@/components/home/CompareProductsCTA'
+import { PriceDropAlerts } from '@/components/home/PriceDropAlerts'
+import { CommunityPoll } from '@/components/home/CommunityPoll'
+import { InteractiveGameZone } from '@/components/home/InteractiveGameZone'
+import { ServiceDirectory } from '@/components/home/ServiceDirectory'
+import { DomEliseuStories } from '@/components/home/DomEliseuStories'
+import { StoreSubscriptionBox } from '@/components/home/StoreSubscriptionBox'
+import { LiveOrderMap } from '@/components/home/LiveOrderMap'
+import { ExpressDeliveryHub } from '@/components/home/ExpressDeliveryHub'
+import { NeighborhoodMarketplace } from '@/components/home/NeighborhoodMarketplace'
+import { LocalProducers } from '@/components/home/LocalProducers'
 import { Share2 } from 'lucide-react'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -63,6 +109,10 @@ import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { ProductData, StoreData } from '@/store/useAppStore'
 import { usePageViewTracking, trackEvent, AnalyticsEvents } from '@/lib/analytics'
+import { ScrollReveal } from '@/lib/use-scroll-reveal'
+import { FloatingParticles } from '@/components/effects/FloatingParticles'
+import { TextScramble } from '@/components/effects/TextScramble'
+import { cachedFetch } from '@/lib/api-cache'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -73,12 +123,6 @@ function getGreeting(): { text: string; emoji: string; period: string } {
   if (hour >= 5 && hour < 12) return { text: 'Bom dia', emoji: '☀️', period: 'manhã' }
   if (hour >= 12 && hour < 18) return { text: 'Boa tarde', emoji: '🌤️', period: 'tarde' }
   return { text: 'Boa noite', emoji: '🌙', period: 'noite' }
-}
-
-function getGreetingTitle(currentUser: any): string {
-  const greeting = getGreeting()
-  const name = currentUser?.name || 'Visitante'
-  return `${greeting.text}, ${name}! ${greeting.emoji}`
 }
 
 // Fallback data in case API fails
@@ -227,6 +271,7 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState<'recent' | 'price_asc' | 'price_desc' | 'rating'>('recent')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [unfavoritingId, setUnfavoritingId] = useState<string | null>(null)
   
   const categories = useMemo(() => {
     const cats = new Set(products.map(p => p.category))
@@ -260,28 +305,52 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
           <Heart className="h-5 w-5 text-red-500" />
           Favoritos
         </h1>
-        {/* Empty state */}
+        {/* Empty state with animated floating hearts */ }
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
           className="flex flex-col items-center justify-center py-20 text-center"
         >
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative"
-          >
-            <div className="h-24 w-24 rounded-full bg-gradient-to-br from-red-100 to-rose-200 dark:from-red-900/20 dark:to-rose-800/20 flex items-center justify-center">
-              <Heart className="h-12 w-12 text-red-300 dark:text-red-700" />
-            </div>
-            {/* Decorative orbiting ring */}
+          <div className="relative">
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <div className="h-24 w-24 rounded-full bg-gradient-to-br from-red-100 to-rose-200 dark:from-red-900/20 dark:to-rose-800/20 flex items-center justify-center">
+                <Heart className="h-12 w-12 text-red-300 dark:text-red-700" />
+              </div>
+            </motion.div>
+            {/* Animated floating hearts */}
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute pointer-events-none"
+                style={{ left: `${20 + i * 18}%`, top: `${10 + (i % 3) * 25}%` }}
+                animate={{
+                  y: [0, -40, -80],
+                  opacity: [0, 0.7, 0],
+                  scale: [0.5, 1, 0.8],
+                  rotate: [0, i * 30, i * 60],
+                }}
+                transition={{
+                  duration: 3,
+                  delay: i * 0.6,
+                  repeat: Infinity,
+                  repeatDelay: 1,
+                  ease: 'easeOut',
+                }}
+              >
+                <Heart className="text-red-300/60 dark:text-red-600/40" style={{ width: 12 + i * 2, height: 12 + i * 2 }} fill="currentColor" />
+              </motion.div>
+            ))}
+            {/* Decorative orbiting ring */ }
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
               className="absolute -inset-3 rounded-full border border-dashed border-red-200/50 dark:border-red-800/30"
             />
-          </motion.div>
+          </div>
           <h2 className="text-lg font-bold mt-6">Nenhum favorito ainda</h2>
           <p className="text-sm text-muted-foreground mt-2 max-w-xs">
             Toque no ❤️ em produtos e lojas para salvá-los aqui e encontrá-los rapidamente
@@ -311,9 +380,17 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
         <h1 className="text-xl font-bold flex items-center gap-2">
           <Heart className="h-5 w-5 text-red-500 fill-red-500" />
           Favoritos
-          <Badge variant="secondary" className="text-[10px] ml-1 bg-primary/5 text-primary border-0">
-            {filtered.length}
-          </Badge>
+          <motion.span
+            key={filtered.length}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="ml-1 inline-flex"
+          >
+            <Badge variant="secondary" className="text-[10px] bg-gradient-to-r from-red-500/10 to-pink-500/10 text-red-500 border-red-500/20 font-bold">
+              {filtered.length}
+            </Badge>
+          </motion.span>
         </h1>
         <div className="flex items-center gap-1">
           {onShareClick && products.length > 0 && (
@@ -356,7 +433,7 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
         </div>
       </div>
 
-      {/* Category filter chips */}
+      {/* Category filter chips with shimmer */}
       {categories.length > 1 && (
         <motion.div 
           initial={{ opacity: 0, y: 8 }}
@@ -364,28 +441,51 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
           transition={{ delay: 0.1 }}
           className="flex gap-2 overflow-x-auto hide-scrollbar pb-3 mb-2"
         >
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setActiveCategory(null)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
               !activeCategory
                 ? 'bg-primary text-primary-foreground border-primary'
                 : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
             }`}
           >
-            Todos ({products.length})
-          </button>
-          {categories.map(cat => (
-            <button
+            {!activeCategory && (
+              <motion.span
+                className="absolute inset-0 rounded-full"
+                animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', backgroundSize: '200% 100%' }}
+              />
+            )}
+            <span className="relative z-10">Todos ({products.length})</span>
+          </motion.button>
+          {categories.map((cat, i) => (
+            <motion.button
               key={cat}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.05 + i * 0.04 }}
+              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
                 cat === activeCategory
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
               }`}
             >
-              {categoryLabels[cat] || cat} ({products.filter(p => p.category === cat).length})
-            </button>
+              {cat === activeCategory && (
+                <motion.span
+                  className="absolute inset-0 rounded-full"
+                  animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', backgroundSize: '200% 100%' }}
+                />
+              )}
+              <span className="relative z-10">{categoryLabels[cat] || cat} ({products.filter(p => p.category === cat).length})</span>
+            </motion.button>
           ))}
         </motion.div>
       )}
@@ -397,9 +497,10 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
             {filtered.map((p, i) => (
               <motion.div
                 key={p.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.04 }}
+                initial={{ opacity: 0, y: 16, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: i * 0.05, type: 'spring' as const, stiffness: 300, damping: 25 }}
+                whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}
               >
                 <ProductCard product={p} />
               </motion.div>
@@ -410,9 +511,10 @@ function FavoritesView({ products, onShareClick }: { products: ProductData[]; on
             {filtered.map((p, i) => (
               <motion.div
                 key={p.id}
-                initial={{ opacity: 0, x: 12 }}
+                initial={{ opacity: 0, x: 16 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.04 }}
+                transition={{ delay: i * 0.05, type: 'spring' as const, stiffness: 300, damping: 25 }}
+                whileHover={{ y: -3, boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}
                 className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer group"
                 onClick={() => {
                   selectProduct(p)
@@ -496,9 +598,26 @@ function LazySection({ children, className = '' }: { children: React.ReactNode; 
   )
 }
 
+// Zustand-backed Quick View wrapper
+function ZustandQuickView() {
+  const { quickViewProduct, isQuickViewOpen, closeQuickView } = useAppStore()
+  return (
+    <ProductQuickView
+      product={quickViewProduct}
+      open={isQuickViewOpen}
+      onClose={closeQuickView}
+    />
+  )
+}
+
+// Store Quick View wrapper
+function StoreQuickViewWrapper() {
+  return <StoreQuickView />
+}
+
 export default function Home() {
-  const { currentView, isSearchOpen, activeCategory, getCartItemCount, currentUser } = useAppStore()
-  const cartItemCount = getCartItemCount()
+  const { currentView, isSearchOpen, activeCategory, cartItems, currentUser } = useAppStore()
+  const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0)
 
   // Analytics page view tracking
   usePageViewTracking()
@@ -515,8 +634,6 @@ export default function Home() {
       ? `${baseTitle} (${cartItemCount} ${cartItemCount === 1 ? 'item' : 'itens'})`
       : baseTitle
   }, [cartItemCount])
-  const [quickViewProduct, setQuickViewProduct] = useQVState<ProductData | null>(null)
-  const [quickViewOpen, setQuickViewOpen] = useQVState(false)
   const [wishlistShareOpen, setWishlistShareOpen] = useQVState(false)
   const [apiProducts, setApiProducts] = useState<ProductData[]>([])
   const [apiStores, setApiStores] = useState<StoreData[]>([])
@@ -528,21 +645,13 @@ export default function Home() {
     const fetchData = async () => {
       setIsLoading(true)
       try {
-        const [productsRes, storesRes] = await Promise.all([
-          fetch('/api/products?limit=50'),
-          fetch('/api/stores?limit=20'),
+        const [productsData, storesData] = await Promise.all([
+          cachedFetch('/api/products?limit=50'),
+          cachedFetch('/api/stores?limit=20'),
         ])
-
-        if (!productsRes.ok || !storesRes.ok) {
-          console.error('Failed to fetch data:', { products: productsRes.status, stores: storesRes.status })
-          // Don't return — fall through so setIsLoading(false) is reached and fallback data is used
-        } else {
-          const productsData = await productsRes.json()
-          const storesData = await storesRes.json()
-          if (!cancelled) {
-            setApiProducts(productsData.products || [])
-            setApiStores(storesData.stores || [])
-          }
+        if (!cancelled) {
+          setApiProducts(productsData.products || [])
+          setApiStores(storesData.stores || [])
         }
       } catch (error) {
         console.error('Error loading data:', error)
@@ -609,12 +718,55 @@ export default function Home() {
                       <HeroBanner banners={fallbackBanners} storeCount={allStores.length} productCount={allProducts.length} />
                     </section>
 
-                    {/* Flash Sale */}
+                    {/* Histórias de Dom Eliseu */}
+                    <LazySection className="mt-3">
+                      <DomEliseuStories />
+                    </LazySection>
+
+                    {/* Promo Banner — rotating campaigns with coupon codes */}
                     <section className="mt-4">
-                      <FlashSale />
+                      <PromoBanner />
                     </section>
 
-                    {/* Daily Rewards - Gamification */}
+                    {/* Weather Widget */}
+                    <section className="mt-3">
+                      <WeatherWidget />
+                    </section>
+
+                    {/* Price Drop Ticker */}
+                    <section className="mt-3 rounded-xl overflow-hidden">
+                      <PriceDropTicker />
+                    </section>
+
+                    {/* Animated Section Divider */}
+                    <div className="mt-2">
+                      <SectionDivider variant="bottom" />
+                    </div>
+
+                    {/* Flash Sale */}
+                    <ScrollReveal>
+                      <section className="mt-4">
+                        <FlashSale />
+                      </section>
+                    </ScrollReveal>
+
+                    {/* Deal of the Day — Oferta do Dia */}
+                    <ScrollReveal>
+                      <section className="mt-4">
+                        <DealOfTheDay />
+                      </section>
+                    </ScrollReveal>
+
+                    {/* Live Drop Alert — Ao Vivo: Novos Produtos */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-4">
+                          <LiveDropAlert />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Daily Rewards - Enhanced Gamification */}
                     <section className="mt-4">
                       <DailyRewards />
                     </section>
@@ -629,11 +781,17 @@ export default function Home() {
                       <div className="flex items-center justify-between">
                         <div>
                           <h2 className="text-lg sm:text-xl font-bold">
-                            {getGreetingTitle(currentUser)}
+                            <TextScramble
+                              text={`${getGreeting().text}, ${currentUser?.name || 'Visitante'}!`}
+                              speed={40}
+                              triggerOnView={false}
+                              className="font-bold"
+                            />
+                            <span className="inline-block animate-bounce ml-1">{getGreeting().emoji}</span>
                           </h2>
                           <div className="flex items-center gap-1.5 mt-1 text-sm text-muted-foreground">
                             <MapPin className="h-3.5 w-3.5 text-primary" />
-                            <span>Entregando em Dom Eliseu, PA</span>
+                            <span className="shimmer-text font-medium">Entregando em Dom Eliseu, PA</span>
                             <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 ml-0.5" />
                           </div>
                         </div>
@@ -650,6 +808,15 @@ export default function Home() {
                     <section className="mt-8">
                       <CategoryBar />
                     </section>
+
+                    {/* Store Open Status — live open/closed widget */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <StoreOpenStatus />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
 
                     {/* Active category indicator */}
                     {activeCategory && (
@@ -680,29 +847,192 @@ export default function Home() {
                     {/* Featured Stores */}
                     {filteredStores.length > 0 && (
                       <LazySection>
-                        <section className="mt-8">
-                          <StoreCarousel title="🏪 Lojas em Destaque" stores={filteredStores} />
-                        </section>
+                        <ScrollReveal delay={0.2}>
+                          <div className="relative">
+                            <FloatingParticles count={6} color="oklch(0.78 0.16 70)" maxSize={3} className="opacity-40" />
+                            <section className="mt-8">
+                              <StoreCarousel title="🏪 Lojas em Destaque" stores={filteredStores} />
+                            </section>
+                          </div>
+                        </ScrollReveal>
                       </LazySection>
                     )}
 
+                    {/* Product Battle — Qual é o Melhor? */}
+                    <LazySection>
+                      <ScrollReveal delay={0.2}>
+                        <section className="mt-4">
+                          <ProductBattle />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
                     {/* === PRIORITY 3: Lazy loaded, below fold === */}
+
+                    {/* Programa de Fidelidade */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section>
+                          <h3 className="text-lg font-bold mb-4 gradient-text-animated">
+                            🏆 Programa de Fidelidade
+                          </h3>
+                          <LoyaltyTier />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Loyalty Rewards Widget */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section>
+                          <LoyaltyWidget />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Shopping Timeline — Journey milestones */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <ShoppingTimeline />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Budget Planner — Planejador de Orçamento */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <BudgetPlanner />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Brand Spotlight — Featured Store Carousel */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <BrandSpotlight />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Flash Coupons — gamified coupon collection */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <FlashCoupon />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Community Events — Local Events Calendar */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <CommunityEvents />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Weekly Specials — Day-of-Week Deals */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <WeeklySpecials />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Customer Reviews Highlight */}
+                    <LazySection>
+                      <ScrollReveal delay={0.2}>
+                        <section>
+                          <CustomerReviewsHighlight />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
 
                     {/* Weekend Specials */}
                     <LazySection>
-                      <section>
-                        <WeekendSpecials />
-                      </section>
+                      <ScrollReveal delay={0.25}>
+                        <section>
+                          <WeekendSpecials />
+                        </section>
+                      </ScrollReveal>
                     </LazySection>
 
                     {/* Daily Deals */}
                     <LazySection>
-                      <DailyDeals />
+                      <ScrollReveal delay={0.15}>
+                        <DailyDeals />
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Price Drop Alerts */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <PriceDropAlerts />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Trending Categories */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <TrendingCategories />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Top Rated Picks */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <TopRatedPicks />
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Combo Builder */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <ComboBuilder />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Product Bundles Slider — Combos Imperdíveis */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <ProductBundlesSlider />
+                        </section>
+                      </ScrollReveal>
                     </LazySection>
 
                     {/* Store Favorites Carousel */}
                     <LazySection>
                       <StoreFavorites stores={allStores} />
+                    </LazySection>
+
+                    {/* Product Launch Countdown */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <ProductLaunchCountdown />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Compare Products CTA */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section>
+                          <CompareProductsCTA />
+                        </section>
+                      </ScrollReveal>
                     </LazySection>
 
                     {/* New in City */}
@@ -730,7 +1060,12 @@ export default function Home() {
 
                     {/* Smart Suggestions (AI) */}
                     <LazySection>
-                      <SmartSuggestions />
+                      <ScrollReveal delay={0.1}>
+                        <div className="relative">
+                          <FloatingParticles count={8} color="oklch(0.45 0.1 155)" maxSize={3} className="opacity-60" />
+                          <SmartSuggestions />
+                        </div>
+                      </ScrollReveal>
                     </LazySection>
 
                     {/* Map Store Locator */}
@@ -754,18 +1089,20 @@ export default function Home() {
 
                     {/* Recent Orders */}
                     <LazySection>
-                      <section>
-                        <RecentOrders />
-                      </section>
+                      <ScrollReveal delay={0.15}>
+                        <section>
+                          <RecentOrders />
+                        </section>
+                      </ScrollReveal>
                     </LazySection>
                     
                     {/* Segmented Ads */}
-                    {filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5').length > 0 && (
+                    {filteredProducts.filter(p => p.isOffer).length > 0 && (
                       <LazySection>
                         <section>
                           <ProductCarousel 
                             title="📢 Anúncios Segmentados" 
-                            products={filteredProducts.filter(p => p.storeId === 's2' || p.storeId === 's5')} 
+                            products={filteredProducts.filter(p => p.isOffer)} 
                           />
                         </section>
                       </LazySection>
@@ -798,11 +1135,184 @@ export default function Home() {
                       </section>
                     </LazySection>
 
-                    {/* Feed Activity */}
+                    {/* Product Comparison CTA */}
                     <LazySection>
                       <section>
-                        <FeedActivity />
+                        <div className="bg-gradient-to-r from-emerald-500/5 to-primary/5 dark:from-emerald-500/10 dark:to-primary/10 rounded-2xl p-4 border border-emerald-500/10">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-primary flex items-center justify-center shadow-sm">
+                                <GitCompareArrows className="h-5 w-5 text-white" />
+                              </div>
+                              <div>
+                                <h3 className="text-sm font-bold">Comparar Produtos</h3>
+                                <p className="text-xs text-muted-foreground">Compare até 4 produtos lado a lado</p>
+                              </div>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="border-emerald-500/30 hover:bg-emerald-500/5 text-emerald-600 dark:text-emerald-400 h-9"
+                              onClick={() => useAppStore.getState().navigate('product-comparison')}
+                            >
+                              Comparar
+                            </Button>
+                          </div>
+                        </div>
                       </section>
+                    </LazySection>
+
+                    {/* Community Highlights */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <CommunityHighlights />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Community Poll */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section className="mt-6">
+                          <CommunityPoll />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Interactive Game Zone — Zona de Jogos */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section className="mt-6">
+                          <InteractiveGameZone />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Live Order Map — Acompanhe ao Vivo */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section className="mt-6">
+                          <LiveOrderMap />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Express Delivery Hub — Entrega Expressa */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section className="mt-6">
+                          <ExpressDeliveryHub />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Service Directory — Serviços Locais */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section className="mt-6">
+                          <ServiceDirectory />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Store Subscription Box — Caixa de Assinatura */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section className="mt-6">
+                          <StoreSubscriptionBox />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Neighborhood Marketplace — Vizinhos Vendem */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section className="mt-6">
+                          <NeighborhoodMarketplace />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Local Producers — Produtores Locais */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <LocalProducers />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Neighborhood Feed */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <NeighborhoodFeed />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Store Reviews */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <StoreReviews />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Store Ratings Overview */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <StoreRatingsOverview />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Recipe Suggestions */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <RecipeSuggestions />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Recently Viewed */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <RecentlyViewed />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Recently Viewed Home (Enhanced) */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <RecentlyViewedHome />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Feed Activity */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <FeedActivity />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Gift Guide */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <GiftGuide />
+                        </section>
+                      </ScrollReveal>
                     </LazySection>
 
                     </div>
@@ -818,6 +1328,10 @@ export default function Home() {
           </motion.div>
         ) : currentView === 'product' ? (
           <ProductDetailView />
+        ) : currentView === 'stores' ? (
+          <motion.div key="stores" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="max-w-7xl mx-auto px-4 pt-4 pb-8">
+            <StoreDirectory stores={allStores} />
+          </motion.div>
         ) : currentView === 'store' ? (
           <StoreProfileView />
         ) : currentView === 'cart' ? (
@@ -903,10 +1417,13 @@ export default function Home() {
       <CompareFloatingButton />
 
       {/* Product Quick View Modal */}
-      <ProductQuickView product={quickViewProduct} open={quickViewOpen} onClose={() => setQuickViewOpen(false)} />
+      <ZustandQuickView />
 
       {/* Product Quick Add Bottom Sheet */}
       <ProductQuickAdd />
+
+      {/* Quick Add Drawer */}
+      <QuickAddDrawer />
 
       {/* Neighborhood Selector Bottom Sheet */}
       <NeighborhoodSelector />

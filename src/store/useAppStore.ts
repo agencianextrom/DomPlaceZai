@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type AppView = 'home' | 'search' | 'store' | 'product' | 'cart' | 'checkout' | 'orders' | 'profile' | 'order-detail' | 'favorites' | 'store-dashboard' | 'shopping-lists' | 'product-comparison' | 'notifications' | 'admin-dashboard' | 'support-center' | 'store-comparison' | 'driver-dashboard' | 'affiliate-dashboard'
+export type AppView = 'home' | 'search' | 'store' | 'stores' | 'product' | 'cart' | 'checkout' | 'orders' | 'profile' | 'order-detail' | 'favorites' | 'store-dashboard' | 'shopping-lists' | 'product-comparison' | 'notifications' | 'admin-dashboard' | 'support-center' | 'store-comparison' | 'driver-dashboard' | 'affiliate-dashboard'
 
 export interface StoreData {
   id: string
@@ -178,6 +178,13 @@ interface AppState {
   
   // Product comparison
   compareProductIds: string[]
+  comparisonIds: string[]
+
+  // Recently viewed (persisted)
+  recentlyViewed: ProductData[]
+
+  // Store quick view
+  quickViewStore: StoreData | null
   
   // Chat
   chatMessages: ChatMessageData[]
@@ -193,6 +200,8 @@ interface AppState {
   isChatOpen: boolean
   quickAddProduct: ProductData | null
   isQuickAddOpen: boolean
+  quickViewProduct: ProductData | null
+  isQuickViewOpen: boolean
   neighborhoodSelectorOpen: boolean
   selectedNeighborhood: string
   
@@ -243,6 +252,9 @@ interface AppState {
   toggleChat: () => void
   openQuickAdd: (product: ProductData) => void
   closeQuickAdd: () => void
+  setQuickViewProduct: (product: ProductData | null) => void
+  openQuickView: () => void
+  closeQuickView: () => void
   openNeighborhoodSelector: () => void
   closeNeighborhoodSelector: () => void
   setSelectedNeighborhood: (name: string) => void
@@ -251,7 +263,17 @@ interface AppState {
   toggleCompareProduct: (productId: string) => void
   clearComparison: () => void
   isComparing: (productId: string) => boolean
-  
+  addToComparison: (id: string) => void
+  removeFromComparison: (id: string) => void
+
+  // Recently viewed actions
+  addRecentlyViewed: (product: ProductData) => void
+  clearRecentlyViewed: () => void
+
+  // Store quick view actions
+  openStoreQuickView: (store: StoreData) => void
+  closeStoreQuickView: () => void
+
   // Chat actions
   setChatMessages: (messages: ChatMessageData[]) => void
   addChatMessage: (message: ChatMessageData) => void
@@ -295,6 +317,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   
   // Product comparison
   compareProductIds: [],
+  comparisonIds: [],
+
+  // Recently viewed (loaded from localStorage on client)
+  recentlyViewed: loadFromStorage<ProductData[]>('domplace-recently-viewed', []),
+
+  // Store quick view
+  quickViewStore: null,
   
   // Chat
   chatMessages: [],
@@ -310,6 +339,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   isChatOpen: false,
   quickAddProduct: null,
   isQuickAddOpen: false,
+  quickViewProduct: null,
+  isQuickViewOpen: false,
   neighborhoodSelectorOpen: false,
   selectedNeighborhood: loadFromStorage<string>('domplace-neighborhood', 'Centro'),
   
@@ -337,44 +368,50 @@ export const useAppStore = create<AppState>((set, get) => ({
   setSelectedOrderTab: (tab) => set({ selectedOrderTab: tab }),
   
   // Cart actions (all mutations persist to localStorage)
-  addToCart: (product, storeName, quantity = 1) => set((state) => {
-    const existingItem = state.cartItems.find(item => item.productId === product.id)
-    let newItems: typeof state.cartItems
-    if (existingItem) {
-      newItems = state.cartItems.map(item =>
-        item.productId === product.id
-          ? { ...item, quantity: item.quantity + quantity }
-          : item
-      )
-    } else {
-      newItems = [...state.cartItems, {
-        id: `cart-${Date.now()}`,
-        productId: product.id,
-        product,
-        storeId: product.storeId,
-        storeName,
-        quantity,
-      }]
-    }
-    saveCartToStorage(newItems)
-    return { cartItems: newItems }
-  }),
+  addToCart: (product, storeName, quantity = 1) => {
+    set((state) => {
+      const existingItem = state.cartItems.find(item => item.productId === product.id)
+      if (existingItem) {
+        return {
+          cartItems: state.cartItems.map(item =>
+            item.productId === product.id
+              ? { ...item, quantity: item.quantity + quantity }
+              : item
+          ),
+        }
+      }
+      return {
+        cartItems: [...state.cartItems, {
+          id: `cart-${Date.now()}`,
+          productId: product.id,
+          product,
+          storeId: product.storeId,
+          storeName,
+          quantity,
+        }],
+      }
+    })
+    // Persist after set() completes (side effect outside updater callback)
+    saveCartToStorage(get().cartItems)
+  },
   
-  removeFromCart: (productId) => set((state) => {
-    const newItems = state.cartItems.filter(item => item.productId !== productId)
-    saveCartToStorage(newItems)
-    return { cartItems: newItems }
-  }),
+  removeFromCart: (productId) => {
+    set((state) => ({
+      cartItems: state.cartItems.filter(item => item.productId !== productId),
+    }))
+    saveCartToStorage(get().cartItems)
+  },
   
-  updateCartQuantity: (productId, quantity) => set((state) => {
-    const newItems = quantity <= 0
-      ? state.cartItems.filter(item => item.productId !== productId)
-      : state.cartItems.map(item =>
-          item.productId === productId ? { ...item, quantity } : item
-        )
-    saveCartToStorage(newItems)
-    return { cartItems: newItems }
-  }),
+  updateCartQuantity: (productId, quantity) => {
+    set((state) => ({
+      cartItems: quantity <= 0
+        ? state.cartItems.filter(item => item.productId !== productId)
+        : state.cartItems.map(item =>
+            item.productId === productId ? { ...item, quantity } : item
+          ),
+    }))
+    saveCartToStorage(get().cartItems)
+  },
   
   clearCart: () => {
     clearCartStorage()
@@ -470,6 +507,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
   openQuickAdd: (product) => set({ quickAddProduct: product, isQuickAddOpen: true }),
   closeQuickAdd: () => set({ isQuickAddOpen: false }),
+  setQuickViewProduct: (product) => set({ quickViewProduct: product }),
+  openQuickView: () => set({ isQuickViewOpen: true }),
+  closeQuickView: () => set({ isQuickViewOpen: false, quickViewProduct: null }),
   openNeighborhoodSelector: () => set({ neighborhoodSelectorOpen: true }),
   closeNeighborhoodSelector: () => set({ neighborhoodSelectorOpen: false }),
   setSelectedNeighborhood: (name) => {
@@ -481,14 +521,42 @@ export const useAppStore = create<AppState>((set, get) => ({
   toggleCompareProduct: (productId) => set((state) => {
     const exists = state.compareProductIds.includes(productId)
     if (exists) {
-      return { compareProductIds: state.compareProductIds.filter(id => id !== productId) }
+      const updated = state.compareProductIds.filter(id => id !== productId)
+      return { compareProductIds: updated, comparisonIds: updated }
     }
-    if (state.compareProductIds.length >= 3) return state
-    return { compareProductIds: [...state.compareProductIds, productId] }
+    if (state.compareProductIds.length >= 4) return state
+    const updated = [...state.compareProductIds, productId]
+    return { compareProductIds: updated, comparisonIds: updated }
   }),
-  clearComparison: () => set({ compareProductIds: [] }),
+  clearComparison: () => set({ compareProductIds: [], comparisonIds: [] }),
   isComparing: (productId) => get().compareProductIds.includes(productId),
-  
+  addToComparison: (id) => set((state) => {
+    if (state.comparisonIds.includes(id) || state.comparisonIds.length >= 4) return state
+    const updated = [...state.comparisonIds, id]
+    return { comparisonIds: updated, compareProductIds: updated }
+  }),
+  removeFromComparison: (id) => set((state) => {
+    const updated = state.comparisonIds.filter(cid => cid !== id)
+    return { comparisonIds: updated, compareProductIds: updated }
+  }),
+
+  // Recently viewed actions
+  addRecentlyViewed: (product) => {
+    const state = get()
+    const filtered = state.recentlyViewed.filter(p => p.id !== product.id)
+    const updated = [product, ...filtered].slice(0, 10)
+    saveToStorage('domplace-recently-viewed', updated)
+    set({ recentlyViewed: updated })
+  },
+  clearRecentlyViewed: () => {
+    saveToStorage('domplace-recently-viewed', [])
+    set({ recentlyViewed: [] })
+  },
+
+  // Store quick view actions
+  openStoreQuickView: (store) => set({ quickViewStore: store }),
+  closeStoreQuickView: () => set({ quickViewStore: null }),
+
   // Chat actions
   setChatMessages: (messages) => set({ chatMessages: messages }),
   addChatMessage: (message) => set((state) => ({

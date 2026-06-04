@@ -7,8 +7,10 @@ import { useAppStore, type StoreData, type ProductData } from '@/store/useAppSto
 import { ProductCard, formatBRL } from '@/components/product/ProductCard'
 import { StarRating } from '@/components/ui/StarRating'
 import { StoreRatingBreakdown } from './StoreRatingBreakdown'
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { InteractiveStars } from './InteractiveStars'
+import { StoreStatusBadge } from './StoreStatusBadge'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -118,6 +120,11 @@ export function StoreProfile({ store }: StoreProfileProps) {
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [activeTab, setActiveTab] = useState<TabValue>('produtos')
   const [showWhatsAppFab, setShowWhatsAppFab] = useState(false)
+  const bannerRef = useRef<HTMLDivElement>(null)
+  const { scrollY } = useScroll()
+  const bannerY = useTransform(scrollY, [0, 300], [0, 80])
+  const bannerOverlayOpacity = useTransform(scrollY, [0, 250], [0.55, 0.95])
+  const bannerAccentY = useTransform(scrollY, [0, 300], [0, 15])
 
   // Reviews & Promotions state
   const [reviews, setReviews] = useState<ReviewData[]>([])
@@ -267,17 +274,18 @@ export function StoreProfile({ store }: StoreProfileProps) {
   
   return (
     <div className="min-h-screen pb-20 md:pb-4">
-      {/* Hero header with premium gradient cover */}
-      <div className="relative h-56 sm:h-72 -mx-4 -mt-4 overflow-hidden">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700" />
+      {/* Hero header with premium gradient cover and parallax */}
+      <div ref={bannerRef} className="relative h-56 sm:h-72 -mx-4 -mt-4 overflow-hidden">
+        {/* Animated gradient background with parallax */}
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700 r28-ken-burns"
+          style={{ y: bannerY }}
+        />
         <motion.div 
           className="absolute inset-0 bg-gradient-to-tr from-emerald-800/50 to-amber-600/20"
-          animate={{ 
-            backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
-          }}
+          style={{ y: bannerY, backgroundSize: '200% 200%' }}
+          animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
           transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-          style={{ backgroundSize: '200% 200%' }}
         />
         {/* Pattern overlay */}
         <div className="absolute inset-0 opacity-[0.06]" style={{
@@ -285,7 +293,14 @@ export function StoreProfile({ store }: StoreProfileProps) {
           backgroundSize: '20px 20px',
         }} />
         {/* Dark gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
+          style={{ opacity: bannerOverlayOpacity }}
+        />
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-amber-500/10"
+          style={{ y: bannerAccentY, opacity: bannerOverlayOpacity }}
+ />
         
         {/* Decorative wave */}
         <div className="absolute bottom-0 left-0 right-0">
@@ -329,7 +344,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-2xl sm:text-3xl font-bold text-shadow-lg"
+            className="text-2xl sm:text-3xl font-bold text-shadow-lg bg-gradient-to-r from-white via-amber-300 to-white bg-clip-text text-transparent bg-[length:200%_auto] animate-[store-name-shimmer_3s_linear_infinite]"
           >
             {store.name}
           </motion.h1>
@@ -357,21 +372,49 @@ export function StoreProfile({ store }: StoreProfileProps) {
         </div>
       </div>
       
-      {/* Store info section */}
+      {/* Store info section with glassmorphism */}
       <div className="px-4 -mt-6 relative z-10">
-        {/* Avatar */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25, delay: 0.1 }}
-          className="flex items-end gap-4"
+        {/* Glassmorphism card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, type: 'spring', stiffness: 300, damping: 25 }}
+          className="mb-5 p-5 rounded-2xl bg-card/80 backdrop-blur-lg border border-border/50 shadow-xl r28-store-gradient-border"
         >
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-card border-4 border-background shadow-xl flex items-center justify-center text-2xl sm:text-3xl font-bold text-primary gradient-border">
-            {store.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
-          </div>
-          <div className="pb-1 min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <StarRating rating={store.rating} size="sm" showCount count={store.totalReviews} />
+          <div className="flex items-end gap-4">
+            {/* Avatar */}
+            <motion.div
+              initial={{ scale: 0.6 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25, delay: 0.1 }}
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-primary/20 to-emerald-600/20 border-2 border-background shadow-xl flex items-center justify-center text-2xl sm:text-3xl font-bold text-primary gradient-border shrink-0"
+            >
+              {store.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+            </motion.div>
+            <div className="pb-1 min-w-0 flex-1">
+              <motion.h2 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl sm:text-2xl font-bold text-shadow-lg r28-store-name-shimmer"
+              >
+                {store.name}
+              </motion.h2>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.25 }}
+                className="flex items-center gap-2 mt-1"
+              >
+                {/* Animated rating stars with glow pulse */}
+                <motion.div
+                  animate={{ boxShadow: store.rating > 0 ? '0 0 14px oklch(0.84 0.17 65 / 0.3)' : '0 0 0px oklch(0.84 0.17 65 / 0)' }}
+                  transition={{ duration: 2.5, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+                  className={store.rating > 0 ? 'rating-star-glow rounded-lg' : 'rounded-lg'}
+                >
+                  <StarRating rating={store.rating} size="sm" showCount count={store.totalReviews} />
+                </motion.div>
+              </motion.div>
             </div>
           </div>
         </motion.div>
@@ -429,6 +472,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
           transition={{ delay: 0.45 }}
           className="flex items-center gap-3 mt-4"
         >
+          <StoreStatusBadge isOpen={isOpen} closingTime={store.closesAt || undefined} />
           {store.deliveryFee === 0 ? (
             <Badge variant="secondary" className="text-primary bg-primary/10 text-xs">
               <Truck className="h-3 w-3 mr-1" />
@@ -529,11 +573,13 @@ export function StoreProfile({ store }: StoreProfileProps) {
                   }`}
                 >
                   {isActive && (
-                    <motion.div
-                      layoutId="store-tab-bg"
-                      className="absolute inset-0 bg-primary rounded-lg"
-                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-                    />
+                    <>
+                      <motion.div
+                        layoutId="store-tab-bg"
+                        className="absolute inset-0 bg-primary rounded-lg shadow-md shadow-primary/30"
+                        transition={{ type: 'spring' as const, stiffness: 420, damping: 28, mass: 0.8 }}
+                      />
+                    </>
                   )}
                   <TabIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 relative z-10" />
                   <span className="relative z-10">{tab.label}</span>
@@ -569,11 +615,20 @@ export function StoreProfile({ store }: StoreProfileProps) {
                   {products.map((p, i) => (
                     <motion.div
                       key={p.id}
-                      initial={{ opacity: 0, y: 16 }}
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.05, duration: 0.3 }}
+                      transition={{
+                        delay: i * 0.08,
+                        duration: 0.45,
+                        type: 'spring' as const,
+                        stiffness: 220,
+                        damping: 20,
+                      }}
+                      whileHover={{ scale: 1.02, y: -2 }}
                     >
-                      <ProductCard product={p} />
+                      <div className="product-card-hover-enhanced r28-grid-hover-shine">
+                        <ProductCard product={p} />
+                      </div>
                     </motion.div>
                   ))}
                 </div>
@@ -673,15 +728,21 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     )}
                     {/* Social media */}
                     <div className="flex gap-2 pt-2">
-                      <Button variant="outline" size="sm" className="h-9 gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30">
+                      <Button variant="outline" size="sm" className="h-9 gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                        onClick={() => window.open('https://instagram.com/' + store.name.toLowerCase().replace(/\s+/g, ''), '_blank')}
+                      >
                         <Instagram className="h-4 w-4" />
                         Instagram
                       </Button>
-                      <Button variant="outline" size="sm" className="h-9 gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30">
+                      <Button variant="outline" size="sm" className="h-9 gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                        onClick={() => window.open('https://facebook.com/' + store.name.toLowerCase().replace(/\s+/g, ''), '_blank')}
+                      >
                         <Facebook className="h-4 w-4" />
                         Facebook
                       </Button>
-                      <Button variant="outline" size="sm" className="h-9 gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30">
+                      <Button variant="outline" size="sm" className="h-9 gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                        onClick={() => window.open('https://wa.me/5591999999999', '_blank')}
+                      >
                         <Globe className="h-4 w-4" />
                         Site
                       </Button>
@@ -731,13 +792,31 @@ export function StoreProfile({ store }: StoreProfileProps) {
               transition={{ duration: 0.2 }}
               className="mt-4 space-y-4"
             >
-              {/* Rating breakdown */}
+              {/* Rating breakdown with interactive stars */}
               <StoreRatingBreakdown
                 rating={store.rating}
                 totalReviews={store.totalReviews}
                 storeName={store.name}
                 ratingDistribution={ratingDistribution}
               />
+
+              {/* Interactive Star Rating */}
+              <Card className="border-primary/10 bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-900/5 dark:to-orange-900/5">
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-sm mb-3 flex items-center gap-1.5">
+                    <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                    Avalie esta loja
+                  </h3>
+                  <InteractiveStars
+                    rating={store.rating}
+                    totalReviews={store.totalReviews}
+                    interactive
+                    size="lg"
+                    showCount
+                    layout="horizontal"
+                  />
+                </CardContent>
+              </Card>
               
               {/* Reviews list */}
               {reviewsLoading ? (

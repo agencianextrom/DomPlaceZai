@@ -408,21 +408,53 @@ export function AIChatBot() {
 
   return (
     <>
-      {/* Floating Action Button */}
+      {/* Floating Action Button — enhanced with glow rings and tooltip */}
       <AnimatePresence>
         {!isChatOpen && (
-          <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-            onClick={toggleChat}
-            className="fixed bottom-24 right-4 sm:bottom-8 sm:right-8 z-40 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center group"
-            aria-label="Abrir chat"
-          >
-            <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
-            <span className="absolute inset-0 rounded-full bg-primary animate-ping opacity-20" />
-          </motion.button>
+          <>
+            {/* Tooltip on hover */}
+            <motion.div
+              initial={{ opacity: 0, y: 5, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 5, scale: 0.9 }}
+              transition={{ delay: 0.3 }}
+              className="fixed bottom-28 sm:bottom-[4.5rem] right-4 sm:right-8 z-40 bg-card border border-border rounded-lg px-3 py-1.5 shadow-lg pointer-events-none hidden sm:block"
+              style={{ transform: 'translateX(calc(-100% - 2.5rem))' }}
+            >
+              <p className="text-xs font-medium whitespace-nowrap">Precisa de ajuda? 💬</p>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-2 h-2 bg-card border-r border-b border-border rotate-[-45deg]" />
+            </motion.div>
+            <motion.button
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: 'spring' as const, stiffness: 260, damping: 20 }}
+              onClick={toggleChat}
+              className="fixed bottom-24 right-4 sm:bottom-8 sm:right-8 z-40 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-emerald-600 text-primary-foreground shadow-xl hover:shadow-2xl transition-shadow flex items-center justify-center group relative overflow-hidden"
+              aria-label="Abrir chat"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {/* Animated gradient border ring */}
+              <motion.span
+                className="absolute inset-0 rounded-full"
+                animate={{ boxShadow: ['0 0 0 0 rgba(16,185,129,0.4)', '0 0 0 12px rgba(16,185,129,0)', '0 0 0 0 rgba(16,185,129,0.4)'] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <motion.span
+                className="absolute inset-0 rounded-full"
+                animate={{ boxShadow: ['0 0 0 0 rgba(16,185,129,0.2)', '0 0 0 20px rgba(16,185,129,0)', '0 0 0 0 rgba(16,185,129,0.2)'] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+              />
+              {/* Shimmer overlay */}
+              <motion.span
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
+              />
+              <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform relative z-10" />
+            </motion.button>
+          </>
         )}
       </AnimatePresence>
 

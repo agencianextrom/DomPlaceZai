@@ -19,8 +19,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { useAppStore } from '@/store/useAppStore'
 import { motion } from 'framer-motion'
 import { formatBRL } from '@/components/product/ProductCard'
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
 import { LoyaltyHistory } from './LoyaltyHistory'
 import { LoyaltyTier } from './LoyaltyTier'
+import { LoyaltyCard } from './LoyaltyCard'
+import { AchievementsPanel } from './AchievementsPanel'
+import { ReferralProgram } from './ReferralProgram'
 import { AddressManager } from './AddressManager'
 import { SpinWheel } from '@/components/promotions/SpinWheel'
 import { toast } from 'sonner'
@@ -526,12 +530,15 @@ export function ProfileView() {
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
+                    transition={{ delay: 0.2, type: 'spring' as const, stiffness: 300, damping: 25 }}
                     className="relative"
                   >
-                    <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
-                      <User className="h-10 w-10 sm:h-12 sm:w-12 text-white/70" />
+                    <div className="avatar-rotating-ring">
+                      <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
+                        <User className="h-10 w-10 sm:h-12 sm:w-12 text-white/70" />
+                      </div>
                     </div>
+                    <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-400 border-[3px] border-emerald-600 pulse-dot" />
                   </motion.div>
                   <div className="flex-1 pb-1">
                     <h1 className="text-xl sm:text-2xl font-bold text-shadow-lg">Visitante</h1>
@@ -604,14 +611,14 @@ export function ProfileView() {
                   key={item.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.25 + idx * 0.03 }}
-                  whileHover={{ x: 4, transition: { duration: 0.2 } }}
+                  transition={{ delay: 0.25 + idx * 0.06 }}
+                  whileHover={{ x: 3, y: -3, boxShadow: '0 4px 16px oklch(0.45 0.1 155 / 0.12), 0 2px 4px oklch(0 0 0 / 0.06)' }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     toast.info('Faça login para acessar esta funcionalidade')
                     useAppStore.getState().openAuthModal()
                   }}
-                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 hover:shadow-sm transition-all text-left group menu-item-hover elevated-card ripple-effect"
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group profile-menu-item"
                 >
                   <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                     <item.icon className="h-5 w-5 text-primary" />
@@ -628,11 +635,13 @@ export function ProfileView() {
         </div>
       ) : (
       <>
-      {/* Profile header with gradient cover area and wave bottom */}
+      {/* Profile header with animated gradient border effect */}
+      <div className="profile-card-animated-border mb-5">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-2xl mb-5"
+        transition={{ type: 'spring' as const, stiffness: 260, damping: 25 }}
+        className="relative overflow-hidden rounded-[14px]"
       >
         {/* Cover gradient area */}
         <div className="relative bg-gradient-to-br from-primary via-emerald-600 to-teal-600 pt-6 pb-8 text-white">
@@ -648,26 +657,28 @@ export function ProfileView() {
           {/* Profile info */}
           <div className="relative px-6">
             <div className="flex items-end gap-4">
-              {/* Avatar with ring and gradient border */}
+              {/* Avatar with rotating gradient ring */}
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
+                transition={{ delay: 0.2, type: 'spring' as const, stiffness: 300, damping: 25 }}
                 className="relative"
               >
-                {profile?.avatar ? (
-                  <img
-                    src={profile.avatar}
-                    alt={displayName}
-                    className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl object-cover border-2 border-white/30 shadow-lg avatar-gradient-ring"
-                  />
-                ) : (
-                  <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg avatar-gradient-ring">
-                    {avatarInitial}
-                  </div>
-                )}
+                <div className="avatar-rotating-ring">
+                  {profile?.avatar ? (
+                    <img
+                      src={profile.avatar}
+                      alt={displayName}
+                      className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl object-cover border-2 border-white/30 shadow-lg"
+                    />
+                  ) : (
+                    <div className="h-22 w-22 sm:h-26 sm:w-26 rounded-2xl bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md flex items-center justify-center text-4xl sm:text-5xl font-bold border-2 border-white/30 shadow-lg">
+                      {avatarInitial}
+                    </div>
+                  )}
+                </div>
                 {/* Online indicator */}
-                <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-400 border-[3px] border-emerald-600" />
+                <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-400 border-[3px] border-emerald-600 pulse-dot" />
               </motion.div>
               <div className="flex-1 pb-1">
                 <h1 className="text-xl sm:text-2xl font-bold text-shadow-lg">{displayName}</h1>
@@ -700,78 +711,94 @@ export function ProfileView() {
         <div className="relative z-20 px-4 -mt-3">
           <div className="grid grid-cols-3 gap-2.5">
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.3, type: 'spring' as const, stiffness: 260, damping: 20 }}
               className="bg-card rounded-xl border border-border p-3 text-center shadow-sm card-premium-hover"
             >
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
                 <ShoppingBag className="h-4 w-4 text-primary" />
               </div>
-              <p className="text-lg font-bold text-primary animate-count-up text-glow-emerald">{orderCount}</p>
+              <p className="text-lg font-bold text-primary animate-count-up text-glow-emerald"><AnimatedCounter value={orderCount} duration={1000} locale /></p>
               <p className="text-[10px] text-muted-foreground">Pedidos</p>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.4, type: 'spring' as const, stiffness: 260, damping: 20 }}
               className="bg-card rounded-xl border border-border p-3 text-center shadow-sm card-premium-hover"
             >
               <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Heart className="h-4 w-4 text-red-500" />
               </div>
-              <p className="text-lg font-bold text-red-500 animate-count-up" style={{ animationDelay: '0.1s' }}>{favoriteCount}</p>
+              <p className="text-lg font-bold text-red-500 animate-count-up" style={{ animationDelay: '0.1s' }}><AnimatedCounter value={favoriteCount} duration={1000} delay={100} locale /></p>
               <p className="text-[10px] text-muted-foreground">Favoritos</p>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.5, type: 'spring' as const, stiffness: 260, damping: 20 }}
               className="bg-card rounded-xl border border-border p-3 text-center shadow-sm card-premium-hover"
             >
               <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Award className="h-4 w-4 text-amber-500" />
               </div>
-              <p className="text-lg font-bold text-amber-500 animate-count-up text-glow-emerald" style={{ animationDelay: '0.2s' }}>{loyaltyPoints.toLocaleString('pt-BR')}</p>
+              <p className="text-lg font-bold text-amber-500 animate-count-up text-glow-emerald" style={{ animationDelay: '0.2s' }}><AnimatedCounter value={loyaltyPoints} duration={1000} delay={200} locale /></p>
               <p className="text-[10px] text-muted-foreground">Pontos</p>
             </motion.div>
           </div>
         </div>
       </motion.div>
+      </div>
 
       {/* Loyalty Tier Card */}
-      <LoyaltyTier />
-
-      {/* Loyalty points card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.08, type: 'spring' as const, stiffness: 200, damping: 22 }}
+      >
+        <LoyaltyTier />
+      </motion.div>
+
+      {/* Loyalty Card — glass morphism with animated points */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, type: 'spring' as const, stiffness: 200, damping: 22 }}
         className="mb-6"
       >
-        <Card className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 border-amber-200/50 dark:border-amber-800/30 cursor-pointer hover:shadow-md transition-shadow"
-          onClick={() => setActiveSection('loyalty')}
-        >
-          <CardContent className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                <Award className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <p className="font-bold text-sm">{loyaltyPoints.toLocaleString('pt-BR')} pontos</p>
-                <p className="text-xs text-muted-foreground">Nível Bronze · Faltam {Math.max(0, 500 - loyaltyPoints)} p/ próximo</p>
-              </div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-muted-foreground" />
-          </CardContent>
-        </Card>
+        <LoyaltyCard
+          points={loyaltyPoints}
+          nextReward={500}
+          nextRewardName="R$5 de desconto"
+        />
+      </motion.div>
+
+      {/* Achievements Panel — gamification badges */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.14, type: 'spring' as const, stiffness: 200, damping: 22 }}
+        className="mb-6"
+      >
+        <AchievementsPanel />
+      </motion.div>
+
+      {/* Referral Program — Indique Amigos */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.16, type: 'spring' as const, stiffness: 200, damping: 22 }}
+        className="mb-6"
+      >
+        <ReferralProgram />
       </motion.div>
 
       {/* Recent orders */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
+        transition={{ delay: 0.18, type: 'spring' as const, stiffness: 200, damping: 22 }}
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
@@ -828,7 +855,7 @@ export function ProfileView() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.18 }}
+        transition={{ delay: 0.22, type: 'spring' as const, stiffness: 200, damping: 22 }}
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
@@ -866,7 +893,7 @@ export function ProfileView() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.26, type: 'spring' as const, stiffness: 200, damping: 22 }}
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
@@ -915,7 +942,7 @@ export function ProfileView() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.22 }}
+        transition={{ delay: 0.3, type: 'spring' as const, stiffness: 200, damping: 22 }}
         className="mb-4"
       >
         <Card
@@ -947,7 +974,7 @@ export function ProfileView() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.25 }}
+        transition={{ delay: 0.32 }}
       >
         <div className="space-y-1.5">
           {menuItems.map((item, idx) => (
@@ -955,8 +982,8 @@ export function ProfileView() {
               key={item.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.25 + idx * 0.03 }}
-              whileHover={{ x: 4, transition: { duration: 0.2 } }}
+              transition={{ delay: 0.32 + idx * 0.05, type: 'spring' as const, stiffness: 200, damping: 22 }}
+              whileHover={{ x: 3, y: -3, boxShadow: '0 4px 16px oklch(0.45 0.1 155 / 0.12), 0 2px 4px oklch(0 0 0 / 0.06)' }}
               whileTap={{ scale: 0.98 }}
               onClick={() => {
                 if (item.id === 'orders') {
@@ -983,7 +1010,7 @@ export function ProfileView() {
                   setActiveSection('spin-wheel')
                 }
               }}
-              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 hover:shadow-sm transition-all text-left group menu-item-hover elevated-card ripple-effect"
+              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group profile-menu-item"
             >
               <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                 <item.icon className="h-5 w-5 text-primary" />

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * rumorScanner.ts
  * 传闻与早期信号扫描（适配平台 finance skill）

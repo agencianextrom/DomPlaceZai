@@ -1,13 +1,14 @@
 'use client'
 
 import { 
-  Heart, ShoppingCart, Star, Utensils, Sprout, HeartPulse, Smartphone, PawPrint, 
+  Eye, Heart, Share2, ShoppingCart, Star, Utensils, Sprout, HeartPulse, Smartphone, PawPrint, 
   Scissors, Shirt, Wrench, Home, BookOpen, Dumbbell, Package, Truck, GitCompareArrows,
   Zap, Check
 } from 'lucide-react'
 import { PriceDropAlert } from './PriceDropAlert'
 import { SocialProofBadges } from './SocialProofBadges'
 import { StockUrgency } from './StockUrgency'
+import { fireConfettiFromElement } from '@/lib/confetti'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -17,6 +18,7 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 
 interface ProductCardProps {
   product: ProductData
+  index?: number
 }
 
 const gradients = [
@@ -26,6 +28,82 @@ const gradients = [
   'from-rose-100 to-pink-200 dark:from-rose-900/30 dark:to-pink-800/30',
   'from-lime-100 to-green-200 dark:from-lime-900/30 dark:to-green-800/30',
 ]
+
+/* ─── CSS Keyframes injected once ─── */
+const CARD_ANIM_STYLES = `
+@keyframes shadow-cascade-layer1 {
+  0%   { box-shadow: 0 1px 2px oklch(0.18 0.02 150 / 0.03); }
+  100% { box-shadow: 0 24px 48px oklch(0.18 0.02 150 / 0.14); }
+}
+@keyframes shadow-cascade-layer2 {
+  0%   { box-shadow: 0 1px 2px oklch(0.18 0.02 150 / 0.02); }
+  100% { box-shadow: 0 12px 24px oklch(0.18 0.02 150 / 0.09); }
+}
+@keyframes shadow-cascade-layer3 {
+  0%   { box-shadow: 0 1px 1px oklch(0.18 0.02 150 / 0.02); }
+  100% { box-shadow: 0 4px 10px oklch(0.18 0.02 150 / 0.06); }
+}
+.card-shadow-cascade {
+  box-shadow: 0 1px 2px oklch(0.18 0.02 150 / 0.03),
+              0 1px 2px oklch(0.18 0.02 150 / 0.02),
+              0 1px 1px oklch(0.18 0.02 150 / 0.02);
+  transition: box-shadow 0s;
+}
+.card-shadow-cascade:hover {
+  animation:
+    shadow-cascade-layer1 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    shadow-cascade-layer2 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    shadow-cascade-layer3 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes star-shimmer {
+  0%   { transform: translateX(-150%); }
+  100% { transform: translateX(250%); }
+}
+.star-shimmer-wrap {
+  position: relative;
+  overflow: hidden;
+}
+.star-shimmer-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(0.85 0.08 85 / 0.35) 45%,
+    oklch(0.85 0.08 85 / 0.5) 50%,
+    oklch(0.85 0.08 85 / 0.35) 55%,
+    transparent 100%
+  );
+  animation: star-shimmer 2.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes discount-badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+.discount-badge-pulse {
+  animation: discount-badge-pulse 2s ease-in-out infinite;
+}
+@keyframes card-shimmer-sweep {
+  0% { transform: translateX(-100%) skewX(-12deg); }
+  100% { transform: translateX(200%) skewX(-12deg); }
+}
+.card-shimmer-overlay {
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.group:hover .card-shimmer-overlay {
+  opacity: 1;
+  animation: card-shimmer-sweep 0.8s ease-in-out;
+}
+`
 
 function formatBRL(value: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -50,7 +128,7 @@ function CategoryIcon({ category }: { category: string }) {
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <div className="flex items-center gap-px">
+    <div className="flex items-center gap-px star-shimmer-wrap">
       {[1, 2, 3, 4, 5].map((star) => {
         const filled = rating >= star
         const half = !filled && rating >= star - 0.5
@@ -116,7 +194,7 @@ function MiniCartPopup({ product, onClose }: { product: ProductData; onClose: ()
       initial={{ opacity: 0, y: 8, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 8, scale: 0.95 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-64 bg-card border border-border rounded-xl shadow-xl overflow-hidden"
@@ -187,7 +265,7 @@ function MiniCartPopup({ product, onClose }: { product: ProductData; onClose: ()
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+                transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
               >
                 <Check className="h-4 w-4" />
               </motion.div>
@@ -208,12 +286,16 @@ function MiniCartPopup({ product, onClose }: { product: ProductData; onClose: ()
   )
 }
 
-export function ProductCard({ product }: ProductCardProps) {
-  const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct, isComparing, toggleCompareProduct } = useAppStore()
+export function ProductCard({ product, index = 0 }: ProductCardProps) {
+  const { navigate, selectProduct, addToCart, isFavoriteProduct, toggleFavoriteProduct, isComparing, toggleCompareProduct, setQuickViewProduct, openQuickView } = useAppStore()
   const [showCartBtn, setShowCartBtn] = useState(false)
   const [cartAnimating, setCartAnimating] = useState(false)
   const [showMiniCart, setShowMiniCart] = useState(false)
   const [imgError, setImgError] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  const [showCheckmark, setShowCheckmark] = useState(false)
+  const [shareClicked, setShareClicked] = useState(false)
+  const [magneticOffset, setMagneticOffset] = useState({ x: 0, y: 0 })
 
   // Resolve the best product image URL
   const imageUrl = !imgError ? resolveProductImage({
@@ -248,11 +330,26 @@ export function ProductCard({ product }: ProductCardProps) {
     toggleFavoriteProduct(product.id)
   }, [product.id, toggleFavoriteProduct])
   
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`)
+    e.currentTarget.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`)
+    // Magnetic offset for action bar
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    const dx = (e.clientX - rect.left - centerX) / rect.width
+    const dy = (e.clientY - rect.top - centerY) / rect.height
+    setMagneticOffset({ x: dx * 6, y: dy * 4 })
+  }, [])
+
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
     addToCart(product, product.storeName || 'Loja')
     setCartAnimating(true)
+    setShowCheckmark(true)
+    fireConfettiFromElement(e.currentTarget as HTMLElement)
     setTimeout(() => setCartAnimating(false), 400)
+    setTimeout(() => setShowCheckmark(false), 600)
   }, [product, addToCart])
 
   const handleQuickAdd = useCallback((e: React.MouseEvent) => {
@@ -260,277 +357,496 @@ export function ProductCard({ product }: ProductCardProps) {
     setShowMiniCart(true)
   }, [])
 
+  const handleQuickView = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    setQuickViewProduct(product)
+    openQuickView()
+  }, [product, setQuickViewProduct, openQuickView])
+
+  const handleShare = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    setShareClicked(true)
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(`${product.name} - ${formatBRL(product.price)}`)
+    }
+    setTimeout(() => setShareClicked(false), 800)
+  }, [product])
+
   return (
-    <motion.div
-      whileHover={{ y: -4, boxShadow: '0 16px 40px oklch(0.18 0.02 150 / 0.12)' }}
-      className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm hover:shadow-xl transition-all duration-300"
-      onClick={handleCardClick}
-      onMouseEnter={() => setShowCartBtn(true)}
-      onMouseLeave={() => { setShowCartBtn(false); setShowMiniCart(false) }}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick() }}
-    >
-      {/* Image area */}
-      <div className="relative aspect-square flex items-center justify-center bg-gradient-to-br overflow-hidden">
-        {imageUrl ? (
-          <>
-            <img
-              src={imageUrl}
-              alt={product.name}
-              className="absolute inset-0 w-full h-full object-cover z-0"
-              onError={() => setImgError(true)}
-              loading="lazy"
-            />
-            {/* Gradient overlay on image for better badge readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-[1]" />
-          </>
-        ) : (
-          <>
-            <div className={`${gradient} absolute inset-0`} />
-            {/* Subtle pattern overlay */}
-            <div className="absolute inset-0 opacity-[0.04]" style={{
-              backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
-              backgroundSize: '20px 20px',
-            }} />
-            <motion.div 
-              className="relative z-10 h-16 w-16 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm"
-              whileHover={{ scale: 1.12, rotate: 3 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            >
-              <CategoryIcon category={product.category} />
-            </motion.div>
-          </>
-        )}
-        
-        {/* Ribbon discount badge */}
-        {discount > 0 && (
-          <div className="ribbon-badge">
-            -{discount}%
-          </div>
-        )}
+    <>
+      {/* Inject keyframe animations */}
+      <style dangerouslySetInnerHTML={{ __html: CARD_ANIM_STYLES }} />
 
-        {/* "Oferta" badge — red/orange gradient when isOffer */}
-        {product.isOffer && discount === 0 && (
-          <div className="absolute top-2 left-2 z-10">
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 text-[10px] font-bold px-2 py-0.5 shadow-md shadow-red-500/20">
-                <Zap className="h-2.5 w-2.5 mr-0.5 fill-white" />
-                Oferta
-              </Badge>
-            </motion.div>
-          </div>
-        )}
-
-        {/* Free shipping badge */}
-        {showFreeShipping && (
-          <div className={`absolute z-10 bg-emerald-500 text-white text-[9px] font-semibold px-2 py-0.5 rounded-b-md flex items-center gap-0.5 ${
-            discount > 0 ? 'top-10 right-2' : 'top-0 right-2'
-          }`}>
-            <Truck className="h-2.5 w-2.5" />
-            Frete Grátis
-          </div>
-        )}
-
-        {/* "Novo" badge (only if no discount and not offer) */}
-        {product.isNew && !product.isOffer && discount === 0 && (
-          <div className="absolute top-2 left-2 z-10">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-            >
-              <Badge className="bg-primary text-primary-foreground border-0 text-[10px] px-1.5 py-0 shadow-sm">
-                Novo
-              </Badge>
-            </motion.div>
-          </div>
-        )}
-
-        {/* Popular badge */}
-        {isPopular && (
-          <div className="absolute bottom-2 left-2 z-10 bg-amber-500/90 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-md flex items-center gap-0.5 shadow-sm">
-            <Star className="h-2.5 w-2.5 fill-white" />
-            Popular
-          </div>
-        )}
-        
-        {/* Favorite button — top right, always visible */}
-        <button
-          onClick={handleFavoriteClick}
-          className={`absolute z-10 h-7 w-7 rounded-full bg-white/80 dark:bg-black/40 flex items-center justify-center hover:bg-white dark:hover:bg-black/60 transition-colors ${
-            showFreeShipping && !product.isOffer && discount === 0 ? 'top-12 left-2' : 'top-2 right-2'
-          }`}
-          aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: Math.min(index * 0.06, 0.5), duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        whileHover={{ y: -5, scale: 1.02 }}
+        className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm card-shadow-cascade card-spotlight card-shine card-glow-border hover:shadow-xl transition-shadow duration-300"
+        onClick={handleCardClick}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setShowCartBtn(true)}
+        onMouseLeave={() => { setShowCartBtn(false); setShowMiniCart(false); setIsHovered(false) }}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick() }}
+      >
+        {/* Diagonal shimmer sweep overlay on hover */}
+        <div
+          className="card-shimmer-overlay absolute inset-0 rounded-xl overflow-hidden"
+          aria-hidden="true"
         >
-          <motion.div
-            animate={isFav ? { scale: [1, 1.4, 0.85, 1.15, 1] } : { scale: 1 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
-          >
-            <Heart className={`h-3.5 w-3.5 transition-colors duration-200 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground group-hover:text-red-400'}`} />
-          </motion.div>
-        </button>
-
-        {/* Compare button — only on hover */}
-        <AnimatePresence>
-          {showCartBtn && !showMiniCart && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-              onClick={(e) => {
-                e.stopPropagation()
-                toggleCompareProduct(product.id)
-              }}
-              className={`absolute bottom-2 right-2 z-10 h-6 w-6 rounded-md flex items-center justify-center transition-colors ${
-                isCompared
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'bg-white/80 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60'
-              }`}
-              aria-label={isCompared ? 'Remover da comparação' : 'Adicionar à comparação'}
-            >
-              <GitCompareArrows className={`h-3 w-3 ${isCompared ? '' : 'text-muted-foreground'}`} />
-            </motion.button>
-          )}
-        </AnimatePresence>
-        
-        {/* Quick add to cart (hover) */}
-        <AnimatePresence>
-          {showCartBtn && !showMiniCart && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="absolute bottom-0 left-0 right-0 z-10 p-2"
-            >
-              <Button
-                size="sm"
-                className={`w-full h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg rounded-lg transition-transform btn-glow ${
-                  cartAnimating ? 'scale-95' : 'scale-100'
-                }`}
-                onClick={handleAddToCart}
-              >
-                <motion.div
-                  animate={cartAnimating ? { scale: [1, 1.4, 1], rotate: [0, -15, 0] } : {}}
-                  transition={{ duration: 0.4 }}
-                >
-                  <ShoppingCart className="h-3 w-3 mr-1" />
-                </motion.div>
-                Adicionar
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Mini Cart Popup */}
-        <AnimatePresence>
-          {showMiniCart && (
-            <div className="absolute bottom-full left-0 right-0 z-50 flex justify-center pointer-events-auto">
-              <MiniCartPopup product={product} onClose={() => setShowMiniCart(false)} />
-            </div>
-          )}
-        </AnimatePresence>
-      </div>
-      
-      {/* Info */}
-      <div className="p-2.5 flex flex-col flex-1 min-h-0">
-        {/* Store name with logo + Quick add button */}
-        <div className="flex items-center gap-1.5 mt-0">
-          {product.storeName && (
-            <div className="flex items-center gap-1 min-w-0 flex-1">
-              <div className="h-4 w-4 rounded bg-gradient-to-br from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/20 flex items-center justify-center shrink-0">
-                <span className="text-[7px] font-bold text-primary leading-none">
-                  {getStoreInitials(product.storeName)}
-                </span>
-              </div>
-              <p className="text-[10px] font-medium text-primary truncate">{product.storeName}</p>
-            </div>
-          )}
-          {/* Quick add (eye icon for mini cart popup) */}
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showCartBtn ? 1 : 0 }}
-            onClick={handleQuickAdd}
-            className="h-5 w-5 rounded flex items-center justify-center bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0"
-            aria-label="Adicionar rapidamente"
-          >
-            <Zap className="h-2.5 w-2.5" />
-          </motion.button>
-        </div>
-
-        <h3 className="text-xs font-semibold mt-0.5 line-clamp-2 leading-tight min-h-[2rem]">{product.name}</h3>
-        
-        {/* Price Drop Alert - inline badge */}
-        <div className="mt-1">
-          <PriceDropAlert
-            price={product.price}
-            comparePrice={product.comparePrice || 0}
-            size="sm"
-            variant="badge"
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 45%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.25) 55%, transparent 60%)',
+            }}
           />
         </div>
+
+        {/* Image area */}
+        <div
+          className="relative aspect-square flex items-center justify-center bg-gradient-to-br overflow-hidden img-hover-overlay"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {imageUrl ? (
+            <>
+              <img
+                src={imageUrl}
+                alt={product.name}
+                className="absolute inset-0 w-full h-full object-cover z-0 will-change-transform"
+                style={{
+                  transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+                  transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+                onError={() => setImgError(true)}
+                loading="lazy"
+              />
+              {/* Gradient overlay on image for better badge readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-[1]" />
+              {/* Animated "Ver Produto" overlay on hover */}
+              <motion.div
+                className="absolute inset-0 z-[2] flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isHovered ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <motion.span
+                  className="relative z-10 text-white text-xs font-bold tracking-wide px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25"
+                  initial={{ y: 12, opacity: 0, scale: 0.9 }}
+                  animate={{ y: isHovered ? 0 : 12, opacity: isHovered ? 1 : 0, scale: isHovered ? 1 : 0.9 }}
+                  transition={{ type: 'spring' as const, stiffness: 400, damping: 25, delay: 0.08 }}
+                >
+                  <Eye className="h-3.5 w-3.5 inline mr-1.5 -mt-0.5" />
+                  Ver Produto
+                </motion.span>
+              </motion.div>
+            </>
+          ) : (
+            <>
+              <div className={`${gradient} absolute inset-0`} />
+              {/* Subtle pattern overlay */}
+              <div className="absolute inset-0 opacity-[0.04]" style={{
+                backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
+                backgroundSize: '20px 20px',
+              }} />
+              <motion.div 
+                className="relative z-10 h-16 w-16 rounded-2xl bg-white/70 dark:bg-black/20 flex items-center justify-center shadow-sm"
+                whileHover={{ scale: 1.12, rotate: 3 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
+              >
+                <CategoryIcon category={product.category} />
+              </motion.div>
+            </>
+          )}
+          
+          {/* Ribbon discount badge — with pulse animation */}
+          {discount > 0 && (
+            <motion.div
+              className="ribbon-badge discount-badge-pulse"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
+            >
+              -{discount}%
+            </motion.div>
+          )}
+
+          {/* "Oferta" badge — red/orange gradient when isOffer */}
+          {product.isOffer && discount === 0 && (
+            <div className="absolute top-2 left-2 z-10">
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 text-[10px] font-bold px-2 py-0.5 shadow-md shadow-red-500/20 offer-badge-glow">
+                  <Zap className="h-2.5 w-2.5 mr-0.5 fill-white" />
+                  Oferta
+                </Badge>
+              </motion.div>
+            </div>
+          )}
+
+          {/* Free shipping badge */}
+          {showFreeShipping && (
+            <div className={`absolute z-10 bg-emerald-500 text-white text-[9px] font-semibold px-2 py-0.5 rounded-b-md flex items-center gap-0.5 ${
+              discount > 0 ? 'top-10 right-2' : 'top-0 right-2'
+            }`}>
+              <Truck className="h-2.5 w-2.5" />
+              Frete Grátis
+            </div>
+          )}
+
+          {/* "Novo" badge (only if no discount and not offer) */}
+          {product.isNew && !product.isOffer && discount === 0 && (
+            <div className="absolute top-2 left-2 z-10">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
+              >
+                <Badge className="bg-primary text-primary-foreground border-0 text-[10px] px-1.5 py-0 shadow-sm relative overflow-hidden">
+                  <span className="badge-shimmer">Novo</span>
+                </Badge>
+              </motion.div>
+            </div>
+          )}
+
+          {/* Popular badge */}
+          {isPopular && (
+            <div className="absolute bottom-2 left-2 z-10 bg-amber-500/90 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-md flex items-center gap-0.5 shadow-sm">
+              <Star className="h-2.5 w-2.5 fill-white" />
+              Popular
+            </div>
+          )}
+          
+          {/* Favorite button — top right, always visible */}
+          <button
+            onClick={handleFavoriteClick}
+            className={`absolute z-10 h-7 w-7 rounded-full bg-white/80 dark:bg-black/40 flex items-center justify-center hover:bg-white dark:hover:bg-black/60 transition-colors heart-tap ${
+              showFreeShipping && !product.isOffer && discount === 0 ? 'top-12 left-2' : 'top-2 right-2'
+            }`}
+            aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+          >
+            <motion.div
+              whileTap={{ scale: 0.6 }}
+              animate={isFav 
+                ? { scale: [1, 1.5, 0.8, 1.2, 1], rotate: [0, -15, 10, -5, 0] } 
+                : { scale: 1, rotate: 0 }}
+              transition={{ duration: 0.6, ease: 'easeInOut' }}
+            >
+              <Heart className={`h-3.5 w-3.5 transition-colors duration-200 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground group-hover:text-red-400'}`} />
+            </motion.div>
+            {/* Heart burst particles on favorite */}
+            <AnimatePresence>
+              {isFav && (
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 0 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  {[...Array(6)].map((_, i) => (
+                    <motion.span
+                      key={i}
+                      className="absolute top-1/2 left-1/2 w-1 h-1 rounded-full bg-red-400"
+                      initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+                      animate={{
+                        x: Math.cos((i * 60) * Math.PI / 180) * 16,
+                        y: Math.sin((i * 60) * Math.PI / 180) * 16,
+                        scale: 0,
+                        opacity: 0,
+                      }}
+                      transition={{ duration: 0.5, ease: 'easeOut' }}
+                    />
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </button>
+
+          {/* ─── Quick-action overlay on hover (floating action bar) ─── */}
+          <AnimatePresence>
+            {showCartBtn && !showMiniCart && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
+                className="absolute bottom-0 left-0 right-0 z-10"
+                style={{ transform: `translate(${magneticOffset.x}px, ${magneticOffset.y}px)` }}
+              >
+                {/* Floating action pill bar */}
+                <div className="flex justify-center mb-1.5">
+                  <div className="flex items-center gap-1 bg-black/40 backdrop-blur-md rounded-full px-1.5 py-1 shadow-lg">
+                    {/* Favorite */}
+                    <motion.button
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={handleFavoriteClick}
+                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors"
+                      aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+                    >
+                      <Heart className={`h-3.5 w-3.5 ${isFav ? 'fill-red-400 text-red-400' : ''}`} />
+                    </motion.button>
+
+                    {/* Quick View */}
+                    <motion.button
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={handleQuickView}
+                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors"
+                      aria-label="Visualização rápida"
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                    </motion.button>
+
+                    {/* Share */}
+                    <motion.button
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={handleShare}
+                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors relative"
+                      aria-label="Compartilhar produto"
+                    >
+                      <AnimatePresence mode="wait">
+                        {shareClicked ? (
+                          <motion.span
+                            key="check"
+                            initial={{ scale: 0, rotate: -90 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            exit={{ scale: 0, rotate: 90 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Check className="h-3.5 w-3.5 text-emerald-300" />
+                          </motion.span>
+                        ) : (
+                          <motion.span
+                            key="share"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                            transition={{ duration: 0.15 }}
+                          >
+                            <Share2 className="h-3.5 w-3.5" />
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </motion.button>
+                  </div>
+                </div>
+
+                {/* Quick add to cart button */}
+                <div className="px-2 pb-2">
+                  <Button
+                    size="sm"
+                    className={`w-full h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg rounded-lg transition-transform btn-glow ${
+                      cartAnimating ? 'scale-95' : 'scale-100'
+                    }`}
+                    onClick={handleAddToCart}
+                  >
+                    <motion.div
+                      animate={cartAnimating ? { scale: [1, 1.4, 1], rotate: [0, -15, 0] } : {}}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <AnimatePresence mode="wait">
+                        {showCheckmark ? (
+                          <motion.div
+                            key="check"
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ duration: 0.15 }}
+                            className="flex items-center justify-center"
+                          >
+                            <Check className="h-3 w-3 mr-1" strokeWidth={3} />
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="cart"
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ duration: 0.15 }}
+                          >
+                            <ShoppingCart className="h-3 w-3 mr-1" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                    {showCheckmark ? 'Adicionado!' : 'Adicionar'}
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Compare button — only on hover */}
+          <AnimatePresence>
+            {showCartBtn && !showMiniCart && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  toggleCompareProduct(product.id)
+                }}
+                className={`absolute top-2 left-2 z-10 h-6 w-6 rounded-md flex items-center justify-center transition-colors ${
+                  discount === 0 && !product.isOffer && !product.isNew
+                    ? 'left-auto right-12'
+                    : 'bottom-14 left-2 top-auto'
+                } ${isCompared
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'bg-white/80 dark:bg-black/40 hover:bg-white dark:hover:bg-black/60'
+                }`}
+                aria-label={isCompared ? 'Remover da comparação' : 'Adicionar à comparação'}
+              >
+                <GitCompareArrows className={`h-3 w-3 ${isCompared ? '' : 'text-muted-foreground'}`} />
+              </motion.button>
+            )}
+          </AnimatePresence>
+          
+          {/* Mini Cart Popup */}
+          <AnimatePresence>
+            {showMiniCart && (
+              <div className="absolute bottom-full left-0 right-0 z-50 flex justify-center pointer-events-auto">
+                <MiniCartPopup product={product} onClose={() => setShowMiniCart(false)} />
+              </div>
+            )}
+          </AnimatePresence>
+        </div>
         
-        <div className="mt-auto pt-1.5">
-          {/* Large, bold price */}
-          <div className="flex items-baseline gap-1.5">
-            <motion.span 
-              className="text-base font-extrabold text-primary leading-none" 
-              initial={{ opacity: 0.8 }}
-              animate={{ opacity: 1 }}
-            >{formatBRL(product.price)}</motion.span>
-            {product.comparePrice && product.comparePrice > product.price && (
-              <span className="text-[10px] text-muted-foreground line-through">
-                {formatBRL(product.comparePrice)}
-              </span>
+        {/* Info */}
+        <div className="p-2.5 flex flex-col flex-1 min-h-0">
+          {/* Store name with logo + Quick add button */}
+          <div className="flex items-center gap-1.5 mt-0">
+            {product.storeName && (
+              <div className="flex items-center gap-1 min-w-0 flex-1">
+                <div className="h-4 w-4 rounded bg-gradient-to-br from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/20 flex items-center justify-center shrink-0">
+                  <span className="text-[7px] font-bold text-primary leading-none">
+                    {getStoreInitials(product.storeName)}
+                  </span>
+                </div>
+                <p className="text-[10px] font-medium text-primary truncate">{product.storeName}</p>
+              </div>
+            )}
+            {/* Quick add (eye icon for mini cart popup) */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: showCartBtn ? 1 : 0 }}
+              onClick={handleQuickAdd}
+              className="h-5 w-5 rounded flex items-center justify-center bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0"
+              aria-label="Adicionar rapidamente"
+            >
+              <Zap className="h-2.5 w-2.5" />
+            </motion.button>
+          </div>
+
+          <h3 className="text-xs font-semibold mt-0.5 line-clamp-2 leading-tight min-h-[2rem]">{product.name}</h3>
+          
+          {/* Price Drop Alert - inline badge */}
+          <div className="mt-1">
+            <PriceDropAlert
+              price={product.price}
+              comparePrice={product.comparePrice || 0}
+              size="sm"
+              variant="badge"
+            />
+          </div>
+          
+          <div className="mt-auto pt-1.5">
+            {/* Large, bold price — with spring bounce animation on mount + shimmer */}
+            <div className="flex items-baseline gap-1.5 relative overflow-hidden rounded">
+              <motion.span 
+                className="text-base font-extrabold text-primary leading-none relative" 
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring' as const, stiffness: 300, damping: 15, delay: Math.min(index * 0.05 + 0.3, 0.7) }}
+              >
+                <span className="price-shimmer-text">{formatBRL(product.price)}</span>
+              </motion.span>
+              {product.comparePrice && product.comparePrice > product.price && (
+                <span className="text-[10px] text-muted-foreground line-through">
+                  {formatBRL(product.comparePrice)}
+                </span>
+              )}
+            </div>
+            
+            {/* Rating stars + review count — with shimmer */}
+            {product.rating > 0 && (
+              <div className="flex items-center gap-1 mt-1">
+                <StarRating rating={product.rating} />
+                <span className="text-[10px] text-muted-foreground ml-0.5">
+                  ({product.totalReviews})
+                </span>
+              </div>
+            )}
+
+            {/* Stock urgency text for very low stock — enhanced pulse */}
+            {product.stock > 0 && product.stock < 5 && (
+              <motion.div
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
+                className="mt-1"
+              >
+                <span className="text-[9px] font-bold text-red-500 flex items-center gap-0.5 stock-pulse-badge">
+                  <motion.span
+                    animate={{ scale: [1, 1.4, 1], rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 1.2, repeat: Infinity }}
+                  >🔥</motion.span>
+                  Últimas {product.stock} unidades!
+                </span>
+              </motion.div>
             )}
           </div>
           
-          {/* Rating stars + review count */}
-          {product.rating > 0 && (
-            <div className="flex items-center gap-1 mt-1">
-              <StarRating rating={product.rating} />
-              <span className="text-[10px] text-muted-foreground ml-0.5">
-                ({product.totalReviews})
-              </span>
-            </div>
-          )}
+          {/* Social Proof — cycling badge */}
+          <SocialProofBadges
+            productId={product.id}
+            productName={product.name}
+            variant="card"
+            totalReviews={product.totalReviews}
+          />
+          
+          {/* Stock Urgency Bar */}
+          <StockUrgency product={product} variant="card" />
 
-          {/* Stock urgency text for very low stock */}
-          {product.stock > 0 && product.stock < 5 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mt-1"
+          {/* ─── Persistent mini action bar (always visible, all screen sizes) ─── */}
+          <div className="flex items-center gap-1 mt-2 pt-2 border-t border-border/50">
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              onClick={handleFavoriteClick}
+              className="h-7 w-7 rounded-lg flex items-center justify-center bg-muted/60 hover:bg-muted transition-colors"
+              aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
             >
-              <span className="text-[9px] font-bold text-red-500 flex items-center gap-0.5">
-                <motion.span
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                >🔥</motion.span>
-                Últimas {product.stock} unidades!
-              </span>
-            </motion.div>
-          )}
+              <Heart className={`h-3.5 w-3.5 transition-colors ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              onClick={handleQuickView}
+              className="h-7 w-7 rounded-lg flex items-center justify-center bg-muted/60 hover:bg-muted transition-colors"
+              aria-label="Visualização rápida"
+            >
+              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              onClick={handleAddToCart}
+              className="h-7 w-7 rounded-lg flex items-center justify-center bg-muted/60 hover:bg-muted transition-colors"
+              aria-label="Adicionar ao carrinho"
+            >
+              <ShoppingCart className="h-3.5 w-3.5 text-muted-foreground" />
+            </motion.button>
+          </div>
         </div>
-        
-        {/* Social Proof — cycling badge */}
-        <SocialProofBadges
-          productId={product.id}
-          productName={product.name}
-          variant="card"
-          totalReviews={product.totalReviews}
-        />
-        
-        {/* Stock Urgency Bar */}
-        <StockUrgency product={product} variant="card" />
-      </div>
 
-    </motion.div>
+      </motion.div>
+    </>
   )
 }
 

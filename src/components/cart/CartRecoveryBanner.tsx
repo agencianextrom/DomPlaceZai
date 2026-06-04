@@ -18,6 +18,14 @@ const gradients = [
 ]
 const icons = ['🍎', '🛒', '📦', '🎁', '🌿', '🍞']
 
+const floatingEmojis = [
+  { emoji: '🛒', x: '5%', delay: 0, duration: 7 },
+  { emoji: '✨', x: '25%', delay: 1.5, duration: 8 },
+  { emoji: '🛒', x: '50%', delay: 0.8, duration: 9 },
+  { emoji: '✨', x: '75%', delay: 2.5, duration: 7.5 },
+  { emoji: '✨', x: '90%', delay: 1.2, duration: 8.5 },
+]
+
 export function CartRecoveryBanner() {
   const { cartItems, currentView, navigate, clearCart, getCartTotal } = useAppStore()
   const [hasBeenDismissed, setHasBeenDismissed] = useState(false)
@@ -121,163 +129,188 @@ export function CartRecoveryBanner() {
     <AnimatePresence>
       {isBannerActive && (
         <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 30, opacity: 0 }}
+          transition={{ type: 'spring' as const, damping: 25, stiffness: 300 }}
           className="overflow-hidden"
         >
-          <div className="relative bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 text-white">
-            {/* Subtle pattern overlay */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px)',
-                backgroundSize: '40px 40px',
-              }} />
-            </div>
+          {/* Animated gradient border wrapper */}
+          <div className="cart-recovery-border-glow p-[2px] rounded-xl">
+            <div className="relative bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 text-white rounded-xl overflow-hidden">
+              {/* Floating emoji particles */}
+              {floatingEmojis.map((item, i) => (
+                <motion.span
+                  key={`emoji-${i}`}
+                  className="absolute pointer-events-none select-none opacity-20 text-lg"
+                  style={{ left: item.x, bottom: '-10%' }}
+                  animate={{
+                    y: [-20, -120],
+                    opacity: [0, 0.4, 0],
+                    rotate: [0, 15, -10],
+                  }}
+                  transition={{
+                    duration: item.duration,
+                    repeat: Infinity,
+                    delay: item.delay,
+                    ease: 'easeInOut',
+                  }}
+                >
+                  {item.emoji}
+                </motion.span>
+              ))}
 
-            <div className="relative px-4 py-3 sm:px-6">
-              {/* Top section: icon + message + dismiss */}
-              <div className="flex items-center justify-between gap-3 mb-2.5">
-                {/* Left: icon + message */}
-                <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <motion.div
-                    initial={{ scale: 0, rotate: -20 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 20, delay: 0.15 }}
-                    className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0"
-                  >
-                    <ShoppingBag className="h-4.5 w-4.5" />
-                  </motion.div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold truncate">
-                      🎯 Você tem <span className="inline-flex items-center justify-center bg-white/25 rounded-full px-1.5 py-0.5 text-xs font-bold mx-0.5">{itemCount}</span> {itemCount === 1 ? 'item' : 'itens'} no carrinho!
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-[11px] text-white/75">
-                        Total: <span className="font-bold">{formatBRL(cartTotal)}</span>
+              {/* Subtle pattern overlay */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px)',
+                  backgroundSize: '40px 40px',
+                }} />
+              </div>
+
+              <div className="relative px-4 py-3 sm:px-6">
+                {/* Top section: icon + message + dismiss */}
+                <div className="flex items-center justify-between gap-3 mb-2.5">
+                  {/* Left: icon + message */}
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <motion.div
+                      initial={{ scale: 0, rotate: -20 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: 'spring' as const, stiffness: 500, damping: 20, delay: 0.15 }}
+                      className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0"
+                    >
+                      <ShoppingBag className="h-4.5 w-4.5" />
+                    </motion.div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold truncate">
+                        🎯 Você tem <span className="inline-flex items-center justify-center bg-white/25 rounded-full px-1.5 py-0.5 text-xs font-bold mx-0.5">{itemCount}</span> {itemCount === 1 ? 'item' : 'itens'} no carrinho!
                       </p>
-                      <span className="text-[11px] text-white/50">·</span>
-                      <div className="flex items-center gap-1">
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
-                          className="h-1.5 w-1.5 rounded-full bg-amber-400"
-                        />
-                        <span className="text-[11px] text-white/75 font-mono font-semibold">{countdownStr}</span>
+                      <div className="flex items-center gap-2">
+                        <p className="text-[11px] text-white/75">
+                          Total: <span className="font-bold">{formatBRL(cartTotal)}</span>
+                        </p>
+                        <span className="text-[11px] text-white/50">·</span>
+                        <div className="flex items-center gap-1">
+                          <motion.div
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
+                            className="h-1.5 w-1.5 rounded-full bg-amber-400"
+                          />
+                          <span className="text-[11px] text-white/75 font-mono font-semibold">{countdownStr}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
+
+                  <button
+                    onClick={handleDismiss}
+                    className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/15 transition-colors shrink-0"
+                    aria-label="Fechar"
+                  >
+                    <X className="h-3.5 w-3.5 text-white/70" />
+                  </button>
                 </div>
 
-                <button
-                  onClick={handleDismiss}
-                  className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/15 transition-colors shrink-0"
-                  aria-label="Fechar"
-                >
-                  <X className="h-3.5 w-3.5 text-white/70" />
-                </button>
-              </div>
+                {/* Item preview thumbnails */}
+                {previewItems.length > 0 && (
+                  <div className="flex items-center gap-2 mb-2.5 overflow-hidden">
+                    {previewItems.map((item, i) => {
+                      const gradient = gradients[Math.abs(item.product.name.charCodeAt(0)) % gradients.length]
+                      const icon = icons[Math.abs(item.product.name.charCodeAt(0)) % icons.length]
+                      return (
+                        <motion.div
+                          key={item.productId}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 + i * 0.08 }}
+                          className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1 shrink-0"
+                        >
+                          <div className={`h-6 w-6 rounded bg-gradient-to-br ${gradient} flex items-center justify-center text-xs shrink-0`}>
+                            {icon}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[10px] font-medium truncate max-w-[80px]">{item.product.name}</p>
+                            <p className="text-[9px] text-white/60">{item.quantity}x {formatBRL(item.product.price)}</p>
+                          </div>
+                        </motion.div>
+                      )
+                    })}
+                    {cartItems.length > 3 && (
+                      <span className="text-[10px] text-white/60 shrink-0">+{cartItems.length - 3} mais</span>
+                    )}
+                  </div>
+                )}
 
-              {/* Item preview thumbnails */}
-              {previewItems.length > 0 && (
-                <div className="flex items-center gap-2 mb-2.5 overflow-hidden">
-                  {previewItems.map((item, i) => {
-                    const gradient = gradients[Math.abs(item.product.name.charCodeAt(0)) % gradients.length]
-                    const icon = icons[Math.abs(item.product.name.charCodeAt(0)) % icons.length]
-                    return (
-                      <motion.div
-                        key={item.productId}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 + i * 0.08 }}
-                        className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1 shrink-0"
-                      >
-                        <div className={`h-6 w-6 rounded bg-gradient-to-br ${gradient} flex items-center justify-center text-xs shrink-0`}>
-                          {icon}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-medium truncate max-w-[80px]">{item.product.name}</p>
-                          <p className="text-[9px] text-white/60">{item.quantity}x {formatBRL(item.product.price)}</p>
-                        </div>
-                      </motion.div>
-                    )
-                  })}
-                  {cartItems.length > 3 && (
-                    <span className="text-[10px] text-white/60 shrink-0">+{cartItems.length - 3} mais</span>
-                  )}
+                {/* Free delivery progress bar */}
+                <div className="mb-2.5">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] text-white/70 flex items-center gap-1">
+                      <Truck className="h-2.5 w-2.5" />
+                      {remainingForFree > 0
+                        ? <>Faltam <span className="font-bold text-amber-300">{formatBRL(remainingForFree)}</span> para frete grátis</>
+                        : <span className="font-bold text-amber-300">🎉 Frete grátis!</span>
+                      }
+                    </span>
+                    <span className="text-[10px] text-white/60">{Math.round(deliveryProgress)}%</span>
+                  </div>
+                  <div className="h-1.5 bg-white/15 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${deliveryProgress}%` }}
+                      transition={{ duration: 0.8, ease: 'easeOut' }}
+                      className="h-full bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full"
+                    />
+                  </div>
                 </div>
-              )}
 
-              {/* Free delivery progress bar */}
-              <div className="mb-2.5">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] text-white/70 flex items-center gap-1">
-                    <Truck className="h-2.5 w-2.5" />
-                    {remainingForFree > 0
-                      ? <>Faltam <span className="font-bold text-amber-300">{formatBRL(remainingForFree)}</span> para frete grátis</>
-                      : <span className="font-bold text-amber-300">🎉 Frete grátis!</span>
-                    }
-                  </span>
-                  <span className="text-[10px] text-white/60">{Math.round(deliveryProgress)}%</span>
-                </div>
-                <div className="h-1.5 bg-white/15 rounded-full overflow-hidden">
+                {/* Action buttons */}
+                <div className="flex items-center gap-2">
                   <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${deliveryProgress}%` }}
-                    transition={{ duration: 0.8, ease: 'easeOut' }}
-                    className="h-full bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full"
-                  />
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.25 }}
+                  >
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClear}
+                      className="h-8 px-3 text-white/70 hover:text-white hover:bg-white/15 text-xs rounded-full"
+                    >
+                      Limpar
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleViewCart}
+                      className="h-8 px-3 text-white hover:text-white hover:bg-white/15 text-xs rounded-full gap-1"
+                    >
+                      <ArrowLeft className="h-3 w-3" />
+                      Voltar para o carrinho
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.35 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="ml-auto"
+                  >
+                    <Button
+                      size="sm"
+                      onClick={handleCheckout}
+                      className="relative h-8 px-4 bg-white text-emerald-700 hover:bg-white/90 font-semibold text-xs rounded-full shadow-lg overflow-hidden btn-shine"
+                    >
+                      Finalizar compra
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </motion.div>
                 </div>
-              </div>
-
-              {/* Action buttons */}
-              <div className="flex items-center gap-2">
-                <motion.div
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.25 }}
-                >
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleClear}
-                    className="h-8 px-3 text-white/70 hover:text-white hover:bg-white/15 text-xs rounded-full"
-                  >
-                    Limpar
-                  </Button>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleViewCart}
-                    className="h-8 px-3 text-white hover:text-white hover:bg-white/15 text-xs rounded-full gap-1"
-                  >
-                    <ArrowLeft className="h-3 w-3" />
-                    Voltar para o carrinho
-                  </Button>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.35 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="ml-auto"
-                >
-                  <Button
-                    size="sm"
-                    onClick={handleCheckout}
-                    className="h-8 px-4 bg-white text-emerald-700 hover:bg-white/90 font-semibold text-xs rounded-full shadow-sm gap-1 animate-pulse-ring"
-                  >
-                    Finalizar compra
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </Button>
-                </motion.div>
               </div>
             </div>
           </div>

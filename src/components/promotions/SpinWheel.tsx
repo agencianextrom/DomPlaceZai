@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { RotateCw, Gift, X, PartyPopper } from 'lucide-react'
+import { RotateCw, Gift, X, PartyPopper, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -56,6 +56,39 @@ function getSpinsRemaining(): { remaining: number; nextSpinIn: string } {
     remaining: 0,
     nextSpinIn: `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`,
   }
+}
+
+// Particle burst effect for winning
+function BurstParticle({ index, total }: { index: number; total: number }) {
+  const colors = ['#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#fbbf24', '#fff']
+  const color = colors[index % colors.length]
+  const angle = (index / total) * Math.PI * 2 + (Math.random() - 0.5) * 0.5
+  const velocity = 120 + Math.random() * 250
+  const dx = Math.cos(angle) * velocity
+  const dy = Math.sin(angle) * velocity - 80
+  const rotation = Math.random() * 720 - 360
+  const size = 4 + Math.random() * 10
+  const shape = Math.random() > 0.4 ? 'circle' : 'rect'
+
+  return (
+    <motion.div
+      className="absolute left-1/2 top-1/2 pointer-events-none"
+      initial={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 0 }}
+      animate={{
+        x: dx, y: dy, rotate: rotation,
+        opacity: [0, 1, 1, 0],
+        scale: [0, 1.3, 1, 0.3],
+      }}
+      transition={{ duration: 1.2 + Math.random() * 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+      style={{
+        width: shape === 'circle' ? size : size * 0.4,
+        height: shape === 'circle' ? size : size,
+        backgroundColor: color,
+        borderRadius: shape === 'circle' ? '50%' : '2px',
+        boxShadow: `0 0 ${size}px ${color}40`,
+      }}
+    />
+  )
 }
 
 // Confetti particle component
@@ -169,8 +202,23 @@ export function SpinWheel() {
           />
         </div>
 
-        {/* Outer glow ring */}
-        <div className="absolute inset-[-6px] rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 opacity-60 blur-sm" />
+        {/* Outer glow ring - enhanced with pulse */}
+        <motion.div
+          className="absolute inset-[-6px] rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 blur-sm"
+          animate={{
+            opacity: [0.5, 0.8, 0.5],
+            scale: [1, 1.02, 1],
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute inset-[-12px] rounded-full bg-gradient-to-r from-amber-300/30 via-orange-400/20 to-red-400/30 blur-md"
+          animate={{
+            opacity: [0.2, 0.4, 0.2],
+            scale: [1, 1.03, 1],
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+        />
 
         {/* Wheel */}
         <div className="relative rounded-full overflow-hidden border-4 border-amber-400 shadow-2xl">
@@ -180,7 +228,7 @@ export function SpinWheel() {
             animate={{ rotate: rotation }}
             transition={{
               duration: 4.5,
-              ease: [0.17, 0.67, 0.12, 0.99], // Custom easing for realistic deceleration
+              ease: [0.1, 0.5, 0.1, 1], // Enhanced deceleration: fast start, very slow end
             }}
             style={{
               transformOrigin: 'center center',
@@ -240,6 +288,40 @@ export function SpinWheel() {
           </motion.div>
         </div>
 
+        {/* Sparkle particles around wheel when idle (outside rotation) */}
+        <AnimatePresence>
+          {!isSpinning && canSpin && (
+            <div className="absolute inset-0 pointer-events-none">
+              {Array.from({ length: 6 }).map((_, idx) => {
+                const angle = (idx / 6) * Math.PI * 2
+                const r = 44
+                return (
+                  <motion.div
+                    key={`sparkle-${idx}`}
+                    className="absolute pointer-events-none"
+                    style={{ left: '50%', top: '50%' }}
+                    initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                    animate={{
+                      x: Math.cos(angle) * r,
+                      y: Math.sin(angle) * r,
+                      opacity: [0, 1, 0.5, 0],
+                      scale: [0, 1, 0.6, 0],
+                    }}
+                    transition={{
+                      duration: 2 + Math.random(),
+                      repeat: Infinity,
+                      delay: idx * 0.3,
+                      ease: 'easeInOut',
+                    }}
+                  >
+                    <Sparkles className="h-3 w-3 text-amber-400" style={{ filter: 'drop-shadow(0 0 4px rgba(251,191,36,0.5))' }} />
+                  </motion.div>
+                )
+              })}
+            </div>
+          )}
+        </AnimatePresence>
+
         {/* Outer decorative dots */}
         <div className="absolute inset-[-2px] rounded-full pointer-events-none">
           {Array.from({ length: 24 }).map((_, idx) => {
@@ -264,14 +346,22 @@ export function SpinWheel() {
         </div>
       </div>
 
-      {/* Spin button */}
+      {/* Spin button — enhanced with glow and shimmer */}
       <div className="mt-6 text-center">
-        <motion.div whileTap={{ scale: 0.95 }}>
+        <motion.div whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.03 }}>
           <Button
             onClick={spin}
             disabled={isSpinning || !canSpin}
-            className="h-12 px-8 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm rounded-full shadow-lg gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-12 px-8 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm rounded-full gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden shadow-lg shadow-amber-500/25"
           >
+            {canSpin && !isSpinning && (
+              <motion.span
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent"
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.5 }}
+              />
+            )}
+            <span className="relative z-10">
             {isSpinning ? (
               <>
                 <motion.div
@@ -293,6 +383,7 @@ export function SpinWheel() {
                 Gire e Ganhe
               </>
             )}
+            </span>
           </Button>
         </motion.div>
 
@@ -327,11 +418,14 @@ export function SpinWheel() {
               className="bg-card rounded-2xl p-6 max-w-xs w-full text-center relative overflow-hidden border border-border/50 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Confetti */}
+              {/* Confetti + burst particles */}
               {wonPrize.label !== 'Tente novamente' && (
                 <div className="absolute inset-0 pointer-events-none overflow-hidden">
                   {Array.from({ length: 30 }).map((_, idx) => (
-                    <ConfettiParticle key={idx} index={idx} total={30} />
+                    <ConfettiParticle key={`confetti-${idx}`} index={idx} total={30} />
+                  ))}
+                  {Array.from({ length: 20 }).map((_, idx) => (
+                    <BurstParticle key={`burst-${idx}`} index={idx} total={20} />
                   ))}
                 </div>
               )}

@@ -8,9 +8,10 @@ import { Badge } from '@/components/ui/badge'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Sparkles, Tag, ShoppingBag, RefreshCw, Package, Zap } from 'lucide-react'
+import { Star, Sparkles, Tag, ShoppingBag, RefreshCw, Package, Zap, Heart, MessageSquare, TrendingUp } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
+import { cachedFetch } from '@/lib/api-cache'
 
 interface FeedItem {
   id: string
@@ -178,20 +179,75 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
+      staggerChildren: 0.18,
       delayChildren: 0.15,
     },
   },
 }
 
+// Slide-in from the left with stagger
 const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, x: -30 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { type: 'spring' as const, stiffness: 300, damping: 25 },
+  },
+}
+
+// Timestamp subtle fade-in
+const timestampVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { delay: 0.5, duration: 0.6, ease: 'easeOut' as const },
+  },
+}
+
+// Badge entrance animation — slight pop-in
+const badgeVariants = {
+  hidden: { opacity: 0, scale: 0.6 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { type: 'spring' as const, stiffness: 500, damping: 20, delay: 0.2 },
+  },
+}
+
+// Load more button spring entrance
+const loadMoreVariants = {
+  hidden: { opacity: 0, y: 12, scale: 0.9 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring' as const, stiffness: 400, damping: 25 },
+    scale: 1,
+    transition: { type: 'spring' as const, stiffness: 300, damping: 20 },
   },
 }
+
+// Floating icon variants for empty state
+const floatingIconVariants = [
+  {
+    animate: { y: [0, -8, 0], rotate: [0, 5, -5, 0] },
+    transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 0 },
+  },
+  {
+    animate: { y: [0, -10, 0], rotate: [0, -6, 4, 0] },
+    transition: { duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.4 },
+  },
+  {
+    animate: { y: [0, -6, 0], rotate: [0, 3, -3, 0] },
+    transition: { duration: 2.8, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.8 },
+  },
+  {
+    animate: { y: [0, -9, 0], rotate: [0, -4, 6, 0] },
+    transition: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.2 },
+  },
+  {
+    animate: { y: [0, -7, 0], rotate: [0, 6, -2, 0] },
+    transition: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.6 },
+  },
+]
 
 // Loading skeletons
 function FeedSkeleton() {
@@ -296,12 +352,40 @@ export function FeedActivity() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4 }}
-      className="w-full"
+      className="w-full feed-bg-animated"
     >
+      {/* Floating notification bell */}
+      <motion.div
+        className="absolute -top-1 right-1 z-20"
+        animate={{ y: [0, -4, 0], rotate: [0, 15, 0, -15, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const, delay: 1 }}
+      >
+        <motion.div
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-400/30"
+        >
+          <span className="text-base leading-none">🔔</span>
+        </motion.div>
+      </motion.div>
+
       {/* Section header */}
       <div className="flex items-center gap-2 mb-4">
-        <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-        <h3 className="font-semibold text-sm">Atividade Recente</h3>
+        <motion.div
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          className="h-2.5 w-2.5 rounded-full bg-emerald-500"
+        />
+        <h3 className="font-semibold text-sm flex items-center gap-1.5">Atividade Recente</h3>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring' as const, stiffness: 500, damping: 15, delay: 0.3 }}
+        >
+          <Badge variant="secondary" className="text-[9px] h-4 px-1.5 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 feed-live-badge-glow">
+            AO VIVO
+          </Badge>
+        </motion.div>
         <Badge variant="secondary" className="text-[9px] h-4 px-1.5 bg-primary/5 text-primary border-0">
           {feedItems.length > 0 ? `${feedItems.length} atividades` : 'Atualizado'}
         </Badge>
@@ -324,22 +408,78 @@ export function FeedActivity() {
         </div>
       )}
 
-      {/* Empty state */}
+      {/* Empty state with floating icons */}
       {!loading && !error && feedItems.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-10 text-center rounded-2xl border border-dashed border-border/60 bg-muted/20">
-          <motion.div
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary/10 to-emerald-500/10 flex items-center justify-center">
-              <Star className="h-8 w-8 text-primary/40" />
-            </div>
-          </motion.div>
-          <h3 className="text-sm font-bold mt-3">Nenhuma atividade ainda</h3>
-          <p className="text-xs text-muted-foreground mt-1 max-w-[240px]">
+        <motion.div
+          className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-dashed border-border/60 bg-muted/20 overflow-hidden relative"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: 'easeOut' as const }}
+        >
+          {/* Floating background icons */}
+          <div className="absolute inset-0 pointer-events-none">
+            <motion.div className="absolute top-6 left-6" {...floatingIconVariants[0]}>
+              <ShoppingBag className="h-6 w-6 text-primary/8" />
+            </motion.div>
+            <motion.div className="absolute top-8 right-10" {...floatingIconVariants[1]}>
+              <Star className="h-5 w-5 text-amber-400/10" />
+            </motion.div>
+            <motion.div className="absolute bottom-10 left-12" {...floatingIconVariants[2]}>
+              <Heart className="h-5 w-5 text-rose-400/10" />
+            </motion.div>
+            <motion.div className="absolute bottom-8 right-8" {...floatingIconVariants[3]}>
+              <MessageSquare className="h-5 w-5 text-teal-400/10" />
+            </motion.div>
+            <motion.div className="absolute top-1/2 left-4 -translate-y-1/2" {...floatingIconVariants[4]}>
+              <TrendingUp className="h-4 w-4 text-emerald-400/10" />
+            </motion.div>
+          </div>
+
+          {/* Central floating icon cluster */}
+          <div className="relative flex items-center justify-center mb-3">
+            <motion.div
+              className="absolute"
+              animate={{ y: [0, -10, 0], x: [0, 4, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.2 }}
+            >
+              <div className="h-10 w-10 rounded-full bg-amber-100/50 dark:bg-amber-900/20 flex items-center justify-center">
+                <Tag className="h-5 w-5 text-amber-500/50" />
+              </div>
+            </motion.div>
+            <motion.div
+              className="absolute"
+              animate={{ y: [0, -8, 0], x: [0, -6, 0] }}
+              transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+            >
+              <div className="h-9 w-9 rounded-full bg-rose-100/50 dark:bg-rose-900/20 flex items-center justify-center">
+                <Heart className="h-4.5 w-4.5 text-rose-500/50" />
+              </div>
+            </motion.div>
+            <motion.div
+              className="absolute"
+              animate={{ y: [0, -12, 0] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.8 }}
+            >
+              <div className="h-11 w-11 rounded-full bg-teal-100/50 dark:bg-teal-900/20 flex items-center justify-center">
+                <Sparkles className="h-5.5 w-5.5 text-teal-500/50" />
+              </div>
+            </motion.div>
+            <motion.div
+              className="absolute"
+              animate={{ y: [0, -7, 0], x: [0, 5, 0] }}
+              transition={{ duration: 3.1, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.0 }}
+            >
+              <div className="h-8 w-8 rounded-full bg-emerald-100/50 dark:bg-emerald-900/20 flex items-center justify-center">
+                <Star className="h-4 w-4 text-emerald-500/50" />
+              </div>
+            </motion.div>
+          </div>
+
+          <h3 className="text-sm font-bold relative z-10">Nenhuma atividade ainda</h3>
+          <p className="text-xs text-muted-foreground mt-1 max-w-[240px] relative z-10">
             Seja o primeiro a deixar uma avaliação!
           </p>
-        </div>
+        </motion.div>
       )}
 
       {/* Mobile: horizontal scroll */}
@@ -353,25 +493,40 @@ export function FeedActivity() {
               whileInView="visible"
               viewport={{ once: true, margin: '-30px' }}
             >
-              {feedItems.map((item) => {
+              {feedItems.map((item, index) => {
                 const ItemIcon = item.icon
                 return (
                   <motion.div
                     key={item.id}
                     variants={itemVariants}
+                    custom={index}
                     className="min-w-[280px] max-w-[300px] shrink-0"
                   >
-                    <Card className="border-border/50 hover:shadow-lg hover:border-primary/20 transition-all card-premium-hover py-0">
+                    <Card className="border-border/50 hover:shadow-lg hover:border-primary/20 transition-all card-premium-hover py-0 group hover:scale-[1.02] transform-gpu r18-feed-shimmer-border">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
-                          {/* Avatar with gradient border ring */}
-                          <div className="relative">
+                          {/* Avatar with gradient border ring + pulse for recent items */}
+                          <div className="relative r18-avatar-ring-enhanced">
+                            <div className="feed-avatar-pulse-ring" />
+                            <motion.div
+                              className="absolute -inset-[2px] rounded-full"
+                              animate={{ opacity: [0.5, 0.8, 0.5] }}
+                              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                              style={{ background: 'conic-gradient(from 0deg, #10b981, #f59e0b, #ec4899, #10b981)' }}
+                            />
                             <div className="absolute -inset-[2px] rounded-full bg-gradient-to-br from-primary to-amber-400 opacity-60" />
                             <Avatar className="h-10 w-10 relative ring-2 ring-background">
                               <AvatarFallback className={`text-xs font-bold ${item.avatarBg}`}>
                                 {item.avatar}
                               </AvatarFallback>
                             </Avatar>
+                            {item.timeAgo.includes('min') && (
+                              <motion.div
+                                className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-background"
+                                animate={{ scale: [1, 1.3, 1] }}
+                                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                              />
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm leading-snug">
@@ -380,14 +535,23 @@ export function FeedActivity() {
                               <span className="font-semibold text-primary">{item.detail}</span>
                             </p>
                             <div className="flex items-center gap-2 mt-1.5">
-                              {/* Activity type badge */}
-                              <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-md ${typeBadgeColors[item.type]}`}>
+                              {/* Activity type badge with entrance animation and glow */}
+                              <motion.span
+                                variants={badgeVariants}
+                                className={`text-[9px] font-medium px-1.5 py-0.5 rounded-md r18-type-badge-glow ${typeBadgeColors[item.type]}`}
+                              >
                                 {typeLabels[item.type]}
-                              </span>
+                              </motion.span>
                               <div className={`h-4 w-4 rounded ${item.iconBg} flex items-center justify-center`}>
                                 <ItemIcon className={`h-2.5 w-2.5 ${item.iconColor}`} />
                               </div>
-                              <span className="text-[10px] text-muted-foreground">{item.timeAgo}</span>
+                              {/* Timestamp with fade-in and pulse */}
+                              <motion.span
+                                variants={timestampVariants}
+                                className="text-[10px] text-muted-foreground r18-timestamp-pulse"
+                              >
+                                {item.timeAgo}
+                              </motion.span>
                             </div>
                           </div>
                         </div>
@@ -412,23 +576,31 @@ export function FeedActivity() {
           viewport={{ once: true, margin: '-50px' }}
         >
           <div className="space-y-2">
-            {visibleItems.map((item) => {
+            {visibleItems.map((item, index) => {
               const ItemIcon = item.icon
               return (
-                <motion.div key={item.id} variants={itemVariants}>
-                  <Card className="border-border/50 hover:shadow-md hover:border-primary/20 transition-all py-0 group cursor-default">
+                <motion.div key={item.id} variants={itemVariants} custom={index}>
+                  <Card className="border-border/50 hover:shadow-lg hover:border-primary/20 transition-all py-0 group cursor-default hover:scale-[1.01] transform-gpu">
                     <CardContent className="p-3.5 flex items-center gap-3">
                       {/* Avatar with gradient border */}
                       <div className="relative">
+                        <div className="feed-avatar-pulse-ring" />
                         <div className="absolute -inset-[2px] rounded-full bg-gradient-to-br from-primary/40 to-amber-400/40 opacity-0 group-hover:opacity-100 transition-opacity" />
                         <Avatar className="h-11 w-11 relative ring-2 ring-background">
                           <AvatarFallback className={`text-xs font-bold ${item.avatarBg}`}>
                             {item.avatar}
                           </AvatarFallback>
                         </Avatar>
-                        {/* Online-like dot for recent items */}
+                        {/* Online dot with pulse animation for recent items */}
                         {item.timeAgo.includes('min') && (
-                          <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-background" />
+                          <>
+                            <motion.div
+                              className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500/40 border border-emerald-500/30"
+                              animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
+                              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                            />
+                            <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-background" />
+                          </>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -438,18 +610,28 @@ export function FeedActivity() {
                           <span className="font-semibold text-primary">{item.detail}</span>
                         </p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded ${typeBadgeColors[item.type]}`}>
+                          {/* Badge with entrance animation and color coding + glow */}
+                          <motion.span
+                            variants={badgeVariants}
+                            className={`text-[9px] font-medium px-1.5 py-0.5 rounded r18-type-badge-glow ${typeBadgeColors[item.type]}`}
+                          >
                             {typeLabels[item.type]}
-                          </span>
+                          </motion.span>
                           <div className={`h-4 w-4 rounded ${item.iconBg} flex items-center justify-center`}>
                             <ItemIcon className={`h-2.5 w-2.5 ${item.iconColor}`} />
                           </div>
-                          <span className="text-[10px] text-muted-foreground">{item.timeAgo}</span>
+                          {/* Timestamp with subtle fade-in and pulse */}
+                          <motion.span
+                            variants={timestampVariants}
+                            className="text-[10px] text-muted-foreground r18-timestamp-pulse"
+                          >
+                            {item.timeAgo}
+                          </motion.span>
                         </div>
                       </div>
-                      {/* Hover action */}
+                      {/* Hover action with subtle glow */}
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-primary">
+                        <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-primary r18-ver-mais-pulse">
                           Ver
                         </Button>
                       </div>
@@ -460,33 +642,41 @@ export function FeedActivity() {
             })}
           </div>
 
-          {/* Load more button */}
+          {/* Load more button with spring entrance and hover effect */}
           {hasMore && (
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+            <motion.div
+              variants={loadMoreVariants}
               className="mt-3 flex justify-center"
             >
-              <motion.div whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileTap={{ scale: 0.93 }}
+                whileHover={{ scale: 1.04 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 15 }}
+              >
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="gap-1.5 text-xs border-dashed border-primary/30 hover:bg-primary/5 hover:border-primary/50"
+                  className="gap-1.5 text-xs border-dashed border-primary/30 hover:bg-primary/5 hover:border-primary/50 hover:shadow-sm transition-shadow r18-ver-mais-pulse"
                 >
                   {loadingMore ? (
                     <>
                       <motion.div
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
                         className="h-3.5 w-3.5 rounded-full border-2 border-primary border-t-transparent"
                       />
                       Carregando...
                     </>
                   ) : (
                     <>
-                      <Package className="h-3.5 w-3.5" />
+                      <motion.div
+                        animate={{ y: [0, -2, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                      >
+                        <Package className="h-3.5 w-3.5" />
+                      </motion.div>
                       Carregar mais atividades
                     </>
                   )}

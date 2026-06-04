@@ -6,8 +6,12 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { BackToTop } from "@/components/layout/BackToTop";
+import { ProductComparisonBar } from "@/components/product/ProductComparisonBar";
 import { NProgressLoader } from "@/components/navigation/NProgressLoader";
 import { PostHogInit } from "@/components/analytics/PostHogInit";
+import CursorGlow from "@/components/effects/CursorGlow";
+import { FloatingDealAlert, QuickAddFloatingButton } from "@/components/home/FloatingDealAlert";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,11 +66,16 @@ export default function RootLayout({
         <PostHogInit />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <AuthProvider>
-            <div className="min-h-screen flex flex-col">
+            <div className="min-h-screen flex flex-col relative">
+              <CursorGlow />
               <Header />
               <main className="flex-1">
                 {children}
               </main>
+              <BackToTop />
+              <ProductComparisonBar />
+              <FloatingDealAlert />
+              <QuickAddFloatingButton />
               <Footer />
             </div>
           </AuthProvider>

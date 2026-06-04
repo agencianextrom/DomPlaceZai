@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Package, Store, Sparkles, Clock, TrendingUp, MessageCircle, CloudSun, ChevronLeft, ChevronRight, Thermometer, Droplets, Sun, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Wind, Loader2, ShoppingCart, RefreshCw } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAppStore } from '@/store/useAppStore'
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
+import { cachedFetch } from '@/lib/api-cache'
 
 // Types for API responses
 interface QuickStatsData {
@@ -136,6 +138,19 @@ function TipsSkeleton() {
   )
 }
 
+/* Stagger container for cards */
+const cardStagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+}
+const cardItemVariants = {
+  hidden: { opacity: 0, y: 16, scale: 0.97 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring' as const, stiffness: 280, damping: 22 } },
+}
+
+/* Stat card emojis */
+const statEmojis = ['📦', '🏪', '✨']
+
 export function QuickInfo() {
   const { currentUser } = useAppStore()
   const [currentTip, setCurrentTip] = useState(0)
@@ -216,27 +231,14 @@ export function QuickInfo() {
     setStatsError(false)
     try {
       const [productsRes, storesRes, offersRes] = await Promise.all([
-        fetch('/api/products?isOffer=true&limit=1'),
-        fetch('/api/stores?limit=1'),
-        fetch('/api/products?isOffer=true&limit=100'),
+        cachedFetch('/api/products?isOffer=true&limit=1'),
+        cachedFetch('/api/stores?limit=1'),
+        cachedFetch('/api/products?isOffer=true&limit=100'),
       ])
 
-      let productTotal = 0
-      let storeTotal = 0
-      let offerCount = 0
-
-      if (productsRes.ok) {
-        const data = await productsRes.json()
-        productTotal = data.total || 0
-      }
-      if (storesRes.ok) {
-        const data = await storesRes.json()
-        storeTotal = data.total || 0
-      }
-      if (offersRes.ok) {
-        const data = await offersRes.json()
-        offerCount = data.total || (data.products || []).length
-      }
+      let productTotal = productsRes.total || 0
+      let storeTotal = storesRes.total || 0
+      let offerCount = offersRes.total || (offersRes.products || []).length
 
       setStats({ productCount: productTotal, storeCount: storeTotal, offerCount })
     } catch {
@@ -251,13 +253,8 @@ export function QuickInfo() {
     setOrdersLoading(true)
     setOrdersError(false)
     try {
-      const res = await fetch('/api/orders?limit=3')
-      if (res.ok) {
-        const data = await res.json()
-        setRecentOrders(data.orders || [])
-      } else {
-        setRecentOrders([])
-      }
+      const data = await cachedFetch('/api/orders?limit=3')
+      setRecentOrders(data.orders || [])
     } catch {
       setOrdersError(true)
     } finally {
@@ -270,13 +267,8 @@ export function QuickInfo() {
     setPromotionsLoading(true)
     setPromotionsError(false)
     try {
-      const res = await fetch('/api/promotions')
-      if (res.ok) {
-        const data = await res.json()
-        setPromotions(data.promotions || [])
-      } else {
-        setPromotions([])
-      }
+      const data = await cachedFetch('/api/promotions')
+      setPromotions(data.promotions || [])
     } catch {
       setPromotionsError(true)
     } finally {
@@ -430,7 +422,7 @@ export function QuickInfo() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-[10px] text-muted-foreground">{stat.label}</span>
-                          <span className="text-sm font-bold">{stat.value}</span>
+                          <span className="text-sm font-bold"><AnimatedCounter value={Number(stat.value)} duration={800} locale /></span>
                         </div>
                         <div className="h-1.5 bg-muted/50 rounded-full overflow-hidden">
                           <motion.div

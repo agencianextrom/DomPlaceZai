@@ -23,6 +23,12 @@ const DEFAULT_PREFERENCES: CookiePreferences = {
   preferences: true,
 }
 
+const cookieParticles = [
+  { x: '8%', delay: 0, duration: 6 },
+  { x: '35%', delay: 2, duration: 7 },
+  { x: '70%', delay: 4, duration: 6.5 },
+]
+
 function loadConsent(): CookiePreferences | null {
   try {
     const raw = localStorage.getItem(CONSENT_KEY)
@@ -129,17 +135,46 @@ export function CookieConsent() {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            transition={{ type: 'spring' as const, damping: 25, stiffness: 300 }}
             className="fixed bottom-16 left-0 right-0 z-50 px-3 sm:px-4 md:bottom-4"
           >
-            <div className="glass-card max-w-3xl mx-auto rounded-xl border border-primary/20 p-4 sm:p-5 shadow-lg relative overflow-hidden">
+            {/* Floating cookie particles */}
+            {cookieParticles.map((particle, i) => (
+              <motion.span
+                key={`cookie-particle-${i}`}
+                className="fixed pointer-events-none select-none text-2xl z-[51]"
+                style={{ left: particle.x, bottom: '10%' }}
+                animate={{
+                  y: [-10, -80],
+                  x: [0, 10, -5, 0],
+                  opacity: [0, 0.5, 0.3, 0],
+                  rotate: [0, 20, -15, 0],
+                }}
+                transition={{
+                  duration: particle.duration,
+                  repeat: Infinity,
+                  delay: particle.delay,
+                  ease: 'easeInOut',
+                }}
+              >
+                🍪
+              </motion.span>
+            ))}
+
+            <div className="cookie-glass max-w-3xl mx-auto rounded-xl p-4 sm:p-5 shadow-xl relative overflow-hidden">
               {/* Subtle gradient background */}
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 pointer-events-none" />
               <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 {/* Icon and text */}
                 <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 text-primary shrink-0 mt-0.5">
-                    <Cookie className="h-5 w-5" />
+                  {/* Animated rotating cookie emoji */}
+                  <div className="relative flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 text-primary shrink-0 mt-0.5">
+                    <motion.span
+                      className="cookie-emoji-spin absolute text-lg"
+                    >
+                      🍪
+                    </motion.span>
+                    <Cookie className="h-5 w-5 relative z-[1]" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 mb-1">
@@ -172,17 +207,17 @@ export function CookieConsent() {
                   <Button
                     size="sm"
                     onClick={handleAcceptAll}
-                    className="text-xs h-9 px-4 flex-1 sm:flex-none bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
+                    className="relative text-xs h-9 px-4 flex-1 sm:flex-none bg-accent hover:bg-accent/90 text-accent-foreground font-semibold overflow-hidden btn-shine"
                   >
                     Aceitar todos
                   </Button>
                 </div>
               </div>
 
-              {/* Close button */}
+              {/* Close / reject button with hover glow */}
               <button
                 onClick={handleRejectAll}
-                className="absolute top-2 right-2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                className="absolute top-2 right-2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all hover:shadow-[0_0_12px_oklch(0.45_0.1_155/0.2)]"
                 aria-label="Rejeitar e fechar"
               >
                 <X className="h-3.5 w-3.5" />

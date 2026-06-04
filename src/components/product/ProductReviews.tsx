@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Star, ThumbsUp, Camera, CheckCircle, MessageSquare, ChevronDown, ChevronUp, Send, Shield, ImageIcon, Loader2 } from 'lucide-react'
+import { Star, ThumbsUp, Camera, CheckCircle, MessageSquare, ChevronDown, ChevronUp, Send, Shield, Loader2, X, ZoomIn } from 'lucide-react'
+import { ReviewPhotoGallery } from '@/components/product/ReviewPhotoGallery'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
@@ -40,13 +41,13 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.08 },
+    transition: { staggerChildren: 0.12, delayChildren: 0.08 },
   },
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } },
+  hidden: { opacity: 0, y: 20, scale: 0.97 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring' as const, stiffness: 280, damping: 22 } },
 }
 
 function formatDate(dateStr: string): string {
@@ -72,8 +73,10 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
   const [hoveredStar, setHoveredStar] = useState(0)
   const [reviewText, setReviewText] = useState('')
   const [usefulReviews, setUsefulReviews] = useState<Set<string>>(new Set())
+  const [usefulBounce, setUsefulBounce] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null)
 
   const fetchReviews = useCallback(async () => {
     setIsLoading(true)
@@ -107,6 +110,8 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
     : []
 
   const handleUseful = (reviewId: string) => {
+    setUsefulBounce(reviewId)
+    setTimeout(() => setUsefulBounce(null), 400)
     setUsefulReviews((prev) => {
       const next = new Set(prev)
       if (next.has(reviewId)) {
@@ -173,20 +178,31 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                 className="text-5xl sm:text-6xl font-bold text-primary"
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 200 }}
+                transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}
               >
                 {productRating.toFixed(1)}
               </motion.p>
               <div className="flex items-center gap-0.5 mt-2">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <Star
+                  <motion.span
                     key={s}
-                    className={`h-4 w-4 ${
-                      s <= Math.round(productRating)
-                        ? 'text-amber-500 fill-amber-500'
-                        : 'text-amber-200 dark:text-amber-800'
-                    }`}
-                  />
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{
+                      type: 'spring' as const,
+                      stiffness: 400,
+                      damping: 15,
+                      delay: s * 0.08,
+                    }}
+                  >
+                    <Star
+                      className={`h-4 w-4 transition-colors ${
+                        s <= Math.round(productRating)
+                          ? 'text-amber-500 fill-amber-500 reviews-star-fill r18-star-fill-glow'
+                          : 'text-amber-200 dark:text-amber-800'
+                      }`}
+                    />
+                  </motion.span>
                 ))}
               </div>
               <p className="text-xs text-muted-foreground mt-1">{totalReviews} avaliações</p>
@@ -203,21 +219,36 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                   </div>
                 ))
               ) : starBreakdown.length > 0 ? (
-                starBreakdown.map((item) => (
+                starBreakdown.map((item, barIdx) => (
                   <div key={item.stars} className="flex items-center gap-2">
                     <span className="text-xs font-medium w-8 text-right flex items-center justify-end gap-0.5">
                       {item.stars}
                       <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
                     </span>
-                    <div className="flex-1 h-2.5 bg-muted rounded-full overflow-hidden">
+                    <div className="flex-1 h-2.5 bg-muted rounded-full overflow-hidden relative">
+                      {/* Shimmer overlay */}
                       <motion.div
-                        className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${item.percentage}%` }}
-                        transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                        initial={{ x: '-100%' }}
+                        animate={{ x: '200%' }}
+                        transition={{ duration: 1.5, delay: 0.5 + barIdx * 0.1, ease: 'easeInOut', repeat: Infinity, repeatDelay: 3 }}
+                      />
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full relative reviews-rating-bar"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        style={{ width: `${item.percentage}%`, transformOrigin: 'left' }}
+                        transition={{ type: 'spring' as const, delay: 0.2 + barIdx * 0.08, stiffness: 100, damping: 15 }}
                       />
                     </div>
-                    <span className="text-[10px] text-muted-foreground w-8">{item.percentage}%</span>
+                    <motion.span
+                      className="text-[10px] text-muted-foreground w-8"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.6 + barIdx * 0.08 }}
+                    >
+                      {item.percentage}%
+                    </motion.span>
                   </div>
                 ))
               ) : (
@@ -248,7 +279,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
             >
               <Card className="border-primary/30 overflow-hidden">
                 <CardContent className="p-4 space-y-4">
@@ -321,13 +352,12 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                     </p>
                   </div>
 
-                  {/* Photo upload (UI only — shows "em breve" toast) */}
+                  {/* Photo upload with drag-and-drop gallery */}
                   <div>
                     <p className="text-xs text-muted-foreground mb-2">Fotos (opcional)</p>
-                    <Button variant="outline" size="sm" className="h-9 gap-2 text-xs" onClick={handlePhotoUpload}>
-                      <Camera className="h-3.5 w-3.5" />
-                      Adicionar fotos
-                    </Button>
+                    <ReviewPhotoGallery photos={[]} onUpload={(files) => {
+                      toast.info(`${files.length} ${files.length === 1 ? 'foto selecionada' : 'fotos selecionadas'}! Upload em breve.`, { description: 'Funcionalidade de envio de fotos sera disponivel em breve.' })
+                    }} />
                   </div>
 
                   {/* Submit */}
@@ -364,7 +394,23 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
       {/* -- Reviews List -- */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-sm">Avaliações ({reviews.length})</h3>
+          <h3 className="font-semibold text-sm reviews-title-shimmer inline-block">Avaliações ({reviews.length})</h3>
+          {reviews.length > 3 && (
+            <motion.button
+              whileHover={{ x: 3 }}
+              className="flex items-center gap-1 text-xs text-primary font-medium hover:text-primary/80 transition-colors group"
+              aria-label="Ver mais avaliações"
+            >
+              <span>Ver mais</span>
+              <motion.span
+                animate={{ x: [0, 4, 0] }}
+                whileHover={{ x: [0, 6, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 2 }}
+              >
+                <ChevronDown className="h-3.5 w-3.5 group-hover:text-primary/80 transition-colors" />
+              </motion.span>
+            </motion.button>
+          )}
         </div>
 
         {isLoading ? (
@@ -402,8 +448,10 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                   animate="visible"
                   exit={{ opacity: 0, x: -30, transition: { duration: 0.2 } }}
                 >
-                  <Card className="border-border/50 hover:border-primary/15 hover:shadow-md transition-all">
+                  <Card className="border-border/50 review-card-hover hover:shadow-md transition-all relative overflow-hidden group/review r18-review-card-shimmer">
                     <CardContent className="p-4">
+                      {/* Shimmer border glow */}
+                      <div className="absolute inset-0 rounded-lg pointer-events-none opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" style={{ boxShadow: 'inset 0 0 20px oklch(0.45 0.1 155 / 0.04)' }} />
                       {/* Header */}
                       <div className="flex items-start gap-3">
                         <Avatar className="h-9 w-9">
@@ -415,7 +463,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="font-semibold text-sm">{review.accountName || 'Usuário'}</p>
                             {review.isVerified && (
-                              <Badge className="text-[9px] px-1.5 py-0 gap-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/30 font-medium">
+                              <Badge className="text-[9px] px-1.5 py-0 gap-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/30 font-medium r18-featured-badge-glow">
                                 <Shield className="h-2.5 w-2.5" />
                                 Compra verificada
                               </Badge>
@@ -424,14 +472,25 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                           <div className="flex items-center gap-2 mt-0.5">
                             <div className="flex gap-0.5">
                               {[1, 2, 3, 4, 5].map((s) => (
-                                <Star
+                                <motion.span
                                   key={s}
-                                  className={`h-3 w-3 ${
-                                    s <= review.rating
-                                      ? 'text-amber-500 fill-amber-500'
-                                      : 'text-amber-200 dark:text-amber-800'
-                                  }`}
-                                />
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  transition={{
+                                    type: 'spring' as const,
+                                    stiffness: 350,
+                                    damping: 12,
+                                    delay: s * 0.06,
+                                  }}
+                                >
+                                  <Star
+                                    className={`h-3 w-3 ${
+                                      s <= review.rating
+                                        ? 'text-amber-500 fill-amber-500'
+                                        : 'text-amber-200 dark:text-amber-800'
+                                    }`}
+                                  />
+                                </motion.span>
                               ))}
                             </div>
                             <span className="text-[10px] text-muted-foreground">{formatDate(review.createdAt)}</span>
@@ -444,24 +503,68 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                         <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
                       )}
 
-                      {/* Useful button */}
+                      {/* Review photos with lightbox gallery + photo count badge */}
+                      {review.images && review.images !== '[]' && (() => {
+                        const images: string[] = JSON.parse(review.images)
+                        if (images.length > 0) return (
+                          <div className="mt-2 relative">
+                            <motion.span
+                              initial={{ scale: 0, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              transition={{ type: 'spring' as const, stiffness: 500, damping: 15, delay: 0.2 }}
+                              className="absolute -top-1.5 -left-1 z-10 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-primary/10 text-primary text-[8px] font-bold r18-photo-badge-glow"
+                            >
+                              <Camera className="h-2.5 w-2.5" />
+                              {images.length}
+                            </motion.span>
+                            <ReviewPhotoGallery
+                              photos={images.map((img, imgIdx) => ({
+                                id: `${review.id}-photo-${imgIdx}`,
+                                url: img,
+                              }))}
+                              compact
+                            />
+                          </div>
+                        )
+                        return null
+                      })()}
+
+                      {/* Helpful button with animated heart/thumbs up bounce */}
                       <div className="flex items-center gap-4 mt-3">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className={`h-8 gap-1.5 text-xs px-2 ${
-                            usefulReviews.has(review.id)
-                              ? 'text-primary hover:text-primary'
-                              : 'text-muted-foreground hover:text-muted-foreground'
-                          }`}
-                          onClick={() => handleUseful(review.id)}
+                        <motion.div
+                          animate={usefulBounce === review.id ? { scale: [1, 1.35, 0.85, 1.1, 1] } : { scale: 1 }}
+                          whileTap={{ scale: 0.85 }}
+                          transition={{ type: 'spring' as const, stiffness: 400, damping: 10 }}
                         >
-                          <ThumbsUp className={`h-3.5 w-3.5 ${usefulReviews.has(review.id) ? 'fill-primary' : ''}`} />
-                          Útil
-                          {usefulReviews.has(review.id) && (
-                            <span className="font-medium">1</span>
-                          )}
-                        </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={`h-8 gap-1.5 text-xs px-2 transition-colors r18-helpful-btn-glow {
+                              usefulReviews.has(review.id)
+                                ? 'text-primary hover:text-primary'
+                                : 'text-muted-foreground hover:text-muted-foreground'
+                            }`}
+                            onClick={() => handleUseful(review.id)}
+                          >
+                            <motion.span
+                              animate={usefulReviews.has(review.id) ? { scale: [1, 1.3, 0.95, 1] } : { scale: 1 }}
+                              transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
+                            >
+                              <ThumbsUp className={`h-3.5 w-3.5 ${usefulReviews.has(review.id) ? 'fill-primary' : ''}`} />
+                            </motion.span>
+                            Útil
+                            {usefulReviews.has(review.id) && (
+                              <motion.span
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
+                                className="font-medium"
+                              >
+                                1
+                              </motion.span>
+                            )}
+                          </Button>
+                        </motion.div>
                       </div>
                     </CardContent>
                   </Card>
@@ -481,6 +584,41 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
           </motion.div>
         )}
       </div>
+
+      {/* -- Photo Lightbox -- */}
+      <AnimatePresence>
+        {lightboxImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4"
+            onClick={() => setLightboxImage(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
+              className="relative max-w-lg max-h-[80vh] w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={lightboxImage}
+                alt="Foto em tamanho ampliado"
+                className="w-full h-full object-contain rounded-xl"
+              />
+              <Button
+                size="icon"
+                className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 text-white hover:bg-black/70"
+                onClick={() => setLightboxImage(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* -- Success Toast -- */}
       <AnimatePresence>

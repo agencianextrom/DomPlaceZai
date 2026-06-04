@@ -109,14 +109,14 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.05,
+      staggerChildren: 0.08,
     },
   },
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, x: 20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.25 } },
+  hidden: { opacity: 0, x: 20, y: 8 },
+  visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.3, type: 'spring' as const, stiffness: 200, damping: 20 } },
 }
 
 function NotificationList({
@@ -151,10 +151,16 @@ function NotificationList({
             key={notification.id}
             variants={itemVariants}
             className="relative group"
+            whileHover={{
+              scale: 1.01,
+              y: -1,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+              transition: { duration: 0.2 },
+            }}
           >
             <button
               onClick={() => onToggleRead(notification.id)}
-              className={`w-full flex gap-3 px-4 py-3 hover:bg-secondary/50 transition-colors text-left relative ${
+              className={`w-full flex gap-3 px-4 py-3 hover:bg-secondary/50 transition-colors text-left relative notif-card-glow ${
                 notification.unread
                   ? 'bg-primary/[0.03] border-l-[3px] border-l-primary'
                   : 'border-l-[3px] border-l-transparent'
@@ -163,8 +169,8 @@ function NotificationList({
               {notification.unread && (
                 <motion.div
                   layoutId={`unread-dot-${notification.id}`}
-                  className="absolute right-7 top-3 h-2 w-2 rounded-full bg-emerald-500"
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  className="absolute right-7 top-3 h-2 w-2 rounded-full bg-emerald-500 notif-badge-pulse"
+                  transition={{ type: 'spring' as const, stiffness: 500, damping: 30 }}
                 />
               )}
               <div
@@ -382,7 +388,22 @@ export function NotificationPanel() {
   }
 
   const sharedContent = (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full notif-glass">
+      {/* Floating bell particles */}
+      {[...Array(5)].map((_, i) => (
+        <div
+          key={`bell-particle-${i}`}
+          className="notif-bell-float absolute pointer-events-none"
+          style={{
+            left: `${15 + i * 18}%`,
+            animationDelay: `${i * 0.7}s`,
+            animationDuration: `${4 + i * 0.8}s`,
+          }}
+        >
+          <Bell className="h-2.5 w-2.5 text-primary/10 dark:text-primary/15 rotate-[${i * 30}deg]" />
+        </div>
+      ))}
+
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
         <div className="flex items-center gap-2">
@@ -392,7 +413,7 @@ export function NotificationPanel() {
               key={unreadCount}
               initial={{ scale: 0.5 }}
               animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+              transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
             >
               <Badge
                 variant="secondary"
@@ -496,12 +517,19 @@ export function NotificationPanel() {
                   key={unreadCount}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                  transition={{ type: 'spring' as const, stiffness: 600, damping: 12 }}
                   className="absolute -top-0.5 -right-0.5"
                 >
-                  <Badge className="h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-emerald-500 text-white border-0 badge-ping">
+                  <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm">
                     {unreadCount > 99 ? '99+' : unreadCount}
                   </Badge>
+                  {/* Gentle pulse ring when unread */}
+                  <motion.span
+                    key={`notif-pulse-${unreadCount}`}
+                    animate={{ scale: [1, 1.6, 2], opacity: [0.5, 0.2, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const }}
+                    className="absolute inset-0 rounded-full bg-red-500"
+                  />
                 </motion.div>
               )}
             </Button>
@@ -526,12 +554,19 @@ export function NotificationPanel() {
               key={unreadCount}
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+              transition={{ type: 'spring' as const, stiffness: 600, damping: 12 }}
               className="absolute -top-0.5 -right-0.5"
             >
-              <Badge className="h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-emerald-500 text-white border-0 badge-ping">
+              <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </Badge>
+              {/* Gentle pulse ring when unread */}
+              <motion.span
+                key={`notif-pulse-m-${unreadCount}`}
+                animate={{ scale: [1, 1.6, 2], opacity: [0.5, 0.2, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const }}
+                className="absolute inset-0 rounded-full bg-red-500"
+              />
             </motion.div>
           )}
         </Button>
