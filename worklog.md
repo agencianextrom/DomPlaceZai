@@ -2670,3 +2670,92 @@ Stage Summary:
 - Build: Clean (zero errors)
 - Commit: 0cc6c9a pushed to GitHub main
 - Total: 265+ components, ~14,400+ lines CSS
+
+---
+Task ID: 39 (Round 37 - Job 182228)
+Agent: Main Agent
+Task: QA, new features, styling improvements
+
+Work Log:
+
+**Build Verification:**
+- Initial build: Clean — zero errors
+- All 50 static pages generated successfully
+
+**New Features (3 components, 3,954 lines):**
+
+1. **src/components/product/ProductQAForum.tsx** (1,369 lines)
+   - "Perguntas e Respostas" community Q&A forum for products
+   - Q&A threads with questions, answers, upvote/downvote system
+   - Author avatars with gradient initial letters (8 unique gradient pairs)
+   - 5 question categories: Qualidade, Entrega, Tamanho, Compatibilidade, Outro
+   - 3 sort options: Mais recentes, Mais votadas, Sem resposta
+   - Expand/collapse with animated chevron via AnimatePresence
+   - "Helpful" vote on answers with animated thumb icon
+   - "Top Questions" badges for questions with 5+ upvotes (pulse glow)
+   - "Faça uma pergunta" modal form to submit new questions
+   - 8 mock questions with 2-3 answers each
+   - Search/filter within questions
+   - Animated counters for total questions/answers
+   - Gradient header with "?" icon, shimmer text effect
+   - Empty state with illustration
+   - Props: productId, productName, category
+   - ~12 `r38-qa-*` CSS classes
+
+2. **src/components/home/DynamicPricingAlerts.tsx** (1,272 lines)
+   - "Alertas de Preço" real-time price change notification dashboard
+   - Alert cards: product name, old price (strikethrough), new price (scale-in), change %
+   - 3 alert types: Queda de preço, Aumento, Oferta relâmpago
+   - Animated price transition via AnimatePresence (old fades, new scales in)
+   - Price trend SVG sparkline per product (7 data points, pathLength animation)
+   - Filter tabs: Todos, Quedas, Aumentos, Ofertas with count badges
+   - Animated notification bell with shake animation
+   - "Ativar alerta" toggle per product with localStorage persistence
+   - Stats header: Total alertas hoje, Maior economia, Produtos em oferta
+   - 12 mock products with varied price changes
+   - Gradient accent bar on cards (green/red/amber per type)
+   - Floating discount emoji particles on price drop cards
+   - ~7 `r38-price-*` CSS classes
+
+3. **src/components/store/StoreEventCalendar.tsx** (1,313 lines)
+   - "Eventos das Lojas" calendar section for store events
+   - Mini monthly calendar grid (7x5) with colored event dots
+   - Navigate months with animated arrows
+   - Event dots: blue (promo), green (workshop), amber (launch), purple (tasting), rose (special)
+   - Selected day shows event list with AnimatePresence
+   - Event cards: title, store name, time, type badge, attendee count, "Participar" button
+   - 5 event types: Promoção, Workshop, Lançamento, Degustação, Evento Especial
+   - Attendee avatar stack (gradient borders, max 5 + "+N" overflow)
+   - "Participar" toggle with confetti micro-burst on join
+   - RSVP persisted to localStorage (`r38-event-rsvps` key)
+   - Event detail modal with description, location, attendee list, share button
+   - Upcoming events horizontal scroll strip with countdown badges
+   - Stats cards: Eventos este mês, Participações, Workshops
+   - 15 mock events spread across current + next month
+   - ~20 `r38-event-*` CSS classes
+
+**Bug Fixes:**
+- Fixed ProductQAForum.tsx: shadcn `Button` used `whileHover`/`whileTap` (Framer Motion props) — wrapped in outer `motion.div`, fixed unclosed JSX tags
+
+**Integration:**
+- page.tsx: DynamicPricingAlerts (after LiveStreamingWidget), StoreEventCalendar (after DynamicPricingAlerts)
+- ProductDetail.tsx: ProductQAForum (after ProductOriginTracker)
+
+**Styling Enhancements (5 components + globals.css):**
+
+1. **Header.tsx**: Animated gradient border glow, search shimmer + glassmorphism, cart badge gradient, bell shake, logo gradient text, nav underline slide-in, hamburger→X transition, avatar rotating ring, scroll-based boxShadow
+2. **CartView.tsx**: Item hover translateY + glow, remove button red scale, qty pulse, total shimmer, checkout shimmer sweep + glow, image hover scale, swipe-to-delete hint, delivery badge pop, coupon input glow
+3. **ProfileView.tsx**: Conic-gradient avatar ring, stat card hover + gradient border, menu gradient left border, section shimmer text, edit btn gradient, toggle card glow, logout red gradient, member badge pulse, SVG progress ring, activity item hover lift
+4. **OrdersView.tsx**: Card hover gradient glow, status badge pulse, filter pill shimmer, image hover scale, reorder btn shimmer, empty state emoji bounce, date separator gradient line, delivery progress bar fill, store name gradient text
+5. **StoreProfile.tsx**: Cover shimmer overlay, avatar rotating ring, name gradient text, star glow pulse, tab indicator triple glow, product card hover scale + lift, follow active gradient pulse, stat counter pop-in, info glassmorphism card, contact btn gradient glow
+
+**CSS:** ~200+ lines of r38-* classes added to globals.css
+
+Stage Summary:
+- 12 files changed, 5,415 insertions, 134 deletions
+- 3 new components (3,954 lines)
+- 5 components enhanced with styling
+- 1 bug fix (ProductQAForum JSX)
+- Build: Clean (zero errors)
+- Commit: 0427d71 pushed to GitHub main
+- Total: 268+ components, ~15,400+ lines CSS
