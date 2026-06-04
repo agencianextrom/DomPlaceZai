@@ -179,6 +179,9 @@ import { SubscriptionBoxBuilder } from '@/components/home/SubscriptionBoxBuilder
 import { MysteryDealBox } from '@/components/home/MysteryDealBox'
 import { StoreLoyaltyPassport } from '@/components/home/StoreLoyaltyPassport'
 import { QuickMealFinder } from '@/components/home/QuickMealFinder'
+import { RatingChallenge } from '@/components/home/RatingChallenge'
+import { ChatWithSeller } from '@/components/home/ChatWithSeller'
+import { PriceDropAlerts2 } from '@/components/home/PriceDropAlerts2'
 import { VirtualMarketTour } from '@/components/home/VirtualMarketTour'
 import VoiceShoppingAssistant from '@/components/home/VoiceShoppingAssistant'
 import { WishListManager } from '@/components/home/WishListManager'
@@ -1744,6 +1747,11 @@ export default function Home() {
                     <LazySection><ScrollReveal delay={0.3}><section><MysteryDealBox /></section></ScrollReveal></LazySection>
                     <LazySection><ScrollReveal delay={0.3}><section><StoreLoyaltyPassport /></section></ScrollReveal></LazySection>
                     <LazySection><ScrollReveal delay={0.3}><section><QuickMealFinder /></section></ScrollReveal></LazySection>
+
+                    {/* R59 New Components */}
+                    <LazySection><ScrollReveal delay={0.3}><section><RatingChallenge /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><ChatWithSeller /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><PriceDropAlerts2 /></section></ScrollReveal></LazySection>
 
                     </div>
                   </>

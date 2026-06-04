@@ -94,6 +94,23 @@ function getSoldCount(id: string, stock: number): number {
 }
 
 /* ------------------------------------------------------------------ */
+/*  OfertaDoDiaBadge — rotating conic-gradient border badge            */
+/* ------------------------------------------------------------------ */
+function OfertaDoDiaBadge() {
+  return (
+    <div className="r59-deals-conic-badge relative">
+      <div className="absolute inset-0 rounded-lg animate-[conic-rotate_3s_linear_infinite]" style={{
+        background: 'conic-gradient(from 0deg, rgba(245,158,11,0.8), rgba(239,68,68,0.8), rgba(245,158,11,0.8))',
+      }} />
+      <span className="relative z-10 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-card text-[10px] font-bold text-amber-600 dark:text-amber-400">
+        <Zap className="h-3 w-3" />
+        Oferta do Dia
+      </span>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  FlipDigit — per-digit vertical flip animation                      */
 /* ------------------------------------------------------------------ */
 function FlipDigit({ digit }: { digit: string }) {
@@ -325,6 +342,36 @@ function MiniConfettiBurst({ x, y }: { x: number; y: number }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  AnimatedPrice — spring bounce price on viewport entry               */
+/* ------------------------------------------------------------------ */
+function AnimatedPrice({ price, comparePrice }: { price: number; comparePrice?: number | null }) {
+  return (
+    <div className="flex items-baseline gap-1 mt-1.5">
+      <motion.span
+        className="text-sm font-bold text-primary r59-deals-price-bounce"
+        initial={{ y: 8, opacity: 0, scale: 0.9 }}
+        whileInView={{ y: 0, opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ type: 'spring' as const, stiffness: 400, damping: 12, delay: 0.15 }}
+      >
+        {formatBRL(price)}
+      </motion.span>
+      {comparePrice && (
+        <motion.span
+          className="text-[9px] text-muted-foreground line-through"
+          initial={{ x: -4, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3, delay: 0.25 }}
+        >
+          {formatBRL(comparePrice)}
+        </motion.span>
+      )}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  DealCard — with 3D tilt on mouse hover                              */
 /* ------------------------------------------------------------------ */
 function DealCard({
@@ -390,7 +437,7 @@ function DealCard({
           transform: `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg)`,
           transition: 'transform 0.15s ease-out',
         }}
-        className="r42-3d-tilt r42-3d-tilt-inner deal-card-hover r26-card-lift bg-card rounded-xl border border-border p-3 cursor-pointer hover:border-amber-300/50 dark:hover:border-amber-700/40 transition-all group relative overflow-hidden shadow-lg hover:shadow-xl hover:shadow-primary/10"
+        className="r42-3d-tilt r42-3d-tilt-inner deal-card-hover r26-card-lift r59-deals-shimmer-sweep bg-card rounded-xl border border-border p-3 cursor-pointer hover:border-amber-300/50 dark:hover:border-amber-700/40 transition-all group relative overflow-hidden shadow-lg hover:shadow-xl hover:shadow-primary/10"
       >
         {/* Heat-map gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-amber-500/[0.06] via-orange-500/[0.03] to-transparent pointer-events-none z-0" />
@@ -441,15 +488,15 @@ function DealCard({
             </motion.div>
           </div>
 
+          {/* Oferta do Dia conic badge */}
+          <div className="mb-1">
+            <OfertaDoDiaBadge />
+          </div>
+
           {/* Info */}
           <p className="text-[10px] text-muted-foreground truncate">{product.storeName}</p>
           <h4 className="text-xs font-semibold line-clamp-1 mt-0.5">{product.name}</h4>
-          <div className="flex items-baseline gap-1 mt-1.5">
-            <span className="text-sm font-bold text-primary">{formatBRL(product.price)}</span>
-            {product.comparePrice && (
-              <span className="text-[9px] text-muted-foreground line-through">{formatBRL(product.comparePrice)}</span>
-            )}
-          </div>
+          <AnimatedPrice price={product.price} comparePrice={product.comparePrice} />
 
           {/* Stock indicator */}
           {product.stock <= 10 && (
@@ -862,25 +909,31 @@ export function DailyDeals() {
         })}
       </motion.div>
 
-      {/* CTA button */}
+      {/* CTA button — Ver Oferta with gradient sweep and glow pulse */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        whileTap={{ scale: 0.97 }}
         className="flex justify-center"
       >
-        <button
-          className="daily-deals-cta-btn r26-shimmer-sweep r34-daily-deals-cta-shimmer h-9 px-5 text-xs rounded-full flex items-center gap-1.5 relative overflow-hidden"
-          onClick={() => useAppStore.getState().openSearch()}
+        <motion.div
+          whileTap={{ scale: 0.97 }}
+          animate={{ boxShadow: ['0 0 0px rgba(245,158,11,0)', '0 0 20px rgba(245,158,11,0.3)', '0 0 0px rgba(245,158,11,0)'] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
         >
-          <span className="r34-daily-deals-shimmer-bar r42-ver-oferta-shimmer" />
-          <span className="relative z-10 inline-flex items-center gap-1.5">
-            Ver todas as ofertas
-            <ArrowRight className="h-3.5 w-3.5" />
-          </span>
-        </button>
+          <button
+            className="daily-deals-cta-btn r26-shimmer-sweep r34-daily-deals-cta-shimmer r59-deals-cta-gradient h-9 px-5 text-xs rounded-full flex items-center gap-1.5 relative overflow-hidden"
+            onClick={() => useAppStore.getState().openSearch()}
+          >
+            <span className="r59-deals-cta-sweep r34-daily-deals-shimmer-bar r42-ver-oferta-shimmer" />
+            <span className="relative z-10 inline-flex items-center gap-1.5 font-semibold">
+              <Flame className="h-3.5 w-3.5 text-amber-500" />
+              Ver Oferta
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </button>
+        </motion.div>
       </motion.div>
     </motion.section>
   )

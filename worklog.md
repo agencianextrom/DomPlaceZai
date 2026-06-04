@@ -3756,3 +3756,27 @@ Stage Summary:
 - ~280 lines CSS added (keyframes + base classes + dark mode overrides)
 - All animations properly guarded with prefers-reduced-motion: reduce fallbacks
 - Dev server compiles successfully, no new lint errors
+
+---
+Task ID: r59-rating-challenge
+Agent: Feature Agent
+Task: Create RatingChallenge component
+
+Work Log:
+- Created src/components/home/RatingChallenge.tsx (~717 lines)
+- Added r59-rating-* CSS to globals.css
+
+Stage Summary:
+- New rating challenge component with weekly goals, leaderboard, streaks, milestones
+---
+Task ID: r59-chat-seller
+Agent: Feature Agent
+Task: Create ChatWithSeller component
+
+Work Log:
+- Created src/store/useChatSellerStore.ts (~278 lines) — Zustand store with 5 mock conversations, auto-reply simulation, typing state, search/filter
+- Created src/components/home/ChatWithSeller.tsx (~414 lines) — Floating chat widget with FAB, expandable panel, conversation list, message bubbles, quick replies, typing indicator, search
+- Added r59-chat-* CSS to globals.css (before last prefers-reduced-motion block + inside reduce block)
+
+Stage Summary:
+- New seller chat widget with 5 mock store conversations, emoji avatars, gradient headers, message bubbles (sent/received), quick reply chips, typing indicator with animated dots, auto-reply simulation (2s delay), search/filter, online/offline status indicators, unread badge pulsing, spring animations for panel open/close, staggered message entrance animations

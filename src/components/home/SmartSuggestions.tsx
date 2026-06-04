@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Sparkles, ChevronRight, Star, Store, TrendingUp,
-  RefreshCw, Package
+  RefreshCw, Package, ArrowRight, BrainCircuit
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -250,7 +250,7 @@ export function SmartSuggestions() {
         aria-hidden="true"
       />
 
-      {/* Section Header */}
+      {/* Section Header — Para Você with sparkle effect */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <motion.div
@@ -260,29 +260,31 @@ export function SmartSuggestions() {
           >
             <Sparkles className="h-4 w-4 text-white" />
           </motion.div>
-          <div>
-            <h2 className="text-base sm:text-lg font-bold r44-header-shimmer">Sugestões para Você</h2>
+          <div className="relative">
+            <h2 className="text-base sm:text-lg font-bold r44-header-shimmer r59-suggest-header-sparkle">Sugestões para Você</h2>
             <p className="text-[11px] text-muted-foreground hidden sm:block r44-header-subtitle-fade">
               Produtos selecionados especialmente para você
             </p>
+            {/* Animated sparkle particles around header */}
+            <motion.div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400/60 pointer-events-none" animate={{ scale: [0,1.2,0], opacity: [0,1,0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const }} />
+            <motion.div className="absolute -top-2 right-4 w-1.5 h-1.5 rounded-full bg-emerald-400/50 pointer-events-none" animate={{ scale: [0,1,0], opacity: [0,0.8,0] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.7 }} />
+            <motion.div className="absolute -bottom-0.5 -left-2 w-1 h-1 rounded-full bg-orange-400/50 pointer-events-none" animate={{ scale: [0,1.3,0], opacity: [0,0.6,0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' as const, delay: 1.2 }} />
           </div>
         </div>
-        {/* Animated arrow indicator */}
-        <motion.div
-          animate={{ x: [0, 4, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
-        >
-          <ChevronRight className="h-5 w-5 text-muted-foreground" />
-        </motion.div>
       </div>
 
       {/* Loading skeleton */}
       {loading && <SuggestionsSkeleton />}
 
-      {/* Horizontal Scrollable Cards */}
+      {/* Horizontal Scrollable Cards with gradient fade edges */}
       {!loading && (
-        <motion.div
-          className="flex gap-3 overflow-x-auto hide-scrollbar pb-2"
+        <div className="relative">
+          {/* Left fade edge */}
+          <div className="r59-suggest-fade-left" />
+          {/* Right fade edge */}
+          <div className="r59-suggest-fade-right" />
+          <motion.div
+            className="flex gap-3 overflow-x-auto hide-scrollbar pb-2"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -306,7 +308,7 @@ export function SmartSuggestions() {
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 <Card
-                  className="border-border/50 overflow-hidden cursor-pointer r44-smart-card-hover r44-smart-card-inner-glow h-full glassmorphism-strong"
+                  className="border-border/50 overflow-hidden cursor-pointer r44-smart-card-hover r44-smart-card-inner-glow h-full glassmorphism-strong r59-suggest-tilt-card"
                   onClick={() => handleProductClick(product)}
                 >
                   {/* Image */}
@@ -323,9 +325,21 @@ export function SmartSuggestions() {
                       </Badge>
                     )}
 
+                    {/* AI Recommendation Badge */}
+                    <div className="absolute top-2 right-2 z-10">
+                      <motion.div
+                        className="r59-suggest-ai-badge flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[8px] font-bold text-white"
+                        animate={{ boxShadow: ['0 0 0px rgba(16,185,129,0)', '0 0 12px rgba(16,185,129,0.4)', '0 0 0px rgba(16,185,129,0)'] }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: idx * 0.3 }}
+                      >
+                        <BrainCircuit className="h-2.5 w-2.5" />
+                        <span>AI</span>
+                      </motion.div>
+                    </div>
+
                     {/* New badge */}
                     {product.isNew && (
-                      <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground border-0 text-[9px] px-1.5 py-0">
+                      <Badge className="absolute bottom-2 right-2 bg-primary text-primary-foreground border-0 text-[9px] px-1.5 py-0">
                         Novo
                       </Badge>
                     )}
@@ -369,24 +383,34 @@ export function SmartSuggestions() {
             )
           })}
 
-          {/* "Ver mais" button with animated arrow */}
+          {/* "Ver Todos" button with animated arrow rotation on hover */}
           <motion.div
             variants={cardVariants}
             className="shrink-0 w-[100px] sm:w-[120px] flex items-end"
           >
-            <Button
-              variant="outline"
-              className="w-full h-full min-h-[200px] sm:min-h-[240px] rounded-xl border-dashed border-2 border-primary/30 text-primary hover:bg-primary/5 hover:border-primary/50 flex flex-col items-center justify-center gap-2"
-              onClick={() => { useAppStore.getState().setSearchQuery('recomendados'); useAppStore.getState().openSearch() }}
-            >
-              <motion.div
-                animate={{ x: [0, 3, 0], rotate: [0, 15, 0] }}
-                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const }}
+            <div className="r59-suggest-ver-todos-wrapper">
+              <Button
+                variant="outline"
+                className="w-full h-full min-h-[200px] sm:min-h-[240px] rounded-xl border-dashed border-2 border-primary/30 text-primary hover:bg-primary/5 hover:border-primary/50 flex flex-col items-center justify-center gap-2 group/ver"
+                onClick={() => { useAppStore.getState().setSearchQuery('recomendados'); useAppStore.getState().openSearch() }}
               >
-                <ChevronRight className="h-5 w-5 r36-arrow-bounce" />
-              </motion.div>
-              <span className="text-xs font-semibold">Ver mais</span>
-            </Button>
+                <motion.div
+                  animate={{ rotate: [0, 8, -8, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  className="group-hover/ver:[--arrow-rotate:45deg]"
+                >
+                  <motion.div
+                    className="flex items-center gap-1"
+                    whileHover={{ rotate: 45 }}
+                    transition={{ type: 'spring' as const, stiffness: 300, damping: 15 }}
+                  >
+                    <span className="text-xs font-semibold">Ver</span>
+                    <ArrowRight className="h-4 w-4 r59-suggest-arrow-rotate" />
+                  </motion.div>
+                </motion.div>
+                <span className="text-xs font-semibold">Todos</span>
+              </Button>
+            </div>
           </motion.div>
         </motion.div>
       )}
