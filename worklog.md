@@ -2365,3 +2365,76 @@ Stage Summary:
 3. Dev server instability (OOM in some environments)
 4. Stale copy at /home/z/my-project/src/ must be synced when using dual-repo setup
 5. Cron job commits create divergent histories — force push required periodically
+
+---
+Task ID: 35 (Round 33 - Job 182228)
+Agent: Main Agent
+Task: New features, styling enhancements, bug fix
+
+Work Log:
+
+**Build Verification:**
+- Initial build: Clean — zero errors
+- Fixed QuickInfo.tsx parse error: Replaced `<>` fragment with `<div>` wrapper inside ternary conditional rendering
+- Fixed ProductDetail.tsx type error: Removed `category` prop from ProductRecipes (component takes no props)
+- Final build: Clean — all routes generated, zero errors
+
+**New Features (3 components, 2,791 lines):**
+
+1. **src/components/product/ProductRecipes.tsx** (819 lines)
+   - Horizontal scrollable recipe cards with snap-scroll
+   - 8 Brazilian/Paraense recipes (Tacacá, Maniçoba, Açaí na Tigela, Pato no Tucupi, etc.)
+   - Recipe detail expansion with ingredients (checkbox) and step-by-step instructions
+   - Ingredient matching: green checkmark for available, orange warning for needed
+   - Difficulty filter pills with animated layoutId indicator
+   - Cooking timer per step with circular SVG progress
+   - Share via Web Share API, favorites persisted to localStorage
+
+2. **src/components/home/StoreEvents.tsx** (1,140 lines)
+   - Full monthly calendar grid with event dots and day navigation
+   - 10 mock events relative to current date (promos, launches, flash sales, community)
+   - Event type filter with animated indicator (Todos, Promoções, Lançamentos, Flash Sale, Comunidade)
+   - Real-time countdown timer to next event
+   - RSVP/Reminder toggle saved to localStorage with confetti burst
+   - Featured event hero banner with gradient overlay
+   - Store badges on events
+
+3. **src/components/checkout/DeliveryScheduler.tsx** (832 lines)
+   - 7-day date picker with today highlight and unavailable dates
+   - 6 time slots with color-coded availability and capacity bars
+   - Driver assignment with avatar, rating, vehicle type, action buttons
+   - SVG delivery route visualization with animated progress dot
+   - 5-step real-time status indicator with auto-advancing demo
+   - Delivery instructions with quick-select tags
+   - Reschedule modal with slide-up animation
+
+**Integration:**
+- page.tsx: StoreEvents (after EcoImpactTracker)
+- ProductDetail.tsx: ProductRecipes (after ARProductPreview)
+- CheckoutView.tsx: DeliveryScheduler (after TaxBreakdown)
+
+**Styling Enhancements (5 components + globals.css):**
+
+1. **HeroBanner.tsx**: 5 floating gradient particles, animated gradient morph overlay, shimmer text on title, enhanced CTA button with sweep + scale
+2. **CartView.tsx**: Spring staggered item entrance, hover lift, checkout button shimmer, animated empty state with gradient bg, "Economizou" savings highlight with animated counter
+3. **SearchView.tsx**: Result hover lift + glow, chip glow on hover, empty state float animation (via CSS classes)
+4. **ProfileView.tsx**: Animated header gradient, avatar conic-gradient ring, stat card hover glow, menu item gradient left border on hover (via CSS classes)
+5. **StoreProfile.tsx**: Cover parallax zoom, rating star pulse glow, tab indicator glow, delivery badge shimmer, "Seguir loja" button shimmer + scale
+
+**CSS:** ~80+ r34- prefixed classes added to globals.css
+
+**Bug Fixes (2):**
+1. QuickInfo.tsx: Fixed JSX fragment `<>` inside ternary causing parse error → replaced with `<div>`
+2. ProductDetail.tsx: Fixed `category` prop on ProductRecipes that doesn't accept props
+
+**Cron Job:**
+- Created recurring 15-minute job (ID: 184409) for automated reviews and development
+
+Stage Summary:
+- 20 files changed, 5,190 insertions, 52 deletions
+- 3 new components (2,791 lines)
+- 5 styling enhancements
+- 2 bug fixes
+- Build: Clean (zero errors)
+- Commit: 51d301e pushed to GitHub main
+- Total: 253+ components, ~13,400 lines CSS
