@@ -152,6 +152,38 @@ import { ScrollReveal } from '@/lib/use-scroll-reveal'
 import { FloatingParticles } from '@/components/effects/FloatingParticles'
 import { TextScramble } from '@/components/effects/TextScramble'
 import { cachedFetch } from '@/lib/api-cache'
+import { AIProductRecommender } from '@/components/home/AIProductRecommender'
+import ARInteriorPreview from '@/components/home/ARInteriorPreview'
+import { CrowdFundedDeals } from '@/components/home/CrowdFundedDeals'
+import { DroneDeliveryTracker } from '@/components/home/DroneDeliveryTracker'
+import FamilyPurchasePlanner from '@/components/home/FamilyPurchasePlanner'
+import { FoodDeliveryTracker } from '@/components/home/FoodDeliveryTracker'
+import { GiftCardMarketplace } from '@/components/home/GiftCardMarketplace'
+import { MarketplaceAnalytics } from '@/components/home/MarketplaceAnalytics'
+import { MealDealFinder } from '@/components/home/MealDealFinder'
+import { NeighborhoodBulletinBoard } from '@/components/home/NeighborhoodBulletinBoard'
+import NeighborhoodWishlist from '@/components/home/NeighborhoodWishlist'
+import { NutritionLens } from '@/components/home/NutritionLens'
+import { PersonalShopperBot } from '@/components/home/PersonalShopperBot'
+import PriceDropAlertEnhanced from '@/components/home/PriceDropAlertEnhanced'
+import { PriceMatchGuarantee } from '@/components/home/PriceMatchGuarantee'
+import { ProductStories } from '@/components/home/ProductStories'
+import { QuickReorderHub } from '@/components/home/QuickReorderHub'
+import { RecipeDiscovery } from '@/components/home/RecipeDiscovery'
+import SmartComparisonMatrix from '@/components/home/SmartComparisonMatrix'
+import { SmartListManager } from '@/components/home/SmartListManager'
+import { SmartMealPrep } from '@/components/home/SmartMealPrep'
+import { SocialCommerceHub } from '@/components/home/SocialCommerceHub'
+import { StoreEventHub } from '@/components/home/StoreEventHub'
+import { SubscriptionBoxBuilder } from '@/components/home/SubscriptionBoxBuilder'
+// import { SustainabilityTracker } from '@/components/home/SustainabilityTracker'
+import { VirtualMarketTour } from '@/components/home/VirtualMarketTour'
+import VoiceShoppingAssistant from '@/components/home/VoiceShoppingAssistant'
+import { WishListManager } from '@/components/home/WishListManager'
+import { LiveOrderChat } from '@/components/orders/LiveOrderChat'
+import { ARVirtualTryOn } from '@/components/product/ARVirtualTryOn'
+import { DynamicPricingEngine } from '@/components/product/DynamicPricingEngine'
+import { InteractiveProductTour } from '@/components/home/InteractiveProductTour'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -1672,6 +1704,40 @@ export default function Home() {
                         </section>
                       </ScrollReveal>
                     </LazySection>
+
+                    {/* R47-R57 New Components */}
+                    <LazySection><ScrollReveal delay={0.3}><section><DynamicPricingEngine currentPrice={49.90} basePrice={79.90} /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><InteractiveProductTour /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><SocialCommerceHub /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><CrowdFundedDeals /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><ARVirtualTryOn /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><SmartMealPrep /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><AIProductRecommender /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><GiftCardMarketplace /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><LiveOrderChat /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><MarketplaceAnalytics /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><QuickReorderHub /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><ProductStories /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><DroneDeliveryTracker /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><VirtualMarketTour /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><SmartListManager /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><PersonalShopperBot /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><NeighborhoodBulletinBoard /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><SubscriptionBoxBuilder /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><MealDealFinder /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><PriceMatchGuarantee /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><RecipeDiscovery /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><FoodDeliveryTracker /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><WishListManager /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><StoreEventHub /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><NutritionLens /></section></ScrollReveal></LazySection>
+                    {/* <LazySection><ScrollReveal delay={0.3}><section><SustainabilityTracker /></section></ScrollReveal></LazySection> */}
+                    <LazySection><ScrollReveal delay={0.3}><section><ARInteriorPreview /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><FamilyPurchasePlanner /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><NeighborhoodWishlist /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><PriceDropAlertEnhanced /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><SmartComparisonMatrix /></section></ScrollReveal></LazySection>
+                    <LazySection><ScrollReveal delay={0.3}><section><VoiceShoppingAssistant /></section></ScrollReveal></LazySection>
 
                     </div>
                   </>
