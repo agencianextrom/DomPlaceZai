@@ -286,7 +286,7 @@ export function NotificationCenter() {
                 transition={badgeSpring.transition}
                 className="absolute -top-0.5 -right-0.5"
               >
-                <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm r39-badge-pulse">
+                <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm r39-badge-pulse r43-notif-badge-glow">
                   {unreadCount > 99 ? '99+' : unreadCount}
                 </Badge>
                 <motion.span
@@ -317,7 +317,7 @@ export function NotificationCenter() {
                 animate={headerBadgeSpring.animate}
                 transition={headerBadgeSpring.transition}
               >
-                <Badge className="text-[10px] px-1.5 py-0 h-5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-0 r39-badge-pulse">
+                <Badge className="text-[10px] px-1.5 py-0 h-5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-0 r39-badge-pulse r43-notif-badge-glow">
                   {unreadCount} nova{unreadCount > 1 ? 's' : ''}
                 </Badge>
               </motion.div>
@@ -330,7 +330,7 @@ export function NotificationCenter() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-xs text-primary h-7 px-2 hover:bg-primary/10"
+                  className="r43-mark-all-shimmer text-xs text-primary h-7 px-2"
                   onClick={(e) => { e.stopPropagation(); markAllAsRead() }}
                 >
                   Marcar todas
@@ -341,7 +341,7 @@ export function NotificationCenter() {
         </div>
 
         {/* Tab Bar with animated gradient indicator */}
-        <div className="relative border-b border-border">
+        <div className="r43-tab-bar relative border-b border-border">
           <div className="flex px-2 pt-1" role="tablist">
             {tabConfig.map((tab) => (
               <button
@@ -350,9 +350,9 @@ export function NotificationCenter() {
                 role="tab"
                 aria-selected={activeTab === tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`relative px-3 py-2 text-xs font-medium transition-colors duration-200 shrink-0
+                className={`r43-tab-btn relative px-3 py-2 text-xs font-medium transition-colors duration-200 shrink-0
                   ${activeTab === tab.key
-                    ? 'text-foreground'
+                    ? 'r43-tab-btn-active'
                     : 'text-muted-foreground hover:text-foreground/70'
                   }`}
               >
@@ -366,7 +366,7 @@ export function NotificationCenter() {
           </div>
           {/* Animated gradient indicator */}
           <motion.div
-            className="r39-tab-indicator"
+            className="r39-tab-indicator r43-tab-indicator"
             animate={{ left: tabIndicator.left, width: tabIndicator.width }}
             transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
           />
@@ -382,12 +382,13 @@ export function NotificationCenter() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="relative flex flex-col items-center justify-center py-12 text-center px-4"
+                className="relative flex flex-col items-center justify-center py-12 text-center px-4 r43-empty-gradient-bg"
               >
                 <R39Particles />
-                <div className="r39-bell-bounce">
+                <div className="r39-bell-bounce r43-bell-swing">
                   <Bell className="h-10 w-10 text-muted-foreground/30 mb-3" />
                 </div>
+                <div className="r43-bell-shadow" />
                 <p className="r39-gradient-text text-sm font-semibold mb-1">
                   {activeTab === 'all'
                     ? 'Nenhuma notificação'
@@ -416,7 +417,9 @@ export function NotificationCenter() {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="relative group r39-notif-card"
+                    className={`relative group r39-notif-card r43-notif-card ${
+                      !notification.read ? 'r43-notif-unread' : ''
+                    } r43-notif-type-${notification.type}`}
                   >
                     <button
                       onClick={() => handleNotificationClick(notification)}
@@ -426,15 +429,15 @@ export function NotificationCenter() {
                           : 'border-l-[3px] border-l-transparent'
                       }`}
                     >
-                      {/* Unread dot with pulse */}
+                      {/* Unread dot with glow */}
                       {!notification.read && (
                         <motion.div
                           layoutId={`nc-dot-${notification.id}`}
-                          className="absolute right-7 top-3 h-2 w-2 rounded-full bg-emerald-500 r39-unread-pulse"
+                          className={`absolute right-7 top-3 r43-unread-glow ${notification.type === 'promo' ? 'r43-glow-promo' : notification.type === 'system' ? 'r43-glow-system' : ''}`}
                           transition={{ type: 'spring' as const, stiffness: 500, damping: 30 }}
                         />
                       )}
-                      <div className={`h-9 w-9 rounded-full ${bg} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110`}>
+                      <div className={`h-9 w-9 rounded-full ${bg} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 r43-notif-icon-${notification.type}`}>
                         <Icon className={`h-4 w-4 ${color}`} />
                       </div>
                       <div className="flex-1 min-w-0 pr-4">
@@ -444,7 +447,7 @@ export function NotificationCenter() {
                         <p className={`text-xs mt-0.5 line-clamp-2 ${!notification.read ? 'text-foreground/80' : 'text-muted-foreground'}`}>
                           {notification.description}
                         </p>
-                        <p className="text-[10px] text-muted-foreground/60 mt-1 flex items-center gap-1 r39-timestamp-fade" title={notification.time}>
+                        <p className="text-[10px] text-muted-foreground/60 mt-1 flex items-center gap-1 r39-timestamp-fade r43-timestamp-fade" title={notification.time}>
                           <Clock className="h-2.5 w-2.5" />
                           {notification.time}
                         </p>
@@ -456,7 +459,7 @@ export function NotificationCenter() {
                     {/* Dismiss button — enhanced */}
                     <button
                       onClick={(e) => { e.stopPropagation(); dismissNotification(notification.id) }}
-                      className="absolute top-2 right-1 h-5 w-5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 r39-dismiss-btn"
+                      className="absolute top-2 right-1 h-5 w-5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 r39-dismiss-btn r43-dismiss-hover"
                       aria-label="Remover notificação"
                     >
                       <span className="text-[10px] text-muted-foreground">✕</span>
@@ -478,7 +481,7 @@ export function NotificationCenter() {
             whileTap={{ scale: 0.98 }}
           >
             <button
-              className="w-full flex items-center justify-center gap-1 px-4 py-2.5 text-sm font-medium text-primary hover:bg-secondary/50 transition-colors shrink-0 r39-btn-shimmer"
+              className="w-full flex items-center justify-center gap-1 px-4 py-2.5 text-sm font-medium text-primary hover:bg-secondary/50 transition-colors shrink-0 r39-btn-shimmer r43-footer-btn"
               onClick={() => { navigate('notifications'); setIsOpen(false) }}
             >
               Ver todas as notificações

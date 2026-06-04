@@ -144,9 +144,7 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
 
       {/* Glassmorphism search/location input panel */}
       <div className="mb-3">
-        <div className="relative rounded-xl overflow-hidden">
-          {/* Glassmorphism background */}
-          <div className="absolute inset-0 bg-white/50 dark:bg-white/5 backdrop-blur-xl border border-white/30 dark:border-white/10 rounded-xl" />
+        <div className="r43-search-panel-blur">
           <div className="relative flex items-center gap-2 px-3 py-2.5 rounded-xl">
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
             <input
@@ -179,24 +177,17 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
           } transition-all duration-500`}
         >
           {/* Background grid pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.06] dark:opacity-[0.04]"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)',
-              backgroundSize: '24px 24px',
-            }}
-          />
+          <div className="r43-map-grid" />
 
           {/* Simulated road lines */}
           <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <line x1="0" y1="30" x2="100" y2="30" stroke="currentColor" strokeWidth="0.3" className="text-muted-foreground/10" />
-            <line x1="0" y1="60" x2="100" y2="60" stroke="currentColor" strokeWidth="0.3" className="text-muted-foreground/10" />
-            <line x1="25" y1="0" x2="25" y2="100" stroke="currentColor" strokeWidth="0.3" className="text-muted-foreground/10" />
-            <line x1="50" y1="0" x2="50" y2="100" stroke="currentColor" strokeWidth="0.3" className="text-muted-foreground/10" />
-            <line x1="75" y1="0" x2="75" y2="100" stroke="currentColor" strokeWidth="0.3" className="text-muted-foreground/10" />
+            <line x1="0" y1="30" x2="100" y2="30" className="r43-map-road-line" />
+            <line x1="0" y1="60" x2="100" y2="60" className="r43-map-road-line" />
+            <line x1="25" y1="0" x2="25" y2="100" className="r43-map-road-line" />
+            <line x1="50" y1="0" x2="50" y2="100" className="r43-map-road-line" />
+            <line x1="75" y1="0" x2="75" y2="100" className="r43-map-road-line" />
             {/* Diagonal road */}
-            <line x1="10" y1="10" x2="90" y2="90" stroke="currentColor" strokeWidth="0.4" className="text-muted-foreground/10" />
+            <line x1="10" y1="10" x2="90" y2="90" className="r43-map-road-line" />
           </svg>
 
           {/* Animated connection lines between stores */}
@@ -210,14 +201,13 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
                 y2={line.y2}
                 stroke="currentColor"
                 strokeWidth="0.25"
-                className="text-primary/20"
+                className="r43-connection-line text-primary/20"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 1 }}
                 transition={{
                   pathLength: { duration: 1.5, delay: line.index * 0.2, ease: 'easeInOut' as const },
                   opacity: { duration: 0.5, delay: line.index * 0.2 },
                 }}
-                strokeDasharray="1 2"
               />
             ))}
           </svg>
@@ -230,9 +220,24 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
             </div>
           </div>
 
+          {/* Category filter pills */}
+          <div className="absolute bottom-12 left-3">
+            <div className="flex flex-wrap gap-1.5">
+              {Object.entries(categoryColors)
+                .filter(([key]) => stores.some((s) => s.category === key))
+                .slice(0, 5)
+                .map(([key, color]) => (
+                  <div key={key} className="r43-category-pill">
+                    <div className={`h-2 w-2 rounded-full ${color}`} />
+                    <span className="text-[8px]">{key.replace(/_/g, ' ').slice(0, 8)}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+
           {/* Legend */}
           <div className="absolute top-3 right-3">
-            <div className="flex flex-wrap gap-1 bg-white/70 dark:bg-black/40 backdrop-blur-md rounded-lg px-2 py-1.5 shadow-sm border border-white/30 dark:border-white/10">
+            <div className="r43-map-legend">
               {Object.entries(categoryColors)
                 .filter(([key]) => stores.some((s) => s.category === key))
                 .slice(0, 4)
@@ -251,16 +256,11 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: 'spring' }}
+            transition={{ delay: 0.3, type: 'spring' as const }}
             className="absolute z-20"
             style={{ left: `${userLocation.x}%`, top: `${userLocation.y}%`, transform: 'translate(-50%, -50%)' }}
           >
-            <motion.div
-              animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute inset-0 h-4 w-4 rounded-full bg-primary/30 -translate-x-1/2 -translate-y-1/2"
-            />
-            <div className="relative h-4 w-4 rounded-full bg-primary border-2 border-white shadow-lg shadow-primary/30">
+            <div className="r43-location-pulse">
               <LocateFixed className="h-2 w-2 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
             </div>
           </motion.div>
@@ -286,29 +286,17 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
             >
               {/* Outer pulsing ring for open stores */}
               {open && (
-                <motion.div
-                  animate={{ scale: [1, 2.5, 1], opacity: [0.3, 0, 0.3] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: index * 0.2 }}
-                  className={`absolute inset-0 h-3 w-3 rounded-full ${categoryColors[store.category] || 'bg-emerald-500'} -translate-x-1/2 -translate-y-1/2`}
-                />
+                <div className="r43-pin-pulse-outer" style={{ color: 'rgba(16, 185, 129, 0.35)' }} />
               )}
 
               {/* Inner pulsing ring */}
               {open && (
-                <motion.div
-                  animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: index * 0.2 + 0.5 }}
-                  className={`absolute inset-0 h-3 w-3 rounded-full ${categoryColors[store.category] || 'bg-emerald-500'} -translate-x-1/2 -translate-y-1/2`}
-                />
+                <div className="r43-pin-pulse-inner" style={{ color: 'rgba(16, 185, 129, 0.25)' }} />
               )}
 
-              {/* Store dot */}
+              {/* Store pin */}
               <div
-                className={`
-                  relative h-3 w-3 rounded-full border-2 border-white shadow-md transition-all
-                  ${categoryColors[store.category] || 'bg-emerald-500'}
-                  ${!open ? 'opacity-50 grayscale' : ''}
-                `}
+                className={`r43-store-pin ${categoryColors[store.category] || 'bg-emerald-500'} ${!open ? 'r43-store-pin-closed' : ''}`}
               />
 
               {/* Glassmorphism hover card with store info */}
@@ -323,36 +311,29 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
                       stiffness: 300,
                       damping: 25,
                     }}
-                    className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-48 z-50"
+                    className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-48 z-50 r43-hover-card-glass ${selectedStoreOnMap?.id === store.id ? 'r43-hover-card-glass-visible' : ''}`}
                   >
-                    <div className="rounded-xl shadow-2xl border border-white/30 dark:border-white/10 overflow-hidden backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 p-3">
-                      {/* Store gradient header strip */}
-                      <div className={`h-1 w-full rounded-full bg-gradient-to-r ${categoryColors[store.category] || 'bg-emerald-500'} mb-2 opacity-60`} />
-                      <div className="flex items-center gap-1.5 mb-1.5">
-                        <Store className="h-3 w-3 text-primary" />
-                        <span className="text-xs font-bold line-clamp-1">{store.name}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-0.5">
-                          <Star className="h-2.5 w-2.5 text-amber-500 fill-amber-500" />
-                          <span className="text-[10px] font-medium">{store.rating}</span>
-                          <span className="text-[10px] text-muted-foreground">({store.totalReviews})</span>
-                        </div>
-                        <span className={`text-[10px] font-medium ${open ? openStatusEmojis.open.color : openStatusEmojis.closed.color}`}>
-                          <Clock className="h-2.5 w-2.5 inline mr-0.5" />
-                          {open ? 'Aberto' : 'Fechado'}
-                        </span>
-                      </div>
-                      {store.deliveryFee > 0 && (
-                        <p className="text-[10px] text-muted-foreground mt-1">
-                          Entrega: R$ {store.deliveryFee.toFixed(2)}
-                        </p>
-                      )}
-                      {/* Glassmorphism card arrow */}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
-                        <div className="w-2 h-2 bg-white/80 dark:bg-gray-900/80 rotate-45 border-r border-b border-white/30 dark:border-white/10 backdrop-blur-xl" />
-                      </div>
+                    <div className={`h-1 w-full rounded-full bg-gradient-to-r ${categoryColors[store.category] || 'bg-emerald-500'} mb-2 opacity-60`} />
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <Store className="h-3 w-3 text-primary" />
+                      <span className="text-xs font-bold line-clamp-1">{store.name}</span>
                     </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-0.5">
+                        <Star className="h-2.5 w-2.5 text-amber-500 fill-amber-500" />
+                        <span className="text-[10px] font-medium">{store.rating}</span>
+                        <span className="text-[10px] text-muted-foreground">({store.totalReviews})</span>
+                      </div>
+                      <span className={`text-[10px] font-medium ${open ? openStatusEmojis.open.color : openStatusEmojis.closed.color}`}>
+                        <Clock className="h-2.5 w-2.5 inline mr-0.5" />
+                        {open ? 'Aberto' : 'Fechado'}
+                      </span>
+                    </div>
+                    {store.deliveryFee > 0 && (
+                      <p className="text-[10px] text-muted-foreground mt-1">
+                        Entrega: R$ {store.deliveryFee.toFixed(2)}
+                      </p>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -392,7 +373,7 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
             }}
             whileTap={{ scale: 0.98 }}
             onClick={() => handleStoreClick(store)}
-            className="w-full flex items-center gap-3 p-3 rounded-xl bg-card border border-border hover:border-primary/20 transition-all text-left group"
+            className="r43-nearby-item"
           >
             {/* Category dot */}
             <div className="relative shrink-0">
@@ -404,11 +385,7 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
                 <Store className="h-4 w-4 text-white" />
               </div>
               {open && (
-                <motion.div
-                  className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-background"
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: index * 0.15 }}
-                />
+                <div className="r43-open-dot" />
               )}
             </div>
 
@@ -440,18 +417,7 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
               <span className="text-[10px] text-muted-foreground font-medium">
                 ~{(distance * 0.05).toFixed(1)} km
               </span>
-              <motion.div
-                whileHover={{
-                  boxShadow: '0 0 12px rgba(var(--primary-rgb, 0,0,0), 0.3)',
-                }}
-                transition={{
-                  type: 'spring' as const,
-                  stiffness: 300,
-                  damping: 25,
-                }}
-              >
-                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </motion.div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </div>
           </motion.button>
         ))}

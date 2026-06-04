@@ -68,6 +68,29 @@ const heroParticles = [
   { id: 4, size: 5, top: '18%', right: '82%', color: 'rgba(255,255,255,0.28)', duration: 9, delay: -5, animY: [0, -12, 8, -16, 0], animX: [0, 6, -12, 10, 0] },
 ]
 
+// Enhanced particle field (20+ particles for r43-hero)
+const r43ParticleField = Array.from({ length: 22 }, (_, i) => ({
+  id: i,
+  size: 2 + Math.random() * 10,
+  top: `${Math.random() * 90}%`,
+  right: `${Math.random() * 95}%`,
+  opacity: 0.08 + Math.random() * 0.25,
+  duration: 5 + Math.random() * 12,
+  delay: -Math.random() * 10,
+  drift: 6 + Math.random() * 14,
+}))
+
+// Floating emoji orbs with parallax (r43-hero)
+const r43EmojiOrbs = [
+  { emoji: '🛍️', size: 32, top: '5%', right: '10%', layer: 1, speed: 7 },
+  { emoji: '💎', size: 26, top: '15%', right: '72%', layer: 2, speed: 9 },
+  { emoji: '🎯', size: 22, top: '68%', right: '8%', layer: 1, speed: 11 },
+  { emoji: '🏷️', size: 28, top: '55%', right: '68%', layer: 2, speed: 8 },
+  { emoji: '🏪', size: 24, top: '80%', right: '42%', layer: 1, speed: 10 },
+  { emoji: '✨', size: 18, top: '30%', right: '88%', layer: 3, speed: 6 },
+  { emoji: '🎁', size: 20, top: '42%', right: '30%', layer: 2, speed: 12 },
+]
+
 // Animated gradient color stops for the morphing gradient overlay
 const gradientColors = [
   { from: 'rgba(255,255,255,0.12)', via: 'rgba(255,255,255,0.05)', to: 'rgba(255,255,255,0.0)' },
@@ -281,7 +304,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             opacity: { duration: 0.3 },
             scale: { duration: 0.3 },
           }}
-          className={`relative w-full h-[200px] sm:h-[280px] md:h-[320px] lg:h-[400px] ${banner.gradient} flex items-center overflow-hidden select-none r28-hero-gradient-bg r41-hero-bg-morph`}
+          className={`relative w-full h-[200px] sm:h-[280px] md:h-[320px] lg:h-[400px] ${banner.gradient} flex items-center overflow-hidden select-none r28-hero-gradient-bg r41-hero-bg-morph r43-hero-enhanced-gradient`}
           draggable={false}
         >
           {/* =====================================================
@@ -391,7 +414,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
 
             <motion.h2
               variants={staggerItem}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer r41-hero-title-enhanced"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer r41-hero-title-enhanced r43-hero-heading-mega"
               style={{
                 textShadow: '0 2px 12px rgba(0,0,0,0.2)',
                 backgroundImage: headingBg,
@@ -481,7 +504,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               >
                 <Button
                   onClick={handleVerOfertas}
-                  className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-5 sm:px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer r41-hero-cta-primary"
+                  className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-5 sm:px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer r41-hero-cta-primary r43-cta-shimmer-multi"
                 >
                   <span className="ripple-effect absolute inset-0 rounded-lg" />
                   <span className="r34-hero-cta-sweep absolute inset-0 rounded-lg" />
@@ -498,7 +521,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               >
                 <Button
                   onClick={handleComprarAgora}
-                  className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 font-semibold h-10 sm:h-11 px-5 sm:px-6 press-effect relative overflow-hidden transition-all duration-300 r41-hero-cta-secondary"
+                  className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 font-semibold h-10 sm:h-11 px-5 sm:px-6 press-effect relative overflow-hidden transition-all duration-300 r41-hero-cta-secondary r43-cta-secondary-glow"
                 >
                   <span className="ripple-effect absolute inset-0 rounded-lg" />
                   <span className="r41-hero-cta-shimmer-sweep absolute inset-0 rounded-lg" />
@@ -513,11 +536,11 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               variants={staggerItem}
               className="mt-4 w-full max-w-md"
             >
-              <div className="relative r41-hero-search-wrap">
+              <div className="relative r41-hero-search-wrap r43-hero-search-enhanced">
                 <input
                   type="text"
                   placeholder="Buscar produtos, lojas..."
-                  className="r41-hero-search-input"
+                  className="r41-hero-search-input r43-hero-search-conic"
                   aria-label="Buscar produtos e lojas"
                 />
                 <span className="r41-hero-search-float-label">Buscar em DomPlace</span>
@@ -566,7 +589,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               ].map((badge, idx) => (
                 <motion.div
                   key={`trust-${idx}`}
-                  className="r41-hero-trust-badge"
+                  className="r41-hero-trust-badge r43-hero-trust-badge"
                   initial={{ opacity: 0, y: 12, scale: 0.8 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{
@@ -577,7 +600,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                   }}
                   whileHover={{ scale: 1.08 }}
                 >
-                  <span className="r41-hero-trust-icon" style={{ animationDelay: `${idx * 0.3}s` }}>{badge.icon}</span>
+                  <span className="r41-hero-trust-icon r43-hero-trust-icon-wiggle" style={{ animationDelay: `${idx * 0.3}s` }}>{badge.icon}</span>
                   <span className="text-[10px] sm:text-xs text-white/80 font-medium whitespace-nowrap">{badge.label}</span>
                 </motion.div>
               ))}
@@ -598,6 +621,59 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               }}
             >
               <span className="drop-shadow-lg opacity-50" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))' }}>{fp.emoji}</span>
+            </motion.div>
+          ))}
+
+          {/* r43-hero: Enhanced particle field (22 particles) */}
+          <div className="r43-hero-particle-field absolute inset-0 pointer-events-none" aria-hidden="true">
+            {r43ParticleField.map((p) => (
+              <motion.div
+                key={`r43-field-${p.id}`}
+                className="r43-hero-field-particle absolute rounded-full"
+                style={{
+                  width: p.size,
+                  height: p.size,
+                  top: p.top,
+                  right: p.right,
+                }}
+                animate={{
+                  y: [0, -p.drift, p.drift * 0.5, -p.drift * 0.3, 0],
+                  x: [0, p.drift * 0.6, -p.drift * 0.4, p.drift * 0.2, 0],
+                  opacity: [p.opacity, p.opacity * 1.5, p.opacity * 0.6, p.opacity * 1.2, p.opacity],
+                }}
+                transition={{
+                  duration: p.duration,
+                  delay: p.delay,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              />
+            ))}
+          </div>
+
+          {/* r43-hero: Floating emoji orbs with parallax depth layers */}
+          {r43EmojiOrbs.map((orb, i) => (
+            <motion.div
+              key={`r43-emoji-orb-${i}`}
+              className={`r43-hero-emoji-orb r43-emoji-orb-layer-${orb.layer} absolute pointer-events-none select-none`}
+              style={{
+                top: orb.top,
+                right: orb.right,
+                fontSize: orb.size,
+              }}
+              animate={{
+                y: [0, -12, 6, -8, 0],
+                x: [0, 6, -10, 4, 0],
+                rotate: [0, 8, -6, 4, 0],
+                scale: [1, 1.08, 0.95, 1.04, 1],
+              }}
+              transition={{
+                duration: orb.speed,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            >
+              <span className="r43-emoji-orb-inner drop-shadow-lg">{orb.emoji}</span>
             </motion.div>
           ))}
 

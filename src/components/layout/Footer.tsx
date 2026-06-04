@@ -227,7 +227,7 @@ export function Footer() {
       {/* ──────────────────────────────────────
           FEATURE 2: Animated Gradient Mesh Background
           ────────────────────────────────────── */}
-      <footer className="footer-glass relative footer-gradient-mesh">
+      <footer className="footer-glass relative footer-gradient-mesh r43-footer-glass-enhanced">
         {/* Animated gradient orbs */}
         <div className="footer-mesh-orb footer-mesh-orb-1" />
         {/* Floating gradient orbs */}
@@ -242,10 +242,15 @@ export function Footer() {
         <div className="r41-floating-orb r41-floating-orb-1" />
         <div className="r41-floating-orb r41-floating-orb-2" />
         <div className="r41-floating-orb r41-floating-orb-3" />
+        {/* r43-footer: Additional floating background orbs */}
+        <div className="r43-footer-bg-orb r43-footer-bg-orb-1" />
+        <div className="r43-footer-bg-orb r43-footer-bg-orb-2" />
+        <div className="r43-footer-bg-orb r43-footer-bg-orb-3" />
+        <div className="r43-footer-bg-orb r43-footer-bg-orb-4" />
 
         {/* Top glassmorphism edge + gradient line */}
         <div className="absolute inset-x-0 -top-4 h-4 bg-gradient-to-b from-transparent via-background/80 to-background pointer-events-none" />
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent r41-gradient-line" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent r41-gradient-line r43-footer-top-line" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8 relative z-10">
           {/* Newsletter section with animated gradient shimmer border */}
@@ -312,7 +317,7 @@ export function Footer() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}>
                 <Button
                   size="sm"
-                  className="h-9 px-4 text-sm shrink-0 card-shine r41-submit-btn"
+                  className="h-9 px-4 text-sm shrink-0 card-shine r41-submit-btn r43-footer-submit-glow"
                   onClick={handleSubscribe}
                   disabled={subscribed}
                 >
@@ -362,10 +367,10 @@ export function Footer() {
                 initial="rest"
                 whileHover="hover"
               >
-                <img src="/domplace-logo.png" alt="DomPlace" className="h-8 w-8 rounded-lg r41-logo-glow" />
-                <span className="font-bold text-lg footer-brand-shimmer r41-brand-shimmer">DomPlace</span>
+                <img src="/domplace-logo.png" alt="DomPlace" className="h-8 w-8 rounded-lg r41-logo-glow r43-footer-logo-glow" />
+                <span className="font-bold text-lg footer-brand-shimmer r41-brand-shimmer r43-footer-brand-pulse">DomPlace</span>
                 {/* Animated gradient accent line under brand */}
-                <div className="footer-accent-line h-[2px] w-12 rounded-full mt-0.5" />
+                <div className="footer-accent-line h-[2px] w-12 rounded-full mt-0.5 r43-footer-accent-line" />
               </motion.div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                 Seu marketplace local em Dom Eliseu, Pará. Conectando a comunidade local com os melhores produtos e serviços.
@@ -403,7 +408,7 @@ export function Footer() {
                   href="https://wa.me/5591999999999"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-green-600 hover:text-white hover:shadow-lg hover:shadow-green-600/20 transition-all duration-300 relative r41-social-icon r41-social-icon-green"
+                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-green-600 hover:text-white hover:shadow-lg hover:shadow-green-600/20 transition-all duration-300 relative r41-social-icon r41-social-icon-green r43-social-ring r43-social-ring-green"
                   aria-label="WhatsApp"
                   whileHover={{ scale: 1.25, y: -4, boxShadow: '0 4px 16px rgba(16, 185, 129, 0.3)' }}
                   whileTap={{ scale: 0.85 }}
@@ -417,7 +422,7 @@ export function Footer() {
                 </motion.a>
                 <motion.a
                   href="#"
-                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 hover:text-white hover:shadow-lg transition-all duration-300 relative r41-social-icon r41-social-icon-purple"
+                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 hover:text-white hover:shadow-lg transition-all duration-300 relative r41-social-icon r41-social-icon-purple r43-social-ring r43-social-ring-purple"
                   aria-label="Instagram"
                   whileHover={{ scale: 1.25, y: -4, boxShadow: '0 4px 16px rgba(168, 85, 247, 0.3)' }}
                   whileTap={{ scale: 0.85 }}
@@ -431,7 +436,7 @@ export function Footer() {
                 </motion.a>
                 <motion.a
                   href="#"
-                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300 relative r41-social-icon r41-social-icon-blue"
+                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300 relative r41-social-icon r41-social-icon-blue r43-social-ring r43-social-ring-blue"
                   aria-label="Facebook"
                   whileHover={{ scale: 1.25, y: -4, boxShadow: '0 4px 16px rgba(59, 130, 246, 0.3)' }}
                   whileTap={{ scale: 0.85 }}
@@ -463,7 +468,7 @@ export function Footer() {
                     {/* ──────────────────────────────────────
                         FEATURE 6: Link Hover Underline Animation
                         ────────────────────────────────────── */}
-                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors hover:translate-x-0.5 transition-transform duration-200 inline-flex items-center gap-1 footer-link-hover r41-link-hover">
+                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors hover:translate-x-0.5 transition-transform duration-200 inline-flex items-center gap-1 footer-link-hover r41-link-hover r43-footer-link-anim">
                       <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                       {link}
                     </button>
@@ -477,7 +482,7 @@ export function Footer() {
                   <li key={cat}>
                     <button
                       onClick={() => handleCategoryClick(cat)}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors hover:translate-x-0.5 transition-transform duration-200 footer-link-hover r41-link-hover"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors hover:translate-x-0.5 transition-transform duration-200 footer-link-hover r41-link-hover r43-footer-link-anim"
                     >
                       {cat}
                     </button>
@@ -502,7 +507,7 @@ export function Footer() {
                   <li key={link.label}>
                     <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group w-full">
                       <link.icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors r41-icon-bounce" />
-                      <span className="group-hover:translate-x-0.5 transition-transform duration-200 footer-link-hover r41-link-hover">{link.label}</span>
+                      <span className="group-hover:translate-x-0.5 transition-transform duration-200 footer-link-hover r41-link-hover r43-footer-link-anim">{link.label}</span>
                     </button>
                   </li>
                 ))}
@@ -542,7 +547,7 @@ export function Footer() {
                       key={method.name}
                       whileHover={{ scale: 1.05, boxShadow: '0 0 16px rgba(16, 185, 129, 0.3), 0 0 4px rgba(16, 185, 129, 0.15)' }}
                       transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary/80 text-xs font-medium text-muted-foreground border border-border/50 cursor-default r41-payment-icon"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary/80 text-xs font-medium text-muted-foreground border border-border/50 cursor-default r41-payment-icon r43-payment-stagger"
                     >
                       <method.icon className="h-3.5 w-3.5" />
                       {method.label}
@@ -655,7 +660,7 @@ export function Footer() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={scrollToTop}
-              className="fixed bottom-24 md:bottom-6 right-4 z-40 h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors footer-scroll-top r41-back-to-top"
+              className="fixed bottom-24 md:bottom-6 right-4 z-40 h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors footer-scroll-top r41-back-to-top r43-back-to-top-gradient"
               aria-label="Voltar ao topo"
             >
               <ArrowUp className="h-5 w-5 footer-chevron-bounce" />

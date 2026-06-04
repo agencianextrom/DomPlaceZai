@@ -68,16 +68,7 @@ const barColors = ['bg-primary', 'bg-amber-500', 'bg-teal-500']
 
 function AnimatedGradientBorder({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative rounded-xl p-[2px] overflow-hidden">
-      {/* Animated rotating gradient border */}
-      <motion.div
-        className="absolute inset-0 rounded-xl"
-        style={{
-          background: 'conic-gradient(from var(--gradient-angle, 0deg), hsl(var(--primary)), hsl(var(--accent)), hsl(var(--primary) / 0.5), hsl(var(--accent)), hsl(var(--primary)))',
-        }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'linear' as const }}
-      />
+    <div className="r43-conic-border-wrap">
       {/* Inner content sits on top */}
       <div className="relative rounded-[10px] overflow-hidden">
         {children}
@@ -92,27 +83,7 @@ function AnimatedGradientBorder({ children }: { children: React.ReactNode }) {
 
 function ShimmerButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
   return (
-    <motion.div
-      className="relative rounded-lg overflow-hidden"
-      whileHover={{
-        boxShadow: '0 0 20px rgba(var(--primary-rgb, 0,0,0), 0.25), 0 0 40px rgba(var(--primary-rgb, 0,0,0), 0.1)',
-      }}
-      transition={{
-        type: 'spring' as const,
-        stiffness: 300,
-        damping: 25,
-      }}
-    >
-      {/* Shimmer overlay */}
-      <motion.div
-        className="absolute inset-0 z-10 pointer-events-none"
-        style={{
-          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.15) 55%, transparent 60%)',
-          backgroundSize: '250% 100%',
-        }}
-        animate={{ backgroundPosition: ['-100% 0', '200% 0'] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' as const, repeatDelay: 1.5 }}
-      />
+    <div className="r43-ver-loja-btn">
       <Button
         variant="outline"
         className="w-full h-9 text-xs gap-1.5 border-primary/30 hover:bg-primary/5 hover:border-primary/50 transition-all relative z-0"
@@ -121,7 +92,7 @@ function ShimmerButton({ children, onClick }: { children: React.ReactNode; onCli
         <Eye className="h-3 w-3 text-primary" />
         Ver Loja
       </Button>
-    </motion.div>
+    </div>
   )
 }
 
@@ -132,7 +103,7 @@ function ShimmerButton({ children, onClick }: { children: React.ReactNode; onCli
 function VsBadge() {
   return (
     <motion.div
-      className="relative flex items-center justify-center z-10 flex-shrink-0"
+      className="r43-vs-glow-ring z-10 flex-shrink-0"
       initial={{ scale: 0, rotate: -180 }}
       animate={{ scale: 1, rotate: 0 }}
       transition={{
@@ -141,51 +112,8 @@ function VsBadge() {
         damping: 15,
       }}
     >
-      {/* Outer pulsing glow ring */}
-      <motion.div
-        className="absolute inset-[-6px] rounded-full bg-primary/15 blur-lg"
-        animate={{
-          scale: [1, 1.8, 1],
-          opacity: [0.3, 0.6, 0.3],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: 'easeInOut' as const,
-        }}
-      />
-
-      {/* Pulsing glow ring */}
-      <motion.div
-        className="absolute inset-[-4px] rounded-full bg-primary/20 blur-md"
-        animate={{
-          scale: [1, 1.6, 1],
-          opacity: [0.4, 0.75, 0.4],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: 'easeInOut' as const,
-        }}
-      />
-
-      {/* Inner glow */}
-      <motion.div
-        className="absolute inset-[-2px] rounded-full bg-primary/10 blur-sm"
-        animate={{
-          scale: [1, 1.35, 1],
-          opacity: [0.3, 0.6, 0.3],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: 'easeInOut' as const,
-          delay: 0.3,
-        }}
-      />
-
       {/* Badge circle */}
-      <div className="relative h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30 border border-primary-foreground/10">
+      <div className="r43-vs-badge-core">
         <motion.span
           className="text-[11px] font-black text-primary-foreground tracking-widest select-none"
           animate={{ rotate: [0, 6, -6, 0] }}
@@ -218,20 +146,12 @@ function WinnerBadge() {
         delay: 0.7,
       }}
     >
-      <motion.div
-        animate={{ y: [0, -3, 0] }}
-        transition={{
-          duration: 1.5,
-          repeat: Infinity,
-          ease: 'easeInOut' as const,
-          delay: 1.2,
-        }}
-      >
+      <div className="r43-winner-badge">
         <Badge className="h-5 px-1.5 text-[9px] bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-700 dark:from-amber-900/40 dark:to-yellow-900/40 dark:text-amber-400 border border-amber-200/50 dark:border-amber-700/30 gap-0.5 shadow-sm">
           <Trophy className="h-2.5 w-2.5 text-amber-500" />
           Melhor
         </Badge>
-      </motion.div>
+      </div>
     </motion.div>
   )
 }
@@ -288,9 +208,9 @@ function MetricRow({
       }}
     >
       {/* Label */}
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-muted-foreground">{icon}</span>
-        <span className="text-xs font-medium text-muted-foreground">
+      <div className="r43-metric-label">
+        <span className="r43-metric-label-icon">{icon}</span>
+        <span className="r43-metric-label-text">
           {label}
         </span>
       </div>
@@ -319,9 +239,9 @@ function MetricRow({
                 </div>
 
                 {/* Animated progress bar */}
-                <div className="h-2.5 bg-muted/50 rounded-full overflow-hidden">
+                <div className="r43-stats-bar-track">
                   <motion.div
-                    className={`h-full rounded-full ${barColors[idx % barColors.length]} ${isBest && stores.length > 1 ? 'opacity-100 shadow-sm' : 'opacity-60'}`}
+                    className={`r43-stats-bar-fill ${barColors[idx % barColors.length]} ${isBest && stores.length > 1 ? 'r43-stats-bar-fill-best opacity-100' : 'opacity-60'}`}
                     initial={{ width: 0 }}
                     whileInView={{ width: `${pct}%` }}
                     viewport={{ once: true }}
@@ -542,6 +462,7 @@ export function StoreComparison({ stores }: { stores: StoreData[] }) {
   /* ---------- Render ---------- */
   return (
     <motion.section
+      className="r43-comparison-section"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
@@ -619,15 +540,8 @@ export function StoreComparison({ stores }: { stores: StoreData[] }) {
                         }}
                       >
                         <div
-                          className={`rounded-xl bg-gradient-to-br ${storeGradients[idx % storeGradients.length]} p-3 text-white transition-shadow duration-300 hover:shadow-lg hover:shadow-primary/10`}
+                          className={`r43-store-card bg-gradient-to-br ${storeGradients[idx % storeGradients.length]}`}
                         >
-                          {/* Hover glow overlay */}
-                          <motion.div
-                            className="absolute inset-0 rounded-xl opacity-0 hover:opacity-100 transition-opacity pointer-events-none"
-                            style={{
-                              background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 70%)',
-                            }}
-                          />
                           <div className="flex items-center gap-2 mb-1">
                             <div className="h-9 w-9 rounded-lg bg-white/20 flex items-center justify-center text-sm font-bold backdrop-blur-sm">
                               {getInitials(store.name)}
@@ -684,29 +598,24 @@ export function StoreComparison({ stores }: { stores: StoreData[] }) {
             </div>
 
             {/* Ver Loja buttons with shimmer effect */}
-            <AnimatePresence mode="popLayout">
-              <div className="flex items-center gap-2 mt-4">
-                {displayStores.map((store, idx) => (
-                  <motion.div
-                    key={store.id}
-                    layout
-                    className="flex-1 min-w-0"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 + idx * 0.1 }}
+            <div className="flex items-center gap-2 mt-4">
+              {displayStores.map((store, idx) => (
+                <div
+                  key={store.id}
+                  className="flex-1 min-w-0 r43-entrance-stagger"
+                  style={{ animationDelay: `${0.3 + idx * 0.1}s` }}
+                >
+                  <ShimmerButton
+                    onClick={() => {
+                      selectStore(store)
+                      navigate('store')
+                    }}
                   >
-                    <ShimmerButton
-                      onClick={() => {
-                        selectStore(store)
-                        navigate('store')
-                      }}
-                    >
-                      Ver Loja
-                    </ShimmerButton>
-                  </motion.div>
-                ))}
-              </div>
-            </AnimatePresence>
+                    Ver Loja
+                  </ShimmerButton>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </AnimatedGradientBorder>

@@ -420,7 +420,7 @@ export function ProfileView() {
             { label: 'Modo escuro', desc: 'Ativar tema escuro no aplicativo', icon: Moon, value: darkModeEnabled, onToggle: () => setDarkModeEnabled(v => !v) },
             { label: 'Localização', desc: 'Permitir acesso à localização para entregas', icon: MapPinned, value: locationEnabled, onToggle: () => setLocationEnabled(v => !v) },
           ].map((setting) => (
-            <Card key={setting.label} className="border-border/50 r38-profile-toggle-card">
+            <Card key={setting.label} className="border-border/50 r38-profile-toggle-card r43-toggle-card">
               <CardContent className="p-4 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center shrink-0">
                   <setting.icon className="h-5 w-5 text-primary" />
@@ -634,7 +634,7 @@ export function ProfileView() {
                     toast.info('Faça login para acessar esta funcionalidade')
                     useAppStore.getState().openAuthModal()
                   }}
-                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group r38-profile-menu-item"
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group r38-profile-menu-item r43-menu-item-border"
                 >
                   <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                     <item.icon className="h-5 w-5 text-primary" />
@@ -652,7 +652,7 @@ export function ProfileView() {
       ) : (
       <>
       {/* Profile header with animated gradient border effect */}
-      <div className="profile-card-animated-border mb-5">
+      <div className="profile-card-animated-border r43-conic-gradient-border mb-5">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -680,7 +680,7 @@ export function ProfileView() {
                 transition={{ delay: 0.2, type: 'spring' as const, stiffness: 300, damping: 25 }}
                 className="relative"
               >
-                <div className="r38-profile-avatar-ring">
+                <div className="r38-profile-avatar-ring r43-avatar-ring-pulse">
                   {profile?.avatar ? (
                     <img
                       src={profile.avatar}
@@ -700,14 +700,14 @@ export function ProfileView() {
                 <h1 className="text-xl sm:text-2xl font-bold text-shadow-lg">{displayName}</h1>
                 <p className="text-sm text-white/70 mt-0.5">{displayEmail}</p>
                 {profile?.createdAt && (
-                  <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-white/10 text-white/80 text-[10px] font-medium r38-profile-member-badge">
+                  <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-white/10 text-white/80 text-[10px] font-medium r38-profile-member-badge r43-member-badge">
                     Membro desde {new Date(profile.createdAt).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
                   </span>
                 )}
               </div>
               <Button 
                 size="sm" 
-                className="r38-profile-edit-btn text-white border border-white/20 text-sm backdrop-blur-sm shrink-0"
+                className="r38-profile-edit-btn r43-edit-btn text-white border border-white/20 text-sm backdrop-blur-sm shrink-0"
                 onClick={() => {
                   setEditName(profile?.name || '')
                   setEditPhone(profile?.phone || '')
@@ -735,7 +735,7 @@ export function ProfileView() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.3, type: 'spring' as const, stiffness: 260, damping: 20 }}
-              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card"
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card r43-stat-card-glow"
             >
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
                 <ShoppingBag className="h-4 w-4 text-primary" />
@@ -747,7 +747,7 @@ export function ProfileView() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.4, type: 'spring' as const, stiffness: 260, damping: 20 }}
-              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card"
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card r43-stat-card-glow"
             >
               <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Heart className="h-4 w-4 text-red-500" />
@@ -759,7 +759,7 @@ export function ProfileView() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.5, type: 'spring' as const, stiffness: 260, damping: 20 }}
-              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card"
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card r43-stat-card-glow"
             >
               <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Award className="h-4 w-4 text-amber-500" />
@@ -1032,7 +1032,7 @@ export function ProfileView() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.32 }}
       >
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 r43-section-stagger">
           {menuItems.map((item, idx) => (
             <motion.button
               key={item.id}
@@ -1066,7 +1066,7 @@ export function ProfileView() {
                   setActiveSection('spin-wheel')
                 }
               }}
-              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group r38-profile-menu-item"
+              className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group r38-profile-menu-item r43-menu-item-border"
             >
               <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                 <item.icon className="h-5 w-5 text-primary" />
@@ -1084,7 +1084,7 @@ export function ProfileView() {
       <Separator className="my-3 section-divider" />
       
       {/* Logout */}
-      <Button variant="ghost" className="w-full justify-start text-destructive h-12 r38-profile-logout" onClick={handleLogout}>
+      <Button variant="ghost" className="w-full justify-start text-destructive h-12 r38-profile-logout r43-menu-item-border" onClick={handleLogout}>
         <LogOut className="h-5 w-5 mr-2" />
         Sair da conta
       </Button>

@@ -114,8 +114,10 @@ import { EcoImpactDashboard } from '@/components/home/EcoImpactDashboard'
 import { PriceComparisonBot } from '@/components/home/PriceComparisonBot'
 import { ProductScanSearch } from '@/components/product/ProductScanSearch'
 import { ARProductTryOn2 } from '@/components/product/ARProductTryOn2'
+import { ProductWishlistShare2 } from '@/components/product/ProductWishlistShare2'
 import { SocialCommerceFeed } from '@/components/home/SocialCommerceFeed'
 import { OrderRatingSystem } from '@/components/orders/OrderRatingSystem'
+import { DeliveryDriverTracking } from '@/components/delivery/DeliveryDriverTracking'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1438,6 +1440,24 @@ export default function Home() {
                       <ScrollReveal delay={0.3}>
                         <section className="mt-6">
                           <OrderRatingSystem />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Product Wishlist Share */}
+                    <LazySection>
+                      <ScrollReveal delay={0.35}>
+                        <section className="mt-6">
+                          <ProductWishlistShare2 />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Delivery Driver Tracking */}
+                    <LazySection>
+                      <ScrollReveal delay={0.4}>
+                        <section className="mt-6">
+                          <DeliveryDriverTracking />
                         </section>
                       </ScrollReveal>
                     </LazySection>

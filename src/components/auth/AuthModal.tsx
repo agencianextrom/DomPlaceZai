@@ -233,13 +233,13 @@ export function AuthModal() {
 
   return (
     <Dialog open={isAuthModalOpen} onOpenChange={(open) => { if (!open) closeAuthModal() }}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden max-h-[90vh] overflow-y-auto sm:rounded-2xl rounded-none sm:rounded-2xl r41-modal-card">
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden max-h-[90vh] overflow-y-auto sm:rounded-2xl rounded-none sm:rounded-2xl r41-modal-card r43-modal-entrance">
         <motion.button
           onClick={() => closeAuthModal()}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
-          className="absolute right-3 top-3 z-50 h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+          className="absolute right-3 top-3 z-50 r43-modal-close h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
         >
           <X className="h-4 w-4" />
         </motion.button>
@@ -305,10 +305,10 @@ export function AuthModal() {
                     animate={{ left: activeTab === 'login' ? '2px' : 'calc(50%)', width: 'calc(50% - 2px)' }}
                     transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
                   />
-                  <TabsTrigger value="login" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10 r41-tab-text" onClick={() => setActiveTab('login')}>
+                  <TabsTrigger value="login" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10 r41-tab-text r43-tab-underline" onClick={() => setActiveTab('login')}>
                     Entrar
                   </TabsTrigger>
-                  <TabsTrigger value="register" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10 r41-tab-text" onClick={() => setActiveTab('register')}>
+                  <TabsTrigger value="register" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10 r41-tab-text r43-tab-underline" onClick={() => setActiveTab('register')}>
                     Cadastrar
                   </TabsTrigger>
                 </TabsList>
@@ -330,7 +330,7 @@ export function AuthModal() {
             >
               <div className="space-y-2">
                 <Label htmlFor="login-email" className="text-sm r41-floating-label">E-mail</Label>
-                <div className="relative r41-input-group">
+                <div className="relative r41-input-group r43-input-gradient">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground r41-input-icon" />
                   <Input
                     id="login-email"
@@ -351,7 +351,7 @@ export function AuthModal() {
                     Esqueceu a senha?
                   </button>
                 </div>
-                <div className="relative r41-input-group">
+                <div className="relative r41-input-group r43-input-gradient">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground r41-input-icon" />
                   <Input
                     id="login-password"
@@ -391,7 +391,7 @@ export function AuthModal() {
                 </p>
               )}
 
-              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap">
+              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer">
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent r41-shimmer-sweep"
                   animate={{ translateX: ['100%', '-100%'] }}
@@ -408,7 +408,7 @@ export function AuthModal() {
                       animate={{ opacity: 1 }}
                       className="flex items-center gap-2"
                     >
-                      <Loader2 className="h-4 w-4 animate-spin r41-spinner" />
+                      <Loader2 className="h-4 w-4 animate-spin r41-spinner r43-spinner-accent" />
                       Entrando...
                     </motion.div>
                   ) : isSuccess ? (
@@ -441,7 +441,7 @@ export function AuthModal() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google"
+                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google r43-social-google"
                   disabled={!isGoogleConfigured}
                   onClick={isGoogleConfigured ? handleGoogleSignIn : undefined}
                 >
@@ -462,7 +462,7 @@ export function AuthModal() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook"
+                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook"
                     onClick={handleFacebookSignIn}
                   >
                     <FacebookIcon />
@@ -501,7 +501,7 @@ export function AuthModal() {
                       onClick={() => setRegRole(option.value)}
                       className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 text-center transition-colors duration-200 ${
                         regRole === option.value
-                          ? 'border-primary bg-primary/5 text-primary r41-role-active'
+                          ? 'border-primary bg-primary/5 text-primary r41-role-active r43-role-active-glow'
                           : 'border-border hover:border-muted-foreground/30 hover:bg-muted/50'
                       }`}
                     >
@@ -521,7 +521,7 @@ export function AuthModal() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label htmlFor="reg-name" className="text-sm r41-floating-label">Nome completo</Label>
-                  <div className="relative r41-input-group">
+                  <div className="relative r41-input-group r43-input-gradient">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground r41-input-icon" />
                     <Input
                       id="reg-name"
@@ -536,7 +536,7 @@ export function AuthModal() {
 
                 <div className="space-y-2">
                   <Label htmlFor="reg-email" className="text-sm r41-floating-label">E-mail</Label>
-                  <div className="relative r41-input-group">
+                  <div className="relative r41-input-group r43-input-gradient">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground r41-input-icon" />
                     <Input
                       id="reg-email"
@@ -553,7 +553,7 @@ export function AuthModal() {
 
               <div className="space-y-2">
                 <Label htmlFor="reg-phone" className="text-sm r41-floating-label">Telefone</Label>
-                <div className="relative r41-input-group">
+                <div className="relative r41-input-group r43-input-gradient">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground r41-input-icon" />
                   <Input
                     id="reg-phone"
@@ -569,7 +569,7 @@ export function AuthModal() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label htmlFor="reg-password" className="text-sm r41-floating-label">Senha</Label>
-                  <div className="relative r41-input-group">
+                  <div className="relative r41-input-group r43-input-gradient">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground r41-input-icon" />
                     <Input
                       id="reg-password"
@@ -592,7 +592,7 @@ export function AuthModal() {
 
                 <div className="space-y-2">
                   <Label htmlFor="reg-confirm-password" className="text-sm r41-floating-label">Confirmar senha</Label>
-                  <div className="relative r41-input-group">
+                  <div className="relative r41-input-group r43-input-gradient">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground r41-input-icon" />
                     <Input
                       id="reg-confirm-password"
@@ -673,7 +673,7 @@ export function AuthModal() {
                 </label>
               </div>
 
-              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap">
+              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer">
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent r41-shimmer-sweep"
                   animate={{ translateX: ['100%', '-100%'] }}
@@ -690,7 +690,7 @@ export function AuthModal() {
                       animate={{ opacity: 1 }}
                       className="flex items-center gap-2"
                     >
-                      <Loader2 className="h-4 w-4 animate-spin r41-spinner" />
+                      <Loader2 className="h-4 w-4 animate-spin r41-spinner r43-spinner-accent" />
                       Cadastrando...
                     </motion.div>
                   ) : isSuccess ? (
@@ -723,7 +723,7 @@ export function AuthModal() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google"
+                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google r43-social-google"
                   disabled={!isGoogleConfigured}
                   onClick={isGoogleConfigured ? handleGoogleSignIn : undefined}
                 >
@@ -744,7 +744,7 @@ export function AuthModal() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook"
+                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook"
                     onClick={handleFacebookSignIn}
                   >
                     <FacebookIcon />
