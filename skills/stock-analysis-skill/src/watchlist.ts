@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * watchlist.ts
  * 自选股管理 + 价格提醒（使用平台 storage 持久化）

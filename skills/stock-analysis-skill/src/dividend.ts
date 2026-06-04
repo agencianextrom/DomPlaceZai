@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * dividend.ts
  * 股息分析模块（适配 finance skill）

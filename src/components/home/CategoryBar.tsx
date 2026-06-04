@@ -97,11 +97,11 @@ export function CategoryBar() {
   )
 
   return (
-    <div className="w-full relative" ref={containerRef}>
-      <div className="w-full overflow-x-auto hide-scrollbar -mx-4 px-4">
-        <div ref={scrollRef} className="flex gap-3 py-2 min-w-max relative">
-          {/* Subtle gradient background behind the bar */}
-          <div className="absolute inset-x-0 -top-1 bottom-1 bg-gradient-to-r from-transparent via-primary/5 to-transparent rounded-lg pointer-events-none" />
+    <div className="w-full relative r42-catbar-container" ref={containerRef}>
+      <div className="w-full overflow-x-auto hide-scrollbar -mx-4 px-4 r42-catbar-scroll-wrapper">
+        <div ref={scrollRef} className="flex gap-3 py-2 min-w-max relative r42-catbar-track">
+          {/* Animated gradient border glow container */}
+          <div className="absolute inset-x-0 -top-1 bottom-1 bg-gradient-to-r from-transparent via-primary/5 to-transparent rounded-lg pointer-events-none r42-catbar-glow-bg" />
 
           {categories.map((cat, index) => {
             const isActive = activeCategory === cat.id
@@ -120,8 +120,7 @@ export function CategoryBar() {
                   stiffness: 260,
                   damping: 24,
                 }}
-                /* ── Enhanced hover: scale 1.05 with glow shadow (handled via CSS class) ── */
-                className="flex flex-col items-center gap-1 min-w-[68px] group relative r39-category-btn"
+                className="flex flex-col items-center gap-1 min-w-[68px] group relative r39-category-btn r42-catbar-pill"
                 onClick={(e) => handleCategoryClick(cat.id, isActive, e)}
                 onMouseEnter={() => setHoveredId(cat.id)}
                 onMouseLeave={() => setHoveredId(null)}
@@ -134,7 +133,7 @@ export function CategoryBar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4, scale: 0.9 }}
                       transition={{ duration: 0.18, ease: 'easeOut' }}
-                      className="absolute -top-11 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-medium px-2.5 py-1 rounded-md pointer-events-none whitespace-nowrap z-30 shadow-lg"
+                      className="absolute -top-11 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-medium px-2.5 py-1 rounded-md pointer-events-none whitespace-nowrap z-30 shadow-lg r42-catbar-tooltip"
                     >
                       {cat.label}
                       <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-foreground" />
@@ -182,7 +181,7 @@ export function CategoryBar() {
                     isActive ? cat.gradientColor : 'from-muted to-muted/80'
                   } flex items-center justify-center shadow-sm transition-all duration-300 ${
                     isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg' : ''
-                  } r39-category-icon-wrap`}
+                  } r39-category-icon-wrap r42-catbar-icon-box`}
                 >
                   {/* ── Shimmer sweep effect on icon container ── */}
                   <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
@@ -204,7 +203,7 @@ export function CategoryBar() {
                     }}
                   >
                     <span
-                      className="text-lg leading-none category-icon-float"
+                      className="text-lg leading-none category-icon-float r42-catbar-emoji"
                       style={{ animationDelay: `${floatDelay}s` }}
                     >
                       {cat.emoji}
@@ -268,6 +267,10 @@ export function CategoryBar() {
           })}
         </div>
       </div>
+
+      {/* ── Scroll gradient fade edges ── */}
+      <div className="absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-background via-background/60 to-transparent pointer-events-none z-10 r42-catbar-fade-left" />
+      <div className="absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-background via-background/60 to-transparent pointer-events-none z-10 r42-catbar-fade-right" />
 
       {/* ── Animated scroll indicator arrows ── */}
       <AnimatePresence>

@@ -457,7 +457,7 @@ export function OrdersView() {
               <button
                 key={tab.value}
                 onClick={() => setSelectedOrderTab(tab.value)}
-                className={`relative flex-1 rounded-md py-2 text-xs font-semibold transition-colors z-10 ${
+                className={`relative flex-1 rounded-md py-2 text-xs font-semibold transition-colors z-10 r42-orders-tab-underline ${selectedOrderTab === tab.value ? 'r42-tab-active' : ''} ${
                   selectedOrderTab === tab.value
                     ? 'text-primary'
                     : 'text-muted-foreground hover:text-foreground'
@@ -502,7 +502,7 @@ export function OrdersView() {
 
               {/* Empty state with floating icons and animated gradient bg */}
               {!isLoading && !error && filteredOrders.length === 0 && (
-                <div className="r33-orders-empty-state text-center py-16 text-muted-foreground relative overflow-hidden rounded-xl">
+                <div className="text-center py-16 text-muted-foreground relative overflow-hidden rounded-xl">
                   {/* Floating icon decorations */}
                   <motion.span
                     className="absolute top-6 left-[15%] text-2xl pointer-events-none select-none"
@@ -540,7 +540,7 @@ export function OrdersView() {
                       <motion.div
                         animate={{ y: [0, -10, 0] }}
                         transition={{ type: 'spring' as const, stiffness: 300, damping: 10, repeat: Infinity, repeatDelay: 0.5 }}
-                        className="r38-orders-empty-float"
+                        className="r42-orders-empty-float"
                       >
                         <motion.span
                           className="block text-5xl"
@@ -613,7 +613,7 @@ export function OrdersView() {
                           damping: 14,
                         }}
                         whileHover={{ y: -2, scale: 1.005, transition: { type: 'spring' as const, stiffness: 400, damping: 25 }, boxShadow: '0 8px 24px rgba(16,185,129,0.12), 0 0 40px rgba(16,185,129,0.06)' }}
-                        className={`w-full bg-card rounded-xl border border-border p-4 hover:shadow-lg hover:border-primary/20 transition-all r33-orders-card r35-order-card r38-orders-card-glow ${getStatusBorderGradient(order.status) ? '' : ''}`}
+                        className={`w-full bg-card rounded-xl border border-border p-4 transition-all r42-orders-card ${getStatusBorderGradient(order.status) ? '' : ''}`}
                         style={{
                           borderLeft: `4px solid transparent`,
                           borderImage: getStatusBorderGradient(order.status),
@@ -625,7 +625,7 @@ export function OrdersView() {
                             <Store className="h-4 w-4 text-primary shrink-0" />
                             <span className="font-semibold text-sm truncate r38-orders-store-name">{order.storeName}</span>
                           </div>
-                          <Badge className={`${config.gradient} border-0 text-[10px] font-semibold shrink-0 ml-2 ${isOrderActive ? 'r33-orders-badge-pulse r38-orders-badge-glow' : ''} ${isOrderCompleted ? 'r33-orders-badge-shimmer' : ''} ${order.status === 'CANCELLED' ? 'r38-orders-badge-glow-red' : ''} ${order.status === 'PREPARING' || order.status === 'PENDING' ? 'r38-orders-badge-glow-amber' : ''}`}>
+                          <Badge className={`${config.gradient} border-0 text-[10px] font-semibold shrink-0 ml-2 ${isOrderActive ? 'r42-orders-badge-pulse' : ''} ${isOrderCompleted ? 'r33-orders-badge-shimmer' : ''} ${order.status === 'CANCELLED' ? 'r38-orders-badge-glow-red' : ''}`}>
                             <span className="inline-flex items-center">
                               <StatusIcon className="h-3 w-3 mr-1" />
                               {config.label}
@@ -670,7 +670,7 @@ export function OrdersView() {
                                         isActive
                                           ? 'bg-primary text-primary-foreground'
                                           : 'bg-muted text-muted-foreground'
-                                      } ${isCurrent ? 'ring-[3px] ring-primary/20 neon-glow-primary' : ''}`}
+                                      } ${isCurrent ? 'ring-[3px] ring-primary/20 neon-glow-primary r42-orders-timeline-pulse' : ''}`}
                                     >
                                       <StepIcon className="h-2.5 w-2.5" />
                                     </motion.div>
@@ -687,9 +687,9 @@ export function OrdersView() {
                               })}
                             </div>
                             {/* Delivery progress bar */}
-                            <div className="r38-orders-progress-track">
+                            <div className="r42-orders-progress-track">
                               <motion.div
-                                className="r38-orders-progress-fill"
+                                className="r42-orders-progress-bar"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progressPercent}%` }}
                                 transition={{ type: 'spring' as const, stiffness: 120, damping: 20, delay: 0.3 + idx * 0.12 }}
@@ -734,7 +734,7 @@ export function OrdersView() {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="h-8 text-xs gap-1 r33-orders-reorder-btn relative overflow-hidden r38-orders-reorder-btn"
+                                    className="h-8 text-xs gap-1 r42-orders-reorder-btn relative overflow-hidden"
                                   onClick={() => handleReorder(order)}
                                 >
                                   <PackageCheck className="h-3 w-3" />

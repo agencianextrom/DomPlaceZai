@@ -283,7 +283,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
           style={{ y: bannerY, scale: bannerScale }}
         />
         <motion.div 
-          className="absolute inset-0 bg-gradient-to-tr from-emerald-800/50 to-amber-600/20"
+          className="absolute inset-0 bg-gradient-to-tr from-emerald-800/50 to-amber-600/20 r42-hero-gradient"
           style={{ y: bannerY, backgroundSize: '200% 200%' }}
           animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
           transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
@@ -345,7 +345,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-2xl sm:text-3xl font-bold text-shadow-lg bg-gradient-to-r from-white via-amber-300 to-white bg-clip-text text-transparent bg-[length:200%_auto] animate-[store-name-shimmer_3s_linear_infinite]"
+            className="text-2xl sm:text-3xl font-bold text-shadow-lg r42-store-name-shimmer"
           >
             {store.name}
           </motion.h1>
@@ -413,7 +413,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     ? '0 0 14px rgba(251,191,36,0.3), 0 0 4px rgba(251,191,36,0.15)'
                     : '0 0 0px rgba(251,191,36,0)' }}
                   transition={{ duration: 2.5, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
-                  className={store.rating > 0 ? 'rating-star-glow rounded-lg r34-store-profile-star-pulse r38-store-star-glow' : 'rounded-lg'}
+                  className={store.rating > 0 ? 'rating-star-glow rounded-lg r34-store-profile-star-pulse r38-store-star-glow r42-rating-glow' : 'rounded-lg'}
                 >
                   <StarRating rating={store.rating} size="sm" showCount count={store.totalReviews} />
                 </motion.div>
@@ -435,7 +435,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + i * 0.06 }}
             >
-              <Card className={`border-0 ${stat.bg} transition-colors cursor-default card-premium-hover`}>
+              <Card className={`border-0 ${stat.bg} transition-colors cursor-default card-premium-hover r42-stats-glass`}>
                 <CardContent className="p-3 text-center">
                   <stat.icon className={`h-5 w-5 mx-auto mb-1 ${stat.iconColor}`} />
                   <p className="text-lg font-bold animate-count-up r38-store-stat-counter">{stat.value}</p>
@@ -513,7 +513,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
           </motion.button>
           {(store.whatsapp || store.phone) && (
             <Button 
-              className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white btn-glow rounded-xl r38-store-contact-btn"
+              className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white btn-glow rounded-xl r38-store-contact-btn r42-contact-shimmer"
               onClick={handleWhatsApp}
             >
               <MessageCircle className="h-4 w-4 mr-2" />
@@ -590,7 +590,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     <>
                       <motion.div
                         layoutId="store-tab-bg"
-                        className="absolute inset-0 bg-primary rounded-lg r34-store-profile-tab-glow r35-store-tab-indicator r38-store-tab-glow"
+                        className="absolute inset-0 bg-primary rounded-lg r34-store-profile-tab-glow r35-store-tab-indicator r38-store-tab-glow r42-tab-glow"
                         transition={{ type: 'spring' as const, stiffness: 420, damping: 28, mass: 0.8 }}
                       />
                     </>
@@ -656,7 +656,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                       }}
                       whileHover={{ scale: 1.02, y: -2 }}
                     >
-                      <div className="product-card-hover-enhanced r28-grid-hover-shine r35-store-product-hover r38-store-product-card">
+                      <div className="product-card-hover-enhanced r28-grid-hover-shine r35-store-product-hover r38-store-product-card r42-product-hover">
                         <ProductCard product={p} />
                       </div>
                     </motion.div>

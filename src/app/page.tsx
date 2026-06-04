@@ -113,6 +113,9 @@ import { InfluencerShopPage } from '@/components/home/InfluencerShopPage'
 import { EcoImpactDashboard } from '@/components/home/EcoImpactDashboard'
 import { PriceComparisonBot } from '@/components/home/PriceComparisonBot'
 import { ProductScanSearch } from '@/components/product/ProductScanSearch'
+import { ARProductTryOn2 } from '@/components/product/ARProductTryOn2'
+import { SocialCommerceFeed } from '@/components/home/SocialCommerceFeed'
+import { OrderRatingSystem } from '@/components/orders/OrderRatingSystem'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1408,6 +1411,33 @@ export default function Home() {
                       <ScrollReveal delay={0.15}>
                         <section className="mt-6">
                           <ProductScanSearch />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* AR Product Try-On 2 */}
+                    <LazySection>
+                      <ScrollReveal delay={0.2}>
+                        <section className="mt-6">
+                          <ARProductTryOn2 />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Social Commerce Feed */}
+                    <LazySection>
+                      <ScrollReveal delay={0.25}>
+                        <section>
+                          <SocialCommerceFeed />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Order Rating System */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section className="mt-6">
+                          <OrderRatingSystem />
                         </section>
                       </ScrollReveal>
                     </LazySection>

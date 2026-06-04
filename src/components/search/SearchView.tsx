@@ -453,8 +453,8 @@ export function SearchView() {
                 onClick={toggleVoiceSearch}
                 className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${
                   isVoiceActive
-                    ? 'bg-red-500 text-white animate-pulse'
-                    : 'bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground'
+                    ? 'bg-red-500 text-white animate-pulse r42-voice-btn-active'
+                    : 'bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground r42-voice-btn'
                 }`}
                 title={isVoiceActive ? 'Parar busca por voz' : 'Buscar por voz'}
               >
@@ -965,7 +965,7 @@ export function SearchView() {
                       whileHover={{ scale: 1.08, y: -2 }}
                       whileTap={{ scale: 0.93 }}
                       onClick={() => setSearchQuery(s.term)}
-                      className="px-3 py-1.5 rounded-full bg-secondary/80 text-xs font-medium hover:bg-secondary transition-colors flex items-center gap-1 search-suggestion-chip"
+                      className="px-3 py-1.5 rounded-full bg-secondary/80 text-xs font-medium hover:bg-secondary transition-colors flex items-center gap-1 search-suggestion-chip r42-suggestion-chip"
                     >
                       <span>{s.emoji}</span>
                       {s.term}
@@ -985,7 +985,7 @@ export function SearchView() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="text-center py-10 relative overflow-hidden"
+              className="text-center py-10 relative overflow-hidden r42-empty-state-container"
             >
               {/* Floating product emojis */}
               <motion.span
@@ -1099,7 +1099,7 @@ export function SearchView() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setSearchQuery(term)}
-                        className="group shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/50 bg-secondary/50 text-sm font-medium hover:bg-secondary transition-colors"
+                        className="group shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/50 bg-secondary/50 text-sm font-medium hover:bg-secondary transition-colors r42-recent-chip"
                       >
                         <Clock className="h-3 w-3 text-muted-foreground/60" />
                         <span>{term}</span>

@@ -390,7 +390,7 @@ function DealCard({
           transform: `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg)`,
           transition: 'transform 0.15s ease-out',
         }}
-        className="deal-card-hover r26-card-lift bg-card rounded-xl border border-border p-3 cursor-pointer hover:border-amber-300/50 dark:hover:border-amber-700/40 transition-all group relative overflow-hidden shadow-lg hover:shadow-xl hover:shadow-primary/10"
+        className="r42-3d-tilt r42-3d-tilt-inner deal-card-hover r26-card-lift bg-card rounded-xl border border-border p-3 cursor-pointer hover:border-amber-300/50 dark:hover:border-amber-700/40 transition-all group relative overflow-hidden shadow-lg hover:shadow-xl hover:shadow-primary/10"
       >
         {/* Heat-map gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-amber-500/[0.06] via-orange-500/[0.03] to-transparent pointer-events-none z-0" />
@@ -405,7 +405,7 @@ function DealCard({
 
         {/* Animated countdown timer */}
         <motion.div
-          className="absolute top-2 right-2 z-10 flex items-center gap-0.5 bg-black/60 dark:bg-black/70 backdrop-blur-sm text-white text-[8px] font-mono font-bold px-1.5 py-0.5 rounded-full r26-glow-pulse"
+          className="absolute top-2 right-2 z-10 flex items-center gap-0.5 bg-black/60 dark:bg-black/70 backdrop-blur-sm text-white text-[8px] font-mono font-bold px-1.5 py-0.5 rounded-full r26-glow-pulse r42-timer-pulse"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 + index * 0.06, duration: 0.3 }}
@@ -693,9 +693,11 @@ export function DailyDeals() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 px-3 py-1.5 rounded-full relative r26-timer-glow">
-            <Clock className="h-3.5 w-3.5" />
-            <FlipCountdownTimer expiry={dealExpiry()} />
+          <div className="flex items-center gap-1.5 bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 px-3 py-1.5 rounded-full relative r26-timer-glow r42-timer-pulse">
+            <Clock className="h-3.5 w-3.5 r42-timer-gradient-text" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }} />
+            <span className="r42-timer-gradient-text">
+              <FlipCountdownTimer expiry={dealExpiry()} />
+            </span>
           </div>
         </div>
       </div>
@@ -708,7 +710,7 @@ export function DailyDeals() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setActiveTab(tab.key)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
+            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden r42-tab-indicator ${activeTab === tab.key ? 'r42-tab-active' : ''} ${
               activeTab === tab.key
                 ? 'bg-amber-500 text-white border-amber-500'
                 : 'bg-card text-muted-foreground border-border hover:border-amber-300'
@@ -740,7 +742,7 @@ export function DailyDeals() {
       </div>
 
       {/* Featured deal — rotating */}
-      <div className="daily-deals-featured-border relative">
+      <div className="daily-deals-featured-border relative r42-featured-glow">
         <motion.div
           className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-amber-500/20 via-orange-500/30 to-rose-500/20 blur-xl"
           animate={{ opacity: [0.5, 0.8, 0.5] }}
@@ -796,7 +798,7 @@ export function DailyDeals() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring' as const, stiffness: 500, damping: 12, delay: 0.1 }}
-                      className="text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded r26-ring-pulse"
+                      className="text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded r26-ring-pulse r42-savings-spring"
                     >
                       Economize {featuredDiscount}%
                     </motion.span>
@@ -873,7 +875,7 @@ export function DailyDeals() {
           className="daily-deals-cta-btn r26-shimmer-sweep r34-daily-deals-cta-shimmer h-9 px-5 text-xs rounded-full flex items-center gap-1.5 relative overflow-hidden"
           onClick={() => useAppStore.getState().openSearch()}
         >
-          <span className="r34-daily-deals-shimmer-bar" />
+          <span className="r34-daily-deals-shimmer-bar r42-ver-oferta-shimmer" />
           <span className="relative z-10 inline-flex items-center gap-1.5">
             Ver todas as ofertas
             <ArrowRight className="h-3.5 w-3.5" />

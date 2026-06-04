@@ -335,7 +335,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 navigate('store')
               }
             }}
-            className="flex items-center gap-2 text-sm text-primary font-medium hover:underline"
+            className="flex items-center gap-2 text-sm text-primary font-medium r42-breadcrumb-hover"
           >
             <Store className="h-4 w-4" />
             {product.storeName}
@@ -343,7 +343,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </motion.button>
         )}
         
-        <h1 className="text-xl sm:text-2xl font-bold mt-2">{product.name}</h1>
+        <h1 className="text-xl sm:text-2xl font-bold mt-2 r42-detail-title-entrance">{product.name}</h1>
         
         {/* Rating using StarRating */}
         {product.rating > 0 && (
@@ -398,7 +398,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
             transition={{ type: 'spring' as const, stiffness: 300, damping: 25, delay: 0.2 }}
             className="flex items-baseline gap-3 mt-3 r35-detail-price-animate"
           >
-            <span className="text-2xl sm:text-3xl font-bold text-primary r28-price-pulse">{formatBRL(product.price)}</span>
+            <span className="text-2xl sm:text-3xl font-bold text-primary r28-price-pulse r42-price-gradient">{formatBRL(product.price)}</span>
           </motion.div>
         )}
 
@@ -500,6 +500,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
         {product.description && (
           <div>
             <h3 className="font-semibold mb-2">Descrição</h3>
+            <div className="r42-desc-reveal">
             <p className="text-sm text-muted-foreground leading-relaxed">
               {showFullDescription || product.description.length < 120 
                 ? product.description 
@@ -514,6 +515,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 {showFullDescription ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
               </button>
             )}
+            </div>
           </div>
         )}
         
@@ -583,7 +585,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
             onChange={setQuantity}
             onAddToCart={handleAddToCart}
           />
-          <div className="mt-2 relative r28-cart-glow rounded-lg pointer-events-none" aria-hidden="true" />
+          <div className="mt-2 relative r28-cart-glow r42-add-cart-shimmer rounded-lg pointer-events-none" aria-hidden="true" />
         </div>
 
         <Separator className="my-4" />
@@ -749,7 +751,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ type: 'spring' as const, stiffness: 200, damping: 20, delay: 0 }}
-          className="mt-4 r35-detail-section-reveal"
+          className="mt-4 r35-detail-section-reveal r42-specs-row-enter"
         >
           <ProductSpecsTable
             category={product.category}

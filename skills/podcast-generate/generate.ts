@@ -1,4 +1,4 @@
-// @ts-nocheck
+#!/usr/bin/env tsx
 /**
  * generate.ts - 统一入口（纯 SDK 版本）
  * 原资料 -> podcast_script.md + podcast.wav

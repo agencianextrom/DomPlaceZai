@@ -190,7 +190,7 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveIndex(idx)}
-                  className={`relative h-16 w-16 rounded-xl overflow-hidden shrink-0 border-2 transition-all ${
+                  className={`relative h-16 w-16 rounded-xl overflow-hidden shrink-0 border-2 transition-all r42-thumb-zoom ${
                     idx === activeIndex
                       ? 'border-primary shadow-lg shadow-primary/20 ring-2 ring-primary/20'
                       : 'border-transparent opacity-60 hover:opacity-100'

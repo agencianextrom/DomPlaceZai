@@ -533,7 +533,7 @@ export function CartView() {
         <motion.div
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          className="r34-cart-empty-bob text-6xl mb-6 select-none"
+          className="r42-cart-empty-float text-6xl mb-6 select-none"
         >
           🛒
         </motion.div>
@@ -549,7 +549,7 @@ export function CartView() {
           <motion.div
             animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.5, 0.3] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute -inset-6 rounded-full bg-gradient-to-br from-primary/8 to-accent/8 blur-xl"
+            className="absolute -inset-6 rounded-full bg-gradient-to-br from-primary/8 to-accent/8 blur-xl r42-cart-empty-glow"
           />
           <motion.div
             animate={{ y: [0, -10, 0] }}
@@ -731,9 +731,8 @@ export function CartView() {
                 initial={{ width: 0 }}
                 animate={{ width: `${freeDeliveryProgress}%` }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/70 rounded-full"
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/70 rounded-full r42-cart-shipping-bar"
               />
-              <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/70 rounded-full" style={{ width: `${freeDeliveryProgress}%` }} />
             </div>
             <p className="text-xs text-muted-foreground mt-1.5">
               Falta apenas <span className="font-semibold text-primary">{formatBRL(remainingForFree)}</span> para ganhar frete grátis!
@@ -844,7 +843,7 @@ export function CartView() {
                       exit={{ opacity: 0, x: -60, transition: { duration: 0.25 } }}
                       whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(16,185,129,0.12), 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(16,185,129,0.08)' }}
                       transition={{ delay: index * 0.06, type: 'spring' as const, stiffness: 350, damping: 25 }}
-                      className={`flex gap-3 p-4 cart-item-hover hover-glow-soft rounded-lg r38-cart-item-hover r38-cart-swipe-hint ${outOfStock ? 'opacity-60' : ''}`}
+                      className={`flex gap-3 p-4 rounded-lg r42-cart-item-hover r38-cart-item-hover r38-cart-swipe-hint ${outOfStock ? 'opacity-60' : ''}`}
                     >
                       <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0 relative overflow-hidden r38-cart-img-hover`}>
                         {cartImgUrl ? (
@@ -900,7 +899,7 @@ export function CartView() {
                               whileTap={{ scale: 0.88 }}
                               onClick={() => updateCartQuantity(item.productId, item.quantity - 1)}
                               disabled={outOfStock}
-                              className="qty-control-btn r38-cart-qty-pulse disabled:opacity-40"
+                              className="r42-cart-qty-btn qty-control-btn disabled:opacity-40"
                             >
                               <Minus className="h-3 w-3" />
                             </motion.button>
@@ -922,7 +921,7 @@ export function CartView() {
                                 updateCartQuantity(item.productId, item.quantity + 1)
                               }}
                               disabled={outOfStock || item.quantity >= realStock}
-                              className="qty-control-btn r38-cart-qty-pulse disabled:opacity-40"
+                              className="r42-cart-qty-btn qty-control-btn disabled:opacity-40"
                             >
                               <Plus className="h-3 w-3" />
                             </motion.button>
@@ -960,7 +959,7 @@ export function CartView() {
         </AnimatePresence>
 
         {/* Promo code widget — r38: coupon input glow on focus */}
-        <div className="r38-cart-coupon-glow rounded-xl border border-primary/10">
+        <div className="r42-cart-coupon-glow rounded-xl border border-primary/10">
           <PromoCodeWidget />
         </div>
 
@@ -1014,7 +1013,7 @@ export function CartView() {
           <div className="absolute -top-px left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent rounded-full" />
           <div className="absolute -left-px top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/40 via-primary to-primary/40 rounded-full" />
           <div className="absolute -right-px top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/40 via-primary to-primary/40 rounded-full" />
-          <div className="bg-background/98 backdrop-blur-xl border border-primary/10 rounded-xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)] px-4 py-4 r38-cart-total-shimmer">
+          <div className="r42-cart-summary-glass rounded-xl px-4 py-4">
           <div className="space-y-1.5 text-sm">
             <div className="flex justify-between text-muted-foreground">
               <span>Subtotal</span>
@@ -1085,7 +1084,7 @@ export function CartView() {
               </Button>
             </motion.div>
             <Button
-              className="flex-1 h-12 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl shadow-lg shadow-primary/20 checkout-shimmer-btn r34-cart-checkout-shimmer r38-cart-checkout-shimmer r38-cart-checkout-glow"
+              className="flex-1 h-12 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl shadow-lg shadow-primary/20 r42-cart-cta-shimmer"
               onClick={handleCheckout}
               disabled={hasOutOfStock}
             >

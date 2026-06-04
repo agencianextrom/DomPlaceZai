@@ -322,7 +322,7 @@ function StatCard({
       transition={{ delay }}
       whileHover={{ y: -4, transition: { type: 'spring' as const, stiffness: 400, damping: 20 } }}
     >
-      <Card className="border-border/50 overflow-hidden relative group hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-default r39-stat-card">
+      <Card className="border-border/50 overflow-hidden relative group hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-default r39-stat-card r42-stat-glow-border">
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-emerald-400 to-accent/60 opacity-60 group-hover:opacity-100 transition-opacity" />
         <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-primary/5 via-transparent to-emerald-400/5" />
         <CardContent className="p-4 relative">
@@ -373,7 +373,7 @@ function QuickActionButton({
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className="flex flex-col items-center gap-2 p-3 rounded-xl border border-border/50 bg-card hover:bg-accent/50 transition-colors min-w-[72px]"
+      className="flex flex-col items-center gap-2 p-3 rounded-xl border border-border/50 bg-card hover:bg-accent/50 transition-colors min-w-[72px] r42-quick-action-glow"
     >
       <div className={`h-10 w-10 rounded-xl ${color || 'bg-gradient-to-br from-primary/15 to-primary/5'} flex items-center justify-center`}>
         <Icon className="h-5 w-5 text-primary" />
@@ -548,8 +548,8 @@ function EmptyState({
       animate={{ opacity: 1, y: 0 }}
       className="flex flex-col items-center justify-center py-12 px-4 text-center"
     >
-      <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-100 dark:to-emerald-900/30 flex items-center justify-center mb-4">
-        <Icon className="h-8 w-8 text-primary/70" />
+      <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-100 dark:to-emerald-900/30 flex items-center justify-center mb-4 r42-empty-float">
+        <Icon className="h-8 w-8 text-primary/70 r42-empty-float-inner" />
       </div>
       <h3 className="text-lg font-semibold mb-1">{title}</h3>
       <p className="text-sm text-muted-foreground mb-4 max-w-xs">{description}</p>
@@ -1497,9 +1497,9 @@ export function StoreDashboard() {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="px-4 pb-4">
-                          <p className="text-3xl font-bold r39-revenue-pulse r39-revenue-gradient">R$ {monthlyRevenue}</p>
+                          <p className="text-3xl font-bold r39-revenue-pulse r39-revenue-gradient r42-revenue-pulse">R$ {monthlyRevenue}</p>
                           <div className="flex items-center gap-1 mt-1">
-                            <TrendingUp className="h-3 w-3 text-emerald-500" />
+                            <TrendingUp className="h-3 w-3 text-emerald-500 r42-revenue-arrow" />
                             <span className="text-xs text-emerald-600 dark:text-emerald-400">+12% vs mês anterior</span>
                           </div>
                         </CardContent>
@@ -1734,7 +1734,7 @@ export function StoreDashboard() {
                           {filteredOrders.map((order) => {
                             const actionCfg = orderActionConfig[order.status]
                             return (
-                              <TableRow key={order.id} className="hover:bg-muted/30">
+                              <TableRow key={order.id} className="hover:bg-muted/30 r42-order-row-hover">
                                 <TableCell className="text-xs font-mono">#{order.orderNumber.slice(-4)}</TableCell>
                                 <TableCell>
                                   <div>

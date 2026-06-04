@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, Heart, Share2, ShoppingCart, Clock, Zap, TrendingDown, Eye, Users, ChevronRight, Sparkles } from 'lucide-react'
+import { Flame, Heart, Share2, ShoppingCart, Clock, Zap, TrendingDown, Eye, Users, ChevronRight, Sparkles, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -285,8 +285,8 @@ export function DealOfTheDay() {
         variants={itemVariants}
         className="relative rounded-2xl overflow-hidden glassmorphism-strong"
       >
-        {/* Animated gradient border via CSS */}
-        <div className="absolute inset-0 rounded-2xl r26-deal-gradient-border pointer-events-none" />
+        {/* Animated gradient border via CSS — r42 conic rotation */}
+        <div className="absolute inset-0 rounded-2xl r26-deal-gradient-border r42-conic-border pointer-events-none" />
 
         <div className="relative z-10">
           {/* Product Image Section */}
@@ -342,7 +342,7 @@ export function DealOfTheDay() {
                   transition={{ type: 'spring' as const, stiffness: 400, damping: 20, delay: 0.4 }}
                   className="absolute top-3 right-3"
                 >
-                  <div className="r26-savings-badge px-2.5 py-1 rounded-full bg-red-500 text-white text-xs font-bold shadow-md">
+                  <div className="r26-savings-badge px-2.5 py-1 rounded-full bg-red-500 text-white text-xs font-bold shadow-md r42-discount-pulse">
                     -{discount}%
                   </div>
                 </motion.div>
@@ -385,18 +385,18 @@ export function DealOfTheDay() {
               </div>
             </motion.div>
             <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 sm:gap-6 -mt-3">
-              <CountdownCircle timeLeft={timeLeft.h} label="H" size={56} strokeWidth={3.5} />
+              <div className="r42-ring-glow"><CountdownCircle timeLeft={timeLeft.h} label="H" size={56} strokeWidth={3.5} /></div>
               <span className="text-xl font-bold text-primary mt-[-18px]">:</span>
-              <CountdownCircle timeLeft={timeLeft.m} label="M" size={56} strokeWidth={3.5} />
+              <div className="r42-ring-glow"><CountdownCircle timeLeft={timeLeft.m} label="M" size={56} strokeWidth={3.5} /></div>
               <span className="text-xl font-bold text-primary mt-[-18px]">:</span>
-              <CountdownCircle timeLeft={timeLeft.s} label="S" size={56} strokeWidth={3.5} />
+              <div className="r42-ring-glow"><CountdownCircle timeLeft={timeLeft.s} label="S" size={56} strokeWidth={3.5} /></div>
             </motion.div>
 
             {/* Price Section */}
             <motion.div variants={itemVariants} className="text-center space-y-1.5 pt-1">
               {deal.comparePrice && deal.comparePrice > deal.price && (
                 <div className="flex items-center justify-center gap-2">
-                  <span className="text-sm text-muted-foreground line-through r26-animated-strikethrough">
+                  <span className="text-sm text-muted-foreground line-through r26-animated-strikethrough r42-strikethrough-anim">
                     {formatBRL(deal.comparePrice)}
                   </span>
                   <TrendingDown className="h-3.5 w-3.5 text-red-500" />
@@ -456,7 +456,7 @@ export function DealOfTheDay() {
                 <motion.span
                   className="text-xs text-muted-foreground"
                   key={socialCount}
-                  initial={{ scale: 1.15, color: 'oklch(0.45 0.1 155)' }}
+                  initial={{ scale: 1.15, color: '#16a34a' }}
                   animate={{ scale: 1, color: 'inherit' }}
                   transition={{ duration: 0.4 }}
                 >
@@ -475,12 +475,25 @@ export function DealOfTheDay() {
               )}
             </motion.div>
 
-            {/* CTA Buttons */}
+            {/* Last chance urgency indicator */}
+            {timeLeft.h === 0 && timeLeft.m < 30 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+                className="flex items-center justify-center mb-2"
+              >
+                <span className="r42-urgency-pulse r42-urgency-pulse-text inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold border border-red-300/40 dark:border-red-700/30">
+                  <AlertTriangle className="h-3 w-3" />
+                  Última chance! Acaba em breve!
+                </span>
+              </motion.div>
+            )}
             <motion.div variants={itemVariants} className="flex gap-2 pt-1">
               <motion.div whileTap={{ scale: 0.95 }} className="flex-1">
                 <Button
                   onClick={handleBuyNow}
-                  className="w-full h-11 text-sm font-bold rounded-xl r26-buy-cta-gradient btn-shine gap-2"
+                  className="w-full h-11 text-sm font-bold rounded-xl r26-buy-cta-gradient btn-shine gap-2 r42-cta-shimmer r42-cta-glow"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   Comprar Agora
@@ -519,7 +532,7 @@ export function DealOfTheDay() {
                     return (
                       <motion.button
                         key={upDeal.id}
-                        whileHover={{ y: -3, boxShadow: '0 8px 20px oklch(0.45 0.1 155 / 0.12)' }}
+                        whileHover={{ y: -3, boxShadow: '0 8px 20px rgba(16,185,129,0.12)' }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => handleViewUpcoming(upDeal)}
                         className="shrink-0 w-24 rounded-xl bg-card border border-border overflow-hidden group cursor-pointer"

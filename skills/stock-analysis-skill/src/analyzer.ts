@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * analyzer.ts — LLM/VLM 分析层
  * 七段式决策仪表盘 + 美股可附加股息分析

@@ -455,7 +455,7 @@ export function FlashSale() {
                 <span className="absolute -inset-2 rounded-xl pointer-events-none r39-oferta-pulse-ring" />
                 <div className="relative">
                 <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5">
-                  <span className="r17-flash-gradient-text r17-flash-shimmer-oferta r27-shimmer-text r34-flash-sale-title-shimmer">
+                  <span className="r17-flash-gradient-text r17-flash-shimmer-oferta r27-shimmer-text r34-flash-sale-title-shimmer r42-flash-badge-text">
                     OFERTA RELÂMPAGO
                   </span>
                   <motion.div
@@ -466,6 +466,7 @@ export function FlashSale() {
                   </motion.div>
                   {/* 5. Fire/spark emoji animation near the title */}
                   <FireSparks />
+                  <span className="r42-fire-wiggle">🔥</span>
                 </h2>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">Descontos imperdíveis por tempo limitado</p>
                 </div>
@@ -510,9 +511,9 @@ export function FlashSale() {
                   <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
                     <div className="absolute inset-0 r39-countdown-shimmer" />
                   </div>
-                  <CountdownRing value={hours} max={24} size={34} strokeWidth={2.5} gradientId="flash-h" />
-                  <CountdownRing value={minutes} max={60} size={34} strokeWidth={2.5} gradientId="flash-m" />
-                  <CountdownRing value={seconds} max={60} size={34} strokeWidth={2.5} gradientId="flash-s" />
+                  <div className="r42-digit-spring"><CountdownRing value={hours} max={24} size={34} strokeWidth={2.5} gradientId="flash-h" /></div>
+                  <div className="r42-digit-spring"><CountdownRing value={minutes} max={60} size={34} strokeWidth={2.5} gradientId="flash-m" /></div>
+                  <div className="r42-digit-spring"><CountdownRing value={seconds} max={60} size={34} strokeWidth={2.5} gradientId="flash-s" /></div>
                   <div className="hidden sm:flex flex-col text-[8px] text-muted-foreground font-medium leading-none gap-1.5 ml-0.5">
                     <span>h</span>
                     <span>m</span>
@@ -599,7 +600,7 @@ export function FlashSale() {
                             {/* 3. 3D Tilt Card Wrapper (enhanced) */}
                             <TiltCard className="h-full">
                               <Card
-                                className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow transition-all duration-300 hover:shadow-[0_0_20px_rgba(239,68,68,0.2),0_0_40px_rgba(239,68,68,0.1),0_8px_24px_rgba(0,0,0,0.1)] hover:-translate-y-1 hover:scale-[1.02] hover:border-red-400/40 dark:hover:border-red-600/40 r27-card-lift r34-flash-sale-card-glow r39-card-3d-hover"
+                                className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow r42-flash-card r27-card-lift r34-flash-sale-card-glow r39-card-3d-hover"
                                 onClick={() => { selectProduct(product); navigate('product') }}
                               >
                                 <CardContent className="p-0 h-full flex flex-col relative">
@@ -613,7 +614,7 @@ export function FlashSale() {
                                       <img
                                         src={imageUrl}
                                         alt={product.name}
-                                        className="absolute inset-0 w-full h-full object-cover"
+                                        className="absolute inset-0 w-full h-full object-cover r42-card-image"
                                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                                         loading="lazy"
                                       />
@@ -629,7 +630,7 @@ export function FlashSale() {
                                     )}
 
                                     {/* ── r39 animated discount badge ── */}
-                                    <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[10px] px-1.5 py-0 font-bold shadow-sm r27-badge-pulse r39-discount-badge">
+                                    <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[10px] px-1.5 py-0 font-bold shadow-sm r27-badge-pulse r39-discount-badge r42-flash-badge-glow">
                                       <TrendingDown className="h-2.5 w-2.5 mr-0.5" />
                                       -{discount}%
                                     </Badge>
@@ -721,7 +722,7 @@ export function FlashSale() {
                                           )}
                                           {/* The actual progress bar with enhanced gradient */}
                                           <motion.div
-                                            className={`h-full rounded-full relative ${isLowStock ? 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500 flash-stock-bar-glow' : 'bg-gradient-to-r from-red-500 via-orange-500 to-amber-400'} ${isCriticallyLow ? 'flash-stock-pulse' : ''} r27-stagger-fill`}
+                                            className={`h-full rounded-full relative ${isLowStock ? 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500 flash-stock-bar-glow' : 'bg-gradient-to-r from-red-500 via-orange-500 to-amber-400'} ${isCriticallyLow ? 'flash-stock-pulse' : ''} r27-stagger-fill r42-stock-shimmer`}
                                             initial={{ width: 0 }}
                                             animate={{ width: `${product.soldPercent}%` }}
                                             transition={{ delay: 0.3 + index * 0.12, duration: 0.8, ease: 'easeOut' as const }}

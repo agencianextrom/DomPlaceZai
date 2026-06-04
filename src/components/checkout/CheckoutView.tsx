@@ -534,7 +534,7 @@ export function CheckoutView() {
                       <motion.div
                         animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
                         transition={{ duration: 0.5, type: 'spring' as const, stiffness: 300, damping: 20 }}
-                        className={`step-dot ${isCompleted ? 'completed r40-step-glow-ring r39-step-check-wiggle' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow r33-checkout-step-pulse r40-step-glow-ring' : ''}`}
+                        className={`step-dot ${isCompleted ? 'completed r40-step-glow-ring r39-step-check-wiggle' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow r33-checkout-step-pulse r40-step-glow-ring r42-step-icon-glow-ring' : ''}`}
                       >
                         {isCompleted ? (
                           <motion.div
@@ -555,7 +555,7 @@ export function CheckoutView() {
                     {i < stepLabels.length - 1 && (
                       <div className="step-line">
                         <motion.div
-                          className={`step-line-fill ${i < currentStepIndex ? 'filled r33-checkout-progress-line r40-progress-line-gradient' : ''}`}
+                          className={`step-line-fill ${i < currentStepIndex ? 'filled r33-checkout-progress-line r40-progress-line-gradient r42-step-gradient-connector' : ''}`}
                           layout
                           transition={{ duration: 0.6, ease: 'easeInOut' as const }}
                         />
@@ -683,7 +683,7 @@ export function CheckoutView() {
                     </div>
                   </div>
 
-                  <Card>
+                  <Card className="r42-address-card-glass">
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-center gap-2 mb-2">
                         <MapPin className="h-4 w-4 text-primary" />
@@ -782,7 +782,7 @@ export function CheckoutView() {
               )}
 
               <Button
-                className="w-full h-12 mt-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-shine btn-glow ripple-effect reveal-up rounded-xl"
+                className="w-full h-12 mt-6 bg-gradient-to-r from-primary to-emerald-600 text-primary-foreground font-semibold btn-shine btn-glow ripple-effect reveal-up rounded-xl r42-cta-shimmer-checkout"
                 style={{ animationDelay: '0.3s' }}
                 onClick={() => setStep('payment')}
                 disabled={!canProceed()}
@@ -862,7 +862,7 @@ export function CheckoutView() {
                     whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(16,185,129,0.2)' }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r40-payment-card-hover r39-payment-glow ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r42-payment-card-hover r42-payment-card-shimmer r39-payment-glow ${
                       payment === method.id
                         ? 'border-primary bg-primary/5 r39-payment-glow-active'
                         : 'border-border hover:border-primary/30'
@@ -1060,7 +1060,7 @@ export function CheckoutView() {
                   animate={{ opacity: 1, y: [0, -3, 0] }}
                   transition={{ delay: 0.6, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge r39-confidence-scale"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge r39-confidence-scale r42-confidence-badge-hover"
                 >
                   <span className="text-emerald-500 r40-confidence-icon-wiggle r39-confidence-icon-glow" style={{ '--r40-badge-delay': '0s' } as React.CSSProperties}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -1072,7 +1072,7 @@ export function CheckoutView() {
                   animate={{ opacity: 1, y: [0, -3, 0] }}
                   transition={{ delay: 0.7, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge r39-confidence-scale"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge r39-confidence-scale r42-confidence-badge-hover"
                 >
                   <motion.span
                     className="text-emerald-500 r40-confidence-icon-wiggle r39-confidence-icon-glow"
@@ -1089,7 +1089,7 @@ export function CheckoutView() {
                   animate={{ opacity: 1, y: [0, -3, 0] }}
                   transition={{ delay: 0.8, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge r39-confidence-scale"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge r39-confidence-scale r42-confidence-badge-hover"
                 >
                   <span className="text-primary r40-confidence-icon-wiggle r39-confidence-icon-glow" style={{ '--r40-badge-delay': '0.6s' } as React.CSSProperties}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="m12 15 5 6H7Z"/></svg>
@@ -1150,7 +1150,7 @@ export function CheckoutView() {
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground r32-total-pop">Total</p>
-              <p className="text-lg font-bold text-primary r32-total-pop">{formatBRL(total)}</p>
+              <p className="text-lg font-bold text-primary r32-total-pop r42-total-animate">{formatBRL(total)}</p>
             </div>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Shield className="h-3 w-3 text-emerald-500" />

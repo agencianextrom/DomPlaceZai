@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * dataFetcher.ts — 全部通过 finance skill 获取数据
  */

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import ZAI from 'z-ai-web-dev-sdk';
 
 interface SearchFunctionResultItem {
