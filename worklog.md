@@ -3186,3 +3186,91 @@ The DomPlace marketplace is stable and feature-rich:
 3. Password reset tokens in-memory only
 4. Dev server CSS parsing limitations with Turbopack on large CSS files (non-blocking in production)
 5. QA via agent-browser has limitations
+
+---
+Task ID: 45 (Round 43 - Job 182228)
+Agent: Main Agent
+Task: New features, styling improvements
+
+Work Log:
+
+**QA Testing:**
+- Build verified clean before starting (zero errors, 286 components, 27,303 lines CSS)
+- All 8 parallel agents launched successfully
+- LoyaltyWidget+QuickInfo agent returned code but couldn't write (tool timeout) — not applied
+
+**Bug Fixes:**
+1. **NeighborhoodEvents2.tsx**: Fixed `new Map()` → plain object Record (Map not available in Turbopack TS context)
+2. **NeighborhoodEvents2.tsx**: Fixed `eventDates.get()` → bracket access, `.size` → `Object.keys().length`, `.has()` → `in` operator
+3. **DealOfTheDay.tsx**: Fixed agent-introduced broken `</motion.span>` — removed unclosed motion.span, replaced with plain `<span>`
+4. **InvoiceGenerator.tsx**: Fixed JSX.Element[] → React.ReactElement[] type reference
+
+**New Features (3 new components):**
+
+1. **src/components/checkout/InvoiceGenerator.tsx** (NEW — 1,245 lines)
+   - Professional invoice with store header (logo, name, address, CNPJ)
+   - Invoice number auto-generated (DOM-YYYY-XXXX), customer info section
+   - Items table with animated row entrance, subtotal/tax/discount/total
+   - Payment method with card brand icons (Visa/MC/Amex/Elo)
+   - Barcode + QR code mock, print/download/email buttons
+   - Status watermark: PAGA/PENDENTE/CANCELADA with colors
+   - Invoice timeline (issued → viewed → paid), tax summary pie chart
+   - Integrated into page.tsx with mock invoice data
+
+2. **src/components/home/NeighborhoodEvents2.tsx** (NEW — 1,314 lines)
+   - 12 mock events across 7 categories (Feira, Música, Esporte, etc.)
+   - 3 view modes: List, Mini Calendar Grid, SVG Map
+   - Featured event spotlight with auto-rotate
+   - RSVP with Going/Interested/Not Going reactions
+   - Event detail dialog with organizer, attendees, photos, weather
+   - Countdown to event start, .ics calendar download
+   - Share event (Web Share API), past events photo gallery
+   - Integrated into page.tsx (after InvoiceGenerator)
+
+3. **src/components/product/ProductOriginTracker2.tsx** (NEW — 1,186 lines)
+   - 4 mock products with complete supply chain data (Café, Açaí, Mel, Wagyu)
+   - Interactive supply chain timeline (Farm → Processing → Distribution → Store)
+   - SVG Brazil map with animated route + vehicle animation
+   - Sustainability score (1-10) with animated ring chart
+   - Carbon footprint CO2 display, temperature log line chart
+   - Certifications badges, farmer profile card, quality inspection
+   - QR code, expiry/freshness indicator, nutritional summary
+   - Integrated into page.tsx (after NeighborhoodEvents2)
+
+**Styling Enhancements (10 components + globals.css):**
+
+1. **Header.tsx**: Enhanced glassmorphism (blur 20→28px on scroll), animated gradient top glow, search input rotating conic-gradient focus border, cart badge bounce pulse, bell swing animation, logo shimmer, avatar ring glow, nav link hover lift (~439 lines CSS)
+2. **MobileNav.tsx**: Animated gradient background, active shimmer overlay, staggered spring entrance, cart badge glow bounce, nav item hover lift, active indicator gradient dot (~294 lines CSS)
+3. **SmartSuggestions.tsx**: Card hover scale+shadow, AI badge glow pulse, header shimmer text, skeleton shimmer, card image zoom (~160 lines CSS)
+4. **FlashSale.tsx**: Header gradient text animation, fire glow shadow, new badge sparkle, countdown ring glow, scroll gradient fade edges, CTA shimmer (~150 lines CSS). Fixed 3 oklch() in SVG strokes
+5. **DealOfTheDay.tsx**: Comparison glassmorphism, timer glow, savings input animation, social proof stagger, trust indicators entrance (~140 lines CSS). Fixed oklch in SVG
+6. **WelcomeModal.tsx**: Scale+blur entrance, header shimmer overlay, 14 color particle variants, dot indicators with ring pulse, CTA multi-layer shimmer, step transitions, skip button glow (~1,173 lines CSS)
+7. **CookieConsent.tsx**: Slide-up entrance, glassmorphism card, accept button shimmer, settings hover glow, cookie categories expand, toggle switch animated track, 3 floating cookie emojis (~315 lines CSS). Fixed oklch()
+8. **ProductCard.tsx**: CSS 3D tilt hover, image gradient zoom, price animated gradient, badge shimmer+pulse, heart burst particles, quick action bar, star glow, animated conic border glow (~220 lines CSS)
+9. **ProductCarousel.tsx**: Section bg gradient animation, header shimmer, navigation arrow glow, gradient fade edges, card hover lift, dot indicator animated scale, auto-scroll progress bar (~160 lines CSS)
+
+Note: LoyaltyWidget+QuickInfo styling agent returned code but couldn't apply it due to tool timeouts.
+
+Stage Summary:
+- 14 files changed, 7,569 insertions, 153 deletions
+- 3 new components (InvoiceGenerator, NeighborhoodEvents2, ProductOriginTracker2)
+- 9 components enhanced with styling (LoyaltyWidget+QuickInfo skipped due to agent timeout)
+- 289 components total, 30,911 lines CSS (+3,608)
+- ESLint: 0 new errors, Build: successful (next build passes)
+- Commit: a5d5d37 pushed to GitHub main
+
+## Current Project Status Assessment
+The DomPlace marketplace is stable and feature-rich:
+- 53+ API endpoints, 27+ Prisma models, 289 components
+- ~30,911 lines CSS with extensive animations
+- Invoice generation, local events, product origin tracking, social commerce, AR try-on, driver tracking
+- Real DB integration (Turso) with 32 products, 8 stores
+- Multi-role auth, API deduplication cache
+- Production build passes cleanly (zero errors)
+
+## Unresolved Issues / Risks
+1. .env not persisted across sessions
+2. SPA-style navigation (no deep linking)
+3. Password reset tokens in-memory only
+4. Dev server CSS parsing limitations with Turbopack on large CSS files (non-blocking in production)
+5. QA via agent-browser has limitations
