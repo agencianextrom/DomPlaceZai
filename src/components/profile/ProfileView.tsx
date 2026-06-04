@@ -634,7 +634,7 @@ export function ProfileView() {
                     toast.info('Faça login para acessar esta funcionalidade')
                     useAppStore.getState().openAuthModal()
                   }}
-                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group r38-profile-menu-item r43-menu-item-border"
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border/40 hover:border-primary/15 transition-all text-left group r38-profile-menu-item r43-menu-item-border r46-menu-item-hover"
                 >
                   <div className="h-10 w-10 rounded-xl bg-primary/[0.06] group-hover:bg-primary/10 flex items-center justify-center shrink-0 transition-colors">
                     <item.icon className="h-5 w-5 text-primary" />
@@ -652,7 +652,7 @@ export function ProfileView() {
       ) : (
       <>
       {/* Profile header with animated gradient border effect */}
-      <div className="profile-card-animated-border r43-conic-gradient-border mb-5">
+      <div className="profile-card-animated-border r43-conic-gradient-border r46-profile-card-glow mb-5">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -680,7 +680,7 @@ export function ProfileView() {
                 transition={{ delay: 0.2, type: 'spring' as const, stiffness: 300, damping: 25 }}
                 className="relative"
               >
-                <div className="r38-profile-avatar-ring r43-avatar-ring-pulse">
+                <div className="r38-profile-avatar-ring r43-avatar-ring-pulse r46-avatar-ring-glow">
                   {profile?.avatar ? (
                     <img
                       src={profile.avatar}
@@ -707,7 +707,7 @@ export function ProfileView() {
               </div>
               <Button 
                 size="sm" 
-                className="r38-profile-edit-btn r43-edit-btn text-white border border-white/20 text-sm backdrop-blur-sm shrink-0"
+                className="r38-profile-edit-btn r43-edit-btn r46-edit-btn-shimmer text-white border border-white/20 text-sm backdrop-blur-sm shrink-0"
                 onClick={() => {
                   setEditName(profile?.name || '')
                   setEditPhone(profile?.phone || '')
@@ -735,7 +735,7 @@ export function ProfileView() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.3, type: 'spring' as const, stiffness: 260, damping: 20 }}
-              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card r43-stat-card-glow"
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card r43-stat-card-glow r46-stat-card-lift"
             >
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
                 <ShoppingBag className="h-4 w-4 text-primary" />
@@ -747,7 +747,7 @@ export function ProfileView() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.4, type: 'spring' as const, stiffness: 260, damping: 20 }}
-              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card r43-stat-card-glow"
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card r43-stat-card-glow r46-stat-card-lift"
             >
               <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Heart className="h-4 w-4 text-red-500" />
@@ -759,7 +759,7 @@ export function ProfileView() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.5, type: 'spring' as const, stiffness: 260, damping: 20 }}
-              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card r43-stat-card-glow"
+              className="bg-card rounded-xl border border-border p-3 text-center shadow-sm r38-profile-stat-card r43-stat-card-glow r46-stat-card-lift"
             >
               <div className="h-8 w-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-1.5">
                 <Award className="h-4 w-4 text-amber-500" />
@@ -851,7 +851,7 @@ export function ProfileView() {
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-sm r38-profile-section-title">Pedidos recentes</h2>
+          <h2 className="font-semibold text-sm r38-profile-section-title r46-section-shimmer">Pedidos recentes</h2>
           <button 
             onClick={() => navigate('orders')}
             className="text-xs text-primary hover:underline"
@@ -1084,7 +1084,7 @@ export function ProfileView() {
       <Separator className="my-3 section-divider" />
       
       {/* Logout */}
-      <Button variant="ghost" className="w-full justify-start text-destructive h-12 r38-profile-logout r43-menu-item-border" onClick={handleLogout}>
+      <Button variant="ghost" className="w-full justify-start text-destructive h-12 r38-profile-logout r43-menu-item-border r46-logout-glow" onClick={handleLogout}>
         <LogOut className="h-5 w-5 mr-2" />
         Sair da conta
       </Button>

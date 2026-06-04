@@ -276,10 +276,10 @@ export function StoreProfile({ store }: StoreProfileProps) {
   return (
     <div className="min-h-screen pb-20 md:pb-4">
       {/* Hero header with premium gradient cover and parallax */}
-      <div ref={bannerRef} className="relative h-56 sm:h-72 -mx-4 -mt-4 overflow-hidden">
+      <div ref={bannerRef} className="relative h-56 sm:h-72 -mx-4 -mt-4 overflow-hidden r46-banner-parallax">
         {/* Animated gradient background with parallax zoom */}
         <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700 r28-ken-burns r34-store-profile-cover-zoom r35-store-cover-zoom r38-store-cover-shimmer"
+          className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700 r28-ken-burns r34-store-profile-cover-zoom r35-store-cover-zoom r38-store-cover-shimmer r46-store-header-gradient"
           style={{ y: bannerY, scale: bannerScale }}
         />
         <motion.div 
@@ -413,7 +413,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     ? '0 0 14px rgba(251,191,36,0.3), 0 0 4px rgba(251,191,36,0.15)'
                     : '0 0 0px rgba(251,191,36,0)' }}
                   transition={{ duration: 2.5, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
-                  className={store.rating > 0 ? 'rating-star-glow rounded-lg r34-store-profile-star-pulse r38-store-star-glow r42-rating-glow' : 'rounded-lg'}
+                  className={store.rating > 0 ? 'rating-star-glow rounded-lg r34-store-profile-star-pulse r38-store-star-glow r42-rating-glow r46-rating-star-glow' : 'rounded-lg'}
                 >
                   <StarRating rating={store.rating} size="sm" showCount count={store.totalReviews} />
                 </motion.div>
@@ -435,10 +435,10 @@ export function StoreProfile({ store }: StoreProfileProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + i * 0.06 }}
             >
-              <Card className={`border-0 ${stat.bg} transition-colors cursor-default card-premium-hover r42-stats-glass`}>
+              <Card className={`border-0 ${stat.bg} transition-colors cursor-default card-premium-hover r42-stats-glow r46-stats-card`}>
                 <CardContent className="p-3 text-center">
                   <stat.icon className={`h-5 w-5 mx-auto mb-1 ${stat.iconColor}`} />
-                  <p className="text-lg font-bold animate-count-up r38-store-stat-counter">{stat.value}</p>
+                  <p className="text-lg font-bold animate-count-up r38-store-stat-counter r46-stats-counter-animate">{stat.value}</p>
                   <p className="text-[10px] text-muted-foreground">{stat.label}</p>
                 </CardContent>
               </Card>
@@ -455,7 +455,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35 + i * 0.06 }}
               whileHover={{ y: -2 }}
-              className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 transition-colors cursor-default"
+              className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 transition-colors cursor-default r46-store-badge-stagger"
             >
               <div className={`h-8 w-8 rounded-lg ${info.bg} flex items-center justify-center ${info.label === 'Entrega Rápida' ? 'r34-store-profile-delivery-shimmer' : ''}`}>
                 <info.icon className={`h-4 w-4 ${info.color}`} />
@@ -505,7 +505,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
             onClick={() => toggleFavoriteStore(store.id)}
-            className={`relative overflow-hidden h-11 px-5 rounded-xl font-semibold text-sm flex items-center gap-2 r34-store-profile-follow-btn r35-store-follow-btn ${isFav ? 'bg-primary text-primary-foreground r38-store-follow-active' : 'bg-secondary text-secondary-foreground border border-border'}`}
+            className={`relative overflow-hidden h-11 px-5 rounded-xl font-semibold text-sm flex items-center gap-2 r34-store-profile-follow-btn r35-store-follow-btn r46-follow-btn-gradient ${isFav ? 'bg-primary text-primary-foreground r38-store-follow-active is-following' : 'bg-secondary text-secondary-foreground border border-border'}`}
           >
             <Heart className={`h-4 w-4 ${isFav ? 'fill-current' : ''}`} />
             {isFav ? 'Seguindo' : 'Seguir loja'}
@@ -656,7 +656,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                       }}
                       whileHover={{ scale: 1.02, y: -2 }}
                     >
-                      <div className="product-card-hover-enhanced r28-grid-hover-shine r35-store-product-hover r38-store-product-card r42-product-hover">
+                      <div className="product-card-hover-enhanced r28-grid-hover-shine r35-store-product-hover r38-store-product-card r42-product-hover r46-product-card-hover">
                         <ProductCard product={p} />
                       </div>
                     </motion.div>

@@ -233,13 +233,13 @@ export function AuthModal() {
 
   return (
     <Dialog open={isAuthModalOpen} onOpenChange={(open) => { if (!open) closeAuthModal() }}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden max-h-[90vh] overflow-y-auto sm:rounded-2xl rounded-none sm:rounded-2xl r41-modal-card r43-modal-entrance">
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden max-h-[90vh] overflow-y-auto sm:rounded-2xl rounded-none sm:rounded-2xl r41-modal-card r43-modal-entrance r46-modal-border-glow">
         <motion.button
           onClick={() => closeAuthModal()}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
-          className="absolute right-3 top-3 z-50 r43-modal-close h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+          className="absolute right-3 top-3 z-50 r43-modal-close r46-close-btn h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
         >
           <X className="h-4 w-4" />
         </motion.button>
@@ -301,14 +301,14 @@ export function AuthModal() {
                 </DialogHeader>
                 <TabsList className="mt-4 bg-white/20 h-10 p-0.5 rounded-lg w-full relative">
                   <motion.div
-                    className="absolute top-0.5 bottom-0.5 rounded-md r41-tab-indicator"
+                    className="absolute top-0.5 bottom-0.5 rounded-md r41-tab-indicator r46-tab-bar-indicator"
                     animate={{ left: activeTab === 'login' ? '2px' : 'calc(50%)', width: 'calc(50% - 2px)' }}
                     transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
                   />
-                  <TabsTrigger value="login" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10 r41-tab-text r43-tab-underline" onClick={() => setActiveTab('login')}>
+                  <TabsTrigger value="login" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10 r41-tab-text r43-tab-underline r46-tab-bar-indicator" onClick={() => setActiveTab('login')}>
                     Entrar
                   </TabsTrigger>
-                  <TabsTrigger value="register" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10 r41-tab-text r43-tab-underline" onClick={() => setActiveTab('register')}>
+                  <TabsTrigger value="register" className="flex-1 rounded-md text-white data-[state=active]:text-primary data-[state=active]:shadow-sm text-sm transition-all duration-200 relative z-10 r41-tab-text r43-tab-underline r46-tab-bar-indicator" onClick={() => setActiveTab('register')}>
                     Cadastrar
                   </TabsTrigger>
                 </TabsList>
@@ -338,7 +338,7 @@ export function AuthModal() {
                     placeholder="seu@email.com"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
-                    className="pl-9 h-11 r41-input-field"
+                    className="pl-9 h-11 r41-input-field r46-input-glow"
                     autoComplete="email"
                   />
                 </div>
@@ -359,13 +359,13 @@ export function AuthModal() {
                     placeholder="Sua senha"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="pl-9 pr-10 h-11 r41-input-field"
+                    className="pl-9 pr-10 h-11 r41-input-field r46-input-glow"
                     autoComplete="current-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground r46-pw-toggle"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -391,7 +391,7 @@ export function AuthModal() {
                 </p>
               )}
 
-              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer">
+              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer r46-submit-glow">
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent r41-shimmer-sweep"
                   animate={{ translateX: ['100%', '-100%'] }}
@@ -441,7 +441,7 @@ export function AuthModal() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google r43-social-google"
+                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google r43-social-google r46-social-btn"
                   disabled={!isGoogleConfigured}
                   onClick={isGoogleConfigured ? handleGoogleSignIn : undefined}
                 >
@@ -462,7 +462,7 @@ export function AuthModal() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook"
+                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook r46-social-btn"
                     onClick={handleFacebookSignIn}
                   >
                     <FacebookIcon />
@@ -529,7 +529,7 @@ export function AuthModal() {
                       placeholder="Maria Silva"
                       value={regName}
                       onChange={(e) => setRegName(e.target.value)}
-                      className="pl-9 h-11 r41-input-field"
+                      className="pl-9 h-11 r41-input-field r46-input-glow"
                     />
                   </div>
                 </div>
@@ -544,7 +544,7 @@ export function AuthModal() {
                       placeholder="seu@email.com"
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
-                      className="pl-9 h-11 r41-input-field"
+                      className="pl-9 h-11 r41-input-field r46-input-glow"
                       autoComplete="email"
                     />
                   </div>
@@ -561,7 +561,7 @@ export function AuthModal() {
                     placeholder="(91) 99999-0000"
                     value={regPhone}
                     onChange={(e) => setRegPhone(e.target.value)}
-                    className="pl-9 h-11 r41-input-field"
+                    className="pl-9 h-11 r41-input-field r46-input-glow"
                   />
                 </div>
               </div>
@@ -577,13 +577,13 @@ export function AuthModal() {
                       placeholder="Mínimo 6 caracteres"
                       value={regPassword}
                       onChange={(e) => setRegPassword(e.target.value)}
-                      className="pl-9 pr-10 h-11 r41-input-field"
+                      className="pl-9 pr-10 h-11 r41-input-field r46-input-glow"
                       autoComplete="new-password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground r46-pw-toggle"
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -600,13 +600,13 @@ export function AuthModal() {
                       placeholder="Repita a senha"
                       value={regConfirmPassword}
                       onChange={(e) => setRegConfirmPassword(e.target.value)}
-                      className="pl-9 pr-10 h-11 r41-input-field"
+                      className="pl-9 pr-10 h-11 r41-input-field r46-input-glow"
                       autoComplete="new-password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground r46-pw-toggle"
                     >
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -673,7 +673,7 @@ export function AuthModal() {
                 </label>
               </div>
 
-              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer">
+              <motion.div className="relative overflow-hidden rounded-lg r41-submit-wrap r43-submit-shimmer r46-submit-glow">
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent r41-shimmer-sweep"
                   animate={{ translateX: ['100%', '-100%'] }}
@@ -723,7 +723,7 @@ export function AuthModal() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google r43-social-google"
+                  className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-google r43-social-google r46-social-btn"
                   disabled={!isGoogleConfigured}
                   onClick={isGoogleConfigured ? handleGoogleSignIn : undefined}
                 >
@@ -744,7 +744,7 @@ export function AuthModal() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook"
+                    className="w-full h-11 border-border/60 hover:border-primary/30 transition-colors r41-social-facebook r43-social-facebook r46-social-btn"
                     onClick={handleFacebookSignIn}
                   >
                     <FacebookIcon />

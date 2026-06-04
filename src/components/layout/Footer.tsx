@@ -310,7 +310,7 @@ export function Footer() {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setIsEmailFocused(true)}
                   onBlur={() => setIsEmailFocused(false)}
-                  className={`h-9 text-sm bg-background border-primary/20 flex-1 sm:w-52 transition-all duration-300 r41-newsletter-input`}
+                  className={`h-9 text-sm bg-background border-primary/20 flex-1 sm:w-52 transition-all duration-300 r41-newsletter-input r46-newsletter-glow`}
                   onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
                 />
                 </motion.div>
@@ -368,7 +368,7 @@ export function Footer() {
                 whileHover="hover"
               >
                 <img src="/domplace-logo.png" alt="DomPlace" className="h-8 w-8 rounded-lg r41-logo-glow r43-footer-logo-glow" />
-                <span className="font-bold text-lg footer-brand-shimmer r41-brand-shimmer r43-footer-brand-pulse">DomPlace</span>
+                <span className="font-bold text-lg footer-brand-shimmer r41-brand-shimmer r43-footer-brand-pulse r46-brand-shimmer-text">DomPlace</span>
                 {/* Animated gradient accent line under brand */}
                 <div className="footer-accent-line h-[2px] w-12 rounded-full mt-0.5 r43-footer-accent-line" />
               </motion.div>
@@ -408,7 +408,7 @@ export function Footer() {
                   href="https://wa.me/5591999999999"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-green-600 hover:text-white hover:shadow-lg hover:shadow-green-600/20 transition-all duration-300 relative r41-social-icon r41-social-icon-green r43-social-ring r43-social-ring-green"
+                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-green-600 hover:text-white hover:shadow-lg hover:shadow-green-600/20 transition-all duration-300 relative r41-social-icon r41-social-icon-green r43-social-ring r43-social-ring-green r46-social-green"
                   aria-label="WhatsApp"
                   whileHover={{ scale: 1.25, y: -4, boxShadow: '0 4px 16px rgba(16, 185, 129, 0.3)' }}
                   whileTap={{ scale: 0.85 }}
@@ -422,7 +422,7 @@ export function Footer() {
                 </motion.a>
                 <motion.a
                   href="#"
-                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 hover:text-white hover:shadow-lg transition-all duration-300 relative r41-social-icon r41-social-icon-purple r43-social-ring r43-social-ring-purple"
+                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 hover:text-white hover:shadow-lg transition-all duration-300 relative r41-social-icon r41-social-icon-purple r43-social-ring r43-social-ring-purple r46-social-purple"
                   aria-label="Instagram"
                   whileHover={{ scale: 1.25, y: -4, boxShadow: '0 4px 16px rgba(168, 85, 247, 0.3)' }}
                   whileTap={{ scale: 0.85 }}
@@ -436,7 +436,7 @@ export function Footer() {
                 </motion.a>
                 <motion.a
                   href="#"
-                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300 relative r41-social-icon r41-social-icon-blue r43-social-ring r43-social-ring-blue"
+                  className="h-9 w-9 rounded-full bg-secondary text-muted-foreground flex items-center justify-center hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300 relative r41-social-icon r41-social-icon-blue r43-social-ring r43-social-ring-blue r46-social-blue"
                   aria-label="Facebook"
                   whileHover={{ scale: 1.25, y: -4, boxShadow: '0 4px 16px rgba(59, 130, 246, 0.3)' }}
                   whileTap={{ scale: 0.85 }}
@@ -468,7 +468,7 @@ export function Footer() {
                     {/* ──────────────────────────────────────
                         FEATURE 6: Link Hover Underline Animation
                         ────────────────────────────────────── */}
-                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors hover:translate-x-0.5 transition-transform duration-200 inline-flex items-center gap-1 footer-link-hover r41-link-hover r43-footer-link-anim">
+                    <button className="text-sm text-muted-foreground hover:text-foreground transition-colors hover:translate-x-0.5 transition-transform duration-200 inline-flex items-center gap-1 footer-link-hover r41-link-hover r43-footer-link-anim r46-footer-link">
                       <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                       {link}
                     </button>
@@ -482,7 +482,7 @@ export function Footer() {
                   <li key={cat}>
                     <button
                       onClick={() => handleCategoryClick(cat)}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors hover:translate-x-0.5 transition-transform duration-200 footer-link-hover r41-link-hover r43-footer-link-anim"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors hover:translate-x-0.5 transition-transform duration-200 footer-link-hover r41-link-hover r43-footer-link-anim r46-footer-link"
                     >
                       {cat}
                     </button>
@@ -507,7 +507,7 @@ export function Footer() {
                   <li key={link.label}>
                     <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group w-full">
                       <link.icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors r41-icon-bounce" />
-                      <span className="group-hover:translate-x-0.5 transition-transform duration-200 footer-link-hover r41-link-hover r43-footer-link-anim">{link.label}</span>
+                      <span className="group-hover:translate-x-0.5 transition-transform duration-200 footer-link-hover r41-link-hover r43-footer-link-anim r46-footer-link">{link.label}</span>
                     </button>
                   </li>
                 ))}
@@ -547,7 +547,7 @@ export function Footer() {
                       key={method.name}
                       whileHover={{ scale: 1.05, boxShadow: '0 0 16px rgba(16, 185, 129, 0.3), 0 0 4px rgba(16, 185, 129, 0.15)' }}
                       transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary/80 text-xs font-medium text-muted-foreground border border-border/50 cursor-default r41-payment-icon r43-payment-stagger"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary/80 text-xs font-medium text-muted-foreground border border-border/50 cursor-default r41-payment-icon r43-payment-stagger r46-payment-lift"
                     >
                       <method.icon className="h-3.5 w-3.5" />
                       {method.label}
@@ -629,7 +629,7 @@ export function Footer() {
             </div>
           </div>
 
-          <Separator className="my-4" />
+          <div className="r46-footer-divider my-4" />
 
           {/* Copyright */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
@@ -660,7 +660,7 @@ export function Footer() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={scrollToTop}
-              className="fixed bottom-24 md:bottom-6 right-4 z-40 h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors footer-scroll-top r41-back-to-top r43-back-to-top-gradient"
+              className="fixed bottom-24 md:bottom-6 right-4 z-40 h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors footer-scroll-top r41-back-to-top r43-back-to-top-gradient r46-back-to-top-bounce"
               aria-label="Voltar ao topo"
             >
               <ArrowUp className="h-5 w-5 footer-chevron-bounce" />

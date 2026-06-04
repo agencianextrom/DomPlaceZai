@@ -124,6 +124,9 @@ import { ProductOriginTracker2 } from '@/components/product/ProductOriginTracker
 import GamificationQuests from '@/components/home/GamificationQuests'
 import LiveAuctionSystem from '@/components/home/LiveAuctionSystem'
 import SmartReceipt from '@/components/orders/SmartReceipt'
+import PersonalizedHomePage from '@/components/home/PersonalizedHomePage'
+import ProductBattleArena from '@/components/home/ProductBattleArena'
+import EcoImpactTracker2 from '@/components/home/EcoImpactTracker2'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1537,6 +1540,33 @@ export default function Home() {
                       <ScrollReveal delay={0.3}>
                         <section>
                           <SmartReceipt />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Personalized Home Page */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <PersonalizedHomePage />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Product Battle Arena */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <ProductBattleArena />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Eco Impact Tracker 2 */}
+                    <LazySection>
+                      <ScrollReveal delay={0.3}>
+                        <section>
+                          <EcoImpactTracker2 />
                         </section>
                       </ScrollReveal>
                     </LazySection>
