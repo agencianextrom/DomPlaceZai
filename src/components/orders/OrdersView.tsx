@@ -266,7 +266,7 @@ export function OrdersView() {
           description: null,
           price: item.price,
           comparePrice: null,
-          images: item.productImage ? JSON.stringify([item.productImage]) : '[]',
+          images: '[]',
           stock: 10,
           rating: 4.5,
           totalReviews: 10,
@@ -701,7 +701,7 @@ export function OrdersView() {
                         {order.items && (
                           <div className="text-sm text-muted-foreground flex items-center gap-2">
                             {order.items.slice(0, 2).map((item, i) => {
-                              const img = item.productImage
+                              const img = (item as Record<string, unknown>).productImage as string | undefined
                               return img ? (
                                 <span key={i} className="r38-orders-item-img-wrap inline-block h-8 w-8 flex-shrink-0">
                                   <img src={img} alt={item.productName} className="h-full w-full object-cover rounded-md" />
@@ -849,7 +849,7 @@ export function OrdersView() {
           name: item.productName,
           price: item.price,
           qty: item.quantity,
-          image: item.productImage || undefined,
+          image: (item as Record<string, unknown>).productImage as string | undefined,
         }))}
         isOpen={!!returnOrder}
         onClose={() => setReturnOrder(null)}
@@ -891,7 +891,7 @@ export function OrderDetail() {
           description: null,
           price: item.price,
           comparePrice: null,
-          images: item.productImage ? JSON.stringify([item.productImage]) : '[]',
+          images: '[]',
           stock: 10,
           rating: 4.5,
           totalReviews: 10,

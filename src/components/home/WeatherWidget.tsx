@@ -196,7 +196,17 @@ export function WeatherWidget() {
       .then((data) => {
         if (cancelled) return
         if (data && data.temp !== undefined && !data.error) {
-          setWeather(data)
+          setWeather({
+            temp: data.temp,
+            feelsLike: data.feelsLike ?? data.temp,
+            humidity: data.humidity ?? 50,
+            condition: data.condition ?? 'Ensolarado',
+            icon: data.icon ?? 'sun',
+            isDay: data.isDay ?? true,
+            windSpeed: data.windSpeed ?? 0,
+            lat: data.lat ?? -3.39,
+            lon: data.lon ?? -50.36,
+          })
         } else {
           // Use mock fallback
           setWeather({

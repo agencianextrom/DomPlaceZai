@@ -85,7 +85,7 @@ export interface OrderData {
   deliveryType: string
   deliveryAddress?: string | null
   createdAt: string
-  items?: { productName: string; quantity: number; price: number; total: number }[]
+  items?: { productName: string; quantity: number; price: number; total: number; productImage?: string | null }[]
 }
 
 // localStorage helpers
