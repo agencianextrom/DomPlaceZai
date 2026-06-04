@@ -353,7 +353,7 @@ export function QuickInfo() {
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
               ) : (
-                <>
+                <div>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Dom Eliseu, PA</p>
@@ -380,7 +380,7 @@ export function QuickInfo() {
                   Umidade: {weatherData.humidity}
                 </div>
               </div>
-              </>
+              </div>
               )}
             </div>
           </div>
@@ -391,13 +391,18 @@ export function QuickInfo() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="glass-card rounded-xl border border-primary/10 overflow-hidden"
+          className="glass-card rounded-xl border border-primary/10 overflow-hidden r34-quick-info-card-border"
         >
-          <div className="noise-bg relative p-4">
-            <div className="relative z-10">
-              <h3 className="text-sm font-bold mb-3 flex items-center gap-1.5">
+          <h3 className="text-sm font-bold mb-3 flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-primary animate-breathe" />
                 Resumo Rápido
+                <motion.span
+                  className="r34-quick-info-float-emoji text-base ml-auto"
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+                >
+                  📊
+                </motion.span>
               </h3>
               {statsLoading && <StatsSkeleton />}
               {statsError && !statsLoading && (
@@ -416,13 +421,13 @@ export function QuickInfo() {
                       whileHover={{ x: 2 }}
                       className="flex items-center gap-3"
                     >
-                      <div className={`h-9 w-9 rounded-lg ${stat.color} flex items-center justify-center shrink-0`}>
+                      <div className={`h-9 w-9 rounded-lg ${stat.color} flex items-center justify-center shrink-0 r34-quick-info-icon-glow`}>
                         <stat.icon className="h-4 w-4" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-[10px] text-muted-foreground">{stat.label}</span>
-                          <span className="text-sm font-bold"><AnimatedCounter value={Number(stat.value)} duration={800} locale /></span>
+                          <span className="text-sm font-bold r34-quick-info-number-glow"><AnimatedCounter value={Number(stat.value)} duration={800} locale /></span>
                         </div>
                         <div className="h-1.5 bg-muted/50 rounded-full overflow-hidden">
                           <motion.div
@@ -437,8 +442,6 @@ export function QuickInfo() {
                   ))}
                 </div>
               )}
-            </div>
-          </div>
         </motion.div>
 
         {/* Pedidos Recentes Card */}

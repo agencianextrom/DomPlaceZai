@@ -56,6 +56,15 @@ const ctaSparkles = Array.from({ length: 12 }, (_, i) => ({
   delay: Math.random() * 2,
 }))
 
+// Floating particles for hero banner (5 circles with varied properties)
+const heroParticles = [
+  { id: 0, size: 10, top: '8%', right: '12%', color: 'rgba(255,255,255,0.35)', duration: 6, delay: 0, animY: [0, -14, 6, -10, 0], animX: [0, 8, -6, 4, 0] },
+  { id: 1, size: 6, top: '65%', right: '28%', color: 'rgba(255,255,255,0.25)', duration: 8, delay: -2, animY: [0, 10, -8, 12, 0], animX: [0, -6, 10, -8, 0] },
+  { id: 2, size: 14, top: '35%', right: '55%', color: 'rgba(255,255,255,0.2)', duration: 10, delay: -4, animY: [0, -18, 10, -6, 0], animX: [0, 12, -8, 14, 0] },
+  { id: 3, size: 8, top: '78%', right: '65%', color: 'rgba(255,255,255,0.3)', duration: 7, delay: -1, animY: [0, 8, -14, 6, 0], animX: [0, -10, 8, -4, 0] },
+  { id: 4, size: 5, top: '18%', right: '82%', color: 'rgba(255,255,255,0.28)', duration: 9, delay: -5, animY: [0, -12, 8, -16, 0], animX: [0, 6, -12, 10, 0] },
+]
+
 // Animated gradient color stops for the morphing gradient overlay
 const gradientColors = [
   { from: 'rgba(255,255,255,0.12)', via: 'rgba(255,255,255,0.05)', to: 'rgba(255,255,255,0.0)' },
@@ -292,6 +301,8 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               ease: 'easeInOut',
             }}
           />
+          {/* r34-hero: CSS-animated gradient morph overlay layer */}
+          <div className="absolute inset-0 r34-hero-gradient-morph pointer-events-none" />
 
           {/* =====================================================
               1. PARALLAX: Dot pattern with scroll-based depth
@@ -375,7 +386,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
 
             <motion.h2
               variants={staggerItem}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer"
               style={{
                 textShadow: '0 2px 12px rgba(0,0,0,0.2)',
                 backgroundImage: headingBg,
@@ -455,9 +466,10 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               </div>
             <div className="flex items-center gap-2.5">
               <motion.div
-                className="relative rounded-lg"
+                className="relative rounded-lg r34-hero-cta-enhanced"
                 whileHover={{
-                  boxShadow: '0 0 16px rgba(255,255,255,0.4), 0 0 32px rgba(16,185,129,0.3)',
+                  scale: 1.05,
+                  boxShadow: '0 0 20px rgba(255,255,255,0.5), 0 0 40px rgba(16,185,129,0.35)',
                 }}
                 transition={{ duration: 0.3, type: 'spring' as const, stiffness: 400, damping: 25 }}
               >
@@ -466,6 +478,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                   className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-5 sm:px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer"
                 >
                   <span className="ripple-effect absolute inset-0 rounded-lg" />
+                  <span className="r34-hero-cta-sweep absolute inset-0 rounded-lg" />
                   <span className="relative z-10">Ver Ofertas</span>
                 </Button>
               </motion.div>
@@ -531,6 +544,29 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             >
               <span className="drop-shadow-lg opacity-50" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))' }}>{fp.emoji}</span>
             </motion.div>
+          ))}
+
+          {/* r34 floating particles */}
+          {heroParticles.map((p) => (
+            <motion.div
+              key={`hero-particle-${p.id}`}
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: p.size,
+                height: p.size,
+                top: p.top,
+                right: p.right,
+                background: p.color,
+                boxShadow: `0 0 ${p.size * 0.8}px ${p.color}`,
+              }}
+              animate={{ y: p.animY, x: p.animX, opacity: [0.4, 0.9, 0.5, 0.8, 0.4] }}
+              transition={{
+                duration: p.duration,
+                delay: p.delay,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
           ))}
 
           {/* SVG Wave bottom edge */}

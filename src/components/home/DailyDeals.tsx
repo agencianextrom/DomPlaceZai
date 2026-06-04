@@ -380,7 +380,7 @@ function DealCard({
         whileHover={{
           y: -6,
           scale: 1.03,
-          boxShadow: '0 8px 24px oklch(0.45 0.1 155 / 0.2), 0 2px 6px oklch(0 0 0 / 0.08), 0 0 0 1px oklch(0.78 0.16 70 / 0.3)',
+          boxShadow: '0 8px 24px rgba(16,185,129,0.2), 0 2px 6px rgba(0,0,0,0.08), 0 0 0 1px rgba(251,191,36,0.3)',
         }}
         onClick={() => onProductClick(product)}
         onMouseMove={handleMouseMove}
@@ -530,7 +530,7 @@ function ComboDealCard({ combo }: { combo: typeof comboDeals[number] }) {
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
-      whileHover={{ y: -3, boxShadow: '0 8px 24px oklch(0.45 0.1 155 / 0.15)' }}
+      whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(16,185,129,0.15)' }}
       className="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/20 dark:via-teal-950/20 dark:to-cyan-950/20 rounded-xl border border-emerald-200/50 dark:border-emerald-800/30 p-4 relative overflow-hidden group"
     >
       {/* Shimmer sweep */}
@@ -870,11 +870,14 @@ export function DailyDeals() {
         className="flex justify-center"
       >
         <button
-          className="daily-deals-cta-btn r26-shimmer-sweep h-9 px-5 text-xs rounded-full flex items-center gap-1.5"
+          className="daily-deals-cta-btn r26-shimmer-sweep r34-daily-deals-cta-shimmer h-9 px-5 text-xs rounded-full flex items-center gap-1.5 relative overflow-hidden"
           onClick={() => useAppStore.getState().openSearch()}
         >
-          Ver todas as ofertas
-          <ArrowRight className="h-3.5 w-3.5" />
+          <span className="r34-daily-deals-shimmer-bar" />
+          <span className="relative z-10 inline-flex items-center gap-1.5">
+            Ver todas as ofertas
+            <ArrowRight className="h-3.5 w-3.5" />
+          </span>
         </button>
       </motion.div>
     </motion.section>

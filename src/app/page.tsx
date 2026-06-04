@@ -12,6 +12,7 @@ import { SearchView } from '@/components/search/SearchView'
 import { CartView } from '@/components/cart/CartView'
 import { CartRecoveryBanner } from '@/components/cart/CartRecoveryBanner'
 import { CheckoutView } from '@/components/checkout/CheckoutView'
+import { DeliveryScheduler } from '@/components/checkout/DeliveryScheduler'
 import { OrdersView, OrderDetail } from '@/components/orders/OrdersView'
 import { ProfileView } from '@/components/profile/ProfileView'
 import { StoreDashboard } from '@/components/dashboard/StoreDashboard'
@@ -56,6 +57,7 @@ import { StoreFavorites } from '@/components/home/StoreFavorites'
 // FavoritesView defined locally below
 import { OrderTimeline as ProfileOrderTimeline } from '@/components/profile/OrderTimeline'
 import { OrderTimeline } from '@/components/orders/OrderTimeline'
+import { OrderRatingPrompt } from '@/components/orders/OrderRatingPrompt'
 import { SpinWheel } from '@/components/promotions/SpinWheel'
 import { DailyRewards as PromotionsDailyRewards } from '@/components/promotions/DailyRewards'
 import { DailyRewards } from '@/components/home/DailyRewards'
@@ -97,6 +99,9 @@ import { ExpressDeliveryHub } from '@/components/home/ExpressDeliveryHub'
 import { NeighborhoodMarketplace } from '@/components/home/NeighborhoodMarketplace'
 import { LocalProducers } from '@/components/home/LocalProducers'
 import { EcoImpactTracker } from '@/components/home/EcoImpactTracker'
+import { StoreEvents } from '@/components/home/StoreEvents'
+import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
+import { AIStyleAdvisor } from '@/components/product/AIStyleAdvisor'
 import { SmartShoppingAssistant } from '@/components/chat/SmartShoppingAssistant'
 import { Share2 } from 'lucide-react'
 import { useState, useEffect, useMemo, useRef } from 'react'
@@ -1254,6 +1259,24 @@ export default function Home() {
                       </ScrollReveal>
                     </LazySection>
 
+                    {/* Store Events Calendar */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <StoreEvents />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Real Time Deals Ticker */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <RealTimeDealsTicker />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
                     {/* Neighborhood Feed */}
                     <LazySection>
                       <ScrollReveal delay={0.3}>
@@ -1350,8 +1373,11 @@ export default function Home() {
             <CartView />
           </ViewTransition>
         ) : currentView === 'checkout' ? (
-          <motion.div key="checkout" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4">
+          <motion.div key="checkout" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4 max-w-3xl mx-auto">
             <CheckoutView />
+            <div className="mt-6">
+              <DeliveryScheduler />
+            </div>
           </motion.div>
         ) : currentView === 'orders' ? (
           <motion.div key="orders" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
@@ -1457,6 +1483,9 @@ export default function Home() {
 
       {/* Smart Shopping Assistant */}
       <SmartShoppingAssistant />
+
+      {/* Order Rating Prompt */}
+      <OrderRatingPrompt />
     </div>
   )
 }

@@ -96,9 +96,17 @@ function CountdownRing({
           transition={{ duration: 0.6, ease: 'easeOut' as const }}
         />
       </svg>
-      {/* Center value */}
-      <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-red-600 dark:text-red-400 tabular-nums rotate-0">
-        {String(value).padStart(2, '0')}
+      {/* Center value with pulse on change */}
+      <span className="absolute inset-0 flex items-center justify-center rotate-0">
+        <motion.span
+          key={value}
+          className="text-[11px] font-bold text-red-600 dark:text-red-400 tabular-nums r34-flash-sale-digit-pulse"
+          initial={{ scale: 1.2, opacity: 0.7 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.25, ease: 'easeOut' as const }}
+        >
+          {String(value).padStart(2, '0')}
+        </motion.span>
       </span>
     </div>
   )
@@ -442,7 +450,7 @@ export function FlashSale() {
                 />
                 <div className="relative">
                 <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5">
-                  <span className="r17-flash-gradient-text r17-flash-shimmer-oferta r27-shimmer-text">
+                  <span className="r17-flash-gradient-text r17-flash-shimmer-oferta r27-shimmer-text r34-flash-sale-title-shimmer">
                     OFERTA RELÂMPAGO
                   </span>
                   <motion.div
@@ -580,7 +588,7 @@ export function FlashSale() {
                             {/* 3. 3D Tilt Card Wrapper */}
                             <TiltCard className="h-full">
                               <Card
-                                className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow transition-all duration-300 hover:shadow-[0_0_20px_oklch(0.577_0.245_27.325/0.2),0_0_40px_oklch(0.577_0.245_27.325/0.1),0_8px_24px_oklch(0_0_0/0.1)] hover:-translate-y-1 hover:scale-[1.02] hover:border-red-400/40 dark:hover:border-red-600/40 r27-card-lift"
+                                className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow transition-all duration-300 hover:shadow-[0_0_20px_oklch(0.577_0.245_27.325/0.2),0_0_40px_oklch(0.577_0.245_27.325/0.1),0_8px_24px_oklch(0_0_0/0.1)] hover:-translate-y-1 hover:scale-[1.02] hover:border-red-400/40 dark:hover:border-red-600/40 r27-card-lift r34-flash-sale-card-glow"
                                 onClick={() => { selectProduct(product); navigate('product') }}
                               >
                                 <CardContent className="p-0 h-full flex flex-col">

@@ -37,6 +37,7 @@ import { ProductFAQ } from './ProductFAQ'
 import { ProductWarranty } from './ProductWarranty'
 import { ProductInstallationGuide } from './ProductInstallationGuide'
 import { ARProductPreview } from './ARProductPreview'
+import { ProductRecipes } from './ProductRecipes'
 import { ProductSpecsTable } from './ProductSpecsTable'
 import { QuantityStepper } from '@/components/ui/QuantityStepper'
 import { QuantityStepperEnhanced } from '@/components/product/QuantityStepper'
@@ -673,6 +674,17 @@ export function ProductDetail({ product }: ProductDetailProps) {
           className="mt-4"
         >
           <ARProductPreview />
+        </motion.div>
+
+        {/* Product Recipes — Receitas Relacionadas */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-4"
+        >
+          <ProductRecipes />
         </motion.div>
 
         {/* Product Specs Table — Especificações Técnicas */}

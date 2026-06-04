@@ -12967,4 +12967,478 @@
     100% { left: 200%; }
   }
 
-} /* end @media prefers-reduced-motion: no-preference Round 33 r34- classes + r33-store-search */
+  /* ==============================
+     r34- STORE PROFILE ENHANCEMENTS
+     ============================== */
+
+  /* Cover parallax zoom — subtle scale on scroll via framer-motion */
+  .r34-store-profile-cover-zoom {
+    will-change: transform;
+    transition: transform 0.05s linear;
+  }
+
+  /* Tab indicator glow — enhanced underline with radiance */
+  .r34-store-profile-tab-glow {
+    box-shadow:
+      0 0 18px rgba(16,185,129,0.4),
+      0 0 6px rgba(16,185,129,0.25),
+      0 2px 8px rgba(16,185,129,0.2);
+  }
+
+  /* Rating star pulse — amber glow animation */
+  @keyframes r34-star-glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 6px rgba(251,191,36,0.25), 0 0 12px rgba(251,191,36,0.1);
+    }
+    50% {
+      box-shadow: 0 0 12px rgba(251,191,36,0.4), 0 0 24px rgba(251,191,36,0.18);
+    }
+  }
+  .r34-store-profile-star-pulse {
+    animation: r34-star-glow-pulse 2.5s ease-in-out infinite;
+    border-radius: 6px;
+  }
+
+  /* Delivery badge shimmer sweep */
+  @keyframes r34-delivery-shimmer-sweep {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .r34-store-profile-delivery-shimmer {
+    position: relative;
+    overflow: hidden;
+    background-image: linear-gradient(
+      110deg,
+      transparent 30%,
+      rgba(255,255,255,0.25) 45%,
+      rgba(255,255,255,0.35) 50%,
+      rgba(255,255,255,0.25) 55%,
+      transparent 70%
+    );
+    background-size: 200% 100%;
+    animation: r34-delivery-shimmer-sweep 3s ease-in-out infinite;
+  }
+  .dark .r34-store-profile-delivery-shimmer {
+    background-image: linear-gradient(
+      110deg,
+      transparent 30%,
+      rgba(255,255,255,0.06) 45%,
+      rgba(255,255,255,0.12) 50%,
+      rgba(255,255,255,0.06) 55%,
+      transparent 70%
+    );
+  }
+
+  /* Seguir loja button shimmer sweep overlay */
+  .r34-store-profile-follow-btn {
+    position: relative;
+    overflow: hidden;
+  }
+  .r34-store-profile-follow-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.18) 40%,
+      rgba(255,255,255,0.32) 50%,
+      rgba(255,255,255,0.18) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    animation: r34-follow-shimmer-sweep 2.8s ease-in-out infinite;
+  }
+  .dark .r34-store-profile-follow-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.05) 40%,
+      rgba(255,255,255,0.1) 50%,
+      rgba(255,255,255,0.05) 60%,
+      transparent 100%
+    );
+  }
+  @keyframes r34-follow-shimmer-sweep {
+    0% { left: -100%; }
+    50% { left: 200%; }
+    100% { left: 200%; }
+  }
+
+
+  /* ================================
+     r34-flash-sale-title-shimmer
+     Shimmer sweep overlay on "OFERTA RELAMPAGO" title text
+     ================================ */
+  .r34-flash-sale-title-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .r34-flash-sale-title-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 40%,
+      rgba(255, 255, 255, 0.35) 50%,
+      rgba(255, 255, 255, 0.15) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    animation: r34-fs-shimmer-sweep 3s ease-in-out infinite;
+  }
+  @keyframes r34-fs-shimmer-sweep {
+    0% { left: -100%; }
+    45% { left: 200%; }
+    100% { left: 200%; }
+  }
+
+  /* ================================
+     r34-flash-sale-card-glow
+     Gradient glow border on card hover (pulsing red-orange glow)
+     ================================ */
+  .r34-flash-sale-card-glow {
+    transition: box-shadow 0.4s ease;
+  }
+  .r34-flash-sale-card-glow:hover {
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.25), 0 0 32px rgba(249, 115, 22, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08);
+    animation: r34-fs-card-glow-pulse 1.8s ease-in-out infinite;
+  }
+  .dark .r34-flash-sale-card-glow:hover {
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.35), 0 0 32px rgba(249, 115, 22, 0.2), 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+  @keyframes r34-fs-card-glow-pulse {
+    0%, 100% { box-shadow: 0 0 16px rgba(239, 68, 68, 0.25), 0 0 32px rgba(249, 115, 22, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08); }
+    50% { box-shadow: 0 0 24px rgba(239, 68, 68, 0.4), 0 0 48px rgba(249, 115, 22, 0.25), 0 8px 24px rgba(0, 0, 0, 0.08); }
+  }
+
+  /* ================================
+     r34-flash-sale-digit-pulse
+     Subtle text-shadow pulse on countdown digits
+     ================================ */
+  .r34-flash-sale-digit-pulse {
+    text-shadow: 0 0 4px rgba(239, 68, 68, 0.2);
+    transition: text-shadow 0.3s ease;
+  }
+
+  /* ================================
+     r34-gift-guide-pill-border
+     Animated gradient border on selected occasion pill
+     ================================ */
+  .r34-gift-guide-pill-border {
+    position: relative;
+    z-index: 0;
+  }
+  .r34-gift-guide-pill-border::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 9999px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(244, 63, 94, 0.7), rgba(236, 72, 153, 0.7), rgba(251, 146, 60, 0.7), rgba(244, 63, 94, 0.7));
+    background-size: 300% 300%;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+    animation: r34-gg-pill-border-shift 3s ease-in-out infinite;
+  }
+  @keyframes r34-gg-pill-border-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* ================================
+     r34-gift-guide-tilt
+     CSS 3D perspective tilt on gift card hover
+     ================================ */
+  .r34-gift-guide-tilt {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  }
+  .r34-gift-guide-tilt:hover {
+    transform: perspective(600px) rotateY(4deg) rotateX(2deg) scale(1.02);
+  }
+
+  /* ================================
+     r34-gift-guide-badge-shimmer
+     Shimmer sweep on "Presente ideal" sparkle badges
+     ================================ */
+  .r34-gift-guide-badge-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .r34-gift-guide-badge-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 40%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0.2) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    animation: r34-gg-badge-shimmer-sweep 2.8s ease-in-out infinite;
+  }
+  @keyframes r34-gg-badge-shimmer-sweep {
+    0% { left: -100%; }
+    45% { left: 200%; }
+    100% { left: 200%; }
+  }
+
+  /* ================================
+     r34-hero-* HeroBanner enhancements
+     ================================ */
+
+  /* 1. Animated gradient overlay — slow colour shift via CSS keyframes */
+  @keyframes r34-hero-gradient-shift {
+    0%   { background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.0) 100%); }
+    25%  { background: linear-gradient(225deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.02) 100%); }
+    50%  { background: linear-gradient(45deg,  rgba(255,255,255,0.0) 0%,  rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.14) 100%); }
+    75%  { background: linear-gradient(315deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.10) 100%); }
+    100% { background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.0) 100%); }
+  }
+  .r34-hero-gradient-morph {
+    animation: r34-hero-gradient-shift 12s ease-in-out infinite;
+  }
+
+  /* 2. Shimmer text sweep overlay on the main title */
+  .r34-hero-title-shimmer {
+    position: relative;
+  }
+  .r34-hero-title-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255,255,255,0.15) 40%,
+      rgba(255,255,255,0.35) 50%,
+      rgba(255,255,255,0.15) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 1;
+    animation: r34-hero-title-sweep 3s ease-in-out infinite;
+  }
+  @keyframes r34-hero-title-sweep {
+    0%   { left: -100%; }
+    40%  { left: 200%; }
+    100% { left: 200%; }
+  }
+
+  /* 3. Enhanced CTA — glow + shimmer sweep overlay */
+  .r34-hero-cta-enhanced {
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.35s ease;
+  }
+
+  /* Shimmer sweep pseudo-element inside CTA */
+  .r34-hero-cta-sweep {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(16,185,129,0.12) 40%,
+      rgba(16,185,129,0.28) 50%,
+      rgba(16,185,129,0.12) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    animation: r34-hero-cta-sweep-anim 3.5s ease-in-out infinite;
+    border-radius: inherit;
+  }
+  @keyframes r34-hero-cta-sweep-anim {
+    0%   { left: -100%; }
+    35%  { left: 200%; }
+    100% { left: 200%; }
+  }
+
+  /* ==============================
+     R34-CART: Empty cart gradient background
+     ============================== */
+  .r34-cart-empty-gradient-bg {
+    background:
+      radial-gradient(ellipse at 50% 25%, rgba(16, 185, 129, 0.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 70%, rgba(251, 191, 36, 0.05) 0%, transparent 45%),
+      radial-gradient(ellipse at 20% 60%, rgba(16, 185, 129, 0.04) 0%, transparent 40%);
+  }
+  .dark .r34-cart-empty-gradient-bg {
+    background:
+      radial-gradient(ellipse at 50% 25%, rgba(16, 185, 129, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 70%, rgba(251, 191, 36, 0.07) 0%, transparent 45%),
+      radial-gradient(ellipse at 20% 60%, rgba(16, 185, 129, 0.06) 0%, transparent 40%);
+  }
+
+  /* ==============================
+     R34-CART: Empty cart floating bob
+     ============================== */
+  @keyframes r34-cart-empty-bob {
+    0%, 100% { transform: translateY(0) scale(1); }
+    30% { transform: translateY(-10px) scale(1.04); }
+    50% { transform: translateY(-8px) scale(1); }
+    70% { transform: translateY(-12px) scale(1.02); }
+  }
+  .r34-cart-empty-bob {
+    animation: r34-cart-empty-bob 3s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.15));
+  }
+  .dark .r34-cart-empty-bob {
+    filter: drop-shadow(0 4px 16px rgba(16, 185, 129, 0.25));
+  }
+
+  /* ==============================
+     R34-CART: Checkout button shimmer sweep
+     ============================== */
+  .r34-cart-checkout-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .r34-cart-checkout-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.18) 35%,
+      rgba(255, 255, 255, 0.38) 50%,
+      rgba(255, 255, 255, 0.18) 65%,
+      transparent 100%
+    );
+    transform: skewX(-18deg);
+    pointer-events: none;
+    z-index: 2;
+    animation: r34-cart-shimmer-sweep 2.8s ease-in-out infinite;
+  }
+  .dark .r34-cart-checkout-shimmer::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.06) 35%,
+      rgba(255, 255, 255, 0.14) 50%,
+      rgba(255, 255, 255, 0.06) 65%,
+      transparent 100%
+    );
+  }
+  @keyframes r34-cart-shimmer-sweep {
+    0%   { left: -100%; }
+    35%  { left: 200%; }
+    100% { left: 200%; }
+  }
+
+  /* === r34-search styling === */
+  .r34-search-result-hover {
+    transition: all 0.2s ease;
+  }
+  .r34-search-result-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  .r34-search-chip-glow {
+    transition: all 0.2s ease;
+  }
+  .r34-search-chip-glow:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2), 0 2px 8px rgba(16, 185, 129, 0.12);
+  }
+  .r34-search-empty-bob {
+    animation: r34-search-empty-float 3s ease-in-out infinite;
+  }
+  @keyframes r34-search-empty-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-8px) rotate(3deg); }
+    75% { transform: translateY(-4px) rotate(-2deg); }
+  }
+  .dark .r34-search-result-hover:hover {
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08), 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* === r34-profile styling === */
+  .r34-profile-header-gradient {
+    background-size: 200% 200%;
+    animation: r34-profile-bg-shift 8s ease-in-out infinite;
+  }
+  @keyframes r34-profile-bg-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .r34-profile-avatar-ring {
+    background: conic-gradient(from var(--r34-avatar-angle, 0deg), #10b981, #06b6d4, #f59e0b, #ec4899, #10b981);
+    animation: r34-avatar-ring-spin 4s linear infinite;
+  }
+  @keyframes r34-avatar-ring-spin {
+    to { --r34-avatar-angle: 360deg; }
+  }
+  .r34-profile-stat-hover {
+    transition: all 0.2s ease;
+  }
+  .r34-profile-stat-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+  }
+  .r34-profile-menu-item {
+    transition: all 0.15s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .r34-profile-menu-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #10b981, #06b6d4);
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+  }
+  .r34-profile-menu-item:hover::before {
+    transform: scaleY(1);
+  }
+  .r34-profile-menu-item:hover {
+    background: rgba(16, 185, 129, 0.04);
+    padding-left: 1rem;
+  }
+  .dark .r34-profile-menu-item:hover {
+    background: rgba(16, 185, 129, 0.08);
+  }
+  .dark .r34-profile-stat-hover:hover {
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1);
+  }
+
+} /* end @media prefers-reduced-motion: no-preference Round 33 r34- classes + r33-store-search + r34-hero + r34-cart + r34-search + r34-profile */

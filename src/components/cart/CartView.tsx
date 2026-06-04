@@ -305,6 +305,17 @@ export function CartView() {
   })
   const deliveryFees = storeDeliveryFees.reduce((sum, s) => sum + s.fee, 0)
   const total = subtotal + deliveryFees
+
+  // Calculate total savings from compare-at prices
+  const totalSavings = useMemo(() => {
+    return cartItems.reduce((sum, item) => {
+      const cp = item.product.comparePrice
+      if (cp && cp > item.product.price) {
+        return sum + (cp - item.product.price) * item.quantity
+      }
+      return sum
+    }, 0)
+  }, [cartItems])
   const hasFreeDelivery = deliveryFees === 0 && storeDeliveryFees.some(s => s.freeDeliveryAbove !== null)
   // Find the lowest freeDeliveryAbove threshold among stores with delivery
   const lowestFreeThreshold = Math.min(
@@ -461,7 +472,7 @@ export function CartView() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24 relative overflow-hidden">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24 relative overflow-hidden r34-cart-empty-gradient-bg">
         {/* CSS keyframes for floating emoji animation */}
         <style>{`
           @keyframes float-up-fade {
@@ -517,6 +528,15 @@ export function CartView() {
         <div className="morph-blob absolute top-1/4 -left-20 w-48 h-48 bg-primary/5" style={{ animationDelay: '-2s' }} />
         <div className="morph-blob absolute bottom-1/4 -right-16 w-36 h-36 bg-accent/5" style={{ animationDelay: '-5s' }} />
         <div className="morph-blob absolute top-1/3 right-1/4 w-24 h-24 bg-emerald-500/5" style={{ animationDelay: '-8s' }} />
+
+        {/* Prominent floating cart emoji with gentle bob */}
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          className="r34-cart-empty-bob text-6xl mb-6 select-none"
+        >
+          🛒
+        </motion.div>
 
         {/* Animated illustration with shopping bag */}
         <motion.div
@@ -812,11 +832,12 @@ export function CartView() {
                   return (
                     <motion.div
                       key={item.productId}
-                      initial={{ opacity: 0, x: 40 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, x: -60, transition: { duration: 0.25 } }}
-                      transition={{ delay: index * 0.06, duration: 0.35 }}
-                      className={`flex gap-3 p-4 cart-item-hover hover-glow-soft ${outOfStock ? 'opacity-60' : ''}`}
+                      whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(16, 185, 129, 0.12), 0 2px 4px rgba(0, 0, 0, 0.06)' }}
+                      transition={{ delay: index * 0.06, type: 'spring' as const, stiffness: 350, damping: 25 }}
+                      className={`flex gap-3 p-4 cart-item-hover hover-glow-soft rounded-lg ${outOfStock ? 'opacity-60' : ''}`}
                     >
                       <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shrink-0 relative overflow-hidden`}>
                         {cartImgUrl ? (
@@ -1008,6 +1029,29 @@ export function CartView() {
               </div>
             )}
             <Separator className="my-2" />
+            {/* Economizou savings highlight */}
+            {totalSavings > 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
+                className="flex items-center justify-between bg-emerald-500/10 dark:bg-emerald-500/8 rounded-lg px-3 py-2 -mx-1"
+              >
+                <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                  <Sparkles className="h-3 w-3" />
+                  Economizou
+                </span>
+                <motion.span
+                  key={totalSavings}
+                  initial={{ scale: 1.15, color: '#059669' }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring' as const, stiffness: 500, damping: 20 }}
+                  className="text-sm font-bold text-emerald-600 dark:text-emerald-400"
+                >
+                  <AnimatedPrice value={totalSavings} />
+                </motion.span>
+              </motion.div>
+            )}
             <div className="flex justify-between font-bold text-base">
               <span>Total</span>
               <AnimatedPrice value={total} />
@@ -1027,7 +1071,7 @@ export function CartView() {
               </Button>
             </motion.div>
             <Button
-              className="flex-1 h-12 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl shadow-lg shadow-primary/20 checkout-shimmer-btn"
+              className="flex-1 h-12 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary text-base font-semibold btn-glow btn-shine rounded-xl shadow-lg shadow-primary/20 checkout-shimmer-btn r34-cart-checkout-shimmer"
               onClick={handleCheckout}
               disabled={hasOutOfStock}
             >

@@ -222,7 +222,7 @@ export function GiftGuide() {
                 onClick={() => setSelectedOccasion(occasion)}
                 className={`snap-start shrink-0 flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold transition-all border ${
                   isActive
-                    ? 'text-white border-transparent shadow-lg occasion-pill-glow'
+                    ? 'text-white border-transparent shadow-lg occasion-pill-glow r34-gift-guide-pill-border'
                     : 'bg-card text-muted-foreground border-border hover:border-primary/30'
                 }`}
                 style={
@@ -339,12 +339,12 @@ export function GiftGuide() {
                         boxShadow: '0 16px 48px -8px rgba(244, 63, 94, 0.2), 0 6px 20px -4px rgba(0,0,0,0.1)',
                       }}
                       transition={{ type: 'spring' as const, stiffness: 280, damping: 20 }}
-                      className="gift-card-3d relative bg-card rounded-xl border border-border overflow-hidden group"
+                      className="gift-card-3d relative bg-card rounded-xl border border-border overflow-hidden group r34-gift-guide-tilt"
                       style={{ perspective: '600px' }}
                     >
                       {/* "Presente ideal" badge with sparkle */}
                       <motion.div
-                        className="absolute top-2 left-2 z-20 ribbon-badge-gift gift-ideal-pulse bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-md sparkle-badge-anim"
+                        className="absolute top-2 left-2 z-20 ribbon-badge-gift gift-ideal-pulse bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-md sparkle-badge-anim r34-gift-guide-badge-shimmer"
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: 'spring' as const, stiffness: 500, damping: 15, delay: 0.3 }}

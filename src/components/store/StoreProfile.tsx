@@ -125,6 +125,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
   const bannerY = useTransform(scrollY, [0, 300], [0, 80])
   const bannerOverlayOpacity = useTransform(scrollY, [0, 250], [0.55, 0.95])
   const bannerAccentY = useTransform(scrollY, [0, 300], [0, 15])
+  const bannerScale = useTransform(scrollY, [0, 300], [1, 1.08])
 
   // Reviews & Promotions state
   const [reviews, setReviews] = useState<ReviewData[]>([])
@@ -276,10 +277,10 @@ export function StoreProfile({ store }: StoreProfileProps) {
     <div className="min-h-screen pb-20 md:pb-4">
       {/* Hero header with premium gradient cover and parallax */}
       <div ref={bannerRef} className="relative h-56 sm:h-72 -mx-4 -mt-4 overflow-hidden">
-        {/* Animated gradient background with parallax */}
+        {/* Animated gradient background with parallax zoom */}
         <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700 r28-ken-burns"
-          style={{ y: bannerY }}
+          className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-700 r28-ken-burns r34-store-profile-cover-zoom"
+          style={{ y: bannerY, scale: bannerScale }}
         />
         <motion.div 
           className="absolute inset-0 bg-gradient-to-tr from-emerald-800/50 to-amber-600/20"
@@ -408,9 +409,11 @@ export function StoreProfile({ store }: StoreProfileProps) {
               >
                 {/* Animated rating stars with glow pulse */}
                 <motion.div
-                  animate={{ boxShadow: store.rating > 0 ? '0 0 14px oklch(0.84 0.17 65 / 0.3)' : '0 0 0px oklch(0.84 0.17 65 / 0)' }}
+                  animate={{ boxShadow: store.rating > 0
+                    ? '0 0 14px rgba(251,191,36,0.3), 0 0 4px rgba(251,191,36,0.15)'
+                    : '0 0 0px rgba(251,191,36,0)' }}
                   transition={{ duration: 2.5, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
-                  className={store.rating > 0 ? 'rating-star-glow rounded-lg' : 'rounded-lg'}
+                  className={store.rating > 0 ? 'rating-star-glow rounded-lg r34-store-profile-star-pulse' : 'rounded-lg'}
                 >
                   <StarRating rating={store.rating} size="sm" showCount count={store.totalReviews} />
                 </motion.div>
@@ -454,11 +457,11 @@ export function StoreProfile({ store }: StoreProfileProps) {
               whileHover={{ y: -2 }}
               className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border/50 hover:border-primary/20 transition-colors cursor-default"
             >
-              <div className={`h-8 w-8 rounded-lg ${info.bg} flex items-center justify-center`}>
+              <div className={`h-8 w-8 rounded-lg ${info.bg} flex items-center justify-center ${info.label === 'Entrega Rápida' ? 'r34-store-profile-delivery-shimmer' : ''}`}>
                 <info.icon className={`h-4 w-4 ${info.color}`} />
               </div>
               <div className="text-center">
-                <p className="text-[10px] font-semibold">{info.label}</p>
+                <p className={`text-[10px] font-semibold ${store.rating > 0 && info.label === 'Avaliação' ? 'r34-store-profile-star-pulse' : ''}`}>{info.label}</p>
                 <p className="text-[9px] text-muted-foreground">{info.value}</p>
               </div>
             </motion.div>
@@ -474,7 +477,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
         >
           <StoreStatusBadge isOpen={isOpen} closingTime={store.closesAt || undefined} />
           {store.deliveryFee === 0 ? (
-            <Badge variant="secondary" className="text-primary bg-primary/10 text-xs">
+            <Badge variant="secondary" className="text-primary bg-primary/10 text-xs r34-store-profile-delivery-shimmer">
               <Truck className="h-3 w-3 mr-1" />
               Entrega grátis
             </Badge>
@@ -490,13 +493,24 @@ export function StoreProfile({ store }: StoreProfileProps) {
           <span className="text-xs text-muted-foreground">· 30-45 min</span>
         </motion.div>
         
-        {/* Contact actions */}
+        {/* Seguir loja + Contact actions */}
         <motion.div 
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           className="flex gap-2 mt-4"
         >
+          <motion.button
+            whileTap={{ scale: 0.93 }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
+            onClick={() => toggleFavoriteStore(store.id)}
+            className={`relative overflow-hidden h-11 px-5 rounded-xl font-semibold text-sm flex items-center gap-2 r34-store-profile-follow-btn ${isFav ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
+          >
+            <Heart className={`h-4 w-4 ${isFav ? 'fill-current' : ''}`} />
+            {isFav ? 'Seguindo' : 'Seguir loja'}
+            <span className="r34-store-profile-follow-shimmer" />
+          </motion.button>
           {(store.whatsapp || store.phone) && (
             <Button 
               className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white btn-glow rounded-xl"
@@ -576,7 +590,8 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     <>
                       <motion.div
                         layoutId="store-tab-bg"
-                        className="absolute inset-0 bg-primary rounded-lg shadow-md shadow-primary/30"
+                        className="absolute inset-0 bg-primary rounded-lg r34-store-profile-tab-glow"
+                        style={{ boxShadow: '0 0 18px rgba(16,185,129,0.4), 0 2px 8px rgba(16,185,129,0.2)' }}
                         transition={{ type: 'spring' as const, stiffness: 420, damping: 28, mass: 0.8 }}
                       />
                     </>
@@ -618,7 +633,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{
-                        delay: i * 0.08,
+                        delay: i * 0.04,
                         duration: 0.45,
                         type: 'spring' as const,
                         stiffness: 220,

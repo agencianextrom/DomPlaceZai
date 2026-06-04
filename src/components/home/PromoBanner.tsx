@@ -461,7 +461,7 @@ function HeroPromoSlide({
           {/* CTA + copy */}
           <div className="mt-3 flex items-center gap-3">
             <motion.button
-              className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-gray-900 text-xs sm:text-sm font-semibold transition-colors hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 r17-promo-btn-glow"
+              className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-gray-900 text-xs sm:text-sm font-semibold transition-colors hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 r17-promo-btn-glow r34-promo-btn-shimmer overflow-hidden"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
               animate={{
@@ -477,8 +477,11 @@ function HeroPromoSlide({
               }}
               onClick={onCTAClick}
             >
-              {promo.cta}
-              <ArrowRight className="h-3.5 w-3.5" />
+              <span className="r34-promo-shimmer-bar" />
+              <span className="relative z-10 inline-flex items-center gap-1.5">
+                {promo.cta}
+                <ArrowRight className="h-3.5 w-3.5" />
+              </span>
             </motion.button>
 
             {/* Discount label badge */}
@@ -498,6 +501,24 @@ function HeroPromoSlide({
         transition={{ duration: 0.8, ease: EASE_SMOOTH }}
         style={{ transformOrigin: 'center' }}
       />
+      {/* Floating emoji particles */}
+      {['🚀', '✨', '🎁', '⭐', '🔥'].map((emoji, i) => (
+        <motion.span
+          key={i}
+          className="absolute pointer-events-none text-base sm:text-lg select-none"
+          style={{ left: `${12 + i * 18}%`, top: '50%' }}
+          animate={{
+            y: [0, -30 - i * 10, -60 - i * 8],
+            x: [(i % 2 === 0 ? 6 : -6) * (i + 1), (i % 2 === 0 ? -4 : 4) * (i + 1), 0],
+            opacity: [0, 0.7, 0],
+            scale: [0.4, 1, 0.3],
+            rotate: [0, 180 * (i + 1), 360 * (i + 1)],
+          }}
+          transition={{ duration: 3.5 + i * 0.6, repeat: Infinity, delay: i * 1.2, ease: 'easeOut' as const }}
+        >
+          {emoji}
+        </motion.span>
+      ))}
     </motion.div>
   )
 }
@@ -647,15 +668,18 @@ function PromoCard({
             {/* CTA */}
             <div className="mt-3 flex items-center gap-2">
               <motion.button
-                className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-gray-900 text-xs sm:text-sm font-semibold transition-colors hover:bg-white/95 r17-promo-btn-glow"
+                className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-gray-900 text-xs sm:text-sm font-semibold transition-colors hover:bg-white/95 r17-promo-btn-glow r34-promo-btn-shimmer overflow-hidden"
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
                 animate={{ boxShadow: ['0 0 0px rgba(255,255,255,0.4)', '0 0 16px rgba(255,255,255,0.6)', '0 0 0px rgba(255,255,255,0.4)'] }}
                 transition={{ boxShadow: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }, scale: { duration: 0.15 } }}
                 onClick={onCTAClick}
               >
-                {promo.cta}
-                <ArrowRight className="h-3.5 w-3.5" />
+                <span className="r34-promo-shimmer-bar" />
+                <span className="relative z-10 inline-flex items-center gap-1.5">
+                  {promo.cta}
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </span>
               </motion.button>
 
               <AnimatePresence>
@@ -685,6 +709,23 @@ function PromoCard({
           transition={{ duration: 0.8, delay: index * 0.15 + 0.5, ease: EASE_SMOOTH }}
           style={{ transformOrigin: 'center' }}
         />
+        {/* Floating emoji particles */}
+        {['✨', '🔥', '🎁', '⭐', '🚀'].map((emoji, i) => (
+          <motion.span
+            key={i}
+            className="absolute pointer-events-none text-sm select-none"
+            style={{ left: `${10 + i * 20}%`, top: '50%' }}
+            animate={{
+              y: [0, -20 - i * 8, -50 - i * 6],
+              x: [(i % 2 === 0 ? 5 : -5) * (i + 1), (i % 2 === 0 ? -3 : 3) * (i + 1), 0],
+              opacity: [0, 0.6, 0],
+              scale: [0.3, 1, 0.2],
+            }}
+            transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 1.5, ease: 'easeOut' as const }}
+          >
+            {emoji}
+          </motion.span>
+        ))}
       </motion.div>
     </motion.div>
   )

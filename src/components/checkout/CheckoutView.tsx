@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { PaymentTracker } from './PaymentTracker'
 import { TaxBreakdown } from './TaxBreakdown'
+import { DeliveryScheduler } from './DeliveryScheduler'
 
 const paymentMethods = [
   { id: 'PIX', label: 'Pix', icon: QrCode, desc: 'Pagamento instantâneo', color: 'bg-teal-50 dark:bg-teal-900/10 border-teal-200 dark:border-teal-800/30' },
@@ -1010,6 +1011,11 @@ export function CheckoutView() {
                     {/* Tax Breakdown — Resumo Fiscal */}
                     <div className="mt-2">
                       <TaxBreakdown subtotal={subtotal} />
+                    </div>
+
+                    {/* Delivery Scheduler — Agendamento de Entrega */}
+                    <div className="mt-4">
+                      <DeliveryScheduler />
                     </div>
 
                     <Separator />
