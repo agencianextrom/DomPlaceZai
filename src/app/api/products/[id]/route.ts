@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET: Buscar produto por ID com produtos relacionados e dados da loja
 export async function GET(
@@ -148,6 +150,30 @@ export async function PUT(
 ) {
   try {
     const { id } = await params
+
+    // Auth check
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    const accountId = (session.user as any)?.id
+    const account = await db.account.findUnique({ where: { id: accountId } })
+    if (!account || (account.role !== 'STORE_OWNER' && account.role !== 'ADMIN')) {
+      return NextResponse.json({ error: 'Sem permissão' }, { status: 403 })
+    }
+
+    // Verify ownership
+    const existingProduct = await db.product.findUnique({
+      where: { id },
+      include: { store: true }
+    })
+    if (!existingProduct) {
+      return NextResponse.json({ error: 'Produto não encontrado' }, { status: 404 })
+    }
+    if (existingProduct.store.accountId !== accountId && account.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Sem permissão para editar este produto' }, { status: 403 })
+    }
+
     const body = await request.json()
 
     // Verificar se o produto existe
@@ -222,6 +248,29 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+
+    // Auth check
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    const accountId = (session.user as any)?.id
+    const account = await db.account.findUnique({ where: { id: accountId } })
+    if (!account || (account.role !== 'STORE_OWNER' && account.role !== 'ADMIN')) {
+      return NextResponse.json({ error: 'Sem permissão' }, { status: 403 })
+    }
+
+    // Verify ownership
+    const existingProduct = await db.product.findUnique({
+      where: { id },
+      include: { store: true }
+    })
+    if (!existingProduct) {
+      return NextResponse.json({ error: 'Produto não encontrado' }, { status: 404 })
+    }
+    if (existingProduct.store.accountId !== accountId && account.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Sem permissão para editar este produto' }, { status: 403 })
+    }
 
     const product = await db.product.findUnique({ where: { id } })
     if (!product) {

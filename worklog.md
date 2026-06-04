@@ -1,5 +1,56 @@
 ---
-Task ID: R58 (Round 58 - Job 182228)
+Task ID: R59 (Round 59 - Mobile CSS Foundation)
+Agent: Main Agent
+Task: Fix mobile CSS foundation for DomPlace marketplace
+
+Work Log:
+
+**Task 1: globals.css @layer base mobile fixes**
+- Updated `@layer base` section (lines 115-134):
+  - Added `overflow-x: hidden` to html and body to prevent horizontal scroll
+  - Added `-webkit-tap-highlight-color: transparent` to remove tap flash on iOS
+  - Added `-webkit-text-size-adjust: 100%` to prevent auto font scaling
+  - Added `touch-action: manipulation` to eliminate 300ms tap delay
+  - Added `min-height: 100vh` and `min-height: 100dvh` to body for proper mobile height
+  - Added `overscroll-behavior-y: contain` to prevent pull-to-refresh bounce
+  - Added `-webkit-overflow-scrolling: touch` to universal `*` selector for smooth iOS scrolling
+
+**Task 1b: globals.css @layer utilities mobile-first responsive utilities**
+- Added `@layer utilities` section (lines 44120-44223):
+  - Safe area padding classes: `.safe-top`, `.safe-bottom`, `.safe-left`, `.safe-right`, `.safe-all` (env(safe-area-inset-*))
+  - Touch-friendly tap targets: `.tap-target` (min 44x44px with centered flex)
+  - Scrollbar hide: `.scrollbar-hide` (cross-browser)
+  - No-select: `.no-select` for interactive elements
+  - Mobile text truncation: `.line-clamp-1`, `.line-clamp-2`, `.line-clamp-3`
+  - Mobile container: `.mobile-container` with responsive padding (16px → 24px → 32px + max-width)
+  - Glassmorphism mobile card: `.glass-card-mobile` (blur + transparency)
+  - Bottom sheet: `.bottom-sheet` (fixed bottom, rounded top, dvh height) + `.bottom-sheet-handle`
+  - Mobile-first responsive grid: `.grid-mobile` (2 → 3 → 4 → 5 columns across breakpoints)
+
+**Task 2: layout.tsx viewport export**
+- Added `Viewport` type import from `next`
+- Added `export const viewport: Viewport` with:
+  - `width: 'device-width'`, `initialScale: 1`, `maximumScale: 1`
+  - `userScalable: false` for app-like feel (prevents pinch zoom)
+  - `viewportFit: 'cover'` for notched devices (iPhone X+)
+  - `themeColor: '#6366f1'` for browser chrome color
+
+**Task 3: Mobile gesture CSS animations**
+- Added 7 keyframe animations (lines 44225-44268):
+  - `r59-slide-up-mobile`, `r59-slide-down-mobile` (vertical sheet transitions)
+  - `r59-slide-left-mobile`, `r59-slide-right-mobile` (horizontal page transitions)
+  - `r59-pulse-touch` (button press feedback)
+  - `r59-ripple` (Material Design ripple)
+  - `r59-shake-mobile` (error/validation shake)
+- Added 6 utility classes: `.r59-slide-up`, `.r59-slide-down`, `.r59-slide-left`, `.r59-slide-right`, `.r59-pulse-touch`, `.r59-shake`
+- All wrapped in `@media (prefers-reduced-motion: reduce)` guard for accessibility
+
+Stage Summary:
+- 2 files changed: globals.css (+155 lines), layout.tsx (+9 lines)
+- Mobile CSS foundation fixed: tap targets, safe areas, overscroll, viewport meta, gesture animations
+- All r59-* prefixed classes for this round
+- prefers-reduced-motion respected across all new animations
+- No breaking changes to existing functionality
 Agent: Main Agent
 Task: QA, 3 new features, 6 styling enhancements
 
@@ -3780,3 +3831,52 @@ Work Log:
 
 Stage Summary:
 - New seller chat widget with 5 mock store conversations, emoji avatars, gradient headers, message bubbles (sent/received), quick reply chips, typing indicator with animated dots, auto-reply simulation (2s delay), search/filter, online/offline status indicators, unread badge pulsing, spring animations for panel open/close, staggered message entrance animations
+---
+Task ID: API-AUTH-SECURITY
+Agent: Security Agent
+Task: Fix critical API authentication gaps across 5 endpoints
+
+Work Log:
+
+**Security Fixes (5 endpoints secured):**
+
+1. **POST /api/products** — Added session auth + role check (STORE_OWNER/ADMIN) + store ownership verification
+   - Before: No auth at all — anyone could create products for any store
+   - After: Requires authenticated session, STORE_OWNER or ADMIN role, and ownership of the target store
+
+2. **PUT /api/products/[id]** — Added session auth + role check + product ownership via store.accountId
+   - Before: No auth — anyone could modify any product
+   - After: Requires authenticated session, role check, and product must belong to user's store (or ADMIN)
+
+3. **DELETE /api/products/[id]** — Added session auth + role check + product ownership verification
+   - Before: No auth — anyone could soft-delete any product
+   - After: Same ownership check as PUT
+
+4. **POST /api/stores** — Added session auth + role check, removed client-supplied accountId
+   - Before: Accepts `accountId` from request body — anyone could create stores for any account
+   - After: accountId taken from session, not request body; requires STORE_OWNER or ADMIN role
+   - Also removed redundant account existence check (account is guaranteed to exist from session)
+
+5. **POST /api/notifications/send** — Added session auth + sender authorization
+   - Before: No auth — anyone could send push notifications to any user
+   - After: Authenticated users can only send to themselves; ADMIN role can send to others
+
+6. **POST /api/update-images** — Added ADMIN-only auth
+   - Before: No auth — anyone could trigger mass image migration
+   - After: Requires authenticated ADMIN session
+
+**Patterns used:**
+- `getServerSession(authOptions)` from `next-auth`
+- `(session.user as any)?.id` to extract account ID (matches existing codebase pattern in auth.ts JWT callback)
+- Role-based access: `account.role !== 'STORE_OWNER' && account.role !== 'ADMIN'`
+- Ownership verification via `db.store.findUnique({ include: { store: true } })`
+
+**GET handlers untouched:**
+- All GET endpoints remain public (no auth required) — browse/search functionality preserved
+
+Stage Summary:
+- 5 files modified, ~80 lines of auth code added
+- 5 previously unprotected mutation endpoints now secured
+- No breaking changes to existing GET handlers
+- Consistent with existing auth patterns in cart, favorites, orders, etc.
+- Git email: agencianextrom@gmail.com

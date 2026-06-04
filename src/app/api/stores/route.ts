@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET: Listar lojas com filtros
 export async function GET(request: Request) {
@@ -73,9 +75,19 @@ export async function GET(request: Request) {
 // POST: Criar nova loja
 export async function POST(request: Request) {
   try {
+    // Auth check — only authenticated STORE_OWNER or ADMIN can create stores
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    const accountId = (session.user as any)?.id
+    const account = await db.account.findUnique({ where: { id: accountId } })
+    if (!account || (account.role !== 'STORE_OWNER' && account.role !== 'ADMIN')) {
+      return NextResponse.json({ error: 'Apenas lojistas podem criar lojas' }, { status: 403 })
+    }
+
     const body = await request.json()
     const {
-      accountId,
       name,
       description,
       category,
@@ -96,17 +108,11 @@ export async function POST(request: Request) {
     } = body
 
     // Validação
-    if (!accountId || !name || !category) {
+    if (!name || !category) {
       return NextResponse.json(
-        { error: 'ID da conta, nome e categoria são obrigatórios' },
+        { error: 'Nome e categoria são obrigatórios' },
         { status: 400 }
       )
-    }
-
-    // Verificar se a conta existe
-    const account = await db.account.findUnique({ where: { id: accountId } })
-    if (!account) {
-      return NextResponse.json({ error: 'Conta não encontrada' }, { status: 404 })
     }
 
     // Verificar se a conta já tem loja

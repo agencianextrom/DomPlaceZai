@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET: Listar produtos com busca, filtros, ordenação e paginação
 export async function GET(request: Request) {
@@ -175,6 +177,21 @@ export async function GET(request: Request) {
 // POST: Criar novo produto (dono da loja)
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    const accountId = (session.user as any)?.id
+    if (!accountId) {
+      return NextResponse.json({ error: 'Sessão inválida' }, { status: 401 })
+    }
+
+    // Verify the user owns the store (STORE_OWNER or ADMIN role)
+    const account = await db.account.findUnique({ where: { id: accountId } })
+    if (!account || (account.role !== 'STORE_OWNER' && account.role !== 'ADMIN')) {
+      return NextResponse.json({ error: 'Apenas lojistas podem criar produtos' }, { status: 403 })
+    }
+
     const body = await request.json()
     const {
       name,
@@ -209,10 +226,10 @@ export async function POST(request: Request) {
       )
     }
 
-    // Verificar se a loja existe
+    // Verify store ownership
     const store = await db.store.findUnique({ where: { id: storeId } })
-    if (!store) {
-      return NextResponse.json({ error: 'Loja não encontrada' }, { status: 404 })
+    if (!store || (store.accountId !== accountId && account.role !== 'ADMIN')) {
+      return NextResponse.json({ error: 'Loja não encontrada ou sem permissão' }, { status: 403 })
     }
 
     // Gerar slug

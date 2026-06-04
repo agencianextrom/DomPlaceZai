@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { productImageMap, storeImageMap } from '@/lib/product-images'
 import { getErrorMessage } from '@/lib/api-response'
 import { logger } from '@/lib/logger'
@@ -11,6 +13,17 @@ import { logger } from '@/lib/logger'
  */
 export async function POST(request: NextRequest) {
   try {
+    // Auth check — admin only
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    const accountId = (session.user as any)?.id
+    const account = await db.account.findUnique({ where: { id: accountId } })
+    if (!account || account.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Apenas administradores' }, { status: 403 })
+    }
+
     let updatedProducts = 0
     let updatedStores = 0
     let errors: string[] = []

@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
 import { getFCMTokensForAccount } from '@/lib/fcm-tokens'
 import { logger } from '@/lib/logger'
 
@@ -14,6 +17,18 @@ interface SendNotificationBody {
 
 export async function POST(request: NextRequest) {
   try {
+    // Auth check — only authenticated users can send notifications
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    // Only allow sending to self or admin sending to others
+    const senderId = (session.user as any)?.id
+    const senderAccount = await db.account.findUnique({ where: { id: senderId } })
+    if (!senderAccount) {
+      return NextResponse.json({ error: 'Conta não encontrada' }, { status: 404 })
+    }
+
     const body = await request.json() as SendNotificationBody
     const { accountId, title, body: messageBody, data } = body
 
@@ -22,6 +37,10 @@ export async function POST(request: NextRequest) {
         { error: 'accountId, title e body são obrigatórios' },
         { status: 400 }
       )
+    }
+
+    if (senderAccount.role !== 'ADMIN' && accountId !== senderId) {
+      return NextResponse.json({ error: 'Sem permissão para enviar notificações a outros' }, { status: 403 })
     }
 
     // Buscar tokens FCM para a conta
