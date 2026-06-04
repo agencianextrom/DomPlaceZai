@@ -534,7 +534,7 @@ export function CheckoutView() {
                       <motion.div
                         animate={isCurrent ? { scale: [1, 1.2, 1] } : {}}
                         transition={{ duration: 0.5, type: 'spring' as const, stiffness: 300, damping: 20 }}
-                        className={`step-dot ${isCompleted ? 'completed r40-step-glow-ring' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow r33-checkout-step-pulse r40-step-glow-ring' : ''}`}
+                        className={`step-dot ${isCompleted ? 'completed r40-step-glow-ring r39-step-check-wiggle' : ''} ${isCurrent ? 'current' : ''} ${isCurrent ? 'r32-step-glow r33-checkout-step-pulse r40-step-glow-ring' : ''}`}
                       >
                         {isCompleted ? (
                           <motion.div
@@ -862,9 +862,9 @@ export function CheckoutView() {
                     whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(16,185,129,0.2)' }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r40-payment-card-hover ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r40-payment-card-hover r39-payment-glow ${
                       payment === method.id
-                        ? 'border-primary bg-primary/5 shadow-[0_2px_16px_oklch(0.45_0.1_155/0.1)]'
+                        ? 'border-primary bg-primary/5 r39-payment-glow-active'
                         : 'border-border hover:border-primary/30'
                     }`}
                   >
@@ -958,7 +958,7 @@ export function CheckoutView() {
               </div>
 
               {/* Order summary card with animated items */}
-              <Card className="mt-6 gradient-border-animated bg-card rounded-xl overflow-hidden r40-address-glass">
+              <Card className="mt-6 gradient-border-animated bg-card rounded-xl overflow-hidden r40-address-glass r39-checkout-conic-border">
                 <CardContent className="p-4">
                   <motion.h4
                     initial={{ opacity: 0, y: -6 }}
@@ -971,10 +971,10 @@ export function CheckoutView() {
                     {groups.flatMap(g => g.items).map((item, idx) => (
                       <motion.div
                         key={`${item.productId}-${idx}`}
-                        initial={{ opacity: 0, x: -20 }}
+                        initial={{ opacity: 0, x: 30 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.08, duration: 0.3 }}
-                        className="flex items-center justify-between text-sm"
+                        transition={{ delay: idx * 0.1, duration: 0.4, type: 'spring' as const, stiffness: 200, damping: 25 }}
+                        className="flex items-center justify-between text-sm r39-summary-stagger"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <span className="text-xs bg-primary/10 text-primary font-medium h-5 w-5 rounded flex items-center justify-center shrink-0">{item.quantity}x</span>
@@ -1060,9 +1060,9 @@ export function CheckoutView() {
                   animate={{ opacity: 1, y: [0, -3, 0] }}
                   transition={{ delay: 0.6, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge r39-confidence-scale"
                 >
-                  <span className="text-emerald-500 r40-confidence-icon-wiggle" style={{ '--r40-badge-delay': '0s' } as React.CSSProperties}>
+                  <span className="text-emerald-500 r40-confidence-icon-wiggle r39-confidence-icon-glow" style={{ '--r40-badge-delay': '0s' } as React.CSSProperties}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                   </span>
                   Seguro
@@ -1072,10 +1072,10 @@ export function CheckoutView() {
                   animate={{ opacity: 1, y: [0, -3, 0] }}
                   transition={{ delay: 0.7, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge r39-confidence-scale"
                 >
                   <motion.span
-                    className="text-emerald-500 r40-confidence-icon-wiggle"
+                    className="text-emerald-500 r40-confidence-icon-wiggle r39-confidence-icon-glow"
                     style={{ '--r40-badge-delay': '0.3s' } as React.CSSProperties}
                     animate={{ rotate: [0, 10, -10, 0] }}
                     transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' }}
@@ -1089,9 +1089,9 @@ export function CheckoutView() {
                   animate={{ opacity: 1, y: [0, -3, 0] }}
                   transition={{ delay: 0.8, duration: 3, repeat: Infinity }}
                   whileHover={{ scale: 1.08, y: -2 }}
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground cursor-default r40-confidence-badge r39-confidence-scale"
                 >
-                  <span className="text-primary r40-confidence-icon-wiggle" style={{ '--r40-badge-delay': '0.6s' } as React.CSSProperties}>
+                  <span className="text-primary r40-confidence-icon-wiggle r39-confidence-icon-glow" style={{ '--r40-badge-delay': '0.6s' } as React.CSSProperties}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="m12 15 5 6H7Z"/></svg>
                   </span>
                   Frete grátis acima de R$50
@@ -1119,7 +1119,7 @@ export function CheckoutView() {
                 </Button>
                 <motion.div className="r40-confirm-btn-wrapper">
                   <Button
-                    className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl checkout-btn-shimmer r32-confirm-shine r40-confirm-btn-glow relative overflow-hidden"
+                    className="flex-1 h-12 bg-gradient-to-r from-primary via-emerald-600 to-primary text-primary-foreground font-semibold btn-shine btn-glow ripple-effect rounded-xl checkout-btn-shimmer r32-confirm-shine r40-confirm-btn-glow r39-confirm-shimmer relative overflow-hidden"
                     onClick={handlePlaceOrder}
                     disabled={isProcessing || !termsAccepted}
                   >

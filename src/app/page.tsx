@@ -111,6 +111,8 @@ import { ReviewSentimentAI } from '@/components/home/ReviewSentimentAI'
 import { StoreMembershipTiers } from '@/components/store/StoreMembershipTiers'
 import { InfluencerShopPage } from '@/components/home/InfluencerShopPage'
 import { EcoImpactDashboard } from '@/components/home/EcoImpactDashboard'
+import { PriceComparisonBot } from '@/components/home/PriceComparisonBot'
+import { ProductScanSearch } from '@/components/product/ProductScanSearch'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1388,6 +1390,24 @@ export default function Home() {
                       <ScrollReveal delay={0.15}>
                         <section className="mt-6">
                           <EcoImpactDashboard />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Price Comparison Bot */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <PriceComparisonBot />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Product Scan Search */}
+                    <LazySection>
+                      <ScrollReveal delay={0.15}>
+                        <section className="mt-6">
+                          <ProductScanSearch />
                         </section>
                       </ScrollReveal>
                     </LazySection>

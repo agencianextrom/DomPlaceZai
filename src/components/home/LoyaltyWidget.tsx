@@ -53,7 +53,7 @@ function AnimatedCounter({ target, duration = 1200 }: { target: number; duration
   return <span>{count.toLocaleString('pt-BR')}</span>
 }
 
-// Mini SVG chart component
+// Mini SVG chart component — enhanced with gradient fills, stagger, hover tooltip
 function PointsMiniChart({ data }: { data: number[] }) {
   const max = Math.max(...data, 1)
   const width = 200
@@ -66,46 +66,47 @@ function PointsMiniChart({ data }: { data: number[] }) {
     <div className="flex items-end gap-0.5">
       {data.map((value, i) => {
         const barHeight = Math.max(2, (value / max) * height)
+        const isHighest = value === max
         return (
           <motion.div
             key={i}
-            className="flex flex-col items-center gap-0.5"
-            initial={{ opacity: 0, y: 10 }}
+            className="r41-chart-bar-wrap flex flex-col items-center gap-0.5 relative group"
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06 }}
+            transition={{ delay: i * 0.09, type: 'spring' as const, stiffness: 260, damping: 22 }}
           >
+            {/* Hover tooltip */}
+            <motion.div
+              className="r41-chart-tooltip absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded-md bg-card border border-border shadow-sm text-[9px] font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10"
+              initial={false}
+            >
+              +{value} pts
+            </motion.div>
             <div
-              className="rounded-t-sm bg-gradient-to-t from-primary/60 to-primary"
+              className={`r41-chart-bar rounded-t-sm ${isHighest ? 'r41-chart-bar-peak' : 'r41-chart-bar-normal'}`}
               style={{
                 width: barWidth,
                 height: barHeight,
-                animation: `loyalty-bar-grow 0.6s ease-out ${i * 0.08}s both`,
               }}
             />
             <span className="text-[7px] text-muted-foreground">{days[i]}</span>
           </motion.div>
         )
       })}
-      <style>{`
-        @keyframes loyalty-bar-grow {
-          0% { height: 0; }
-          100% { height: var(--h); }
-        }
-      `}</style>
     </div>
   )
 }
 
-// Celebration confetti effect
+// Celebration confetti effect — enhanced with 24 particles
 function CelebrationParticles({ active }: { active: boolean }) {
   if (!active) return null
 
-  const particles = Array.from({ length: 12 }).map((_, i) => ({
+  const particles = Array.from({ length: 24 }).map((_, i) => ({
     id: i,
     x: Math.random() * 100,
-    delay: Math.random() * 0.3,
-    color: ['#fbbf24', '#f59e0b', '#10b981', '#06b6d4', '#ec4899'][i % 5],
-    size: 4 + Math.random() * 4,
+    delay: Math.random() * 0.35,
+    color: ['#fbbf24', '#f59e0b', '#10b981', '#06b6d4', '#ec4899', '#8b5cf6', '#f97316'][i % 7],
+    size: 3 + Math.random() * 5,
   }))
 
   return (
@@ -114,8 +115,8 @@ function CelebrationParticles({ active }: { active: boolean }) {
         <motion.div
           key={p.id}
           initial={{ y: -10, x: `${p.x}%`, opacity: 1, scale: 1 }}
-          animate={{ y: 60, opacity: 0, scale: 0.5, rotate: 180 }}
-          transition={{ duration: 0.8, delay: p.delay, ease: 'easeOut' }}
+          animate={{ y: 70, opacity: 0, scale: 0.3, rotate: 360 }}
+          transition={{ duration: 0.9, delay: p.delay, ease: 'easeOut' }}
           className="absolute rounded-full"
           style={{
             backgroundColor: p.color,
@@ -124,6 +125,46 @@ function CelebrationParticles({ active }: { active: boolean }) {
             left: `${p.x}%`,
           }}
         />
+      ))}
+    </div>
+  )
+}
+
+// Sparkle particles around the current tier badge
+function TierBadgeSparkles({ active }: { active: boolean }) {
+  if (!active) return null
+
+  const sparkles = Array.from({ length: 6 }).map((_, i) => ({
+    id: i,
+    angle: (i / 6) * 360,
+    delay: i * 0.2,
+    size: 3,
+  }))
+
+  return (
+    <div className="absolute inset-0 pointer-events-none">
+      {sparkles.map(s => (
+        <motion.div
+          key={s.id}
+          className="absolute left-1/2 top-1/2"
+          initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+          animate={{
+            x: Math.cos((s.angle * Math.PI) / 180) * 14,
+            y: Math.sin((s.angle * Math.PI) / 180) * 10,
+            opacity: [0, 1, 0],
+            scale: [0, 1, 0],
+          }}
+          transition={{
+            duration: 1.4,
+            delay: s.delay,
+            repeat: Infinity,
+            repeatDelay: 2,
+            ease: 'easeInOut',
+          }}
+          style={{ width: s.size, height: s.size, marginLeft: -1.5, marginTop: -1.5 }}
+        >
+          <div className="r41-sparkle-dot rounded-full" />
+        </motion.div>
       ))}
     </div>
   )
@@ -161,6 +202,9 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
   const rewardProgress = nextReward
     ? Math.min((points / nextReward.points) * 100, 100)
     : 100
+
+  // Milestone check — pulse on every 500 points
+  const isMilestone = points > 0 && points % 500 < 25
 
   const handleCheckIn = useCallback(() => {
     if (checkedInToday) return
@@ -201,9 +245,9 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
               <div>
                 <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
                   Programa de Fidelidade
-                  {/* Enhanced tier badge with shimmer sweep + glow pulse */}
+                  {/* Enhanced tier badge with rotating gradient border + sparkle particles */}
                   <motion.span
-                    className={`relative text-[10px] px-1.5 py-0.5 rounded-full inline-flex items-center r33-loyalty-badge-shimmer ${
+                    className={`relative text-[10px] px-1.5 py-0.5 rounded-full inline-flex items-center r33-loyalty-badge-shimmer r41-tier-badge-border ${
                       points >= 2000
                         ? 'bg-white/25 text-white'
                         : 'bg-white/20 text-white/90'
@@ -220,17 +264,20 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
                     transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     {currentTier.icon}
+                    {/* r41-tier-badge-border provides rotating gradient via CSS */}
                     {/* Shimmer sweep pseudo-element via CSS */}
                   </motion.span>
+                  {/* Sparkle particles on current tier (Ouro+) */}
+                  <TierBadgeSparkles active={points >= 2000} />
                 </h3>
                 <p className="text-[10px] text-white/70">Nível {currentTier.name}</p>
               </div>
             </div>
-            {/* Points counter with glow + scale pulse */}
+            {/* Points counter with enhanced gradient text + scale pulse on milestone */}
             <div className="text-right relative">
               {/* Glow behind the number */}
               <div
-                className="absolute -inset-3 -z-10 rounded-full blur-xl opacity-0 transition-opacity duration-500"
+                className="absolute -inset-3 -z-10 rounded-full blur-xl transition-opacity duration-500"
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.35)',
                   opacity: pointsPulse ? 0.5 : 0,
@@ -238,10 +285,12 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
               />
               <motion.div
                 className="text-xl font-extrabold text-white relative"
-                animate={pointsPulse ? { scale: [1, 1.15, 1] } : {}}
+                animate={pointsPulse || isMilestone ? { scale: [1, 1.18, 1] } : {}}
                 transition={{ type: 'spring' as const, stiffness: 400, damping: 15, duration: 0.6 }}
               >
-                <AnimatedCounter target={points} />
+                <span className="r41-points-gradient">
+                  <AnimatedCounter target={points} />
+                </span>
               </motion.div>
               <p className="text-[10px] text-white/70">pontos acumulados</p>
             </div>
@@ -249,7 +298,7 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
         </div>
 
         <CardContent className="p-4 space-y-4">
-          {/* Tier progress bar with shimmer on fill */}
+          {/* Tier progress bar with enhanced gradient fill + shimmer overlay + glow trail indicator */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
@@ -277,9 +326,11 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
               />
               {/* Shimmer sweep overlay on the progress fill */}
               <div className="r33-loyalty-progress-shimmer" />
-              {/* Points indicator */}
+              {/* Enhanced shimmer overlay */}
+              <div className="r41-progress-shimmer-overlay" />
+              {/* Animated indicator dot with glow trail */}
               <motion.div
-                className="absolute top-1/2 h-5 w-5 rounded-full bg-background border-2 border-primary shadow-sm flex items-center justify-center"
+                className="absolute top-1/2 h-5 w-5 rounded-full bg-background border-2 border-primary shadow-sm flex items-center justify-center z-10"
                 initial={{ left: '0%' }}
                 animate={{ left: `${Math.max(0, Math.min(tierProgress, 97))}%` }}
                 transition={{ duration: 1, ease: 'easeOut' }}
@@ -287,17 +338,36 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
               >
                 <Sparkles className="h-2.5 w-2.5 text-primary" />
               </motion.div>
+              {/* Glow trail behind the indicator */}
+              <motion.div
+                className="absolute top-1/2 h-5 rounded-full r41-indicator-glow-trail"
+                initial={{ left: '0%' }}
+                animate={{ left: `${Math.max(0, Math.min(tierProgress, 97))}%` }}
+                transition={{ duration: 1, ease: 'easeOut' }}
+                style={{ transform: 'translate(-50%, -50%)', width: 32 }}
+              />
             </div>
           </div>
 
-          {/* Daily check-in button with shimmer sweep + ripple */}
+          {/* Daily check-in button — wrapped in motion.div, no whileHover on Button */}
           <div className="relative">
-            <motion.div whileTap={{ scale: checkedInToday ? 1 : 0.95 }}>
+            <motion.div
+              whileTap={{ scale: checkedInToday ? 1 : 0.95 }}
+              className="r41-checkin-btn-glow"
+              animate={checkedInToday ? {} : {
+                boxShadow: [
+                  '0 4px 14px rgba(16, 185, 129, 0.2)',
+                  '0 4px 20px rgba(16, 185, 129, 0.4), 0 0 8px rgba(16, 185, 129, 0.15)',
+                  '0 4px 14px rgba(16, 185, 129, 0.2)',
+                ],
+              }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
               <Button
                 className={`w-full h-11 rounded-xl font-semibold text-sm gap-2 transition-all ${
                   checkedInToday
                     ? 'bg-muted text-muted-foreground cursor-default'
-                    : 'bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-white shadow-lg r33-loyalty-btn-shimmer r33-loyalty-btn-ripple'
+                    : 'bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-white shadow-lg r33-loyalty-btn-shimmer r33-loyalty-btn-ripple r41-btn-shimmer-enhanced'
                 }`}
                 onClick={handleCheckIn}
                 disabled={checkedInToday}
@@ -326,10 +396,11 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
                 )}
               </Button>
             </motion.div>
+            {/* Enhanced celebration particles (24 burst) */}
             <CelebrationParticles active={showCelebration} />
           </div>
 
-          {/* Next reward preview with glow */}
+          {/* Next reward preview — enhanced glow pulse + shine sweep */}
           {nextReward && points < nextReward.points && (
             <motion.div
               className="relative"
@@ -343,7 +414,7 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
                     : '0 0 0 0 rgba(16,185,129,0), 0 0 0 0 rgba(16,185,129,0), 0 0 0 0 rgba(16,185,129,0)',
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="bg-gradient-to-r from-primary/5 to-emerald-500/5 rounded-xl p-3 border border-primary/10 cursor-pointer"
+                className="bg-gradient-to-r from-primary/5 to-emerald-500/5 rounded-xl p-3 border border-primary/10 cursor-pointer r41-reward-card-shine"
               >
                 <div className="flex items-center gap-3">
                   <motion.div
@@ -410,7 +481,7 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
             </motion.div>
           )}
 
-          {/* Points history mini chart */}
+          {/* Points history mini chart — enhanced with stagger, gradient fills, hover tooltip */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
@@ -424,18 +495,31 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
             <PointsMiniChart data={mockWeeklyPoints} />
           </div>
 
-          {/* Quick stats row */}
+          {/* Quick stats row — enhanced with animated counter entrance, icon bounce, gradient hover */}
           <div className="grid grid-cols-3 gap-2">
             {[
               { icon: <Star className="h-3.5 w-3.5 text-amber-500" />, label: 'Mês atual', value: `${Math.floor(points / 3)} pts`, color: 'text-amber-600 dark:text-amber-400' },
               { icon: <Flame className="h-3.5 w-3.5 text-orange-500" />, label: 'Sequência', value: '5 dias', color: 'text-orange-600 dark:text-orange-400' },
               { icon: <Gift className="h-3.5 w-3.5 text-primary" />, label: 'Resgates', value: '2', color: 'text-primary' },
-            ].map(stat => (
-              <div key={stat.label} className="text-center bg-secondary/30 rounded-lg p-2">
-                <div className="flex justify-center mb-1">{stat.icon}</div>
+            ].map((stat, idx) => (
+              <motion.div
+                key={stat.label}
+                className="text-center bg-secondary/30 rounded-lg p-2 r41-stat-card"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + idx * 0.1, type: 'spring' as const, stiffness: 280, damping: 24 }}
+              >
+                <motion.div
+                  className="flex justify-center mb-1"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.5 + idx * 0.1, type: 'spring' as const, stiffness: 350, damping: 18 }}
+                >
+                  {stat.icon}
+                </motion.div>
                 <p className={`text-xs font-bold ${stat.color}`}>{stat.value}</p>
                 <p className="text-[8px] text-muted-foreground">{stat.label}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </CardContent>

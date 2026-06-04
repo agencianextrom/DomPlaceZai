@@ -234,7 +234,7 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
           }
         >
           <div className="relative">
-            <div className="h-10 w-10 rounded-full bg-amber-500 flex items-center justify-center shadow-lg border-2 border-white">
+            <div className="h-10 w-10 rounded-full bg-amber-500 flex items-center justify-center shadow-lg border-2 border-white r39-vehicle-breathe">
               <Truck className="h-5 w-5 text-white" />
             </div>
             <motion.div
@@ -244,9 +244,14 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
             />
             {/* Pulse ring */}
             <motion.div
-              className="absolute inset-0 rounded-full border-2 border-amber-400"
+              className="absolute inset-0 rounded-full border-2 border-amber-400 r39-vehicle-pulse-ring"
               animate={{ scale: [1, 1.8], opacity: [0.6, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
+            />
+            <motion.div
+              className="absolute -inset-2 rounded-full border border-amber-300/40 r39-vehicle-pulse-ring-outer"
+              animate={{ scale: [1, 2.2], opacity: [0.4, 0] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
             />
           </div>
         </motion.div>
@@ -286,7 +291,7 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
           </div>
           {/* R39: ETA with gradient text + scale pulse */}
           <motion.p
-            className="font-bold text-sm r39-eta-gradient"
+            className="font-bold text-sm r39-eta-gradient r39-eta-flip"
             key={effectiveEtaText}
             initial={{ y: 8, opacity: 0, scale: 0.9 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
@@ -330,7 +335,7 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
 
       {/* Animated route line — gradient dashed line that draws as steps complete */}
       <div className="relative mx-4 -mt-1">
-        <svg width="100%" height="40" viewBox="0 0 400 40" preserveAspectRatio="none" className="overflow-visible">
+        <svg width="100%" height="40" viewBox="0 0 400 40" preserveAspectRatio="none" className="overflow-visible r39-route-svg">
           {/* Background dashed track */}
           <line x1="40" y1="20" x2="360" y2="20" strokeDasharray="8 6" strokeWidth="2" className="stroke-border/60" />
           {/* Store dot */}
@@ -346,7 +351,8 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
             y2="20"
             strokeDasharray="8 6"
             strokeWidth="2.5"
-            className="stroke-emerald-500"
+            className="stroke-emerald-500 r39-route-path-draw"
+            style={{ filter: 'drop-shadow(0 0 4px rgba(16,185,129,0.4))' }}
             animate={{
               x2: 40 + (320 * progressPercent / 100),
             }}
@@ -394,7 +400,7 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
         transition={{ delay: 0.2 }}
       >
         <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/60 via-emerald-500/40 to-cyan-500/60 animate-[spin_6s_linear_infinite] blur-[1px]" style={{ margin: -1 }} />
-        <Card className="border-0 rounded-[10px] overflow-hidden r39-driver-glass">
+        <Card className="border-0 rounded-[10px] overflow-hidden r39-driver-glass r39-driver-card-enhanced">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               {/* R39: Avatar with animated gradient ring */}
@@ -469,7 +475,7 @@ export function DeliveryTracker({ orderNumber, storeName, status, estimatedTime,
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <Card className="r39-step-glow">
+        <Card className="r39-step-glow r39-step-gradient-card">
           <CardContent className="p-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-sm">Acompanhamento em tempo real</h3>

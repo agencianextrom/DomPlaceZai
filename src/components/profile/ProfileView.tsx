@@ -21,6 +21,7 @@ import { motion } from 'framer-motion'
 import { formatBRL } from '@/components/product/ProductCard'
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
 import { LoyaltyHistory } from './LoyaltyHistory'
+import { FamilyAccountManager } from './FamilyAccountManager'
 import { LoyaltyTier } from './LoyaltyTier'
 import { LoyaltyCard } from './LoyaltyCard'
 import { AchievementsPanel } from './AchievementsPanel'
@@ -120,6 +121,7 @@ const menuItems = [
   { id: 'favorites', icon: Heart, label: 'Favoritos', desc: 'Lojas e produtos favoritos' },
   { id: 'orders', icon: ClipboardList, label: 'Pedidos', desc: 'Histórico de pedidos' },
   { id: 'loyalty', icon: Award, label: 'Programa de Fidelidade', desc: 'Pontos e recompensas' },
+  { id: 'family', icon: Users, label: 'Conta Familiar', desc: 'Compartilhe com a família' },
   { id: 'notifications', icon: BellRing, label: 'Notificações', desc: 'Central de notificações' },
   { id: 'shopping-lists', icon: ListChecks, label: 'Listas de Compras', desc: 'Organize suas compras' },
   { id: 'referral', icon: Users, label: 'Indique Amigos', desc: 'Ganhe com indicações' },
@@ -252,6 +254,20 @@ export function ProfileView() {
           <h1 className="text-lg font-bold">Programa de Fidelidade</h1>
         </div>
         <LoyaltyHistory />
+      </div>
+    )
+  }
+
+  if (activeSection === 'family') {
+    return (
+      <div className="min-h-screen p-4 pb-24">
+        <div className="flex items-center gap-3 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+            <ChevronRight className="h-5 w-5 rotate-180" />
+          </Button>
+          <h1 className="text-lg font-bold">Conta Familiar</h1>
+        </div>
+        <FamilyAccountManager />
       </div>
     )
   }

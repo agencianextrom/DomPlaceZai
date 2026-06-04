@@ -18101,4 +18101,2654 @@
     box-shadow: 0 0 6px rgba(52, 211, 153, 0.6);
   }
 
-} /* end @media prefers-reduced-motion: no-preference Round 40b r40-smart-notifications classes */
+
+  /* ================================================
+     Round 41 — LoyaltyWidget Enhancements (r41- prefix)
+     ================================================ */
+
+  /* ---- r41-points-gradient: animated gradient text for points counter ---- */
+  @keyframes r41-points-gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .r41-points-gradient {
+    background: linear-gradient(90deg, #ffffff 0%, #fde68a 25%, #ffffff 50%, #a7f3d0 75%, #ffffff 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r41-points-gradient-shift 4s ease-in-out infinite;
+  }
+
+  /* ---- r41-tier-badge-border: rotating conic-gradient border for tier badge ---- */
+  @keyframes r41-badge-border-rotate {
+    0% { --r41-badge-angle: 0deg; }
+    100% { --r41-badge-angle: 360deg; }
+  }
+  @keyframes r41-badge-border-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .r41-tier-badge-border {
+    position: relative;
+    overflow: visible;
+  }
+  .r41-tier-badge-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--r41-badge-angle, 0deg),
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 215, 0, 0.7),
+      rgba(255, 255, 255, 0.3),
+      rgba(16, 185, 129, 0.6),
+      rgba(255, 255, 255, 0.5)
+    );
+    z-index: -1;
+    animation: r41-badge-border-spin 3s linear infinite;
+    border-radius: inherit;
+  }
+
+  /* ---- r41-sparkle-dot: glowing sparkle particle ---- */
+  .r41-sparkle-dot {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 215, 0, 0.7) 50%, transparent 70%);
+    box-shadow: 0 0 4px rgba(255, 215, 0, 0.6);
+  }
+
+  /* ---- r41-progress-shimmer-overlay: shimmer sweep over progress fill ---- */
+  @keyframes r41-progress-shimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+  .r41-progress-shimmer-overlay {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 40%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0.15) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    animation: r41-progress-shimmer 2.5s ease-in-out infinite;
+  }
+
+  /* ---- r41-indicator-glow-trail: soft glow trail behind progress indicator ---- */
+  .r41-indicator-glow-trail {
+    pointer-events: none;
+    z-index: 5;
+    background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+    opacity: 0.7;
+  }
+
+  /* ---- r41-btn-shimmer-enhanced: enhanced shimmer sweep on check-in button ---- */
+  @keyframes r41-btn-shimmer-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+  .r41-btn-shimmer-enhanced {
+    position: relative;
+    overflow: hidden;
+  }
+  .r41-btn-shimmer-enhanced::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 30%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.08) 70%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    animation: r41-btn-shimmer-sweep 3s ease-in-out infinite;
+  }
+  .dark .r41-btn-shimmer-enhanced::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 30%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.04) 70%,
+      transparent 100%
+    );
+  }
+
+  /* ---- r41-checkin-btn-glow: gradient pulse glow wrapper for check-in ---- */
+  .r41-checkin-btn-glow {
+    border-radius: 0.75rem;
+  }
+
+  /* ---- r41-chart-bar-normal: gradient fill for normal chart bars ---- */
+  .r41-chart-bar-normal {
+    background: linear-gradient(to top, rgba(16, 185, 129, 0.5), rgba(16, 185, 129, 0.85));
+    transition: filter 0.2s ease;
+  }
+  .r41-chart-bar-normal:hover {
+    filter: brightness(1.2);
+  }
+  .dark .r41-chart-bar-normal {
+    background: linear-gradient(to top, rgba(52, 211, 153, 0.4), rgba(52, 211, 153, 0.75));
+  }
+
+  /* ---- r41-chart-bar-peak: enhanced gradient fill for highest bar ---- */
+  .r41-chart-bar-peak {
+    background: linear-gradient(to top, rgba(16, 185, 129, 0.7), rgba(6, 182, 212, 0.95));
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.3);
+    transition: filter 0.2s ease;
+  }
+  .r41-chart-bar-peak:hover {
+    filter: brightness(1.25);
+  }
+  .dark .r41-chart-bar-peak {
+    background: linear-gradient(to top, rgba(52, 211, 153, 0.6), rgba(34, 211, 238, 0.9));
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+  }
+
+  /* ---- r41-chart-tooltip: tooltip styling for chart bars ---- */
+  .r41-chart-tooltip {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  .dark .r41-chart-tooltip {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ---- r41-stat-card: gradient background on hover for quick stats ---- */
+  .r41-stat-card {
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .r41-stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(6, 182, 212, 0.04) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .r41-stat-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+  }
+  .r41-stat-card:hover::before {
+    opacity: 1;
+  }
+  .dark .r41-stat-card:hover {
+    box-shadow: 0 2px 8px rgba(52, 211, 153, 0.15);
+  }
+  .dark .r41-stat-card::before {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.08) 0%, rgba(34, 211, 238, 0.06) 100%);
+  }
+
+  /* ---- r41-reward-card-shine: animated shine sweep on next reward card ---- */
+  @keyframes r41-reward-shine {
+    0% { left: -75%; }
+    100% { left: 125%; }
+  }
+  .r41-reward-card-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .r41-reward-card-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(16, 185, 129, 0.06) 40%,
+      rgba(16, 185, 129, 0.12) 50%,
+      rgba(16, 185, 129, 0.06) 60%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 2;
+    animation: r41-reward-shine 3.5s ease-in-out infinite;
+  }
+  .dark .r41-reward-card-shine::before {
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(52, 211, 153, 0.04) 40%,
+      rgba(52, 211, 153, 0.08) 50%,
+      rgba(52, 211, 153, 0.04) 60%,
+      transparent 100%
+    );
+  }
+
+  /* ---- r41-reward-glow-pulse: enhanced glow pulse on reward card ---- */
+  @keyframes r41-reward-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    50% { box-shadow: 0 0 12px 2px rgba(16, 185, 129, 0.12), 0 0 4px rgba(16, 185, 129, 0.08); }
+  }
+
+} /* end @media prefers-reduced-motion: no-preference Round 40b r40-smart-notifications + r41 LoyaltyWidget classes */
+
+/* ==============================
+   ROUND 41 — PRODUCT CARD ENHANCED ANIMATIONS (prefers-reduced-motion safe)
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── 1. Card 3D Tilt + Gradient Shadow + Border Glow ── */
+  @keyframes r41-card-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(16,185,129,0.08), 0 0 20px rgba(16,185,129,0.04); }
+    50% { box-shadow: 0 0 14px rgba(16,185,129,0.18), 0 0 32px rgba(16,185,129,0.08); }
+  }
+  @keyframes r41-card-glow-dark {
+    0%, 100% { box-shadow: 0 0 8px rgba(52,211,153,0.1), 0 0 20px rgba(52,211,153,0.06); }
+    50% { box-shadow: 0 0 14px rgba(52,211,153,0.22), 0 0 32px rgba(52,211,153,0.1); }
+  }
+  .r41-card-3d {
+    perspective: 800px;
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  }
+  .r41-card-3d:hover {
+    animation: r41-card-glow 2.5s ease-in-out infinite;
+  }
+  .dark .r41-card-3d:hover {
+    animation-name: r41-card-glow-dark;
+  }
+  .r41-card-3d::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.5), rgba(245,158,11,0.3), rgba(16,185,129,0.5));
+    background-size: 200% 200%;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .r41-card-3d:hover::after {
+    opacity: 1;
+  }
+
+  /* ── 2. Image Area — Gradient Overlay + Zoom ── */
+  .r41-img-area {
+    position: relative;
+  }
+  .r41-img-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0,0,0,0.15) 50%,
+      rgba(0,0,0,0.5) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
+  }
+  .r41-img-area:hover::before {
+    opacity: 1;
+  }
+  .r41-img-zoom {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .r41-img-area:hover .r41-img-zoom {
+    transform: scale(1.08) !important;
+  }
+
+  /* "Ver Detalhes" label — CSS-only fade-in at bottom of image */
+  @keyframes r41-detalhes-fade {
+    0%, 40% { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  .r41-detalhes-label {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    z-index: 2;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 9999px;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .r41-img-area:hover .r41-detalhes-label {
+    opacity: 1;
+    animation: r41-detalhes-fade 0.5s ease-out forwards;
+  }
+
+  /* "Ver Produto" overlay pill — enhanced glow on hover */
+  .r41-ver-detalhes {
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+  }
+  .r41-ver-detalhes:hover {
+    box-shadow: 0 0 16px rgba(255,255,255,0.25);
+  }
+
+  /* ── 3. Price Display — Animated Gradient + Strikethrough ── */
+  @keyframes r41-price-gradient-shift {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+  .r41-price-gradient {
+    background: linear-gradient(
+      90deg,
+      #059669 0%,
+      #d97706 25%,
+      #059669 50%,
+      #d97706 75%,
+      #059669 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r41-price-gradient-shift 3s linear infinite;
+  }
+  .dark .r41-price-gradient {
+    background: linear-gradient(
+      90deg,
+      #34d399 0%,
+      #fbbf24 25%,
+      #34d399 50%,
+      #fbbf24 75%,
+      #34d399 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Strikethrough animation */
+  @keyframes r41-strike-draw {
+    0% { clip-path: inset(0 100% 0 0); }
+    100% { clip-path: inset(0 0 0 0); }
+  }
+  .r41-price-strike {
+    animation: r41-strike-draw 0.6s ease-out forwards;
+  }
+
+  /* ── 4. Add to Cart Button — Shimmer + Check Pop + Pulse ── */
+  @keyframes r41-btn-shimmer-sweep {
+    0% { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(250%) skewX(-15deg); }
+  }
+  .r41-btn-shimmer {
+    position: relative;
+    overflow: hidden;
+    border-radius: inherit;
+  }
+  .r41-btn-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.3) 40%,
+      rgba(255,255,255,0.5) 50%,
+      rgba(255,255,255,0.3) 60%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+  .r41-btn-shimmer:hover::before {
+    animation: r41-btn-shimmer-sweep 0.8s ease-out;
+  }
+
+  @keyframes r41-check-pop {
+    0% { transform: scale(0) rotate(-45deg); }
+    60% { transform: scale(1.3) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .r41-check-pop {
+    animation: r41-check-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes r41-btn-pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+    50% { box-shadow: 0 0 12px 2px rgba(16,185,129,0.2), 0 0 4px rgba(16,185,129,0.3); }
+  }
+  .r41-btn-pulse:hover {
+    animation: r41-btn-pulse-glow 1.5s ease-in-out infinite;
+  }
+
+  /* ── 5. Badge System ── */
+
+  /* Novo badge shimmer */
+  @keyframes r41-novo-shimmer-sweep {
+    0% { transform: translateX(-100%) skewX(-12deg); }
+    100% { transform: translateX(200%) skewX(-12deg); }
+  }
+  .r41-badge-novo {
+    position: relative;
+    overflow: hidden;
+  }
+  .r41-badge-novo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.35) 45%,
+      rgba(255,255,255,0.5) 50%,
+      rgba(255,255,255,0.35) 55%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+    animation: r41-novo-shimmer-sweep 2.5s ease-in-out infinite;
+  }
+
+  /* Oferta badge pulse glow */
+  @keyframes r41-oferta-glow {
+    0%, 100% { box-shadow: 0 0 4px rgba(239,68,68,0.2), 0 0 8px rgba(239,68,68,0.1); }
+    50% { box-shadow: 0 0 10px rgba(239,68,68,0.35), 0 0 20px rgba(239,68,68,0.15); }
+  }
+  .r41-badge-oferta {
+    animation: r41-oferta-glow 2s ease-in-out infinite;
+  }
+
+  /* Eco leaf badge — subtle green pulse */
+  @keyframes r41-eco-pulse {
+    0%, 100% { box-shadow: 0 0 4px rgba(5,150,105,0.2); }
+    50% { box-shadow: 0 0 10px rgba(5,150,105,0.35), 0 0 16px rgba(5,150,105,0.12); }
+  }
+  .r41-badge-eco {
+    animation: r41-eco-pulse 2.5s ease-in-out infinite;
+    transition: transform 0.2s ease;
+  }
+  .r41-badge-eco:hover {
+    transform: scale(1.1);
+  }
+
+  /* ── 6. Quick Actions — Slide-in Bar with Stagger ── */
+  @keyframes r41-quick-bar-slide {
+    0% { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .r41-quick-bar {
+    animation: r41-quick-bar-slide 0.35s ease-out forwards;
+  }
+
+  /* Individual quick action items with stagger */
+  @keyframes r41-quick-item-pop {
+    0% { opacity: 0; transform: scale(0.5) translateY(4px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .r41-quick-item {
+    opacity: 0;
+    animation: r41-quick-item-pop 0.3s ease-out forwards;
+    animation-delay: inherit;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .r41-quick-item:hover {
+    box-shadow: 0 0 10px rgba(255,255,255,0.15);
+    background-color: rgba(255,255,255,0.12);
+  }
+
+  /* ── 7. Rating Stars — Glow Pulse + Wiggle ── */
+  @keyframes r41-star-glow-pulse {
+    0%, 100% { filter: drop-shadow(0 0 2px rgba(245,158,11,0.3)); }
+    50% { filter: drop-shadow(0 0 6px rgba(245,158,11,0.6)); }
+  }
+  .r41-stars-glow {
+    animation: r41-star-glow-pulse 2.8s ease-in-out infinite;
+  }
+  .r41-stars-glow:hover {
+    animation-name: r41-star-wiggle;
+    animation-duration: 0.6s;
+    animation-timing-function: ease-in-out;
+  }
+  @keyframes r41-star-wiggle {
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(-4deg); }
+    40% { transform: rotate(4deg); }
+    60% { transform: rotate(-3deg); }
+    80% { transform: rotate(3deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+} /* end @media prefers-reduced-motion: no-preference Round 41 r41-product-card classes */
+
+/* ==============================
+   ROUND 41B — HERO BANNER ENHANCED ANIMATIONS (prefers-reduced-motion safe)
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ---- r41-hero-bg-morph: Enhanced background gradient with multiple color shifts and parallax depth ---- */
+  @keyframes r41-bg-morph {
+    0%   { background-position: 0% 50%; filter: hue-rotate(0deg) brightness(1); }
+    20%  { background-position: 80% 20%; filter: hue-rotate(15deg) brightness(1.05); }
+    40%  { background-position: 100% 80%; filter: hue-rotate(-10deg) brightness(0.95); }
+    60%  { background-position: 30% 100%; filter: hue-rotate(25deg) brightness(1.08); }
+    80%  { background-position: 60% 0%; filter: hue-rotate(-5deg) brightness(1.02); }
+    100% { background-position: 0% 50%; filter: hue-rotate(0deg) brightness(1); }
+  }
+  .r41-hero-bg-morph {
+    background-size: 400% 400% !important;
+    animation: r41-bg-morph 20s ease-in-out infinite;
+  }
+
+  /* ---- r41-hero-depth-gradient: Parallax-like depth gradient overlay ---- */
+  @keyframes r41-depth-shift {
+    0%   { opacity: 0.3; transform: translate(0, 0) scale(1); }
+    25%  { opacity: 0.5; transform: translate(-5%, 3%) scale(1.05); }
+    50%  { opacity: 0.2; transform: translate(3%, -2%) scale(0.98); }
+    75%  { opacity: 0.45; transform: translate(-2%, 5%) scale(1.03); }
+    100% { opacity: 0.3; transform: translate(0, 0) scale(1); }
+  }
+  .r41-hero-depth-gradient {
+    background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.08) 0%,
+      rgba(16,185,129,0.06) 25%,
+      rgba(245,158,11,0.05) 50%,
+      rgba(139,92,246,0.04) 75%,
+      rgba(255,255,255,0.08) 100%
+    );
+    background-size: 300% 300%;
+    animation: r41-depth-shift 12s ease-in-out infinite;
+  }
+
+  /* ---- r41-hero-title-enhanced: Gradient text shimmer on title ---- */
+  @keyframes r41-title-shimmer {
+    0%   { background-position: -200% center; filter: drop-shadow(0 0 8px rgba(255,255,255,0.3)); }
+    50%  { background-position: 200% center; filter: drop-shadow(0 0 16px rgba(255,255,255,0.6)); }
+    100% { background-position: -200% center; filter: drop-shadow(0 0 8px rgba(255,255,255,0.3)); }
+  }
+  .r41-hero-title-enhanced {
+    position: relative;
+  }
+  .r41-hero-title-enhanced::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.15) 30%,
+      rgba(255,255,255,0.3) 50%,
+      rgba(255,255,255,0.15) 70%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: r41-title-shimmer 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* ---- r41-hero-typewriter-target: Typewriter effect on subtitle ---- */
+  .r41-hero-typewriter-target {
+    overflow: hidden;
+    position: relative;
+  }
+  .r41-hero-typewriter-text {
+    display: inline;
+  }
+
+  /* Typewriter cursor blink */
+  @keyframes r41-cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .r41-hero-typewriter-cursor {
+    display: inline-block;
+    animation: r41-cursor-blink 0.8s step-end infinite;
+    font-weight: 100;
+    color: rgba(255,255,255,0.7);
+    margin-left: 1px;
+  }
+
+  /* ---- r41-hero-cta-primary: Enhanced shimmer sweep + gradient glow pulse ---- */
+  @keyframes r41-cta-glow-pulse {
+    0%, 100% { opacity: 0; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+  }
+  .r41-hero-cta-glow {
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgba(16,185,129,0.25) 0%,
+      rgba(255,255,255,0.1) 50%,
+      rgba(16,185,129,0.25) 100%
+    );
+    animation: r41-cta-glow-pulse 2.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .r41-hero-cta-primary:hover .r41-hero-cta-glow {
+    animation-duration: 1.2s;
+    opacity: 1;
+  }
+
+  /* ---- r41-hero-cta-secondary: Shimmer sweep for secondary button ---- */
+  @keyframes r41-cta-sweep {
+    0% { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(300%) skewX(-15deg); }
+  }
+  .r41-hero-cta-shimmer-sweep {
+    border-radius: inherit;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.12) 30%,
+      rgba(255,255,255,0.25) 50%,
+      rgba(255,255,255,0.12) 70%,
+      transparent 100%
+    );
+    animation: r41-cta-sweep 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .r41-hero-cta-secondary:hover .r41-hero-cta-shimmer-sweep {
+    animation-duration: 1s;
+  }
+
+  /* ---- r41-hero-search-wrap: Search bar container ---- */
+  .r41-hero-search-wrap {
+    position: relative;
+    width: 100%;
+    height: 42px;
+  }
+
+  /* ---- r41-hero-search-input: Styled search input ---- */
+  @keyframes r41-search-shadow-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0), 0 2px 8px rgba(0,0,0,0.15); }
+    50% { box-shadow: 0 0 0 3px rgba(16,185,129,0.15), 0 0 16px rgba(16,185,129,0.1), 0 2px 8px rgba(0,0,0,0.15); }
+  }
+  .r41-hero-search-input {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 42px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 0 40px 0 16px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.35s ease, background 0.35s ease;
+  }
+  .r41-hero-search-input::placeholder {
+    color: rgba(255,255,255,0.5);
+    transition: opacity 0.25s ease;
+  }
+  .r41-hero-search-input:focus::placeholder {
+    opacity: 0;
+  }
+  .r41-hero-search-input:focus {
+    border-color: rgba(16,185,129,0.5);
+    background: rgba(255,255,255,0.18);
+    animation: r41-search-shadow-pulse 2s ease-in-out infinite;
+  }
+  .dark .r41-hero-search-input {
+    background: rgba(0,0,0,0.2);
+    border-color: rgba(255,255,255,0.12);
+  }
+  .dark .r41-hero-search-input:focus {
+    border-color: rgba(52,211,153,0.5);
+    background: rgba(0,0,0,0.3);
+  }
+
+  /* ---- r41-hero-search-float-label: Floating label that rises on focus ---- */
+  .r41-hero-search-float-label {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: rgba(255,255,255,0.4);
+    pointer-events: none;
+    z-index: 3;
+    transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    opacity: 0;
+  }
+  .r41-hero-search-wrap:focus-within .r41-hero-search-float-label {
+    top: -8px;
+    left: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(16,185,129,0.9);
+    opacity: 1;
+    background: rgba(0,0,0,0.25);
+    padding: 0 6px;
+    border-radius: 4px;
+  }
+  .dark .r41-hero-search-wrap:focus-within .r41-hero-search-float-label {
+    color: rgba(52,211,153,0.9);
+    background: rgba(0,0,0,0.4);
+  }
+
+  /* ---- r41-hero-search-icon: Search icon inside input ---- */
+  .r41-hero-search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    z-index: 3;
+    opacity: 0.6;
+    transition: opacity 0.25s ease;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+    pointer-events: none;
+  }
+  .r41-hero-search-wrap:focus-within .r41-hero-search-icon {
+    opacity: 1;
+  }
+
+  /* ---- r41-hero-search-glow-border: Gradient border expansion on focus ---- */
+  @keyframes r41-border-rotate {
+    0%   { transform: translate(-50%,-50%) rotate(0deg); }
+    100% { transform: translate(-50%,-50%) rotate(360deg); }
+  }
+  .r41-hero-search-glow-border {
+    position: absolute;
+    inset: -2px;
+    border-radius: 14px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    overflow: hidden;
+  }
+  .r41-hero-search-glow-border::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+      from 0deg,
+      rgba(16,185,129,0.6),
+      rgba(245,158,11,0.4),
+      rgba(139,92,246,0.4),
+      rgba(6,182,212,0.4),
+      rgba(16,185,129,0.6)
+    );
+    animation: r41-border-rotate 3s linear infinite;
+  }
+  .r41-hero-search-glow-border::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.7);
+  }
+  .r41-hero-search-wrap:focus-within .r41-hero-search-glow-border {
+    opacity: 1;
+  }
+
+  /* ---- r41-hero-trust-badge: Trust badge container with stagger entrance ---- */
+  .r41-hero-trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+  }
+  .r41-hero-trust-badge:hover {
+    background: rgba(255,255,255,0.18);
+    box-shadow: 0 0 12px rgba(16,185,129,0.25), 0 0 24px rgba(16,185,129,0.08);
+    border-color: rgba(16,185,129,0.3);
+  }
+
+  /* ---- r41-hero-trust-icon: Icon wiggle animation ---- */
+  @keyframes r41-icon-wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    15% { transform: rotate(8deg); }
+    30% { transform: rotate(-6deg); }
+    45% { transform: rotate(4deg); }
+    60% { transform: rotate(-2deg); }
+    75% { transform: rotate(1deg); }
+  }
+  .r41-hero-trust-icon {
+    display: inline-flex;
+    font-size: 14px;
+    line-height: 1;
+    animation: r41-icon-wiggle 3s ease-in-out infinite;
+    animation-delay: 0s;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+  }
+  .r41-hero-trust-badge:hover .r41-hero-trust-icon {
+    animation-duration: 0.8s;
+    filter: drop-shadow(0 0 6px rgba(16,185,129,0.5));
+  }
+
+} /* end @media prefers-reduced-motion: no-preference Round 41b r41-hero-b classes */
+
+/* ==============================
+   R39 — Product Recall Alerts
+   ============================== */
+
+/* Recall container layout */
+.r39-recall-container {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+/* Individual recall card */
+.r39-recall-card {
+  transition: box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+/* Acknowledge button styling */
+.r39-acknowledge-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.r39-acknowledge-btn:hover {
+  border-color: oklch(0.45 0.1 155 / 0.5);
+  box-shadow: 0 2px 8px oklch(0.45 0.1 155 / 0.12);
+}
+
+.r39-acknowledge-btn:active {
+  transform: scale(0.97);
+}
+
+/* Filter pills */
+.r39-filter-pill {
+  transition: all 0.2s ease;
+}
+
+.r39-filter-pill:active {
+  transform: scale(0.97);
+}
+
+/* Unread badge with pulse */
+.r39-badge-pulse {
+  animation: r39-badge-pulse-anim 2s ease-in-out infinite;
+}
+
+@keyframes r39-badge-pulse-anim {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
+}
+
+/* Empty state floating icon */
+.r39-empty-state {
+  min-height: 200px;
+}
+
+/* Critical alert glow on card */
+.r39-critical-alert {
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  transition: box-shadow 0.3s ease;
+}
+
+.r39-critical-alert:hover {
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.08);
+}
+
+/* ==============================
+   ROUND 39 – SMART SHOPPING LIST (r39-*)
+   ============================== */
+
+/* Container wrapper */
+.r39-smart-list-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Category card: rounded corners, subtle background, colored left border */
+.r39-category-card {
+  background: oklch(1 0 0 / 0.35);
+  border-radius: 12px;
+  border-left-width: 4px;
+  border-top: 1px solid oklch(0.92 0.015 120);
+  border-right: 1px solid oklch(0.92 0.015 120);
+  border-bottom: 1px solid oklch(0.92 0.015 120);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.r39-category-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.06);
+}
+.dark .r39-category-card {
+  background: oklch(0.22 0.02 150 / 0.5);
+  border-top-color: oklch(0.30 0.02 150);
+  border-right-color: oklch(0.30 0.02 150);
+  border-bottom-color: oklch(0.30 0.02 150);
+}
+.dark .r39-category-card:hover {
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.2);
+}
+
+/* Item row inside a category */
+.r39-item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+.r39-item-row:hover {
+  background: oklch(0.96 0.01 120 / 0.5);
+}
+.dark .r39-item-row:hover {
+  background: oklch(0.28 0.02 150 / 0.5);
+}
+
+/* Item row when it's been added to cart */
+.r39-item-added {
+  background: oklch(0.45 0.1 155 / 0.05);
+}
+.r39-item-added:hover {
+  background: oklch(0.45 0.1 155 / 0.08);
+}
+.dark .r39-item-added {
+  background: oklch(0.55 0.12 155 / 0.08);
+}
+.dark .r39-item-added:hover {
+  background: oklch(0.55 0.12 155 / 0.12);
+}
+
+/* Progress bar glow effect */
+.r39-progress-bar-glow {
+  box-shadow: 0 0 8px oklch(0.45 0.1 155 / 0.35), 0 0 16px oklch(0.45 0.1 155 / 0.15);
+}
+.dark .r39-progress-bar-glow {
+  box-shadow: 0 0 8px oklch(0.55 0.12 155 / 0.3), 0 0 16px oklch(0.55 0.12 155 / 0.12);
+}
+
+/* Empty state animated cart icon */
+.r39-empty-cart-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: oklch(0.96 0.01 120);
+}
+.dark .r39-empty-cart-icon {
+  background: oklch(0.25 0.02 150);
+}
+
+/* Badge float micro-animation */
+@keyframes r39-badge-float-anim {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+.r39-badge-float {
+  animation: r39-badge-float-anim 2.5s ease-in-out infinite;
+}
+
+/* ==============================
+   R39 - CASHBACK TRACKER
+   ============================== */
+
+/* Container */
+.r39-cashback-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Header */
+.r39-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+.r39-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, rgba(16,185,129,1), rgba(52,211,153,1), rgba(110,231,183,1));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.r39-subtitle {
+  font-size: 0.75rem;
+  color: rgba(100,116,139,1);
+  margin-top: 0.25rem;
+}
+.dark .r39-subtitle {
+  color: rgba(148,163,184,1);
+}
+
+/* Balance Card */
+.r39-balance-card {
+  background: linear-gradient(135deg, rgba(6,78,59,1), rgba(4,120,87,1), rgba(5,150,105,1));
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(4,120,87,0.25), 0 2px 8px rgba(0,0,0,0.1);
+}
+.dark .r39-balance-card {
+  background: linear-gradient(135deg, rgba(6,78,59,0.9), rgba(4,120,87,0.8), rgba(5,150,105,0.85));
+  box-shadow: 0 8px 32px rgba(4,120,87,0.15), 0 2px 8px rgba(0,0,0,0.3);
+}
+.r39-balance-gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(110,231,183,0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(52,211,153,0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+.r39-balance-label {
+  font-size: 0.75rem;
+  color: rgba(167,243,208,1);
+  font-weight: 500;
+}
+.r39-balance-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+/* Coin value */
+.r39-coin-value {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: rgba(255,255,255,1);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* Ring section */
+.r39-ring-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.r39-ring-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.r39-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Progress bar */
+.r39-progress-track {
+  height: 8px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.r39-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(167,243,208,1), rgba(110,231,183,1));
+  border-radius: 9999px;
+  box-shadow: 0 0 8px rgba(110,231,183,0.5);
+}
+
+/* Redeem button */
+.r39-redeem-btn {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(209,250,229,0.95)) !important;
+  color: rgba(6,78,59,1) !important;
+  font-weight: 700 !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  transition: all 0.25s ease;
+}
+.r39-redeem-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(4,120,87,0.25);
+  transform: translateY(-1px);
+}
+.r39-redeem-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.dark .r39-redeem-btn {
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(167,243,208,0.15)) !important;
+  color: rgba(167,243,208,1) !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+.dark .r39-redeem-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(4,120,87,0.2);
+}
+
+/* Stat cards */
+.r39-stat-card {
+  background: rgba(241,245,249,1);
+  border: 1px solid rgba(226,232,240,1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r39-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.dark .r39-stat-card {
+  background: rgba(30,41,59,0.5);
+  border-color: rgba(51,65,85,0.5);
+}
+.dark .r39-stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.r39-stat-earned {
+  border-left: 3px solid rgba(16,185,129,1);
+}
+.r39-stat-pending {
+  border-left: 3px solid rgba(245,158,11,1);
+}
+.r39-stat-redeemed {
+  border-left: 3px solid rgba(99,102,241,1);
+}
+
+/* Chart container */
+.r39-chart-container {
+  padding: 0.5rem 0;
+}
+.r39-chart-bar {
+  width: 100%;
+  min-height: 4px;
+  border-radius: 4px 4px 1px 1px;
+  background: linear-gradient(180deg, rgba(16,185,129,1), rgba(52,211,153,0.7));
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.r39-chart-bar:hover {
+  background: linear-gradient(180deg, rgba(5,150,105,1), rgba(16,185,129,0.9));
+}
+.dark .r39-chart-bar {
+  background: linear-gradient(180deg, rgba(52,211,153,1), rgba(110,231,183,0.6));
+}
+.dark .r39-chart-bar:hover {
+  background: linear-gradient(180deg, rgba(16,185,129,1), rgba(52,211,153,0.8));
+}
+.r39-chart-label {
+  font-size: 0.625rem;
+  color: rgba(100,116,139,1);
+  line-height: 1;
+}
+.dark .r39-chart-label {
+  color: rgba(148,163,184,1);
+}
+
+/* Rate chips */
+.r39-rate-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.625rem;
+  border-radius: 9999px;
+  background: rgba(209,250,229,1);
+  border: 1px solid rgba(167,243,208,0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+}
+.r39-rate-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(16,185,129,0.12);
+}
+.dark .r39-rate-chip {
+  background: rgba(6,78,59,0.3);
+  border-color: rgba(52,211,153,0.25);
+}
+.dark .r39-rate-chip:hover {
+  box-shadow: 0 2px 8px rgba(16,185,129,0.15);
+}
+
+/* Transaction items */
+.r39-transaction-item {
+  transition: transform 0.2s ease;
+}
+.r39-transaction-item:hover {
+  transform: translateX(2px);
+}
+.r39-tx-amount {
+  white-space: nowrap;
+}
+
+/* Sparkle container */
+.r39-sparkle-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 20;
+}
+.r39-sparkle-particle {
+  position: absolute;
+  color: rgba(253,224,71,1);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Transaction list custom scrollbar */
+.r39-transaction-list::-webkit-scrollbar {
+  width: 3px;
+}
+.r39-transaction-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.r39-transaction-list::-webkit-scrollbar-thumb {
+  background: rgba(16,185,129,0.2);
+  border-radius: 9999px;
+}
+
+/* ==========================================================================
+   Round 41: Footer Enhancement Animations (prefers-reduced-motion safe)
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── r41-brand-shimmer: Enhanced multi-hue gradient text shimmer for brand name ── */
+  @keyframes r41-brand-shimmer {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+  .r41-brand-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(16, 185, 129, 1) 0%,
+      rgba(245, 158, 11, 0.85) 15%,
+      rgba(52, 211, 153, 1) 30%,
+      rgba(251, 191, 36, 0.95) 45%,
+      rgba(20, 184, 166, 1) 60%,
+      rgba(16, 185, 129, 1) 75%,
+      rgba(245, 158, 11, 0.9) 90%,
+      rgba(16, 185, 129, 1) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r41-brand-shimmer 3s linear infinite;
+  }
+  .dark .r41-brand-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(52, 211, 153, 1) 0%,
+      rgba(253, 230, 138, 0.9) 15%,
+      rgba(110, 231, 183, 1) 30%,
+      rgba(254, 243, 199, 0.95) 45%,
+      rgba(94, 234, 212, 1) 60%,
+      rgba(52, 211, 153, 1) 75%,
+      rgba(253, 230, 138, 0.9) 90%,
+      rgba(52, 211, 153, 1) 100%
+    );
+    background-size: 200% auto;
+  }
+
+  /* ── r41-logo-glow: Enhanced drop-shadow glow on logo image ── */
+  .r41-logo-glow {
+    filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.35));
+    transition: filter 0.4s ease, transform 0.4s ease;
+  }
+  .r41-logo-glow:hover {
+    filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.5)) drop-shadow(0 0 28px rgba(16, 185, 129, 0.2));
+    transform: scale(1.05);
+  }
+
+  /* ── r41-link-hover: Enhanced underline slide-in from center ── */
+  @keyframes r41-link-underline-slide {
+    0% { width: 0; left: 50%; opacity: 0; }
+    100% { width: 100%; left: 0; opacity: 1; }
+  }
+  .r41-link-hover {
+    position: relative;
+    display: inline;
+  }
+  .r41-link-hover::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.8), rgba(245, 158, 11, 0.6), rgba(16, 185, 129, 0.8));
+    background-size: 200% 100%;
+    border-radius: 1px;
+    transition: none;
+    pointer-events: none;
+  }
+  .r41-link-hover:hover::after {
+    animation: r41-link-underline-slide 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .dark .r41-link-hover::after {
+    background: linear-gradient(90deg, rgba(52, 211, 153, 0.8), rgba(253, 230, 138, 0.6), rgba(52, 211, 153, 0.8));
+    background-size: 200% 100%;
+  }
+
+  /* ── r41-icon-bounce: Enhanced icon bounce on hover with rotation ── */
+  @keyframes r41-icon-bounce-anim {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    30% { transform: translateY(-3px) rotate(-8deg); }
+    50% { transform: translateY(-1px) rotate(4deg); }
+    70% { transform: translateY(-2px) rotate(-2deg); }
+  }
+  .r41-icon-bounce {
+    display: inline-block;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .r41-icon-bounce:hover {
+    animation: r41-icon-bounce-anim 0.5s ease forwards;
+  }
+
+  /* ── r41-social-icon: Enhanced hover with brand color glow ring + floating ── */
+  @keyframes r41-social-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+  .r41-social-icon {
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    animation: r41-social-float 4s ease-in-out infinite;
+  }
+  .r41-social-icon::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .r41-social-icon:hover {
+    transform: scale(1.15) translateY(-4px);
+  }
+  .r41-social-icon:hover::before {
+    opacity: 1;
+  }
+  .r41-social-icon-green:hover::before {
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+  .r41-social-icon-green:hover {
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.35);
+  }
+  .dark .r41-social-icon-green:hover {
+    box-shadow: 0 4px 24px rgba(34, 197, 94, 0.4);
+  }
+  .r41-social-icon-purple:hover::before {
+    border-color: rgba(168, 85, 247, 0.5);
+  }
+  .r41-social-icon-purple:hover {
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
+  }
+  .dark .r41-social-icon-purple:hover {
+    box-shadow: 0 4px 24px rgba(168, 85, 247, 0.4);
+  }
+  .r41-social-icon-blue:hover::before {
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+  .r41-social-icon-blue:hover {
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.35);
+  }
+  .dark .r41-social-icon-blue:hover {
+    box-shadow: 0 4px 24px rgba(59, 130, 246, 0.4);
+  }
+
+  /* ── r41-newsletter-input: Enhanced focus with gradient glow border ── */
+  @keyframes r41-input-glow-pulse {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2), 0 0 8px rgba(16, 185, 129, 0.08); }
+    50% { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35), 0 0 16px rgba(16, 185, 129, 0.15); }
+  }
+  .r41-newsletter-input {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  }
+  .r41-newsletter-input:focus {
+    border-color: rgba(16, 185, 129, 0.5);
+    animation: r41-input-glow-pulse 2s ease-in-out infinite;
+  }
+  .dark .r41-newsletter-input:focus {
+    border-color: rgba(52, 211, 153, 0.5);
+  }
+
+  /* ── r41-submit-btn: Enhanced submit button with sweeping shine ── */
+  @keyframes r41-submit-shine-sweep {
+    0% { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(200%) skewX(-15deg); }
+  }
+  .r41-submit-btn {
+    position: relative;
+    overflow: hidden;
+  }
+  .r41-submit-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 35%,
+      rgba(255, 255, 255, 0.35) 50%,
+      rgba(255, 255, 255, 0.2) 65%,
+      transparent 100%
+    );
+    animation: r41-submit-shine-sweep 3s ease-in-out infinite;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .dark .r41-submit-btn::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 35%,
+      rgba(255, 255, 255, 0.14) 50%,
+      rgba(255, 255, 255, 0.08) 65%,
+      transparent 100%
+    );
+  }
+
+  /* ── r41-payment-icon: Staggered entrance + hover lift ── */
+  @keyframes r41-payment-enter {
+    0% { opacity: 0; transform: translateY(8px) scale(0.92); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .r41-payment-icon {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  }
+  .r41-payment-icon:nth-child(1) { animation: r41-payment-enter 0.4s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .r41-payment-icon:nth-child(2) { animation: r41-payment-enter 0.4s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .r41-payment-icon:nth-child(3) { animation: r41-payment-enter 0.4s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .r41-payment-icon:nth-child(4) { animation: r41-payment-enter 0.4s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .r41-payment-icon:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15), 0 0 0 1px rgba(16, 185, 129, 0.1);
+  }
+  .dark .r41-payment-icon:hover {
+    box-shadow: 0 4px 16px rgba(52, 211, 153, 0.2), 0 0 0 1px rgba(52, 211, 153, 0.12);
+  }
+
+  /* ── r41-back-to-top: Enhanced gradient bg + pulse glow + bounce ── */
+  @keyframes r41-btt-pulse-glow {
+    0%, 100% { box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3), 0 0 20px rgba(16, 185, 129, 0.12); }
+    50% { box-shadow: 0 6px 24px rgba(16, 185, 129, 0.45), 0 0 36px rgba(16, 185, 129, 0.2); }
+  }
+  .r41-back-to-top {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.92), rgba(5, 150, 105, 0.96));
+    animation: r41-btt-pulse-glow 2.5s ease-in-out infinite;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+  }
+  .dark .r41-back-to-top {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.9), rgba(4, 120, 87, 0.95));
+  }
+
+  /* ── r41-gradient-line: Enhanced animated accent gradient line at footer top ── */
+  @keyframes r41-gradient-line-sweep {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+  .r41-gradient-line {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(16, 185, 129, 0.5) 15%,
+      rgba(245, 158, 11, 0.35) 30%,
+      rgba(16, 185, 129, 0.6) 45%,
+      rgba(245, 158, 11, 0.3) 60%,
+      rgba(16, 185, 129, 0.5) 75%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: r41-gradient-line-sweep 3s linear infinite;
+  }
+  .dark .r41-gradient-line {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(52, 211, 153, 0.5) 15%,
+      rgba(253, 230, 138, 0.35) 30%,
+      rgba(52, 211, 153, 0.6) 45%,
+      rgba(253, 230, 138, 0.3) 60%,
+      rgba(52, 211, 153, 0.5) 75%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+  }
+
+  /* ── r41-floating-orb: Enhanced floating gradient orbs with varied paths ── */
+  @keyframes r41-orb-drift-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.18; }
+    20% { transform: translate(40px, -30px) scale(1.15); opacity: 0.28; }
+    40% { transform: translate(-10px, 15px) scale(0.9); opacity: 0.15; }
+    60% { transform: translate(30px, -20px) scale(1.1); opacity: 0.24; }
+    80% { transform: translate(-25px, 10px) scale(0.95); opacity: 0.16; }
+  }
+  @keyframes r41-orb-drift-2 {
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.14; }
+    25% { transform: translate(-40px, 35px) scale(1.2) rotate(90deg); opacity: 0.22; }
+    50% { transform: translate(20px, -25px) scale(0.85) rotate(180deg); opacity: 0.16; }
+    75% { transform: translate(30px, 15px) scale(1.1) rotate(270deg); opacity: 0.2; }
+  }
+  @keyframes r41-orb-drift-3 {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.12; }
+    33% { transform: translate(25px, -45px) scale(1.25); opacity: 0.2; }
+    66% { transform: translate(-30px, 20px) scale(0.8); opacity: 0.15; }
+  }
+  .r41-floating-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .r41-floating-orb-1 {
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.22), transparent 70%);
+    top: 5%;
+    left: 8%;
+    animation: r41-orb-drift-1 16s ease-in-out infinite;
+  }
+  .r41-floating-orb-2 {
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.18), transparent 70%);
+    top: 45%;
+    right: 5%;
+    animation: r41-orb-drift-2 20s ease-in-out infinite;
+  }
+  .r41-floating-orb-3 {
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(20, 184, 166, 0.18), transparent 70%);
+    bottom: 5%;
+    left: 35%;
+    animation: r41-orb-drift-3 14s ease-in-out infinite;
+  }
+  .dark .r41-floating-orb-1 { opacity: 0.5; }
+  .dark .r41-floating-orb-2 { opacity: 0.4; }
+  .dark .r41-floating-orb-3 { opacity: 0.35; }
+
+} /* end @media prefers-reduced-motion: no-preference Round 41 footer enhancements */
+
+/* ==============================
+   ROUND 41b — AUTH MODAL ENHANCED ANIMATIONS (prefers-reduced-motion safe)
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+
+/* ── r41-modal-card: gradient border glow rotation + scale entrance ── */
+@keyframes r41b-border-glow-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes r41b-modal-entrance {
+  0% { opacity: 0; transform: scale(0.92) translateY(8px); filter: blur(4px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); }
+}
+.r41-modal-card {
+  position: relative;
+  animation: r41b-modal-entrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.r41-modal-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.r41-modal-card::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  z-index: -1;
+  background: conic-gradient(
+    from 0deg,
+    oklch(0.45 0.1 155),
+    oklch(0.78 0.16 70),
+    oklch(0.55 0.08 140),
+    oklch(0.45 0.1 155 / 0.4),
+    oklch(0.55 0.08 140 / 0.4),
+    oklch(0.78 0.16 70 / 0.4),
+    oklch(0.45 0.1 155)
+  );
+  animation: r41b-border-glow-spin 6s linear infinite;
+  border-radius: inherit;
+  opacity: 0.5;
+}
+.dark .r41-modal-card::after {
+  background: conic-gradient(
+    from 0deg,
+    oklch(0.55 0.12 155),
+    oklch(0.72 0.16 70),
+    oklch(0.50 0.08 140),
+    oklch(0.55 0.12 155 / 0.3),
+    oklch(0.50 0.08 140 / 0.3),
+    oklch(0.72 0.16 70 / 0.3),
+    oklch(0.55 0.12 155)
+  );
+  opacity: 0.35;
+}
+
+/* ── r41-tab-indicator: gradient sliding indicator ── */
+.r41-tab-indicator {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(16,185,129,0.3), rgba(255,255,255,0.95));
+  box-shadow: 0 0 12px rgba(16,185,129,0.25), 0 0 4px rgba(255,255,255,0.2);
+}
+
+/* ── r41-tab-text: shimmer on active tab text ── */
+@keyframes r41b-tab-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.r41-tab-text[data-state="active"] {
+  background: linear-gradient(90deg, #059669, #34d399, #059669, #10b981, #059669);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: r41b-tab-shimmer 3s linear infinite;
+  font-weight: 600;
+}
+
+/* ── r41-input-group: focus border expansion ── */
+.r41-input-group {
+  position: relative;
+  border-radius: 0.625rem;
+}
+.r41-input-group:focus-within {
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.25), 0 0 8px rgba(16,185,129,0.08);
+}
+
+/* ── r41-input-icon: icon glow on focus ── */
+.r41-input-icon {
+  transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.r41-input-group:focus-within .r41-input-icon {
+  color: #059669;
+  text-shadow: 0 0 6px rgba(16,185,129,0.4);
+  transform: scale(1.15);
+}
+.dark .r41-input-group:focus-within .r41-input-icon {
+  color: #34d399;
+  text-shadow: 0 0 8px rgba(52,211,153,0.5);
+}
+
+/* ── r41-input-field: enhanced input styling ── */
+.r41-input-field {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+.r41-input-field:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+}
+.dark .r41-input-field:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5,150,105,0.2);
+}
+
+/* ── r41-floating-label: subtle label transition ── */
+.r41-floating-label {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* ── r41-role-active: active role button glow ── */
+@keyframes r41b-role-pulse {
+  0%, 100% { box-shadow: 0 2px 12px rgba(16,185,129,0.18), 0 0 0 0 rgba(16,185,129,0); }
+  50% { box-shadow: 0 2px 12px rgba(16,185,129,0.18), 0 0 0 4px rgba(16,185,129,0.12); }
+}
+.r41-role-active {
+  box-shadow: 0 2px 12px rgba(16,185,129,0.18), 0 0 4px rgba(16,185,129,0.12);
+  animation: r41b-role-pulse 2.5s ease-in-out infinite;
+}
+.dark .r41-role-active {
+  box-shadow: 0 2px 12px rgba(52,211,153,0.25), 0 0 4px rgba(52,211,153,0.15);
+}
+
+/* ── r41-submit-wrap: button container glow ── */
+.r41-submit-wrap {
+  transition: box-shadow 0.3s ease;
+}
+.r41-submit-wrap:hover {
+  box-shadow: 0 4px 20px rgba(16,185,129,0.2), 0 0 40px rgba(16,185,129,0.08);
+}
+.dark .r41-submit-wrap:hover {
+  box-shadow: 0 4px 20px rgba(52,211,153,0.25), 0 0 40px rgba(52,211,153,0.12);
+}
+
+/* ── r41-shimmer-sweep: base for shimmer overlay ── */
+.r41-shimmer-sweep {
+  pointer-events: none;
+}
+
+/* ── r41-spinner: enhanced loading spinner ── */
+@keyframes r41b-spin-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+.r41-spinner {
+  animation: r41b-spin-pulse 1.2s ease-in-out infinite;
+}
+
+/* ── r41-social-google: Google brand glow on hover ── */
+.r41-social-google {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+.r41-social-google:hover {
+  border-color: rgba(66,133,244,0.5) !important;
+  box-shadow: 0 0 16px rgba(66,133,244,0.2), 0 0 4px rgba(66,133,244,0.1);
+  background-color: rgba(66,133,244,0.04);
+}
+
+/* ── r41-social-facebook: Facebook brand glow on hover ── */
+.r41-social-facebook {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+.r41-social-facebook:hover {
+  border-color: rgba(24,119,242,0.5) !important;
+  box-shadow: 0 0 16px rgba(24,119,242,0.2), 0 0 4px rgba(24,119,242,0.1);
+  background-color: rgba(24,119,242,0.04);
+}
+
+/* ── r41-error-shake: shake animation for error messages ── */
+@keyframes r41b-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 50%, 90% { transform: translateX(-4px); }
+  30%, 70% { transform: translateX(4px); }
+}
+.r41-error-shake {
+  animation: r41b-shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* ── r41-error-slide: slide-in error with red accent ── */
+@keyframes r41b-error-slide-in {
+  0% { opacity: 0; transform: translateX(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+.r41-error-slide {
+  animation: r41b-error-slide-in 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+/* ── r41-strength-meter: password strength container ── */
+.r41-strength-meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.r41-strength-track {
+  flex: 1;
+  height: 4px;
+  background: oklch(0 0 0 / 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.dark .r41-strength-track {
+  background: oklch(1 0 0 / 0.06);
+}
+
+/* ── r41-strength-fill: animated strength fill ── */
+.r41-strength-fill {
+  height: 100%;
+  border-radius: 4px;
+  background-color: #ef4444;
+  position: relative;
+  overflow: hidden;
+}
+.r41-strength-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+  animation: shimmer 1.8s ease-in-out infinite;
+  background-size: 200% 100%;
+}
+
+/* ── r41-strength-label: strength text label ── */
+.r41-strength-label {
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+} /* end @media prefers-reduced-motion: no-preference Round 41b r41-auth-modal enhancements */
+
+/* ==============================
+   Round 38 Styling: r39-wm-* WelcomeModal enhancements
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+  All classes prefixed with r39-wm-*
+
+  /* ── r39-wm-animated-border: Rotating conic gradient border on modal ── */
+  @keyframes r39-wm-border-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .r39-wm-animated-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 0.75rem;
+    background: conic-gradient(
+      from 0deg,
+      rgba(16, 185, 129, 0.5),
+      rgba(245, 158, 11, 0.3),
+      rgba(236, 72, 153, 0.3),
+      rgba(20, 184, 166, 0.4),
+      rgba(16, 185, 129, 0.5)
+    );
+    animation: r39-wm-border-spin 6s linear infinite;
+    z-index: -1;
+    filter: blur(1px);
+  }
+  .r39-wm-animated-border::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    background: oklch(0.99 0.002 120);
+    z-index: -1;
+  }
+  .dark .r39-wm-animated-border::after {
+    background: oklch(0.15 0.015 150);
+  }
+
+  /* ── r39-wm-orb: Base styling for floating orbs ── */
+  .r39-wm-orb {
+    filter: blur(20px);
+    will-change: transform, opacity;
+  }
+  .dark .r39-wm-orb {
+    filter: blur(30px);
+  }
+
+  /* ── r39-wm-close-btn: Close button hover glow ── */
+  .r39-wm-close-btn {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .r39-wm-close-btn:hover {
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.2), 0 0 4px rgba(16, 185, 129, 0.15);
+  }
+  .dark .r39-wm-close-btn:hover {
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.25), 0 0 4px rgba(52, 211, 153, 0.15);
+  }
+
+  /* ── r39-wm-header: Header area subtle inner glow ── */
+  .r39-wm-header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 80%, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* ── r39-wm-icon-box: Icon container enhanced shadow ── */
+  @keyframes r39-wm-icon-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .r39-wm-icon-box {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ── r39-wm-shimmer-title: Animated shimmer on modal title ── */
+  @keyframes r39-wm-title-shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .r39-wm-shimmer-title {
+    background: linear-gradient(
+      90deg,
+      oklch(0.18 0.02 150) 0%,
+      oklch(0.45 0.1 155) 20%,
+      oklch(0.78 0.16 70) 40%,
+      oklch(0.55 0.12 155) 60%,
+      oklch(0.18 0.02 150) 80%,
+      oklch(0.45 0.1 155) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: r39-wm-title-shimmer 4s linear infinite;
+  }
+  .dark .r39-wm-shimmer-title {
+    background: linear-gradient(
+      90deg,
+      oklch(0.95 0.01 120) 0%,
+      oklch(0.65 0.12 155) 20%,
+      oklch(0.85 0.14 70) 40%,
+      oklch(0.70 0.12 155) 60%,
+      oklch(0.95 0.01 120) 80%,
+      oklch(0.65 0.12 155) 100%
+    );
+    background-size: 200% auto;
+  }
+
+  /* ── r39-wm-features-grid: 3D perspective container for feature cards ── */
+  .r39-wm-features-grid {
+    transform-style: preserve-3d;
+    perspective: 800px;
+  }
+
+  /* ── r39-wm-feature-card: Individual feature card with 3D tilt ── */
+  @keyframes r39-wm-card-entrance {
+    0% { opacity: 0; transform: translateY(16px) rotateX(15deg) scale(0.9); }
+    100% { opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); }
+  }
+  .r39-wm-feature-card {
+    transform-style: preserve-3d;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    animation: r39-wm-card-entrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .r39-wm-feature-card:nth-child(1) { animation-delay: 0.0s; }
+  .r39-wm-feature-card:nth-child(2) { animation-delay: 0.08s; }
+  .r39-wm-feature-card:nth-child(3) { animation-delay: 0.16s; }
+  .r39-wm-feature-card:nth-child(4) { animation-delay: 0.24s; }
+  .r39-wm-feature-card:nth-child(5) { animation-delay: 0.32s; }
+  .r39-wm-feature-card:nth-child(6) { animation-delay: 0.40s; }
+  .r39-wm-feature-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+  .dark .r39-wm-feature-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  /* ── r39-wm-feature-icon-wrap: Icon wrapper for 3D translateZ ── */
+  .r39-wm-feature-icon-wrap {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .dark .r39-wm-feature-icon-wrap {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ── r39-wm-indicators: Enhanced indicator container ── */
+  .r39-wm-indicators {
+    gap: 0;
+  }
+
+  /* ── r39-wm-dot: Step dot base ── */
+  .r39-wm-dot {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ── r39-wm-dot-glow: Active dot pulsing glow ── */
+  .r39-wm-dot-glow {
+    transform-origin: center;
+  }
+
+  /* ── r39-wm-dot-inner-glow: Active dot box-shadow glow ── */
+  .r39-wm-dot-inner-glow {
+    border-radius: inherit;
+  }
+
+  /* ── r39-wm-dot-connector: Connecting line between dots ── */
+  .r39-wm-dot-connector {
+    position: relative;
+    overflow: hidden;
+    height: 1px;
+  }
+
+  /* ── r39-wm-modal-outer: Modal outer wrapper subtle shadow ── */
+  .r39-wm-modal-outer {
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+  .dark .r39-wm-modal-outer {
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+} /* end @media prefers-reduced-motion: no-preference Round 38 r39-wm-* WelcomeModal enhancements */
+
+/* ==============================
+   ROUND 39 STYLING ENHANCEMENTS
+   CategoryBar + FlashSale
+   ============================== */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ---- r39-category-btn: Enhanced hover scale + glow on category buttons ---- */
+  .r39-category-btn {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+    cursor: pointer;
+    outline: none;
+  }
+  .r39-category-btn:hover {
+    transform: scale(1.05) translateY(-2px);
+    filter: drop-shadow(0 0 8px rgba(16,185,129,0.25));
+  }
+
+  /* ---- r39-category-icon-wrap: Icon container hover glow shadow ---- */
+  .r39-category-icon-wrap:hover {
+    box-shadow: 0 0 16px rgba(16,185,129,0.2), 0 0 32px rgba(16,185,129,0.08), 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .dark .r39-category-icon-wrap:hover {
+    box-shadow: 0 0 16px rgba(52,211,153,0.25), 0 0 32px rgba(52,211,153,0.1), 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  /* ---- r39-icon-shimmer: Shimmer sweep effect on category icons ---- */
+  @keyframes r39-icon-shimmer-sweep {
+    0% { transform: translateX(-100%) skewX(-15deg); }
+    60%, 100% { transform: translateX(200%) skewX(-15deg); }
+  }
+  .r39-icon-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 60%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.25) 40%,
+      rgba(255,255,255,0.4) 50%,
+      rgba(255,255,255,0.25) 60%,
+      transparent 100%
+    );
+    border-radius: inherit;
+    transform: translateX(-100%) skewX(-15deg);
+    pointer-events: none;
+  }
+  .r39-category-btn:hover .r39-icon-shimmer::after {
+    animation: r39-icon-shimmer-sweep 0.6s ease-out forwards;
+  }
+  .dark .r39-icon-shimmer::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.08) 40%,
+      rgba(255,255,255,0.15) 50%,
+      rgba(255,255,255,0.08) 60%,
+      transparent 100%
+    );
+  }
+
+  /* ---- r39-gradient-underline: Animated gradient underline for active category ---- */
+  @keyframes r39-underline-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .r39-gradient-underline {
+    background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444, #f59e0b, #10b981);
+    background-size: 300% 100%;
+    animation: r39-underline-gradient 2s ease-in-out infinite;
+    box-shadow: 0 0 6px rgba(16,185,129,0.3), 0 0 12px rgba(16,185,129,0.1);
+  }
+
+  /* ---- r39-scroll-arrow: Animated scroll indicator arrows ---- */
+  @keyframes r39-arrow-pulse-left {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    50% { transform: translateY(-50%) translateX(-3px); }
+  }
+  @keyframes r39-arrow-pulse-right {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    50% { transform: translateY(-50%) translateX(3px); }
+  }
+  .r39-scroll-arrow {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .r39-scroll-arrow-icon {
+    filter: drop-shadow(0 0 2px rgba(16,185,129,0.3));
+    transition: transform 0.2s ease;
+  }
+
+  /* ---- r39-fire-torch-effect: Animated fire gradient in FlashSale header ---- */
+  @keyframes r39-fire-flicker {
+    0%, 100% { opacity: 0.4; transform: scaleY(1) translateY(0); }
+    25% { opacity: 0.7; transform: scaleY(1.2) translateY(-2px); }
+    50% { opacity: 0.5; transform: scaleY(0.9) translateY(-1px); }
+    75% { opacity: 0.65; transform: scaleY(1.15) translateY(-3px); }
+  }
+  .r39-fire-torch-effect {
+    background: linear-gradient(
+      0deg,
+      rgba(239,68,68,0.08) 0%,
+      rgba(249,115,22,0.06) 30%,
+      rgba(245,158,11,0.04) 60%,
+      transparent 100%
+    );
+    animation: r39-fire-flicker 3s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  .dark .r39-fire-torch-effect {
+    background: linear-gradient(
+      0deg,
+      rgba(239,68,68,0.12) 0%,
+      rgba(249,115,22,0.08) 30%,
+      rgba(245,158,11,0.05) 60%,
+      transparent 100%
+    );
+  }
+
+  /* ---- r39-oferta-glow-outer: Outer glow layer around OFERTA badge ---- */
+  .r39-oferta-glow-outer {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  /* ---- r39-oferta-pulse-ring: Pulsing glow ring on OFERTA badge ---- */
+  @keyframes r39-oferta-ring-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4), 0 0 12px 2px rgba(239,68,68,0.15); }
+    50% { box-shadow: 0 0 0 6px rgba(239,68,68,0), 0 0 20px 4px rgba(239,68,68,0.1); }
+  }
+  .r39-oferta-pulse-ring {
+    animation: r39-oferta-ring-pulse 2s ease-in-out infinite;
+  }
+  .dark .r39-oferta-pulse-ring {
+    animation-name: r39-oferta-ring-pulse-dark;
+  }
+  @keyframes r39-oferta-ring-pulse-dark {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(248,113,113,0.5), 0 0 12px 2px rgba(248,113,113,0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(248,113,113,0), 0 0 20px 4px rgba(248,113,113,0.15); }
+  }
+
+  /* ---- r39-countdown-badge: Gradient background for countdown timer ---- */
+  .r39-countdown-badge {
+    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95));
+    border-color: rgba(239,68,68,0.3);
+    box-shadow: 0 2px 12px rgba(239,68,68,0.08), 0 0 0 1px rgba(239,68,68,0.05);
+  }
+  .dark .r39-countdown-badge {
+    background: linear-gradient(135deg, rgba(30,30,30,0.85), rgba(40,40,40,0.95));
+    border-color: rgba(248,113,113,0.25);
+    box-shadow: 0 2px 12px rgba(248,113,113,0.1), 0 0 0 1px rgba(248,113,113,0.05);
+  }
+
+  /* ---- r39-countdown-shimmer: Shimmer sweep behind countdown digits ---- */
+  @keyframes r39-countdown-shimmer-move {
+    0% { transform: translateX(-100%) skewX(-20deg); }
+    100% { transform: translateX(250%) skewX(-20deg); }
+  }
+  .r39-countdown-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(239,68,68,0.08), rgba(245,158,11,0.12), rgba(239,68,68,0.08), transparent);
+    animation: r39-countdown-shimmer-move 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* ---- r39-card-3d-hover: Enhanced card hover state for 3D tilt ---- */
+  .r39-card-3d-hover {
+    transition: box-shadow 0.4s ease, border-color 0.3s ease, transform 0.3s ease;
+    will-change: transform;
+  }
+  .r39-card-3d-hover:hover {
+    box-shadow: 0 20px 40px rgba(239,68,68,0.08), 0 8px 16px rgba(0,0,0,0.06);
+  }
+  .dark .r39-card-3d-hover:hover {
+    box-shadow: 0 20px 40px rgba(239,68,68,0.12), 0 8px 16px rgba(0,0,0,0.2);
+  }
+
+  /* ---- r39-discount-badge: Animated discount badge with subtle pulse ---- */
+  .r39-discount-badge {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 2px 8px rgba(239,68,68,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .r39-discount-badge:hover {
+    transform: scale(1.08);
+    box-shadow: 0 2px 12px rgba(239,68,68,0.45);
+  }
+
+  /* ---- r39-cta-wrap: CTA button wrapper for shimmer sweep ---- */
+  .r39-cta-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ---- r39-cta-shimmer: Shimmer sweep on CTA buy buttons ---- */
+  @keyframes r39-cta-shimmer-sweep {
+    0% { transform: translateX(-100%) skewX(-20deg); }
+    100% { transform: translateX(200%) skewX(-20deg); }
+  }
+  .r39-cta-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .r39-cta-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.2) 35%,
+      rgba(255,255,255,0.35) 50%,
+      rgba(255,255,255,0.2) 65%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    animation: r39-cta-shimmer-sweep 2.5s ease-in-out infinite;
+    animation-delay: 0.5s;
+  }
+
+  /* ---- r39-fire-progress-bar: Enhanced progress bar at bottom of FlashSale ---- */
+  .r39-fire-progress-bar {
+    position: relative;
+  }
+  .r39-fire-progress-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    animation: r39-cta-shimmer-sweep 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+} /* end @media prefers-reduced-motion: no-preference Round 39 r39-* classes */
+
+/* ==============================
+   ROUND 38B — CHECKOUT VIEW + DELIVERY TRACKER STYLING ENHANCEMENTS (r39-* prefix)
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ─────────────────────────────────────────────────────────────
+     CHECKOUTVIEW — Animated Conic Gradient Border on Card
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-conic-border-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .r39-checkout-conic-border {
+    position: relative;
+  }
+  .r39-checkout-conic-border::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from 0deg,
+      rgba(16, 185, 129, 0.6),
+      rgba(52, 211, 153, 0.4),
+      rgba(20, 184, 166, 0.6),
+      rgba(6, 182, 212, 0.4),
+      rgba(16, 185, 129, 0.6)
+    );
+    animation: r39-conic-border-spin 6s linear infinite;
+    z-index: 0;
+    filter: blur(1px);
+  }
+  .r39-checkout-conic-border::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: oklch(1 0 0);
+    z-index: 1;
+  }
+  .dark .r39-checkout-conic-border::after {
+    background: oklch(0.20 0.02 150);
+  }
+  .r39-checkout-conic-border > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CHECKOUTVIEW — Payment Method Cards: Hover Lift with Colored Glow
+     ───────────────────────────────────────────────────────────── */
+  .r39-payment-glow {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+  }
+  .r39-payment-glow:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+  .r39-payment-glow-active {
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2),
+                0 0 40px rgba(16, 185, 129, 0.08),
+                0 8px 32px rgba(16, 185, 129, 0.06);
+  }
+  .dark .r39-payment-glow-active {
+    box-shadow: 0 4px 20px rgba(52, 211, 153, 0.25),
+                0 0 40px rgba(52, 211, 153, 0.1),
+                0 8px 32px rgba(52, 211, 153, 0.08);
+  }
+  /* Teal glow for PIX */
+  .r39-payment-glow:has([data-method="PIX"]),
+  .r39-payment-glow-active:has(+ [data-method]) {
+    --glow-color: rgba(20, 184, 166, 0.25);
+  }
+  /* Amber glow for Credit Card */
+  .r39-payment-glow.r39-payment-glow-credit-card {
+    --glow-color: rgba(245, 158, 11, 0.25);
+  }
+  /* Rose glow for Boleto */
+  .r39-payment-glow.r39-payment-glow-boleto {
+    --glow-color: rgba(244, 63, 94, 0.2);
+  }
+  /* Emerald glow for Cash */
+  .r39-payment-glow.r39-payment-glow-cash-on-delivery {
+    --glow-color: rgba(16, 185, 129, 0.25);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CHECKOUTVIEW — Animated Checkmark Wiggle on Completed Steps
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-check-wiggle {
+    0% { transform: scale(1) rotate(0deg); }
+    15% { transform: scale(1.1) rotate(-8deg); }
+    30% { transform: scale(1.1) rotate(8deg); }
+    45% { transform: scale(1.05) rotate(-5deg); }
+    60% { transform: scale(1.05) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .r39-step-check-wiggle {
+    animation: r39-check-wiggle 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CHECKOUTVIEW — Shimmer Sweep Overlay on "Confirmar Pedido" Button
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-confirm-shimmer-sweep {
+    0% { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(200%) skewX(-15deg); }
+  }
+  .r39-confirm-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .r39-confirm-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 30%,
+      rgba(255, 255, 255, 0.35) 50%,
+      rgba(255, 255, 255, 0.15) 70%,
+      transparent 100%
+    );
+    transform: translateX(-100%) skewX(-15deg);
+    animation: r39-confirm-shimmer-sweep 3s ease-in-out infinite;
+    animation-delay: 1s;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .dark .r39-confirm-shimmer::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.06) 30%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.06) 70%,
+      transparent 100%
+    );
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CHECKOUTVIEW — Enhanced Order Summary Items: Staggered Entrance
+     ───────────────────────────────────────────────────────────── */
+  .r39-summary-stagger {
+    transition: background-color 0.2s ease;
+  }
+  .r39-summary-stagger:hover {
+    background-color: oklch(0.55 0.08 140 / 0.04);
+    border-radius: 8px;
+  }
+  .dark .r39-summary-stagger:hover {
+    background-color: oklch(0.55 0.12 155 / 0.08);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CHECKOUTVIEW — Animated Confidence Badges with Hover Scale
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-confidence-scale-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+  }
+  .r39-confidence-scale {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.2s ease,
+                box-shadow 0.2s ease;
+    padding: 4px 10px;
+    border-radius: 12px;
+  }
+  .r39-confidence-scale:hover {
+    transform: scale(1.12) translateY(-2px);
+    background-color: oklch(0.95 0.01 120);
+    box-shadow: 0 4px 12px oklch(0.45 0.1 155 / 0.12),
+                0 0 20px oklch(0.45 0.1 155 / 0.06);
+  }
+  .dark .r39-confidence-scale:hover {
+    background-color: oklch(0.25 0.02 150);
+    box-shadow: 0 4px 12px oklch(0.55 0.12 155 / 0.2),
+                0 0 20px oklch(0.55 0.12 155 / 0.1);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CHECKOUTVIEW — Confidence Badge Icon Glow
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-icon-glow-pulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 0px rgba(16, 185, 129, 0));
+    }
+    50% {
+      filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.4));
+    }
+  }
+  .r39-confidence-icon-glow {
+    animation: r39-icon-glow-pulse 3s ease-in-out infinite;
+    animation-delay: var(--r40-badge-delay, 0s);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     DELIVERY TRACKER — Animated Route Path Drawing Effect
+     ───────────────────────────────────────────────────────────── */
+  .r39-route-svg {
+    overflow: visible;
+  }
+  @keyframes r39-route-glow-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .r39-route-path-draw {
+    animation: r39-route-glow-pulse 2s ease-in-out infinite;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     DELIVERY TRACKER — Pulsing Delivery Vehicle Icon
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-vehicle-breathe-anim {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    50% { transform: scale(1.06); box-shadow: 0 0 12px 2px rgba(245, 158, 11, 0.3); }
+  }
+  .r39-vehicle-breathe {
+    animation: r39-vehicle-breathe-anim 2s ease-in-out infinite;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     DELIVERY TRACKER — Vehicle Pulse Rings
+     ───────────────────────────────────────────────────────────── */
+  .r39-vehicle-pulse-ring {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.2);
+  }
+  .r39-vehicle-pulse-ring-outer {
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.1);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     DELIVERY TRACKER — Enhanced Step Indicators with Animated Checkmarks
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-step-check-pop {
+    0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     DELIVERY TRACKER — Status-Dependent Gradient Backgrounds
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-step-bg-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .r39-step-gradient-card {
+    position: relative;
+    overflow: hidden;
+    background-size: 200% 200%;
+    animation: r39-step-bg-shift 8s ease-in-out infinite;
+  }
+  .r39-step-gradient-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      oklch(0.55 0.12 155 / 0.03),
+      oklch(0.50 0.08 140 / 0.02),
+      oklch(0.60 0.10 160 / 0.03)
+    );
+    background-size: 200% 200%;
+    animation: r39-step-bg-shift 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+  }
+  .r39-step-gradient-card > * {
+    position: relative;
+    z-index: 1;
+  }
+  .dark .r39-step-gradient-card::before {
+    background: linear-gradient(
+      135deg,
+      oklch(0.55 0.12 155 / 0.06),
+      oklch(0.50 0.08 140 / 0.04),
+      oklch(0.60 0.10 160 / 0.06)
+    );
+    background-size: 200% 200%;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     DELIVERY TRACKER — Animated ETA Countdown Timer with Flip
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-eta-flip-anim {
+    0%, 100% { transform: perspective(200px) rotateX(0deg); }
+    25% { transform: perspective(200px) rotateX(-6deg); }
+    50% { transform: perspective(200px) rotateX(0deg); }
+    75% { transform: perspective(200px) rotateX(4deg); }
+  }
+  .r39-eta-flip {
+    animation: r39-eta-flip-anim 4s ease-in-out infinite;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     DELIVERY TRACKER — Enhanced Driver Info Card with Glassmorphism
+     ───────────────────────────────────────────────────────────── */
+  @keyframes r39-glass-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .r39-driver-card-enhanced {
+    backdrop-filter: blur(20px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(200%) !important;
+    box-shadow:
+      0 8px 32px oklch(0 0 0 / 0.06),
+      inset 0 1px 0 oklch(1 0 0 / 0.15),
+      inset 0 -1px 0 oklch(0 0 0 / 0.05);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s ease;
+  }
+  .r39-driver-card-enhanced::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      oklch(1 0 0 / 0.04) 40%,
+      oklch(1 0 0 / 0.08) 50%,
+      oklch(1 0 0 / 0.04) 60%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: r39-glass-shimmer 6s ease-in-out infinite;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;
+  }
+  .r39-driver-card-enhanced:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 12px 40px oklch(0 0 0 / 0.08),
+      0 0 20px oklch(0.55 0.12 155 / 0.06),
+      inset 0 1px 0 oklch(1 0 0 / 0.2);
+  }
+  .dark .r39-driver-card-enhanced {
+    box-shadow:
+      0 8px 32px oklch(0 0 0 / 0.2),
+      inset 0 1px 0 oklch(1 0 0 / 0.06),
+      inset 0 -1px 0 oklch(0 0 0 / 0.1);
+  }
+  .dark .r39-driver-card-enhanced::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      oklch(1 0 0 / 0.02) 40%,
+      oklch(1 0 0 / 0.04) 50%,
+      oklch(1 0 0 / 0.02) 60%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+  }
+  .dark .r39-driver-card-enhanced:hover {
+    box-shadow:
+      0 12px 40px oklch(0 0 0 / 0.3),
+      0 0 20px oklch(0.55 0.12 155 / 0.12),
+      inset 0 1px 0 oklch(1 0 0 / 0.08);
+  }
+
+} /* end @media prefers-reduced-motion: no-preference Round 38B r39-checkout+delivery styling */

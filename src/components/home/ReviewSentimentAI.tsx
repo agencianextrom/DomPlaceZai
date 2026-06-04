@@ -398,7 +398,7 @@ const r39BarVariants = {
    Helper: animated counter
    ═══════════════════════════════════════════════════════════════════ */
 
-function r39UseCounter(target: number, duration = 1100): number {
+function useCounter(target: number, duration = 1100): number {
   const [val, setVal] = useState(0)
   useEffect(() => {
     if (target === 0) return
@@ -505,7 +505,7 @@ function r39PickHighlights(reviews: ReviewData[]) {
 
 function SentimentRing({ score, animated }: { score: number; animated: boolean }) {
   const percentage = Math.round(score * 100)
-  const animatedPct = r39UseCounter(animated ? percentage : 0, 1300)
+  const animatedPct = useCounter(animated ? percentage : 0, 1300)
   const radius = 52
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (animatedPct / 100) * circumference
@@ -1230,7 +1230,7 @@ export function ReviewSentimentAI() {
   const topics = useMemo(() => r39BuildTopics(filteredReviews), [filteredReviews])
   const highlights = useMemo(() => r39PickHighlights(filteredReviews), [filteredReviews])
 
-  const animatedAvg = r39UseCounter(!loading ? Math.round(avgScore * 100) : 0, 1400)
+  const animatedAvg = useCounter(!loading ? Math.round(avgScore * 100) : 0, 1400)
 
   /* ── Refresh handler ── */
   const handleRefresh = () => {

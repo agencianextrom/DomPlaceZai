@@ -41,7 +41,7 @@ function formatBRL(value: number) {
 }
 
 /* ───────────────────────────────────────────────────────────────
-   1. CIRCULAR PROGRESS COUNTDOWN RING
+   1. CIRCULAR PROGRESS COUNTDOWN RING (with gradient badge)
    ─────────────────────────────────────────────────────────────── */
 
 function CountdownRing({
@@ -291,7 +291,7 @@ function AnimatedPrice({ price, hasCompare }: { price: number; hasCompare: boole
       initial={{ scale: 0.6, color: '#dc2626' }}
       animate={{ scale: 1, color: '#16a34a' }}
       transition={{
-        type: 'spring',
+        type: 'spring' as const,
         stiffness: 400,
         damping: 14,
         color: { duration: 0.9, delay: 0.15 },
@@ -304,7 +304,7 @@ function AnimatedPrice({ price, hasCompare }: { price: number; hasCompare: boole
 }
 
 /* ───────────────────────────────────────────────────────────────
-   3. 3D TILT CARD WRAPPER
+   3. 3D TILT CARD WRAPPER (enhanced)
    ─────────────────────────────────────────────────────────────── */
 
 function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -317,8 +317,8 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
     const rect = el.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width
     const y = (e.clientY - rect.top) / rect.height
-    const rotateY = (x - 0.5) * 12
-    const rotateX = -(y - 0.5) * 8
+    const rotateY = (x - 0.5) * 14
+    const rotateX = -(y - 0.5) * 10
     setTilt({ rotateX, rotateY })
   }, [])
 
@@ -340,7 +340,7 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
           rotateY: tilt.rotateY,
         }}
         transition={{
-          type: 'spring',
+          type: 'spring' as const,
           stiffness: 300,
           damping: 25,
           mass: 0.5,
@@ -418,36 +418,41 @@ export function FlashSale() {
     <motion.section
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.15 }}
+      transition={{ delay: 0.15, type: 'spring' as const, stiffness: 200, damping: 25 }}
       className="relative overflow-hidden"
     >
       <div className="absolute inset-0 gradient-mesh opacity-50 pointer-events-none" />
       <div className="relative">
         <div className="bg-gradient-to-r from-red-50 via-orange-50 to-amber-50 dark:from-red-900/10 dark:via-orange-900/10 dark:to-amber-900/10 rounded-2xl border border-red-200/50 dark:border-red-800/30 overflow-hidden glass-card-hover r17-flash-glow-border r27-gradient-border">
+          {/* ── r39 animated fire/torch effect behind header ── */}
+          <div className="absolute top-0 left-0 right-0 h-16 overflow-hidden pointer-events-none r39-fire-torch-effect" />
+
           {/* Header */}
           <div className="flex items-center justify-between px-4 pt-4 pb-3">
             <div className="flex items-center gap-2.5">
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
                 className="h-10 w-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg"
               >
                 <Flame className="h-5 w-5 text-white" />
               </motion.div>
               <div className="relative">
-                {/* Pulsing glow ring around badge */}
+                {/* ── r39 enhanced pulsing glow ring around OFERTA badge ── */}
                 <motion.div
                   className="absolute -inset-3 rounded-xl pointer-events-none flash-badge-glow"
-                  style={{ background: 'radial-gradient(ellipse at center, oklch(0.577 0.245 27.325 / 0.15), transparent 70%)' }}
+                  style={{ background: 'radial-gradient(ellipse at center, rgba(239,68,68,0.15), transparent 70%)' }}
                   animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
                   transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
                 />
                 <motion.div
-                  className="absolute -inset-1.5 rounded-xl pointer-events-none"
-                  style={{ background: 'radial-gradient(ellipse at center, oklch(0.78 0.16 70 / 0.1), transparent 60%)' }}
+                  className="absolute -inset-1.5 rounded-xl pointer-events-none r39-oferta-glow-outer"
+                  style={{ background: 'radial-gradient(ellipse at center, rgba(251,191,36,0.1), transparent 60%)' }}
                   animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.12, 1] }}
                   transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
                 />
+                {/* ── r39 pulsing glow ring ring element ── */}
+                <span className="absolute -inset-2 rounded-xl pointer-events-none r39-oferta-pulse-ring" />
                 <div className="relative">
                 <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5">
                   <span className="r17-flash-gradient-text r17-flash-shimmer-oferta r27-shimmer-text r34-flash-sale-title-shimmer">
@@ -481,7 +486,7 @@ export function FlashSale() {
                 <RefreshCw className={`h-3 w-3 ${refreshing ? 'animate-spin' : ''}`} />
               </Button>
 
-              {/* ─── 1. Circular progress countdown ─── */}
+              {/* ─── 1. Circular progress countdown with r39 gradient badge ─── */}
               <div className="relative flex items-center gap-1.5">
                 {/* Floating urgency particles near the timer */}
                 <motion.div
@@ -499,8 +504,12 @@ export function FlashSale() {
                   animate={{ y: [0, -6, -14], opacity: [0, 0.9, 0], scale: [0.4, 1, 0.3] }}
                   transition={{ duration: 2.6, repeat: Infinity, ease: 'easeOut' as const, delay: 1.6 }}
                 />
-                <div className="flex items-center gap-1.5 bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-xl px-2.5 py-1.5 border border-red-200/50 dark:border-red-800/30 shadow-sm inner-shadow-accent relative overflow-hidden r27-timer-glow">
+                <div className="flex items-center gap-1.5 bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-xl px-2.5 py-1.5 border border-red-200/50 dark:border-red-800/30 shadow-sm inner-shadow-accent relative overflow-hidden r27-timer-glow r39-countdown-badge">
                   <div className="absolute inset-0 r17-flash-timer-shimmer pointer-events-none rounded-xl" />
+                  {/* r39 gradient shimmer sweep behind countdown */}
+                  <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+                    <div className="absolute inset-0 r39-countdown-shimmer" />
+                  </div>
                   <CountdownRing value={hours} max={24} size={34} strokeWidth={2.5} gradientId="flash-h" />
                   <CountdownRing value={minutes} max={60} size={34} strokeWidth={2.5} gradientId="flash-m" />
                   <CountdownRing value={seconds} max={60} size={34} strokeWidth={2.5} gradientId="flash-s" />
@@ -581,15 +590,16 @@ export function FlashSale() {
                           <motion.div
                             key={product.id}
                             className="shrink-0 w-[155px] sm:w-[175px]"
-                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                            /* ── Enhanced stagger animations (increased delay) ── */
+                            initial={{ opacity: 0, y: 24, scale: 0.92 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            whileHover={{ scale: 1.02, y: -3 }}
-                            transition={{ delay: index * 0.08, type: 'spring' as const, stiffness: 280, damping: 22 }}
+                            whileHover={{ scale: 1.03, y: -4 }}
+                            transition={{ delay: index * 0.12, type: 'spring' as const, stiffness: 280, damping: 22 }}
                           >
-                            {/* 3. 3D Tilt Card Wrapper */}
+                            {/* 3. 3D Tilt Card Wrapper (enhanced) */}
                             <TiltCard className="h-full">
                               <Card
-                                className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow transition-all duration-300 hover:shadow-[0_0_20px_oklch(0.577_0.245_27.325/0.2),0_0_40px_oklch(0.577_0.245_27.325/0.1),0_8px_24px_oklch(0_0_0/0.1)] hover:-translate-y-1 hover:scale-[1.02] hover:border-red-400/40 dark:hover:border-red-600/40 r27-card-lift r34-flash-sale-card-glow"
+                                className="card-spotlight overflow-hidden border-red-200/30 dark:border-red-800/20 h-full cursor-pointer group glass-card-hover flash-sale-card-glow transition-all duration-300 hover:shadow-[0_0_20px_rgba(239,68,68,0.2),0_0_40px_rgba(239,68,68,0.1),0_8px_24px_rgba(0,0,0,0.1)] hover:-translate-y-1 hover:scale-[1.02] hover:border-red-400/40 dark:hover:border-red-600/40 r27-card-lift r34-flash-sale-card-glow r39-card-3d-hover"
                                 onClick={() => { selectProduct(product); navigate('product') }}
                               >
                                 <CardContent className="p-0 h-full flex flex-col relative">
@@ -618,8 +628,8 @@ export function FlashSale() {
                                       </motion.div>
                                     )}
 
-                                    {/* Discount badge */}
-                                    <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[10px] px-1.5 py-0 font-bold shadow-sm r27-badge-pulse">
+                                    {/* ── r39 animated discount badge ── */}
+                                    <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[10px] px-1.5 py-0 font-bold shadow-sm r27-badge-pulse r39-discount-badge">
                                       <TrendingDown className="h-2.5 w-2.5 mr-0.5" />
                                       -{discount}%
                                     </Badge>
@@ -703,7 +713,7 @@ export function FlashSale() {
                                               }}
                                               initial={{ width: 0 }}
                                               transition={{
-                                                width: { delay: 0.3 + index * 0.1, duration: 0.8, ease: 'easeOut' as const },
+                                                width: { delay: 0.3 + index * 0.12, duration: 0.8, ease: 'easeOut' as const },
                                                 boxShadow: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' as const },
                                               }}
                                               style={{ zIndex: 0 }}
@@ -714,17 +724,18 @@ export function FlashSale() {
                                             className={`h-full rounded-full relative ${isLowStock ? 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500 flash-stock-bar-glow' : 'bg-gradient-to-r from-red-500 via-orange-500 to-amber-400'} ${isCriticallyLow ? 'flash-stock-pulse' : ''} r27-stagger-fill`}
                                             initial={{ width: 0 }}
                                             animate={{ width: `${product.soldPercent}%` }}
-                                            transition={{ delay: 0.3 + index * 0.1, duration: 0.8, ease: 'easeOut' as const }}
+                                            transition={{ delay: 0.3 + index * 0.12, duration: 0.8, ease: 'easeOut' as const }}
                                             style={{ zIndex: 1 }}
                                           />
                                         </div>
                                       </div>
 
-                                      {/* Add to cart button */}
-                                      <motion.div className="mt-2">
+                                      {/* ── r39 shimmer sweep on CTA button (wrapped in motion.div, not on Button) ── */}
+                                      <motion.div className="mt-2 relative overflow-hidden rounded-md r39-cta-wrap">
+                                        <div className="absolute inset-0 r39-cta-shimmer pointer-events-none z-10" />
                                         <Button
                                           size="sm"
-                                          className="w-full h-7 text-[10px] bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-0 gap-1 btn-smooth ripple-effect flash-buy-btn-shimmer relative overflow-hidden r27-cta-shimmer"
+                                          className="w-full h-7 text-[10px] bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white border-0 gap-1 btn-smooth ripple-effect flash-buy-btn-shimmer relative z-0"
                                           onClick={(e) => {
                                             e.stopPropagation()
                                             addToCart(product, product.storeName || 'Loja')
@@ -777,7 +788,7 @@ export function FlashSale() {
           </div>
 
           {/* Sale progress bar with gradient animation */}
-          <div className="h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 relative overflow-hidden r17-flash-progress-sweep">
+          <div className="h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 relative overflow-hidden r17-flash-progress-sweep r39-fire-progress-bar">
             <motion.div
               className="absolute inset-0"
               animate={{ x: ['-100%', '200%'] }}

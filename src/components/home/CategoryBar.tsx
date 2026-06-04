@@ -2,7 +2,7 @@
 
 import { useAppStore } from '@/store/useAppStore'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, Store, UtensilsCrossed, Wrench, Sprout, Shirt, Smartphone, HeartPulse, Home, PawPrint, BookOpen, Scissors, Dumbbell, Package, Hammer } from 'lucide-react'
+import { Check, Store, UtensilsCrossed, Wrench, Sprout, Shirt, Smartphone, HeartPulse, Home, PawPrint, BookOpen, Scissors, Dumbbell, Package, Hammer, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useRef, useState, useCallback } from 'react'
 
@@ -41,6 +41,8 @@ export function CategoryBar() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([])
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
 
   // ── Ripple cleanup ──
   useEffect(() => {
@@ -49,21 +51,33 @@ export function CategoryBar() {
     return () => clearTimeout(timer)
   }, [ripples])
 
-  // ── Scroll progress tracking ──
-  const handleScroll = useCallback(() => {
+  // ── Scroll progress tracking + edge detection ──
+  const updateScrollState = useCallback(() => {
     const el = scrollRef.current
     if (!el) return
     const { scrollLeft, scrollWidth, clientWidth } = el
     const maxScroll = scrollWidth - clientWidth
     setScrollProgress(maxScroll > 0 ? scrollLeft / maxScroll : 0)
+    setCanScrollLeft(scrollLeft > 4)
+    setCanScrollRight(scrollLeft < maxScroll - 4)
   }, [])
 
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
-    el.addEventListener('scroll', handleScroll, { passive: true })
-    return () => el.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
+    const handler = () => updateScrollState()
+    el.addEventListener('scroll', handler, { passive: true })
+    // Initial check
+    handler()
+    return () => el.removeEventListener('scroll', handler)
+  }, [updateScrollState])
+
+  // ── Scroll arrow navigation ──
+  const scrollByArrow = useCallback((direction: 'left' | 'right') => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollBy({ left: direction === 'left' ? -180 : 180, behavior: 'smooth' })
+  }, [])
 
   // ── Ripple handler ──
   const handleCategoryClick = useCallback(
@@ -83,7 +97,7 @@ export function CategoryBar() {
   )
 
   return (
-    <div className="w-full" ref={containerRef}>
+    <div className="w-full relative" ref={containerRef}>
       <div className="w-full overflow-x-auto hide-scrollbar -mx-4 px-4">
         <div ref={scrollRef} className="flex gap-3 py-2 min-w-max relative">
           {/* Subtle gradient background behind the bar */}
@@ -97,22 +111,22 @@ export function CategoryBar() {
             return (
               <motion.button
                 key={cat.id}
-                /* ── 4. Slide-in from bottom on mount with stagger ── */
+                /* ── Staggered entrance with spring type ── */
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  delay: index * 0.04,
+                  delay: index * 0.05,
                   type: 'spring' as const,
                   stiffness: 260,
                   damping: 24,
                 }}
-                whileHover={{ y: -2 }}
+                /* ── Enhanced hover: scale 1.05 with glow shadow (handled via CSS class) ── */
+                className="flex flex-col items-center gap-1 min-w-[68px] group relative r39-category-btn"
                 onClick={(e) => handleCategoryClick(cat.id, isActive, e)}
                 onMouseEnter={() => setHoveredId(cat.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className="flex flex-col items-center gap-1 min-w-[68px] group relative"
               >
-                {/* ── 3. Tooltip on hover with AnimatePresence ── */}
+                {/* ── Tooltip on hover with AnimatePresence ── */}
                 <AnimatePresence>
                   {hoveredId === cat.id && (
                     <motion.div
@@ -128,7 +142,7 @@ export function CategoryBar() {
                   )}
                 </AnimatePresence>
 
-                {/* ── 2. Active state pulse ring (expanding ring) ── */}
+                {/* ── Active state pulse ring (expanding ring) ── */}
                 <AnimatePresence>
                   {isActive && (
                     <motion.div
@@ -137,12 +151,12 @@ export function CategoryBar() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
                     />
                   )}
                 </AnimatePresence>
 
-                {/* ── 2b. Pulse ring layers (CSS animated expanding rings) ── */}
+                {/* ── Pulse ring layers (CSS animated expanding rings) ── */}
                 <AnimatePresence>
                   {isActive && (
                     <>
@@ -166,11 +180,16 @@ export function CategoryBar() {
                   whileTap={{ scale: 0.9 }}
                   className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${
                     isActive ? cat.gradientColor : 'from-muted to-muted/80'
-                  } flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300 ${
+                  } flex items-center justify-center shadow-sm transition-all duration-300 ${
                     isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg' : ''
-                  }`}
+                  } r39-category-icon-wrap`}
                 >
-                  {/* ── 1. Floating emoji icon with staggered entrance + active bounce ── */}
+                  {/* ── Shimmer sweep effect on icon container ── */}
+                  <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
+                    <div className="absolute inset-0 r39-icon-shimmer" />
+                  </div>
+
+                  {/* ── Floating emoji icon with staggered entrance + active bounce ── */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{
@@ -178,7 +197,7 @@ export function CategoryBar() {
                       scale: isActive ? [1, 1.15, 1] : 1,
                     }}
                     transition={{
-                      delay: index * 0.04 + 0.12,
+                      delay: index * 0.05 + 0.12,
                       scale: isActive
                         ? { duration: 0.8, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }
                         : { duration: 0.35, type: 'spring' as const, stiffness: 350, damping: 20 },
@@ -206,7 +225,7 @@ export function CategoryBar() {
                     )}
                   </AnimatePresence>
 
-                  {/* ── 5. Ripple effect on click ── */}
+                  {/* ── Ripple effect on click ── */}
                   <AnimatePresence>
                     {ripples.map((ripple) => (
                       <span
@@ -231,7 +250,7 @@ export function CategoryBar() {
                   {cat.label}
                 </span>
 
-                {/* ── Animated gradient shimmer line under active/hovered ── */}
+                {/* ── Animated gradient underline on active/hovered (enhanced with gradient anim) ── */}
                 <AnimatePresence>
                   {(isActive || hoveredId === cat.id) && (
                     <motion.div
@@ -239,7 +258,7 @@ export function CategoryBar() {
                       animate={{ width: '70%', opacity: 1 }}
                       exit={{ width: '0%', opacity: 0 }}
                       transition={{ duration: 0.25, ease: 'easeOut' }}
-                      className="h-[2px] rounded-full mx-auto mt-0.5 category-shimmer-line"
+                      className="h-[2.5px] rounded-full mx-auto mt-0.5 r39-gradient-underline"
                     />
                   )}
                 </AnimatePresence>
@@ -250,7 +269,39 @@ export function CategoryBar() {
         </div>
       </div>
 
-      {/* ── 6. Scrolling category indicator bar ── */}
+      {/* ── Animated scroll indicator arrows ── */}
+      <AnimatePresence>
+        {canScrollLeft && (
+          <motion.button
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -8 }}
+            transition={{ duration: 0.2, type: 'spring' as const, stiffness: 400, damping: 30 }}
+            onClick={() => scrollByArrow('left')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-background/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-background transition-colors z-10 r39-scroll-arrow"
+            aria-label="Scroll categories left"
+          >
+            <ChevronLeft className="h-3.5 w-3.5 r39-scroll-arrow-icon" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {canScrollRight && (
+          <motion.button
+            initial={{ opacity: 0, x: 8 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 8 }}
+            transition={{ duration: 0.2, type: 'spring' as const, stiffness: 400, damping: 30 }}
+            onClick={() => scrollByArrow('right')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-background/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-background transition-colors z-10 r39-scroll-arrow"
+            aria-label="Scroll categories right"
+          >
+            <ChevronRight className="h-3.5 w-3.5 r39-scroll-arrow-icon" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* ── Scrolling category indicator bar ── */}
       <div className="relative h-1 mx-4 mt-0.5">
         {/* Gradient track */}
         <div className="absolute inset-x-0 h-full rounded-full overflow-hidden bg-muted/40">
@@ -261,7 +312,7 @@ export function CategoryBar() {
         <motion.div
           className="absolute top-1/2 -translate-y-1/2 h-1 w-6 rounded-full bg-primary scroll-indicator-glow"
           animate={{ left: `${scrollProgress * 100}%` }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
           style={{ marginLeft: '-12px' }}
         />
       </div>

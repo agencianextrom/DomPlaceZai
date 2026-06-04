@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X,
@@ -59,21 +59,38 @@ const onboardingSteps = [
 // Emoji particles for onboarding header
 const emojiParticles = ['🏪', '🛍️', '⭐', '🎉', '💎', '🔥']
 
+// Floating gradient orbs configuration (6 orbs)
+const floatingOrbs = [
+  { color: 'rgba(16, 185, 129, 0.25)', size: 120, top: '10%', left: '5%', duration: 18 },
+  { color: 'rgba(245, 158, 11, 0.2)', size: 80, top: '60%', left: '80%', duration: 22 },
+  { color: 'rgba(20, 184, 166, 0.18)', size: 100, top: '30%', left: '70%', duration: 15 },
+  { color: 'rgba(168, 85, 247, 0.15)', size: 60, top: '70%', left: '15%', duration: 20 },
+  { color: 'rgba(236, 72, 153, 0.12)', size: 90, top: '5%', left: '55%', duration: 24 },
+  { color: 'rgba(34, 197, 94, 0.2)', size: 70, top: '45%', left: '40%', duration: 17 },
+]
+
+// Confetti particles config
+const confettiColors = ['#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#14b8a6', '#f97316']
+const confettiShapes = ['circle', 'square', 'triangle']
+
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 300 : -300,
     opacity: 0,
     scale: 0.95,
+    rotateY: direction > 0 ? 8 : -8,
   }),
   center: {
     x: 0,
     opacity: 1,
     scale: 1,
+    rotateY: 0,
   },
   exit: (direction: number) => ({
     x: direction < 0 ? 300 : -300,
     opacity: 0,
     scale: 0.95,
+    rotateY: direction < 0 ? 8 : -8,
   }),
 }
 
@@ -88,13 +105,87 @@ const staggerContainer = {
 }
 
 const staggerItem = {
-  initial: { opacity: 0, y: 16, scale: 0.9 },
+  initial: { opacity: 0, y: 16, scale: 0.9, rotateX: 15 },
   animate: {
     opacity: 1,
     y: 0,
     scale: 1,
+    rotateX: 0,
     transition: { type: 'spring' as const, stiffness: 300, damping: 22 },
   },
+}
+
+// Modal container variants with spring
+const modalContainerVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.88,
+    y: 40,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 260,
+      damping: 24,
+      mass: 0.8,
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.92,
+    y: 30,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 300,
+      damping: 28,
+    },
+  },
+}
+
+// Confetti particle component
+function ConfettiParticle({ color, index, total }: { color: string; index: number; total: number }) {
+  const angle = (360 / total) * index + (Math.random() * 30 - 15)
+  const radians = (angle * Math.PI) / 180
+  const velocity = 80 + Math.random() * 120
+  const shape = confettiShapes[index % confettiShapes.length]
+
+  return (
+    <motion.div
+      className="absolute pointer-events-none"
+      style={{
+        width: shape === 'circle' ? 8 : 6,
+        height: shape === 'circle' ? 8 : shape === 'square' ? 6 : 10,
+        borderRadius: shape === 'circle' ? '50%' : shape === 'triangle' ? '0' : '1px',
+        background: color,
+        clipPath: shape === 'triangle' ? 'polygon(50% 0%, 0% 100%, 100% 100%)' : undefined,
+        left: '50%',
+        top: '50%',
+      }}
+      initial={{
+        x: 0,
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        rotate: 0,
+      }}
+      animate={{
+        x: Math.cos(radians) * velocity,
+        y: Math.sin(radians) * velocity - 40,
+        opacity: 0,
+        scale: 0.3,
+        rotate: angle * 2,
+      }}
+      transition={{
+        type: 'spring' as const,
+        stiffness: 120,
+        damping: 10,
+        duration: 1.2,
+      }}
+    />
+  )
 }
 
 export function WelcomeModal() {
@@ -102,6 +193,8 @@ export function WelcomeModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [step, setStep] = useState(0)
   const [direction, setDirection] = useState(0)
+  const [confettiBurst, setConfettiBurst] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
   const [hasChecked, setHasChecked] = useState(() => {
     if (typeof window === 'undefined') return false
     const onboardingDone = localStorage.getItem('domplace-onboarding-done')
@@ -144,8 +237,11 @@ export function WelcomeModal() {
   }, [step])
 
   const handleCreateAccount = useCallback(() => {
-    handleDismiss()
-    setTimeout(() => openAuthModal(), 500)
+    setConfettiBurst(true)
+    setTimeout(() => {
+      handleDismiss()
+      setTimeout(() => openAuthModal(), 500)
+    }, 600)
   }, [handleDismiss, openAuthModal])
 
   const handleUseWithoutAccount = useCallback(() => {
@@ -161,32 +257,63 @@ export function WelcomeModal() {
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleSkip() }}>
       <DialogContent
         showCloseButton={false}
-        className="sm:max-w-md p-0 overflow-hidden border-0 gap-0 bg-background"
+        className="r39-wm-modal-outer sm:max-w-md p-0 overflow-hidden border-0 gap-0 bg-background"
       >
         <DialogHeader className="sr-only">
           <DialogTitle>{currentStep.title}</DialogTitle>
           <DialogDescription>{currentStep.subtitle}</DialogDescription>
         </DialogHeader>
 
-        {/* Animated skip button */}
+        {/* Gradient animated border on modal container */}
+        <div className="r39-wm-animated-border absolute inset-0 rounded-xl pointer-events-none z-0" />
+
+        {/* 6 Floating gradient orbs background */}
+        {floatingOrbs.map((orb, i) => (
+          <motion.div
+            key={`orb-${i}`}
+            className="r39-wm-orb absolute rounded-full pointer-events-none"
+            style={{
+              width: orb.size,
+              height: orb.size,
+              background: `radial-gradient(circle, ${orb.color}, transparent 70%)`,
+              top: orb.top,
+              left: orb.left,
+            }}
+            animate={{
+              x: [0, 30 * (i % 2 === 0 ? 1 : -1), -20 * (i % 2 === 0 ? 1 : -1), 0],
+              y: [0, -25 * (i % 3 === 0 ? 1 : -1), 15 * (i % 3 === 0 ? 1 : -1), 0],
+              scale: [1, 1.15, 0.9, 1.05, 1],
+              opacity: [0.6, 0.9, 0.5, 0.8, 0.6],
+            }}
+            transition={{
+              duration: orb.duration,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: i * 0.7,
+            }}
+          />
+        ))}
+
+        {/* Animated close button with rotation on hover */}
         <motion.div
-          className="absolute top-3 right-3 z-10"
+          className="absolute top-3 right-3 z-20"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
         >
           <motion.button
             onClick={handleSkip}
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, rotate: 90 }}
             whileTap={{ scale: 0.9 }}
-            className="wm-skip text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full hover:bg-muted/50"
+            className="r39-wm-close-btn flex items-center justify-center w-8 h-8 rounded-full bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+            aria-label="Fechar"
           >
-            Pular
+            <X className="h-4 w-4" />
           </motion.button>
         </motion.div>
 
         {/* Gradient header area with animated gradient border */}
-        <div className={`wm-border-glow relative h-48 sm:h-56 bg-gradient-to-br ${currentStep.gradient} overflow-hidden`}>
+        <div className={`r39-wm-header relative h-48 sm:h-56 bg-gradient-to-br ${currentStep.gradient} overflow-hidden`}>
           {/* Decorative circles */}
           <motion.div
             className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10"
@@ -250,11 +377,13 @@ export function WelcomeModal() {
               exit="exit"
               transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
               className="absolute inset-0 flex items-center justify-center"
+              style={{ perspective: 600 }}
             >
               <motion.div
-                className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg"
+                className="r39-wm-icon-box w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center"
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)' }}
               >
                 <currentStep.icon className="h-12 w-12 text-white" />
               </motion.div>
@@ -263,7 +392,7 @@ export function WelcomeModal() {
         </div>
 
         {/* Content area */}
-        <div className="p-6 pt-8 -mt-8 bg-background rounded-t-3xl relative z-10">
+        <div ref={modalRef} className="p-6 pt-8 -mt-8 bg-background rounded-t-3xl relative z-10">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={step}
@@ -273,42 +402,60 @@ export function WelcomeModal() {
               animate="center"
               exit="exit"
               transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+              style={{ perspective: 800 }}
             >
-              <h2 className="text-xl sm:text-2xl font-bold text-center mb-2">
+              {/* Shimmer text effect on modal title */}
+              <h2 className="r39-wm-shimmer-title text-xl sm:text-2xl font-bold text-center mb-2">
                 {currentStep.title}
               </h2>
               <p className="text-sm text-muted-foreground text-center mb-6 max-w-xs mx-auto">
                 {currentStep.subtitle}
               </p>
 
-              {/* Step 2: Extra icons grid with stagger */}
+              {/* Step 2: Extra icons grid with 3D perspective tilt */}
               {currentStep.extraIcons && (
                 <motion.div
-                  className="grid grid-cols-3 gap-3 mb-4"
+                  className="r39-wm-features-grid grid grid-cols-3 gap-3 mb-4"
                   variants={staggerContainer}
                   initial="initial"
                   animate="animate"
+                  style={{ perspective: 600 }}
                 >
-                  {currentStep.extraIcons.map(({ Icon, label, color }) => (
+                  {currentStep.extraIcons.map(({ Icon, label, color }, idx) => (
                     <motion.div
                       key={label}
                       variants={staggerItem}
-                      className="flex flex-col items-center gap-2 p-3 rounded-xl bg-secondary/50 hover:bg-secondary/80 transition-colors"
+                      className="r39-wm-feature-card flex flex-col items-center gap-2 p-3 rounded-xl bg-secondary/50 hover:bg-secondary/80 transition-colors cursor-default"
+                      style={{
+                        transformStyle: 'preserve-3d',
+                      }}
+                      whileHover={{
+                        rotateY: 8,
+                        rotateX: -5,
+                        scale: 1.05,
+                        transition: { type: 'spring' as const, stiffness: 400, damping: 20 },
+                      }}
                     >
-                      <Icon className={`h-5 w-5 ${color}`} />
+                      <div
+                        className="r39-wm-feature-icon-wrap flex items-center justify-center w-10 h-10 rounded-lg bg-background/60"
+                        style={{ transform: 'translateZ(20px)' }}
+                      >
+                        <Icon className={`h-5 w-5 ${color}`} />
+                      </div>
                       <span className="text-xs text-muted-foreground">{label}</span>
                     </motion.div>
                   ))}
                 </motion.div>
               )}
 
-              {/* Step 3: Action buttons with enhanced shimmer */}
+              {/* Step 3: Action buttons with confetti burst */}
               {currentStep.showButtons ? (
                 <div className="space-y-3">
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Button
                       onClick={handleCreateAccount}
-                      className="wm-btn-shimmer w-full h-12 rounded-xl text-base font-semibold bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 shadow-lg shadow-primary/25 relative overflow-hidden"
+                      className="wm-btn-shimmer w-full h-12 rounded-xl text-base font-semibold bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 relative overflow-hidden"
+                      style={{ boxShadow: '0 8px 24px rgba(16, 185, 129, 0.25)' }}
                     >
                       <motion.span
                         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
@@ -319,6 +466,27 @@ export function WelcomeModal() {
                         Criar conta gratuita
                         <Sparkles className="h-4 w-4 ml-2" />
                       </span>
+
+                      {/* Confetti burst on CTA click */}
+                      <AnimatePresence>
+                        {confettiBurst && (
+                          <motion.div
+                            className="absolute inset-0 flex items-center justify-center overflow-visible"
+                            initial={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.6 }}
+                          >
+                            {confettiColors.map((color, i) => (
+                              <ConfettiParticle
+                                key={`confetti-${i}`}
+                                color={color}
+                                index={i}
+                                total={confettiColors.length}
+                              />
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </Button>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -336,7 +504,8 @@ export function WelcomeModal() {
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     onClick={handleNext}
-                    className="wm-btn-shimmer w-full h-12 rounded-xl text-base font-semibold bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 shadow-lg shadow-primary/25"
+                    className="wm-btn-shimmer w-full h-12 rounded-xl text-base font-semibold bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90"
+                    style={{ boxShadow: '0 8px 24px rgba(16, 185, 129, 0.25)' }}
                     size="lg"
                   >
                     Continuar
@@ -352,33 +521,54 @@ export function WelcomeModal() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Dots indicator with animated glow */}
-          <div className="flex items-center justify-center gap-2.5 mt-6">
+          {/* Enhanced slide indicators with glowing active dot and connecting line */}
+          <div className="r39-wm-indicators flex items-center justify-center gap-0 mt-6">
             {onboardingSteps.map((_, i) => (
-              <motion.button
-                key={i}
-                onClick={() => {
-                  setDirection(i > step ? 1 : -1)
-                  setStep(i)
-                }}
-                whileHover={{ scale: 1.3 }}
-                whileTap={{ scale: 0.9 }}
-                className={`wm-step-dot rounded-full transition-all duration-300 relative ${
-                  i === step
-                    ? 'w-7 h-3 bg-primary'
-                    : 'w-3 h-3 bg-muted-foreground/30 hover:bg-muted-foreground/50'
-                }`}
-                aria-label={`Ir para etapa ${i + 1}`}
-              >
-                {i === step && (
-                  <motion.span
-                    className="absolute inset-0 rounded-full"
-                    animate={{ scale: [1, 1.8], opacity: [0.4, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
-                    style={{ background: 'inherit' }}
-                  />
+              <div key={i} className="flex items-center">
+                {/* Connecting line between dots */}
+                {i > 0 && (
+                  <div className="r39-wm-dot-connector w-6 h-px mx-1 relative">
+                    <motion.div
+                      className="absolute inset-0 rounded-full"
+                      style={{ background: i <= step ? 'rgba(16, 185, 129, 0.4)' : 'rgba(0, 0, 0, 0.08)' }}
+                      animate={i <= step ? { scaleX: [0, 1] } : { scaleX: 1 }}
+                      transition={{ type: 'spring' as const, stiffness: 300, damping: 25, delay: i <= step ? 0.1 : 0 }}
+                      initial={{ originX: 0 }}
+                    />
+                  </div>
                 )}
-              </motion.button>
+                <motion.button
+                  onClick={() => {
+                    setDirection(i > step ? 1 : -1)
+                    setStep(i)
+                  }}
+                  whileHover={{ scale: 1.3 }}
+                  whileTap={{ scale: 0.9 }}
+                  className={`r39-wm-dot rounded-full transition-all duration-300 relative ${
+                    i === step
+                      ? 'w-7 h-3 bg-primary'
+                      : 'w-3 h-3 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                  }`}
+                  aria-label={`Ir para etapa ${i + 1}`}
+                >
+                  {/* Glowing active dot */}
+                  {i === step && (
+                    <>
+                      <motion.span
+                        className="r39-wm-dot-glow absolute inset-0 rounded-full"
+                        animate={{ scale: [1, 1.8], opacity: [0.5, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+                        style={{ background: '#10b981' }}
+                      />
+                      <motion.span
+                        className="r39-wm-dot-inner-glow absolute inset-0 rounded-full"
+                        animate={{ boxShadow: '0 0 12px rgba(16, 185, 129, 0.5)' }}
+                        transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' }}
+                      />
+                    </>
+                  )}
+                </motion.button>
+              </div>
             ))}
           </div>
 

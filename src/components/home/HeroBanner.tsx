@@ -21,12 +21,15 @@ const bannerGradients = [
   'bg-gradient-to-br from-teal-500 via-emerald-500 to-cyan-400',
 ]
 
-// Floating gradient blobs configuration
+// Floating gradient blobs configuration (7 orbs with varied paths, sizes, speeds)
 const floatingBlobs = [
   { size: 160, top: '-15%', right: '-8%', color: 'bg-primary/20', animY: [0, 18, -12, 8, 0], animX: [0, -14, 10, -6, 0], duration: 12, delay: 0 },
   { size: 120, top: '55%', right: '15%', color: 'bg-emerald-400/15', animY: [0, -22, 10, -16, 0], animX: [0, 12, -8, 14, 0], duration: 15, delay: -3 },
   { size: 200, top: '20%', right: '40%', color: 'bg-amber-300/10', animY: [0, 14, -18, 6, 0], animX: [0, -10, 16, -12, 0], duration: 18, delay: -7 },
   { size: 90, top: '72%', right: '5%', color: 'bg-cyan-300/12', animY: [0, -16, 12, -8, 0], animX: [0, 8, -12, 10, 0], duration: 14, delay: -5 },
+  { size: 70, top: '10%', right: '50%', color: 'bg-rose-400/10', animY: [0, -20, 14, -10, 0], animX: [0, 16, -14, 8, 0], duration: 20, delay: -9 },
+  { size: 140, top: '45%', right: '-5%', color: 'bg-violet-400/8', animY: [0, 10, -20, 16, 0], animX: [0, -18, 12, -8, 0], duration: 16, delay: -2 },
+  { size: 55, top: '85%', right: '35%', color: 'bg-teal-300/10', animY: [0, -14, 8, -18, 0], animX: [0, 10, -16, 12, 0], duration: 22, delay: -11 },
 ]
 
 // Floating decorative shapes (pure CSS, positioned absolutely)
@@ -278,7 +281,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             opacity: { duration: 0.3 },
             scale: { duration: 0.3 },
           }}
-          className={`relative w-full h-[200px] sm:h-[280px] md:h-[320px] lg:h-[400px] ${banner.gradient} flex items-center overflow-hidden select-none r28-hero-gradient-bg`}
+          className={`relative w-full h-[200px] sm:h-[280px] md:h-[320px] lg:h-[400px] ${banner.gradient} flex items-center overflow-hidden select-none r28-hero-gradient-bg r41-hero-bg-morph`}
           draggable={false}
         >
           {/* =====================================================
@@ -303,6 +306,8 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
           />
           {/* r34-hero: CSS-animated gradient morph overlay layer */}
           <div className="absolute inset-0 r34-hero-gradient-morph pointer-events-none" />
+          {/* r41-hero: Enhanced multi-color gradient depth layer */}
+          <div className="absolute inset-0 r41-hero-depth-gradient pointer-events-none" />
 
           {/* =====================================================
               1. PARALLAX: Dot pattern with scroll-based depth
@@ -386,7 +391,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
 
             <motion.h2
               variants={staggerItem}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer r41-hero-title-enhanced"
               style={{
                 textShadow: '0 2px 12px rgba(0,0,0,0.2)',
                 backgroundImage: headingBg,
@@ -401,9 +406,10 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             {banner.subtitle && (
               <motion.p
                 variants={staggerItem}
-                className="text-sm sm:text-base text-white/90 mt-2 drop-shadow-sm max-w-md"
+                className="text-sm sm:text-base text-white/90 mt-2 drop-shadow-sm max-w-md r41-hero-typewriter-target"
               >
-                {banner.subtitle}
+                <span className="r41-hero-typewriter-text">{banner.subtitle}</span>
+                <span className="r41-hero-typewriter-cursor" aria-hidden="true">|</span>
               </motion.p>
             )}
 
@@ -475,10 +481,11 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               >
                 <Button
                   onClick={handleVerOfertas}
-                  className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-5 sm:px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer"
+                  className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg h-10 sm:h-11 px-5 sm:px-6 animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer r41-hero-cta-primary"
                 >
                   <span className="ripple-effect absolute inset-0 rounded-lg" />
                   <span className="r34-hero-cta-sweep absolute inset-0 rounded-lg" />
+                  <span className="r41-hero-cta-glow absolute inset-0 rounded-lg" />
                   <span className="relative z-10">Ver Ofertas</span>
                 </Button>
               </motion.div>
@@ -491,13 +498,32 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               >
                 <Button
                   onClick={handleComprarAgora}
-                  className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 font-semibold h-10 sm:h-11 px-5 sm:px-6 press-effect relative overflow-hidden transition-all duration-300"
+                  className="bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30 font-semibold h-10 sm:h-11 px-5 sm:px-6 press-effect relative overflow-hidden transition-all duration-300 r41-hero-cta-secondary"
                 >
                   <span className="ripple-effect absolute inset-0 rounded-lg" />
+                  <span className="r41-hero-cta-shimmer-sweep absolute inset-0 rounded-lg" />
                   <span className="relative z-10">Comprar Agora</span>
                 </Button>
               </motion.div>
             </div>
+            </motion.div>
+
+            {/* r41-hero: Search bar with floating label and gradient border */}
+            <motion.div
+              variants={staggerItem}
+              className="mt-4 w-full max-w-md"
+            >
+              <div className="relative r41-hero-search-wrap">
+                <input
+                  type="text"
+                  placeholder="Buscar produtos, lojas..."
+                  className="r41-hero-search-input"
+                  aria-label="Buscar produtos e lojas"
+                />
+                <span className="r41-hero-search-float-label">Buscar em DomPlace</span>
+                <span className="r41-hero-search-icon" aria-hidden="true">&#128269;</span>
+                <div className="r41-hero-search-glow-border" />
+              </div>
             </motion.div>
 
             {/* Promotional countdown timer */}
@@ -526,6 +552,35 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                   </span>
                 ))}
               </div>
+            </motion.div>
+            {/* r41-hero: Trust badges with staggered entrance and icon wiggle */}
+            <motion.div
+              variants={staggerItem}
+              className="mt-3 flex items-center gap-3 flex-wrap"
+            >
+              {[
+                { icon: '🛡️', label: 'Pagamento seguro' },
+                { icon: '🚚', label: 'Entrega rápida' },
+                { icon: '⭐', label: 'Avaliações reais' },
+                { icon: '🔄', label: 'Troca fácil' },
+              ].map((badge, idx) => (
+                <motion.div
+                  key={`trust-${idx}`}
+                  className="r41-hero-trust-badge"
+                  initial={{ opacity: 0, y: 12, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{
+                    type: 'spring' as const,
+                    stiffness: 300,
+                    damping: 20,
+                    delay: 0.8 + idx * 0.12,
+                  }}
+                  whileHover={{ scale: 1.08 }}
+                >
+                  <span className="r41-hero-trust-icon" style={{ animationDelay: `${idx * 0.3}s` }}>{badge.icon}</span>
+                  <span className="text-[10px] sm:text-xs text-white/80 font-medium whitespace-nowrap">{badge.label}</span>
+                </motion.div>
+              ))}
             </motion.div>
           </motion.div>
 
