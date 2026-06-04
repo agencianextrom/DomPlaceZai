@@ -2930,3 +2930,82 @@ The DomPlace marketplace is stable and feature-rich:
 3. Password reset tokens in-memory only
 4. Dev server CSS parsing limitations with Turbopack on large CSS files (non-blocking in production)
 5. QA via agent-browser has limitations
+---
+Task ID: 42 (Round 40 - Job 182228)
+Agent: Main Agent
+Task: New features, styling improvements
+
+Work Log:
+
+**QA Testing:**
+- Build verified clean before starting
+- All 8 parallel agents completed successfully first try
+- AuthModal agent fixed pre-existing oklch violations and missing `as const`
+
+**New Features (3 new components):**
+
+1. **src/components/home/PriceComparisonBot.tsx** (NEW — 1,723 lines)
+   - AI-powered price comparison across stores with animated table
+   - Search bar with suggestions dropdown and recent searches
+   - "Menor Preço" sparkle badge, price alerts with bell toggle
+   - SVG sparkline per product (7-day trend), savings animated counter
+   - AI recommendation cards: Melhor Custo-Benefício, Entrega Mais Rápida, Mais Bem Avaliada
+   - Filter/sort pills, 6 products × 3-5 stores mock data
+   - Integrated into page.tsx (after EcoImpactDashboard)
+
+2. **src/components/profile/FamilyAccountManager.tsx** (NEW — 1,293 lines)
+   - Family members list with avatars, roles, spending per month
+   - Add member modal with name/email/role/spending limit
+   - Per-member spending limit progress bars with 80%/100% warnings
+   - Shared cart view grouped by member, merge carts option
+   - Order history with filter by member/store
+   - Per-member permission toggles (canOrder, canViewOrders, canAddToCart)
+   - Monthly summary with comparison chart, family budget progress
+   - Activity feed with staggered animations
+   - Integrated into ProfileView.tsx (new "Conta Familiar" section)
+
+3. **src/components/product/ProductScanSearch.tsx** (NEW — 1,420 lines)
+   - Scanner viewfinder with animated corner brackets and scanning line
+   - 3 scan modes: Barcode, QR Code, Photo Search
+   - Simulated scan animation with progress bar
+   - Product found: success animation with product card slide-up
+   - Search history with timestamps, manual EAN input
+   - Quick add to cart with quantity stepper
+   - 10 scannable products with mock EAN codes
+   - Integrated into page.tsx (after PriceComparisonBot)
+
+**Styling Enhancements (5 components + globals.css):**
+
+1. **HeroBanner.tsx**: Enhanced gradient morph background, depth overlay, typewriter subtitle, enhanced CTA shimmer+glow, 7 floating orbs, new search input with floating label + conic gradient focus border, trust badges with icon wiggle
+2. **ProductCard.tsx**: 3D tilt hover, image gradient overlay + "Ver Detalhes" fade-in, price gradient text + strikethrough animation, eco leaf badge, quick action bar slide-in on hover, star rating glow
+3. **LoyaltyWidget.tsx**: Gradient points text, milestone scale pulse, progress bar shimmer overlay + glow trail indicator, 24-particle check-in celebration, rotating tier badge border + sparkle particles, chart bar tooltip, stat card hover gradient
+4. **AuthModal.tsx**: Modal entrance with conic-gradient border, tab indicator glow, input focus-within glow, brand-color social login buttons, submit shimmer + spinner + success checkmark, password strength meter (5 levels), error shake animation. Fixed oklch → hex/rgba
+5. **Footer.tsx**: Brand shimmer text, logo glow, social icon brand-color glow rings (green/purple/blue), nav link underline slide-in, icon bounce, newsletter glow input, payment icon stagger, enhanced back-to-top gradient + pulse, 3 floating orbs
+
+**Bug Fixes:**
+1. AuthModal.tsx: Fixed oklch colors → hex/rgba, added `as const` on springs, removed duplicate useMemo import
+
+Stage Summary:
+- 20 files changed, 9,800 insertions, 348 deletions
+- 3 new components created (PriceComparisonBot, FamilyAccountManager, ProductScanSearch)
+- 3 additional components created by agents (CashbackTracker, ProductRecallAlerts, SmartShoppingList)
+- 5 components enhanced with styling
+- 281 components total, 20,754 lines CSS
+- ESLint: 0 errors, Build: successful (next build passes)
+- Commit: 3e56aa7 pushed to GitHub main
+
+## Current Project Status Assessment
+The DomPlace marketplace is stable and feature-rich:
+- 53+ API endpoints, 27+ Prisma models, 281 components
+- ~20,754 lines CSS with extensive animations
+- AI features, eco dashboard, influencer storefronts, family accounts, product scanner
+- Real DB integration (Turso) with 32 products, 8 stores
+- Multi-role auth, API deduplication cache
+- Production build passes cleanly (zero errors)
+
+## Unresolved Issues / Risks
+1. .env not persisted across sessions
+2. SPA-style navigation (no deep linking)
+3. Password reset tokens in-memory only
+4. Dev server CSS parsing limitations with Turbopack on large CSS files (non-blocking in production)
+5. QA via agent-browser has limitations
