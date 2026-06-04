@@ -105,13 +105,13 @@ function SuggestionsSkeleton() {
     <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} className="shrink-0 w-[170px] sm:w-[200px]">
-          <Card className="border-border/50 overflow-hidden h-full">
-            <Skeleton className="aspect-[4/3]" />
+          <Card className="border-border/50 overflow-hidden h-full r44-skeleton-card">
+            <div className="r44-skeleton-shimmer"><Skeleton className="aspect-[4/3]" /></div>
             <div className="p-3 space-y-2">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-3 w-20" />
-              <Skeleton className="h-5 w-16" />
-              <Skeleton className="h-3 w-24" />
+              <div className="r44-skeleton-shimmer"><Skeleton className="h-4 w-full" /></div>
+              <div className="r44-skeleton-shimmer"><Skeleton className="h-3 w-20" /></div>
+              <div className="r44-skeleton-shimmer"><Skeleton className="h-5 w-16" /></div>
+              <div className="r44-skeleton-shimmer"><Skeleton className="h-3 w-24" /></div>
             </div>
           </Card>
         </div>
@@ -261,8 +261,8 @@ export function SmartSuggestions() {
             <Sparkles className="h-4 w-4 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold r17-smart-header-shimmer r28-badge-shimmer r36-shimmer-text">Sugestões para Você</h2>
-            <p className="text-[11px] text-muted-foreground hidden sm:block">
+            <h2 className="text-base sm:text-lg font-bold r44-header-shimmer">Sugestões para Você</h2>
+            <p className="text-[11px] text-muted-foreground hidden sm:block r44-header-subtitle-fade">
               Produtos selecionados especialmente para você
             </p>
           </div>
@@ -306,19 +306,19 @@ export function SmartSuggestions() {
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 <Card
-                  className="border-border/50 overflow-hidden cursor-pointer r17-smart-card-hover r28-smart-card-lift h-full glassmorphism-strong r17-smart-glass-card r28-smart-gradient-border r36-suggestion-card"
+                  className="border-border/50 overflow-hidden cursor-pointer r44-smart-card-hover r44-smart-card-inner-glow h-full glassmorphism-strong"
                   onClick={() => handleProductClick(product)}
                 >
                   {/* Image */}
-                  <div className={`relative aspect-[4/3] bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
+                  <div className={`relative aspect-[4/3] bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden r44-card-image-zoom-wrapper`}>
                     {imgUrl ? (
-                      <img src={imgUrl} alt={product.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} loading="lazy" />
+                      <img src={imgUrl} alt={product.name} className="absolute inset-0 w-full h-full object-cover r44-card-image-zoom" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} loading="lazy" />
                     ) : null}
                     {!imgUrl && <span className="text-4xl z-10">{emoji}</span>}
 
                     {/* Discount badge */}
                     {discount > 0 && (
-                      <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[9px] px-1.5 py-0 font-bold r28-badge-shimmer">
+                      <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[9px] px-1.5 py-0 font-bold r44-discount-badge-shimmer">
                         -{discount}%
                       </Badge>
                     )}
@@ -358,7 +358,7 @@ export function SmartSuggestions() {
 
                     {/* Suggestion Tag */}
                     <div className="mt-2 flex items-center gap-1">
-                      <div className="h-4 px-1.5 rounded-full bg-gradient-to-r from-primary/10 to-amber-500/10 flex items-center gap-0.5">
+                      <div className="h-4 px-1.5 rounded-full bg-gradient-to-r from-primary/10 to-amber-500/10 flex items-center gap-0.5 r44-tag-pill">
                         <TrendingUp className="h-2.5 w-2.5 text-primary" />
                         <span className="text-[9px] font-medium text-primary truncate max-w-[120px]">{tag}</span>
                       </div>

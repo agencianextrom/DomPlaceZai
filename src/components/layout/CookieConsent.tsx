@@ -136,13 +136,13 @@ export function CookieConsent() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: 'spring' as const, damping: 25, stiffness: 300 }}
-            className="fixed bottom-16 left-0 right-0 z-50 px-3 sm:px-4 md:bottom-4"
+            className="fixed bottom-16 left-0 right-0 z-50 px-3 sm:px-4 md:bottom-4 r44-cc-slide-up"
           >
-            {/* Floating cookie particles */}
+            {/* Floating cookie emojis (3 animated with varied effects) */}
             {cookieParticles.map((particle, i) => (
               <motion.span
                 key={`cookie-particle-${i}`}
-                className="fixed pointer-events-none select-none text-2xl z-[51]"
+                className={`fixed pointer-events-none select-none text-2xl z-[51] r44-cc-float-${i + 1}`}
                 style={{ left: particle.x, bottom: '10%' }}
                 animate={{
                   y: [-10, -80],
@@ -161,7 +161,7 @@ export function CookieConsent() {
               </motion.span>
             ))}
 
-            <div className="cookie-glass max-w-3xl mx-auto rounded-xl p-4 sm:p-5 shadow-xl relative overflow-hidden">
+            <div className="r44-cc-glass max-w-3xl mx-auto rounded-xl p-4 sm:p-5 relative overflow-hidden">
               {/* Subtle gradient background */}
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 pointer-events-none" />
               <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -170,7 +170,7 @@ export function CookieConsent() {
                   {/* Animated rotating cookie emoji */}
                   <div className="relative flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 text-primary shrink-0 mt-0.5">
                     <motion.span
-                      className="cookie-emoji-spin absolute text-lg"
+                      className="r44-cc-cookie-spin absolute text-lg"
                     >
                       🍪
                     </motion.span>
@@ -199,7 +199,7 @@ export function CookieConsent() {
                     variant="outline"
                     size="sm"
                     onClick={handleCustomizeOpen}
-                    className="text-xs h-9 px-3 flex-1 sm:flex-none border-primary/30 hover:bg-primary/10 hover:text-primary"
+                    className="r44-cc-settings-btn text-xs h-9 px-3 flex-1 sm:flex-none border-primary/30 hover:bg-primary/10 hover:text-primary"
                   >
                     <Settings className="h-3.5 w-3.5 mr-1" />
                     Personalizar
@@ -207,7 +207,7 @@ export function CookieConsent() {
                   <Button
                     size="sm"
                     onClick={handleAcceptAll}
-                    className="relative text-xs h-9 px-4 flex-1 sm:flex-none bg-accent hover:bg-accent/90 text-accent-foreground font-semibold overflow-hidden btn-shine"
+                    className="r44-cc-accept-btn relative text-xs h-9 px-4 flex-1 sm:flex-none bg-accent hover:bg-accent/90 text-accent-foreground font-semibold overflow-hidden"
                   >
                     Aceitar todos
                   </Button>
@@ -217,7 +217,7 @@ export function CookieConsent() {
               {/* Close / reject button with hover glow */}
               <button
                 onClick={handleRejectAll}
-                className="absolute top-2 right-2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all hover:shadow-[0_0_12px_oklch(0.45_0.1_155/0.2)]"
+                className="r44-cc-close-hover absolute top-2 right-2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
                 aria-label="Rejeitar e fechar"
               >
                 <X className="h-3.5 w-3.5" />
@@ -230,8 +230,8 @@ export function CookieConsent() {
       {/* Cookie Preference Customization Dialog */}
       <Dialog open={customizeOpen} onOpenChange={setCustomizeOpen}>
         <DialogContent className="max-w-sm p-0 sm:rounded-2xl rounded-t-2xl gap-0 overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-primary to-emerald-600 p-5 text-white">
+          {/* Header with shimmer */}
+          <div className="r44-cc-dialog-header bg-gradient-to-r from-primary to-emerald-600 p-5 text-white">
             <DialogHeader>
               <DialogTitle className="text-lg font-bold flex items-center gap-2 text-white">
                 <Settings className="h-5 w-5" />
@@ -246,7 +246,7 @@ export function CookieConsent() {
           {/* Preferences list */}
           <div className="p-5 space-y-4">
             {/* Analytics */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 r44-cc-pref-item">
               <Checkbox
                 id="cookie-analytics"
                 checked={prefs.analytics}
@@ -264,7 +264,7 @@ export function CookieConsent() {
             </div>
 
             {/* Marketing */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 r44-cc-pref-item">
               <Checkbox
                 id="cookie-marketing"
                 checked={prefs.marketing}
@@ -282,7 +282,7 @@ export function CookieConsent() {
             </div>
 
             {/* Preferences */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 r44-cc-pref-item">
               <Checkbox
                 id="cookie-preferences"
                 checked={prefs.preferences}
@@ -305,7 +305,7 @@ export function CookieConsent() {
             <Button
               size="sm"
               onClick={handleSavePreferences}
-              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
+              className="r44-cc-save-btn w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
             >
               Salvar preferências
             </Button>

@@ -128,7 +128,7 @@ function CategoryIcon({ category }: { category: string }) {
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <div className="flex items-center gap-px star-shimmer-wrap r41-stars-glow">
+    <div className="flex items-center gap-px star-shimmer-wrap r41-stars-glow r44-stars-glow">
       {[1, 2, 3, 4, 5].map((star) => {
         const filled = rating >= star
         const half = !filled && rating >= star - 0.5
@@ -383,7 +383,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: Math.min(index * 0.06, 0.5), duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         whileHover={{ y: -5, scale: 1.02, boxShadow: '0 0 20px rgba(16,185,129,0.15), 0 0 40px rgba(16,185,129,0.08), 0 8px 24px rgba(0,0,0,0.08)' }}
-        className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm card-shadow-cascade card-spotlight card-shine card-glow-border hover:shadow-xl transition-shadow duration-300 r41-card-3d"
+        className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm card-shadow-cascade card-spotlight card-shine card-glow-border hover:shadow-xl transition-shadow duration-300 r41-card-3d r44-card-3d-tilt r44-card-glow-border"
         onClick={handleCardClick}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setShowCartBtn(true)}
@@ -407,7 +407,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
         {/* Image area */}
         <div
-          className="relative aspect-square flex items-center justify-center bg-gradient-to-br overflow-hidden img-hover-overlay r41-img-area"
+          className="relative aspect-square flex items-center justify-center bg-gradient-to-br overflow-hidden img-hover-overlay r41-img-area r44-img-gradient-zoom"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -437,7 +437,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                 <motion.span
-                  className="relative z-10 text-white text-xs font-bold tracking-wide px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 r41-ver-detalhes"
+                  className="relative z-10 text-white text-xs font-bold tracking-wide px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 r41-ver-detalhes r44-ver-overlay"
                   initial={{ y: 12, opacity: 0, scale: 0.9 }}
                   animate={{ y: isHovered ? 0 : 12, opacity: isHovered ? 1 : 0, scale: isHovered ? 1 : 0.9 }}
                   transition={{ type: 'spring' as const, stiffness: 400, damping: 25, delay: 0.08 }}
@@ -514,7 +514,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 animate={{ scale: [1, 1.08, 0.96, 1.04, 1] }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 text-[10px] font-bold px-2 py-0.5 shadow-md shadow-red-500/20 offer-badge-glow relative overflow-hidden r41-badge-oferta">
+                <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-0 text-[10px] font-bold px-2 py-0.5 shadow-md shadow-red-500/20 offer-badge-glow relative overflow-hidden r41-badge-oferta r44-badge-oferta">
                   <Zap className="h-2.5 w-2.5 mr-0.5 fill-white relative z-[1]" />
                   <span className="relative z-[1]">Oferta</span>
                   <span className="r33-product-card-oferta-shimmer" />
@@ -541,7 +541,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
               >
-                <Badge className="bg-primary text-primary-foreground border-0 text-[10px] px-1.5 py-0 shadow-sm relative overflow-hidden r41-badge-novo">
+                <Badge className="bg-primary text-primary-foreground border-0 text-[10px] px-1.5 py-0 shadow-sm relative overflow-hidden r41-badge-novo r44-badge-novo">
                   <span className="badge-shimmer">Novo</span>
                 </Badge>
               </motion.div>
@@ -556,7 +556,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring' as const, stiffness: 500, damping: 15 }}
               >
-                <Badge className="bg-emerald-600 text-white border-0 text-[10px] font-bold px-1.5 py-0 shadow-sm flex items-center gap-0.5 r41-badge-eco">
+                <Badge className="bg-emerald-600 text-white border-0 text-[10px] font-bold px-1.5 py-0 shadow-sm flex items-center gap-0.5 r41-badge-eco r44-eco-pulse">
                   <Leaf className="h-2.5 w-2.5" />
                   Eco
                 </Badge>
@@ -575,7 +575,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           {/* Favorite button — top right, always visible */}
           <button
             onClick={handleFavoriteClick}
-            className={`absolute z-10 h-7 w-7 rounded-full bg-white/80 dark:bg-black/40 flex items-center justify-center hover:bg-white dark:hover:bg-black/60 transition-colors heart-tap ${
+            className={`absolute z-10 h-7 w-7 rounded-full bg-white/80 dark:bg-black/40 flex items-center justify-center hover:bg-white dark:hover:bg-black/60 transition-colors heart-tap r44-heart-burst r44-heart-btn ${isFav ? 'is-fav' : ''} ${
               showFreeShipping && !product.isOffer && discount === 0 ? 'top-12 left-2' : 'top-2 right-2'
             }`}
             aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
@@ -630,13 +630,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               >
                 {/* Floating action pill bar */}
                 <div className="flex justify-center mb-1.5">
-                  <div className="flex items-center gap-1 bg-black/40 backdrop-blur-md rounded-full px-1.5 py-1 shadow-lg r41-quick-bar">
+                  <div className="flex items-center gap-1 bg-black/40 backdrop-blur-md rounded-full px-1.5 py-1 shadow-lg r41-quick-bar r44-quick-bar">
                     {/* Favorite */}
                     <motion.button
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={handleFavoriteClick}
-                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors r41-quick-item"
+                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors r41-quick-item r44-quick-item"
                       style={{ transitionDelay: '0ms' }}
                       aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
                     >
@@ -648,7 +648,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={handleQuickView}
-                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors r41-quick-item"
+                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors r41-quick-item r44-quick-item"
                       style={{ transitionDelay: '60ms' }}
                       aria-label="Visualização rápida"
                     >
@@ -660,7 +660,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={handleShare}
-                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors relative r41-quick-item"
+                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors relative r41-quick-item r44-quick-item"
                       style={{ transitionDelay: '120ms' }}
                       aria-label="Compartilhar produto"
                     >
@@ -696,7 +696,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   <motion.div className="r41-btn-shimmer">
                     <Button
                       size="sm"
-                      className={`w-full h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg rounded-lg transition-transform btn-glow r41-btn-pulse ${
+                      className={`w-full h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg rounded-lg transition-transform btn-glow r41-btn-pulse r44-btn-pulse ${
                         cartAnimating ? 'scale-95' : 'scale-100'
                       }`}
                       onClick={handleAddToCart}
@@ -817,7 +817,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             {/* Large, bold price — with spring bounce animation on mount + shimmer */}
             <div className={`flex items-baseline gap-1.5 relative overflow-hidden rounded${product.comparePrice && product.comparePrice > product.price ? ' r33-product-card-price-flash' : ''}`}>
               <motion.span
-                className="text-base font-extrabold text-primary leading-none relative r41-price-gradient" 
+                className="text-base font-extrabold text-primary leading-none relative r41-price-gradient r44-price-gradient" 
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: 'spring' as const, stiffness: 300, damping: 15, delay: Math.min(index * 0.05 + 0.3, 0.7) }}
@@ -825,7 +825,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 <span className="price-shimmer-text">{formatBRL(product.price)}</span>
               </motion.span>
               {product.comparePrice && product.comparePrice > product.price && (
-                <span className="text-[10px] text-muted-foreground line-through r41-price-strike">
+                <span className="text-[10px] text-muted-foreground line-through r41-price-strike r44-price-strike">
                   {formatBRL(product.comparePrice)}
                 </span>
               )}

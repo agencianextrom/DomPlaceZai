@@ -173,7 +173,7 @@ function NavButton({
             animate={{ width: dotWidth, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
-            className="absolute bottom-0.5 h-[3px] rounded-full bg-primary"
+            className="absolute bottom-0.5 h-[3px] rounded-full bg-primary r44-mobnav-dot"
           />
         )}
       </AnimatePresence>
@@ -232,11 +232,11 @@ export function MobileNav() {
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
     >
       {/* ── Top gradient accents ── */}
-      <div className="absolute inset-x-0 -top-3 h-3 bg-gradient-to-b from-transparent to-black/[0.04] pointer-events-none dark:from-transparent dark:to-black/10" />
-      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 -top-3 h-3 bg-gradient-to-b from-transparent to-black/[0.04] pointer-events-none dark:from-transparent dark:to-black/10 r44-mobnav-fade-top" />
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none r44-mobnav-top-line" />
 
       {/* ── Glassmorphism container with enhanced glass effect ── */}
-      <div className="nav-gradient-animated bg-background/60 backdrop-blur-[24px] backdrop-saturate-[1.5] border-t border-white/10 dark:border-white/5 relative shadow-[0_-1px_32px_oklch(0_0_0/0.08)] dark:shadow-[0_-1px_32px_oklch(0_0_0/0.25)]">
+      <div className="nav-gradient-animated bg-background/60 backdrop-blur-[24px] backdrop-saturate-[1.5] border-t border-white/10 dark:border-white/5 relative r44-mobnav-bg r44-mobnav-glass r44-mobnav-shadow">
         {/* ── Notification bell (floating above nav, left of theme toggle) ── */}
         {mounted && (
           <motion.button
@@ -292,7 +292,8 @@ export function MobileNav() {
           {navItems.slice(0, 2).map((item, i) => (
             <motion.div
               key={item.id}
-              className={`${currentView === item.id ? 'nav-active-shimmer' : ''} ${currentView === item.id ? 'nav-active-glow' : ''}`}
+              className={`${currentView === item.id ? 'nav-active-shimmer r44-mobnav-shimmer' : ''} ${currentView === item.id ? 'nav-active-glow' : ''} r44-mobnav-stagger r44-mobnav-item`}
+              style={{ '--r44-stagger-delay': `${i * 60}ms` } as React.CSSProperties}
               custom={i}
               initial="hidden"
               animate="visible"
@@ -319,11 +320,11 @@ export function MobileNav() {
               animate={{
                 boxShadow:
                   cartCount > 0
-                    ? '0 6px 24px oklch(0.45 0.1 155 / 0.4), 0 2px 8px oklch(0.45 0.1 155 / 0.15)'
-                    : '0 2px 8px oklch(0 0 0 / 0.1)',
+                    ? '0 6px 24px rgba(16,185,129,0.4), 0 2px 8px rgba(16,185,129,0.15)'
+                    : '0 2px 8px rgba(0,0,0,0.1)',
               }}
               transition={{ duration: 0.3 }}
-              className="relative h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 text-primary-foreground flex items-center justify-center shadow-lg"
+              className="relative h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 text-primary-foreground flex items-center justify-center shadow-lg r44-mobnav-cart-btn"
             >
               <ShoppingCart className="h-5 w-5" />
 
@@ -336,7 +337,7 @@ export function MobileNav() {
                     animate={{ scale: 1, y: 0 }}
                     exit={{ scale: 0, y: 4 }}
                     transition={{ type: 'spring' as const, stiffness: 500, damping: 20 }}
-                    className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-accent text-accent-foreground rounded-full shadow-sm border-2 border-background cart-badge-glow"
+                    className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-accent text-accent-foreground rounded-full shadow-sm border-2 border-background cart-badge-glow r44-mobnav-cart-glow"
                   >
                     {cartCount > 99 ? '99' : cartCount}
                   </motion.span>
@@ -358,7 +359,8 @@ export function MobileNav() {
           {navItems.slice(2).map((item, i) => (
             <motion.div
               key={item.id}
-              className={`${currentView === item.id ? 'nav-active-shimmer' : ''} ${currentView === item.id ? 'nav-active-glow' : ''}`}
+              className={`${currentView === item.id ? 'nav-active-shimmer r44-mobnav-shimmer' : ''} ${currentView === item.id ? 'nav-active-glow' : ''} r44-mobnav-stagger r44-mobnav-item`}
+              style={{ '--r44-stagger-delay': `${(i + 2) * 60}ms` } as React.CSSProperties}
               custom={i + 2}
               initial="hidden"
               animate="visible"
@@ -375,7 +377,7 @@ export function MobileNav() {
         </div>
 
         {/* ── Safe area padding for iOS notch / home indicator ── */}
-        <div style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }} />
+        <div className="r44-mobnav-safe-area" />
       </div>
     </motion.nav>
   )

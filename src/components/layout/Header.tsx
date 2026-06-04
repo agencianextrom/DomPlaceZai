@@ -142,7 +142,7 @@ export function Header() {
             : '0 0 0 rgba(0,0,0,0)',
         }}
         transition={{ duration: 0.35, ease: 'easeOut' as const }}
-        className={`sticky top-0 z-50 transition-colors duration-300 safe-top ${isScrolled ? 'bg-background/95' : 'bg-background/70'} relative`}
+        className={`sticky top-0 z-50 transition-colors duration-300 safe-top r44-header-glass ${isScrolled ? 'r44-header-scrolled' : ''} relative`}
         style={{
           backdropFilter: `blur(${blurAmount}px)`,
           WebkitBackdropFilter: `blur(${blurAmount}px)`,
@@ -153,14 +153,14 @@ export function Header() {
           initial={{ opacity: 0, scaleY: 1 }}
           animate={{ opacity: isScrolled ? 1 : 0, scaleY: isScrolled ? 1 : 0.5 }}
           transition={{ duration: 0.3 }}
-          className="absolute inset-x-0 bottom-0 h-[2px] r38-header-gradient-border pointer-events-none"
+          className={`absolute inset-x-0 bottom-0 h-[2px] r38-header-gradient-border r44-header-shadow-line pointer-events-none ${isScrolled ? 'r44-header-line-active' : ''}`}
           style={{ originY: 1 }}
         />
         {/* Subtle gradient glow on scroll */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: isScrolled ? 1 : 0 }}
-          className="absolute inset-x-0 top-0 h-8 header-scrolled-gradient pointer-events-none"
+          className="absolute inset-x-0 top-0 h-8 header-scrolled-gradient r44-header-inner-glow pointer-events-none"
         />
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           {/* Top bar */}
@@ -171,10 +171,10 @@ export function Header() {
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="md:hidden shrink-0 h-10 w-10">
-                    <span className={`r38-header-hamburger ${mobileMenuOpen ? 'r38-header-hamburger-active' : ''}`}>
-                      <span className="r38-header-hamburger-line" />
-                      <span className="r38-header-hamburger-line" />
-                      <span className="r38-header-hamburger-line" />
+                    <span className={`r38-header-hamburger r44-hamburger-anim ${mobileMenuOpen ? 'r38-header-hamburger-active r44-hamburger-open' : ''}`}>
+                      <span className="r38-header-hamburger-line r44-hamburger-line" />
+                      <span className="r38-header-hamburger-line r44-hamburger-line" />
+                      <span className="r38-header-hamburger-line r44-hamburger-line" />
                     </span>
                   </Button>
                 </SheetTrigger>
@@ -299,7 +299,7 @@ export function Header() {
               ) : (
                 <motion.button
                   onClick={() => navigate('home')}
-                  className="flex items-center gap-2.5 min-w-0 group"
+                  className="flex items-center gap-2.5 min-w-0 group r44-logo-shimmer"
                   animate={{ y: [0, -1.5, 0] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
                 >
@@ -308,7 +308,7 @@ export function Header() {
                     alt="DomPlace"
                     className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg shrink-0 transition-transform duration-200 group-hover:scale-105"
                   />
-                  <span className="font-bold text-lg sm:text-xl text-primary r38-header-logo-text">DomPlace</span>
+                  <span className="font-bold text-lg sm:text-xl text-primary r38-header-logo-text r44-logo-text-glow">DomPlace</span>
                 </motion.button>
               )}
               
@@ -328,7 +328,7 @@ export function Header() {
             
             {/* Search bar - hidden on mobile, always visible on desktop */}
             <motion.form
-              className="hidden md:flex flex-1 mx-4 card-shine r38-header-search-shimmer r38-header-search-glow r38-header-glass-search"
+              className={`hidden md:flex flex-1 mx-4 r44-search-input ${isSearchFocused ? 'r44-search-focused' : ''}`}
               initial={{ maxWidth: 0 }}
               animate={{ maxWidth: isSearchFocused ? 580 : 448 }}
               transition={{ type: 'spring' as const, stiffness: 350, damping: 28 }}
@@ -342,7 +342,7 @@ export function Header() {
                   onChange={(e) => handleDesktopSearchChange(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   onBlur={() => setIsSearchFocused(false)}
-                  className="pl-10 pr-4 h-10 rounded-full bg-secondary/50 border-border/50 focus:bg-background focus:border-primary/30 transition-all duration-300 search-pulse focus:shadow-[0_0_0_3px_oklch(0.45_0.1_155/0.15),0_0_12px_oklch(0.45_0.1_155/0.1)] dark:focus:shadow-[0_0_0_3px_oklch(0.55_0.12_155/0.2),0_0_16px_oklch(0.55_0.12_155/0.12)]"
+                  className="r44-search-inner pl-10 pr-4 h-10 rounded-full bg-transparent border-border/50 focus:border-primary/30 transition-all duration-300"
                 />
               </div>
             </motion.form>
@@ -405,7 +405,7 @@ export function Header() {
                       animate={{ scale: [0, 1.35, 0.85, 1.1, 1], y: 0 }}
                       exit={{ scale: 0, y: 10 }}
                       transition={{ duration: 0.5, ease: 'easeOut' as const }}
-                      className={`absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] r38-header-cart-badge rounded-full font-bold ${cartCount > 0 ? 'breathe' : ''}`}
+                      className={`absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] r38-header-cart-badge r44-cart-badge rounded-full font-bold ${cartBounce ? 'r44-cart-badge-bouncing' : ''}`}
                     >
                       {cartCount > 99 ? '99+' : cartCount}
                       {/* Ping animation when count changes */}
@@ -450,7 +450,7 @@ export function Header() {
                     className="flex items-center gap-2 h-10 px-2 hover:bg-secondary/50"
                     onClick={() => navigate('profile')}
                   >
-                    <span className="r38-header-avatar-ring">
+                    <span className="r38-header-avatar-ring r44-avatar-ring">
                       <Avatar className="h-7 w-7 border border-background">
                         {currentUser.avatar ? (
                           <AvatarImage src={currentUser.avatar} alt={currentUser.name || 'Usuário'} />
@@ -493,7 +493,7 @@ export function Header() {
                         navigate(item.id as 'home' | 'orders' | 'favorites' | 'profile')
                       }
                     }}
-                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-200 r38-header-nav-link ${
+                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-200 r38-header-nav-link r44-nav-link ${
                       isActive 
                         ? 'text-primary bg-primary/10'
                         : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
@@ -515,7 +515,7 @@ export function Header() {
               {/* Cart in desktop nav */}
               <button
                 onClick={() => navigate('cart')}
-                className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 whitespace-nowrap r38-header-nav-link ${
+                className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 whitespace-nowrap r38-header-nav-link r44-nav-link ${
                   currentView === 'cart'
                     ? 'text-primary bg-primary/10'
                     : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'

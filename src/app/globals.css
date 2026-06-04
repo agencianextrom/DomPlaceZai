@@ -27301,3 +27301,3611 @@
 .r43-container {
   min-height: 100vh;
 }
+
+/* ==============================
+   R44 - NEIGHBORHOOD EVENTS 2
+   ============================== */
+
+/* Container */
+.r44-container {
+  position: relative;
+}
+
+/* Header */
+.r44-header {
+  position: relative;
+  z-index: 10;
+}
+
+/* Filters row */
+.r44-filters {
+  position: relative;
+  z-index: 10;
+}
+
+/* Filter chip active state */
+.r44-filter-chip {
+  min-height: 32px;
+}
+
+/* Event card glass style */
+.r44-card-glass {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: box-shadow 0.3s ease;
+}
+.r44-card-glass:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+}
+
+/* Date badge */
+.r44-date-badge {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Date badge - today highlight */
+.r44-date-today {
+  background: linear-gradient(135deg, rgba(16,185,129,0.9), rgba(5,150,105,0.9));
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+}
+
+/* Countdown live badge */
+.r44-countdown-live {
+  animation: r44-live-pulse 1.5s ease-in-out infinite;
+}
+@keyframes r44-live-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.2); }
+  50% { box-shadow: 0 0 0 4px rgba(239,68,68,0.1); }
+}
+
+/* Reaction buttons */
+.r44-reaction-btn {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* RSVP button wrapper */
+.r44-rsvp-btn {
+  display: inline-block;
+}
+
+/* Weather chip */
+.r44-weather-chip {
+  transition: all 0.2s ease;
+}
+.r44-weather-chip:hover {
+  border-color: rgba(16,185,129,0.3);
+}
+
+/* Share buttons */
+.r44-share-btns {
+  gap: 2px;
+}
+
+/* Cover image area */
+.r44-cover-image {
+  overflow: hidden;
+}
+
+/* Emoji fallback animation area */
+.r44-emoji-fallback {
+  background: linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(245,158,11,0.04) 100%);
+}
+
+/* Category badge on card */
+.r44-cat-badge {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Meta row */
+.r44-meta {
+  flex-wrap: wrap;
+}
+
+/* Actions row */
+.r44-actions {
+  border-top: 1px solid rgba(0,0,0,0.04);
+  padding-top: 8px;
+}
+
+/* Spotlight section */
+.r44-spotlight {
+  position: relative;
+  z-index: 10;
+}
+
+/* Hero card */
+.r44-hero-card {
+  border: 1px solid rgba(16,185,129,0.15);
+  box-shadow: 0 4px 16px rgba(16,185,129,0.06);
+}
+
+/* Hero background */
+.r44-hero-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hero content */
+.r44-hero-content {
+  position: relative;
+}
+
+/* Event detail dialog */
+.r44-detail-dialog {
+  max-width: 480px;
+}
+
+/* Organizer section */
+.r44-organizer {
+  transition: background-color 0.2s ease;
+}
+
+/* Description */
+.r44-desc {
+  line-height: 1.7;
+}
+
+/* Info grid */
+.r44-info-grid {
+  gap: 8px;
+}
+
+/* Weather detail section */
+.r44-weather-detail {
+  transition: background-color 0.2s ease;
+}
+
+/* Attendees section */
+.r44-attendees {
+  overflow-x: auto;
+}
+
+/* Photo gallery */
+.r44-photos-gallery {
+  overflow: hidden;
+}
+
+/* Photo thumbnail */
+.r44-photo-thumb {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r44-photo-thumb:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* Tags section */
+.r44-tags {
+  gap: 6px;
+}
+
+/* Events grid */
+.r44-events-grid {
+  position: relative;
+  z-index: 10;
+}
+
+/* Calendar view */
+.r44-calendar {
+  background: rgba(255,255,255,0.4);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.dark .r44-calendar {
+  background: rgba(0,0,0,0.2);
+  border-color: rgba(255,255,255,0.06);
+}
+
+/* Calendar header */
+.r44-cal-header {
+  margin-bottom: 12px;
+}
+
+/* Calendar day cell */
+.r44-cal-day {
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+/* Calendar event item */
+.r44-cal-event {
+  transition: background-color 0.2s ease;
+}
+.r44-cal-event:hover {
+  background-color: rgba(16,185,129,0.08);
+}
+
+/* Map view */
+.r44-map {
+  position: relative;
+  z-index: 10;
+}
+
+/* Map container */
+.r44-map-container {
+  position: relative;
+}
+
+/* Map pulse animation */
+.r44-map-pulse {
+  pointer-events: none;
+}
+
+/* Map tooltip */
+.r44-map-tooltip {
+  pointer-events: none;
+  max-width: 200px;
+  transform: translateX(-50%);
+}
+
+/* Past events section */
+.r44-past-events {
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding-top: 16px;
+}
+
+/* Past gallery */
+.r44-past-gallery {
+  gap: 8px;
+}
+
+/* Past thumbnail */
+.r44-past-thumb {
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r44-past-thumb:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+.dark .r44-past-thumb:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* Footer */
+.r44-footer {
+  opacity: 0;
+  animation: r44-fade-in 0.5s ease 0.8s forwards;
+}
+@keyframes r44-fade-in {
+  to { opacity: 1; }
+}
+
+/* ==============================================================
+   R44 — HEADER & MOBILE NAV ENHANCEMENTS
+   ============================================================== */
+
+/* --- r44-header-glass: Enhanced glassmorphism header wrapper --- */
+.r44-header-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  transition: background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+}
+.r44-header-glass.r44-header-scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    0 8px 32px rgba(0, 0, 0, 0.04),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+}
+.dark .r44-header-glass {
+  background: rgba(15, 15, 15, 0.72);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+.dark .r44-header-glass.r44-header-scrolled {
+  background: rgba(15, 15, 15, 0.92);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.25),
+    0 8px 32px rgba(0, 0, 0, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* --- r44-header-inner-glow: Top inner glow on scroll --- */
+.r44-header-inner-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.04) 0%, transparent 100%);
+}
+.r44-header-inner-glow.r44-header-glow-active {
+  opacity: 1;
+}
+.dark .r44-header-inner-glow.r44-header-glow-active {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, transparent 100%);
+}
+
+/* --- r44-header-shadow-line: Gradient border bottom on scroll --- */
+.r44-header-shadow-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(16, 185, 129, 0.3) 20%,
+    rgba(16, 185, 129, 0.5) 50%,
+    rgba(16, 185, 129, 0.3) 80%,
+    transparent 100%
+  );
+}
+.r44-header-shadow-line.r44-header-line-active {
+  opacity: 1;
+}
+.dark .r44-header-shadow-line.r44-header-line-active {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(52, 211, 153, 0.25) 20%,
+    rgba(52, 211, 153, 0.4) 50%,
+    rgba(52, 211, 153, 0.25) 80%,
+    transparent 100%
+  );
+}
+
+/* --- r44-search-input: Search input with animated gradient border on focus --- */
+.r44-search-input {
+  position: relative;
+  border-radius: 9999px;
+  padding: 1.5px;
+  background: rgba(0, 0, 0, 0.04);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.r44-search-input::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.0),
+    rgba(16, 185, 129, 0.0),
+    rgba(16, 185, 129, 0.0),
+    rgba(16, 185, 129, 0.0)
+  );
+  background-size: 300% 300%;
+  animation: r44-search-border-idle 6s ease-in-out infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+@keyframes r44-search-border-idle {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.r44-search-input.r44-search-focused {
+  background: transparent;
+  box-shadow:
+    0 0 0 3px rgba(16, 185, 129, 0.12),
+    0 0 16px rgba(16, 185, 129, 0.08);
+}
+.r44-search-input.r44-search-focused::before {
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.6),
+    rgba(52, 211, 153, 0.4),
+    rgba(16, 185, 129, 0.6),
+    rgba(52, 211, 153, 0.4)
+  );
+  background-size: 300% 300%;
+  animation: r44-search-border-focus 3s linear infinite;
+  opacity: 1;
+}
+@keyframes r44-search-border-focus {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.dark .r44-search-input {
+  background: rgba(255, 255, 255, 0.04);
+}
+.dark .r44-search-input.r44-search-focused {
+  box-shadow:
+    0 0 0 3px rgba(52, 211, 153, 0.15),
+    0 0 20px rgba(52, 211, 153, 0.1);
+}
+.dark .r44-search-input.r44-search-focused::before {
+  background: linear-gradient(135deg,
+    rgba(52, 211, 153, 0.5),
+    rgba(110, 231, 183, 0.35),
+    rgba(52, 211, 153, 0.5),
+    rgba(110, 231, 183, 0.35)
+  );
+  background-size: 300% 300%;
+}
+
+/* --- r44-search-inner: Inner background of search field --- */
+.r44-search-inner {
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.6);
+  transition: background 0.3s ease;
+}
+.dark .r44-search-inner {
+  background: rgba(20, 20, 20, 0.7);
+}
+.r44-search-focused .r44-search-inner {
+  background: rgba(255, 255, 255, 0.95);
+}
+.dark .r44-search-focused .r44-search-inner {
+  background: rgba(30, 30, 30, 0.95);
+}
+
+/* --- r44-cart-badge: Cart badge bounce pulse with glow --- */
+@keyframes r44-cart-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0);
+    transform: scale(1.08);
+  }
+}
+.r44-cart-badge {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  animation: r44-cart-pulse 2.5s ease-in-out infinite;
+  position: relative;
+}
+.r44-cart-badge::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(5, 150, 105, 0.3));
+  filter: blur(6px);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+.r44-cart-badge.r44-cart-badge-bouncing {
+  animation: r44-cart-bounce-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes r44-cart-bounce-in {
+  0% { transform: scale(0.4) translateY(-4px); }
+  40% { transform: scale(1.3) translateY(0px); }
+  60% { transform: scale(0.85) translateY(1px); }
+  80% { transform: scale(1.1) translateY(0px); }
+  100% { transform: scale(1) translateY(0); }
+}
+.dark .r44-cart-badge {
+  background: linear-gradient(135deg, #34d399, #10b981);
+}
+.dark .r44-cart-badge::after {
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.4), rgba(16, 185, 129, 0.25));
+}
+
+/* --- r44-bell-swing: Notification bell swing animation --- */
+@keyframes r44-bell-swing {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(14deg); }
+  30% { transform: rotate(-12deg); }
+  45% { transform: rotate(8deg); }
+  60% { transform: rotate(-6deg); }
+  75% { transform: rotate(3deg); }
+  90% { transform: rotate(-1deg); }
+}
+.r44-bell-swing {
+  animation: r44-bell-swing 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+  transform-origin: top center;
+}
+
+/* --- r44-bell-ring-glow: Glow ring around bell icon --- */
+.r44-bell-ring-glow {
+  position: relative;
+}
+.r44-bell-ring-glow::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(16, 185, 129, 0.25);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.r44-bell-ring-glow:hover::after {
+  opacity: 1;
+  animation: r44-bell-ring-pulse 1.5s ease-in-out infinite;
+}
+@keyframes r44-bell-ring-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 0.2; }
+}
+
+/* --- r44-logo-shimmer: Logo shimmer effect --- */
+.r44-logo-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.r44-logo-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.15) 70%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+  z-index: 1;
+}
+.r44-logo-shimmer:hover::after {
+  animation: r44-logo-shimmer-sweep 0.8s ease-out;
+}
+@keyframes r44-logo-shimmer-sweep {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+.dark .r44-logo-shimmer::after {
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 30%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.06) 70%,
+    transparent 100%
+  );
+}
+
+/* --- r44-logo-text-glow: Logo text with subtle glow on hover --- */
+.r44-logo-text-glow {
+  transition: text-shadow 0.35s ease, filter 0.35s ease;
+}
+.r44-logo-text-glow:hover {
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.3), 0 0 24px rgba(16, 185, 129, 0.12);
+  filter: brightness(1.05);
+}
+.dark .r44-logo-text-glow:hover {
+  text-shadow: 0 0 14px rgba(52, 211, 153, 0.35), 0 0 28px rgba(52, 211, 153, 0.15);
+}
+
+/* --- r44-avatar-ring: User avatar ring glow --- */
+.r44-avatar-ring {
+  position: relative;
+  display: inline-flex;
+  border-radius: 50%;
+  padding: 2px;
+  background: transparent;
+  transition: background 0.35s ease;
+}
+.r44-avatar-ring::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.0),
+    rgba(16, 185, 129, 0.0),
+    rgba(52, 211, 153, 0.0),
+    rgba(16, 185, 129, 0.0)
+  );
+  background-size: 200% 200%;
+  animation: r44-avatar-ring-rotate 4s linear infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+@keyframes r44-avatar-ring-rotate {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.r44-avatar-ring:hover::before {
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.6),
+    rgba(52, 211, 153, 0.4),
+    rgba(16, 185, 129, 0.6),
+    rgba(52, 211, 153, 0.4)
+  );
+  opacity: 1;
+}
+.r44-avatar-ring::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  transition: box-shadow 0.35s ease;
+  pointer-events: none;
+}
+.r44-avatar-ring:hover::after {
+  box-shadow:
+    0 0 8px rgba(16, 185, 129, 0.2),
+    0 0 20px rgba(16, 185, 129, 0.1);
+}
+.dark .r44-avatar-ring:hover::before {
+  background: linear-gradient(135deg,
+    rgba(52, 211, 153, 0.5),
+    rgba(110, 231, 183, 0.35),
+    rgba(52, 211, 153, 0.5),
+    rgba(110, 231, 183, 0.35)
+  );
+}
+.dark .r44-avatar-ring:hover::after {
+  box-shadow:
+    0 0 10px rgba(52, 211, 153, 0.25),
+    0 0 24px rgba(52, 211, 153, 0.12);
+}
+
+/* --- r44-nav-link: Desktop nav link with hover lift + glow --- */
+.r44-nav-link {
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, color 0.2s ease, background-color 0.2s ease;
+}
+.r44-nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  transition: box-shadow 0.3s ease;
+  pointer-events: none;
+}
+.r44-nav-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.06);
+}
+.r44-nav-link:hover::before {
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
+}
+.dark .r44-nav-link:hover {
+  box-shadow: 0 2px 8px rgba(52, 211, 153, 0.08);
+}
+
+/* --- r44-hamburger-anim: Hamburger icon animation --- */
+.r44-hamburger-anim {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 20px;
+  height: 20px;
+}
+.r44-hamburger-anim .r44-hamburger-line {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  transform-origin: center;
+}
+.r44-hamburger-anim.r44-hamburger-open .r44-hamburger-line:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.r44-hamburger-anim.r44-hamburger-open .r44-hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.r44-hamburger-anim.r44-hamburger-open .r44-hamburger-line:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+
+/* ==============================================================
+   R44 — MOBILE NAV ENHANCEMENTS
+   ============================================================== */
+
+/* --- r44-mobnav-bg: Animated gradient background for mobile nav --- */
+.r44-mobnav-bg {
+  position: relative;
+  background: rgba(255, 255, 255, 0.75);
+  overflow: hidden;
+}
+.r44-mobnav-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.03) 0%,
+    rgba(52, 211, 153, 0.01) 25%,
+    rgba(16, 185, 129, 0.04) 50%,
+    rgba(245, 158, 11, 0.02) 75%,
+    rgba(16, 185, 129, 0.03) 100%
+  );
+  background-size: 300% 300%;
+  animation: r44-mobnav-gradient-shift 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes r44-mobnav-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  25% { background-position: 100% 0%; }
+  50% { background-position: 100% 100%; }
+  75% { background-position: 0% 100%; }
+}
+.dark .r44-mobnav-bg {
+  background: rgba(15, 15, 15, 0.8);
+}
+.dark .r44-mobnav-bg::before {
+  background: linear-gradient(
+    135deg,
+    rgba(52, 211, 153, 0.06) 0%,
+    rgba(16, 185, 129, 0.02) 25%,
+    rgba(52, 211, 153, 0.05) 50%,
+    rgba(245, 158, 11, 0.02) 75%,
+    rgba(52, 211, 153, 0.06) 100%
+  );
+  background-size: 300% 300%;
+}
+
+/* --- r44-mobnav-glass: Glass effect overlay --- */
+.r44-mobnav-glass {
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  z-index: 1;
+}
+.dark .r44-mobnav-glass {
+  border-top-color: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+}
+
+/* --- r44-mobnav-shimmer: Active item shimmer overlay --- */
+.r44-mobnav-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.r44-mobnav-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(16, 185, 129, 0.06) 30%,
+    rgba(16, 185, 129, 0.12) 50%,
+    rgba(16, 185, 129, 0.06) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+  animation: r44-mobnav-shimmer-sweep 3s ease-in-out infinite;
+}
+@keyframes r44-mobnav-shimmer-sweep {
+  0% { left: -100%; }
+  100% { left: 250%; }
+}
+.dark .r44-mobnav-shimmer::after {
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(52, 211, 153, 0.06) 30%,
+    rgba(52, 211, 153, 0.1) 50%,
+    rgba(52, 211, 153, 0.06) 70%,
+    transparent 100%
+  );
+}
+
+/* --- r44-mobnav-stagger: Staggered spring entrance wrapper --- */
+.r44-mobnav-stagger {
+  opacity: 0;
+  transform: translateY(16px) scale(0.92);
+  animation: r44-mobnav-stagger-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--r44-stagger-delay, 0ms);
+}
+@keyframes r44-mobnav-stagger-in {
+  0% { opacity: 0; transform: translateY(16px) scale(0.92); }
+  60% { opacity: 1; transform: translateY(-2px) scale(1.03); }
+  80% { transform: translateY(1px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- r44-mobnav-cart-glow: Cart badge glow pulse in mobile nav --- */
+@keyframes r44-mobnav-cart-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 rgba(245, 158, 11, 0.4),
+      0 2px 8px rgba(245, 158, 11, 0.15);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 0 5px rgba(245, 158, 11, 0),
+      0 2px 12px rgba(245, 158, 11, 0.2);
+    transform: scale(1.06);
+  }
+}
+.r44-mobnav-cart-glow {
+  animation: r44-mobnav-cart-pulse 2.5s ease-in-out infinite;
+}
+.r44-mobnav-cart-glow.r44-mobnav-cart-bounce {
+  animation: r44-mobnav-cart-bounce-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes r44-mobnav-cart-bounce-in {
+  0% { transform: scale(0.3); }
+  50% { transform: scale(1.25); }
+  70% { transform: scale(0.88); }
+  100% { transform: scale(1); }
+}
+
+/* --- r44-mobnav-item: Nav item hover lift with glow --- */
+.r44-mobnav-item {
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.r44-mobnav-item::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 16px;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  transition: box-shadow 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+.r44-mobnav-item:active {
+  transform: scale(0.92);
+}
+.r44-mobnav-item:hover {
+  transform: translateY(-3px);
+}
+.r44-mobnav-item:hover::before {
+  box-shadow:
+    0 4px 12px rgba(16, 185, 129, 0.08),
+    0 0 16px rgba(16, 185, 129, 0.04);
+}
+.dark .r44-mobnav-item:hover::before {
+  box-shadow:
+    0 4px 12px rgba(52, 211, 153, 0.1),
+    0 0 16px rgba(52, 211, 153, 0.05);
+}
+
+/* --- r44-mobnav-dot: Active indicator animated gradient dot --- */
+.r44-mobnav-dot {
+  position: relative;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.r44-mobnav-dot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0.0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0.0) 100%
+  );
+  background-size: 200% 100%;
+  animation: r44-mobnav-dot-shimmer 2s linear infinite;
+}
+@keyframes r44-mobnav-dot-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.r44-mobnav-dot::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.3), 0 0 14px rgba(16, 185, 129, 0.12);
+  pointer-events: none;
+}
+.dark .r44-mobnav-dot {
+  background: linear-gradient(135deg, #34d399, #6ee7b7);
+}
+.dark .r44-mobnav-dot::after {
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.35), 0 0 18px rgba(52, 211, 153, 0.15);
+}
+
+/* --- r44-mobnav-cart-btn: Floating cart button container --- */
+.r44-mobnav-cart-btn {
+  position: relative;
+}
+.r44-mobnav-cart-btn::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #10b981, #059669);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+  filter: blur(8px);
+}
+.r44-mobnav-cart-btn:hover::before {
+  opacity: 0.3;
+}
+.dark .r44-mobnav-cart-btn::before {
+  background: linear-gradient(135deg, #34d399, #10b981);
+}
+
+/* --- r44-mobnav-top-line: Top accent line for mobile nav --- */
+.r44-mobnav-top-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(16, 185, 129, 0.25) 20%,
+    rgba(16, 185, 129, 0.45) 50%,
+    rgba(16, 185, 129, 0.25) 80%,
+    transparent 100%
+  );
+}
+.dark .r44-mobnav-top-line {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(52, 211, 153, 0.2) 20%,
+    rgba(52, 211, 153, 0.35) 50%,
+    rgba(52, 211, 153, 0.2) 80%,
+    transparent 100%
+  );
+}
+
+/* --- r44-mobnav-fade-top: Gradient fade above mobile nav --- */
+.r44-mobnav-fade-top {
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.03));
+}
+.dark .r44-mobnav-fade-top {
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.12));
+}
+
+/* --- r44-mobnav-shadow: Bottom shadow for depth --- */
+.r44-mobnav-shadow {
+  box-shadow:
+    0 -2px 16px rgba(0, 0, 0, 0.04),
+    0 -1px 4px rgba(0, 0, 0, 0.02);
+}
+.dark .r44-mobnav-shadow {
+  box-shadow:
+    0 -2px 16px rgba(0, 0, 0, 0.2),
+    0 -1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* --- r44-mobnav-safe-area: Safe area padding for iOS --- */
+.r44-mobnav-safe-area {
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+/* ================================================================
+   R44 — WelcomeModal Enhanced Animations (200+ lines)
+   ================================================================ */
+
+/* --- r44-wm-backdrop: Modal backdrop blur+scale entrance --- */
+@keyframes r44-wm-backdrop-in {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+.r44-wm-backdrop {
+  animation: r44-wm-backdrop-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* --- r44-wm-scale-enter: Modal scale+fade entrance --- */
+@keyframes r44-wm-scale-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.82) translateY(32px);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.03) translateY(-4px);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+}
+.r44-wm-scale-enter {
+  animation: r44-wm-scale-enter 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* --- r44-wm-header: Gradient header with shimmer overlay --- */
+.r44-wm-header {
+  position: relative;
+  overflow: hidden;
+}
+.r44-wm-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.12) 35%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.12) 65%,
+    transparent 80%
+  );
+  background-size: 250% 100%;
+  animation: r44-wm-header-shimmer 3.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+@keyframes r44-wm-header-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* --- r44-wm-particle: Floating particles with varied glow --- */
+.r44-wm-particle {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+  z-index: 3;
+}
+.r44-wm-particle-amber {
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5));
+}
+.r44-wm-particle-emerald {
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
+}
+.r44-wm-particle-rose {
+  filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.5));
+}
+.r44-wm-particle-violet {
+  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
+}
+.r44-wm-particle-orange {
+  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.5));
+}
+.r44-wm-particle-sky {
+  filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.5));
+}
+.r44-wm-particle-pink {
+  filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.45));
+}
+.r44-wm-particle-teal {
+  filter: drop-shadow(0 0 8px rgba(20, 184, 166, 0.5));
+}
+.r44-wm-particle-yellow {
+  filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.5));
+}
+.r44-wm-particle-lime {
+  filter: drop-shadow(0 0 8px rgba(132, 204, 22, 0.5));
+}
+.r44-wm-particle-fuchsia {
+  filter: drop-shadow(0 0 8px rgba(192, 38, 211, 0.5));
+}
+.r44-wm-particle-cyan {
+  filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.5));
+}
+
+/* --- r44-wm-dot-active: Pulsing glow for active dot indicator --- */
+.r44-wm-dot-active {
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.45), 0 0 20px rgba(16, 185, 129, 0.2);
+}
+@keyframes r44-wm-dot-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4), 0 0 16px rgba(16, 185, 129, 0.15);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.6), 0 0 28px rgba(16, 185, 129, 0.3);
+    transform: scale(1.08);
+  }
+}
+.r44-wm-dot-active {
+  animation: r44-wm-dot-pulse 2s ease-in-out infinite;
+}
+
+/* --- r44-wm-dot-ring: Expanding ring on active dot --- */
+@keyframes r44-wm-dot-ring-expand {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.r44-wm-dot-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 2px solid rgba(16, 185, 129, 0.35);
+  animation: r44-wm-dot-ring-expand 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+/* --- r44-wm-btn-shimmer: CTA multi-layer shimmer button --- */
+.r44-wm-btn-shimmer {
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 4px 16px rgba(16, 185, 129, 0.3),
+    0 2px 6px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.r44-wm-btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.15) 35%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.15) 65%,
+    transparent 80%
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+  z-index: 1;
+  animation: r44-wm-btn-shimmer-layer1 3s ease-in-out infinite;
+}
+@keyframes r44-wm-btn-shimmer-layer1 {
+  0% { left: -120%; }
+  50% { left: 120%; }
+  100% { left: 120%; }
+}
+.r44-wm-btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.08) 40%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.08) 60%,
+    transparent 75%
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+  z-index: 1;
+  animation: r44-wm-btn-shimmer-layer2 3s ease-in-out 1.5s infinite;
+}
+@keyframes r44-wm-btn-shimmer-layer2 {
+  0% { left: -80%; }
+  50% { left: 130%; }
+  100% { left: 130%; }
+}
+
+/* --- r44-wm-btn-glow-ring: Outer glow ring for CTA button --- */
+@keyframes r44-wm-btn-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 8px rgba(16, 185, 129, 0.25),
+      0 0 20px rgba(16, 185, 129, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 14px rgba(16, 185, 129, 0.4),
+      0 0 32px rgba(16, 185, 129, 0.18);
+  }
+}
+.r44-wm-btn-glow-ring {
+  animation: r44-wm-btn-glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* --- r44-wm-step-transition: Onboarding step slide animation --- */
+@keyframes r44-wm-step-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateX(40px) scale(0.96);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0px);
+  }
+}
+@keyframes r44-wm-step-fade-out {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-40px) scale(0.96);
+    filter: blur(2px);
+  }
+}
+.r44-wm-step-enter {
+  animation: r44-wm-step-fade-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.r44-wm-step-exit {
+  animation: r44-wm-step-fade-out 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* --- r44-wm-skip-btn: Skip button hover effect --- */
+.r44-wm-skip-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-wm-skip-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(239, 68, 68, 0.08) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.r44-wm-skip-btn:hover {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.12);
+}
+.r44-wm-skip-btn:hover::after {
+  opacity: 1;
+}
+
+/* --- r44-wm-close-btn: Close button hover glow effect --- */
+.r44-wm-close-btn {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-wm-close-btn:hover {
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.2), 0 0 6px rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* --- r44-wm-icon-box: Floating icon box enhanced --- */
+.r44-wm-icon-box {
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: box-shadow 0.3s ease;
+}
+
+/* --- r44-wm-shimmer-title: Title text gradient shimmer --- */
+.r44-wm-shimmer-title {
+  background: linear-gradient(
+    110deg,
+    #059669 0%,
+    #10b981 20%,
+    #f59e0b 40%,
+    #10b981 60%,
+    #059669 80%,
+    #10b981 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: r44-wm-title-shimmer 4s linear infinite;
+}
+@keyframes r44-wm-title-shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
+
+/* --- r44-wm-feature-card: Feature card hover enhanced --- */
+.r44-wm-feature-card {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.r44-wm-feature-card:hover {
+  box-shadow:
+    0 4px 16px rgba(16, 185, 129, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+/* --- r44-wm-animated-border: Rotating gradient border --- */
+@keyframes r44-wm-border-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.r44-wm-animated-border {
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    #10b981,
+    #f59e0b,
+    #ec4899,
+    #8b5cf6,
+    #10b981
+  );
+  animation: r44-wm-border-rotate 6s linear infinite;
+  z-index: -1;
+  opacity: 0.5;
+  filter: blur(2px);
+}
+.r44-wm-animated-border::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background: inherit;
+  animation: inherit;
+  filter: blur(0px);
+  opacity: 1;
+}
+
+/* --- r44-wm-orb: Enhanced floating orb --- */
+.r44-wm-orb {
+  filter: blur(2px);
+  mix-blend-mode: soft-light;
+}
+
+/* --- r44-wm-dot-connector: Dot connector line animation --- */
+.r44-wm-dot-connector {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- r44-wm-indicators: Step indicator container --- */
+.r44-wm-indicators {
+  position: relative;
+  padding: 4px 0;
+}
+
+/* --- r44-wm-dot: Individual step dot --- */
+.r44-wm-dot {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-wm-dot:hover {
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+/* --- r44-wm-dot-glow: Glow layer on active dot --- */
+.r44-wm-dot-glow {
+  pointer-events: none;
+}
+.r44-wm-dot-inner-glow {
+  pointer-events: none;
+}
+
+/* --- r44-wm-content-area: Content area enhanced --- */
+.r44-wm-content-area {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
+}
+.dark .r44-wm-content-area {
+  background: linear-gradient(
+    180deg,
+    rgba(30, 41, 59, 0.98) 0%,
+    rgba(30, 41, 59, 1) 100%
+  );
+}
+
+/* --- r44-wm-modal-outer: Modal outer container --- */
+.r44-wm-modal-outer {
+  border-radius: 1rem;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.18),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* --- r44-wm-features-grid: Feature grid layout --- */
+.r44-wm-features-grid {
+  perspective: 800px;
+}
+
+/* --- r44-wm-feature-icon-wrap: Feature icon container --- */
+.r44-wm-feature-icon-wrap {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 0.5rem;
+}
+
+/* ================================================================
+   R44 — CookieConsent Enhanced Animations (150+ lines)
+   ================================================================ */
+
+/* --- r44-cc-slide-up: Slide-up entrance animation --- */
+@keyframes r44-cc-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(80px) scale(0.95);
+    filter: blur(4px);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.01);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+.r44-cc-slide-up {
+  animation: r44-cc-slide-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* --- r44-cc-glass: Glassmorphism card for cookie banner --- */
+.r44-cc-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: box-shadow 0.4s ease;
+}
+.dark .r44-cc-glass {
+  background: rgba(30, 41, 59, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* --- r44-cc-accept-btn: Accept button gradient shimmer --- */
+.r44-cc-accept-btn {
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 4px 12px rgba(16, 185, 129, 0.25),
+    0 2px 4px rgba(16, 185, 129, 0.12);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-cc-accept-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 15%,
+    rgba(255, 255, 255, 0.2) 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.2) 65%,
+    transparent 85%
+  );
+  transform: skewX(-15deg);
+  pointer-events: none;
+  z-index: 1;
+  animation: r44-cc-shimmer-sweep 3.5s ease-in-out infinite;
+}
+@keyframes r44-cc-shimmer-sweep {
+  0% { left: -100%; }
+  40% { left: 140%; }
+  100% { left: 140%; }
+}
+.r44-cc-accept-btn:hover {
+  box-shadow:
+    0 6px 20px rgba(16, 185, 129, 0.35),
+    0 3px 8px rgba(16, 185, 129, 0.18);
+  transform: translateY(-1px);
+}
+
+/* --- r44-cc-settings-btn: Settings button hover glow --- */
+.r44-cc-settings-btn {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+.r44-cc-settings-btn::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at center,
+    rgba(16, 185, 129, 0.15) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+.r44-cc-settings-btn:hover {
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.15), 0 0 8px rgba(16, 185, 129, 0.08);
+  color: #059669;
+}
+.r44-cc-settings-btn:hover::after {
+  opacity: 1;
+}
+
+/* --- r44-cc-category-expand: Cookie category animated expand --- */
+@keyframes r44-cc-expand-in {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  100% {
+    max-height: 300px;
+    opacity: 1;
+    transform: translateY(0);
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+  }
+}
+.r44-cc-category-expand {
+  animation: r44-cc-expand-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+}
+
+/* --- r44-cc-toggle-track: Animated toggle switch track --- */
+.r44-cc-toggle-track {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.12);
+  transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  cursor: pointer;
+}
+.r44-cc-toggle-track[data-active="true"] {
+  background: #10b981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.35), 0 0 4px rgba(16, 185, 129, 0.2);
+}
+.dark .r44-cc-toggle-track {
+  background: rgba(255, 255, 255, 0.12);
+}
+.dark .r44-cc-toggle-track[data-active="true"] {
+  background: #10b981;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.45), 0 0 6px rgba(16, 185, 129, 0.25);
+}
+
+/* --- r44-cc-toggle-thumb: Animated toggle switch thumb --- */
+.r44-cc-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+.r44-cc-toggle-track[data-active="true"] .r44-cc-toggle-thumb {
+  transform: translateX(20px);
+  box-shadow: 0 1px 6px rgba(16, 185, 129, 0.3);
+}
+
+/* --- r44-cc-float-1: Floating cookie emoji 1 --- */
+@keyframes r44-cc-float-1 {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) rotate(0deg) scale(0.6);
+  }
+  15% {
+    opacity: 0.5;
+    transform: translateY(-40px) rotate(20deg) scale(1);
+  }
+  70% {
+    opacity: 0.25;
+    transform: translateY(-90px) rotate(-10deg) scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) rotate(15deg) scale(0.5);
+  }
+}
+.r44-cc-float-1 {
+  animation: r44-cc-float-1 5.5s ease-in-out 0.5s infinite;
+}
+
+/* --- r44-cc-float-2: Floating cookie emoji 2 --- */
+@keyframes r44-cc-float-2 {
+  0% {
+    opacity: 0;
+    transform: translateY(15px) rotate(-5deg) scale(0.7);
+  }
+  12% {
+    opacity: 0.45;
+    transform: translateY(-35px) rotate(15deg) scale(1.05);
+  }
+  65% {
+    opacity: 0.2;
+    transform: translateY(-80px) rotate(-20deg) scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-110px) rotate(10deg) scale(0.4);
+  }
+}
+.r44-cc-float-2 {
+  animation: r44-cc-float-2 6s ease-in-out 2s infinite;
+}
+
+/* --- r44-cc-float-3: Floating cookie emoji 3 --- */
+@keyframes r44-cc-float-3 {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) rotate(8deg) scale(0.65);
+  }
+  18% {
+    opacity: 0.5;
+    transform: translateY(-45px) rotate(-12deg) scale(1);
+  }
+  60% {
+    opacity: 0.22;
+    transform: translateY(-95px) rotate(18deg) scale(0.88);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-130px) rotate(-8deg) scale(0.45);
+  }
+}
+.r44-cc-float-3 {
+  animation: r44-cc-float-3 6.5s ease-in-out 3.5s infinite;
+}
+
+/* --- r44-cc-cookie-icon: Rotating cookie icon --- */
+@keyframes r44-cc-cookie-spin {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(12deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-12deg); }
+  100% { transform: rotate(0deg); }
+}
+.r44-cc-cookie-spin {
+  animation: r44-cc-cookie-spin 4s ease-in-out infinite;
+}
+
+/* --- r44-cc-close-hover: Close/reject button hover effect --- */
+.r44-cc-close-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-cc-close-hover:hover {
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+  color: #059669;
+  background: rgba(16, 185, 129, 0.08);
+}
+
+/* --- r44-cc-dialog-header: Cookie dialog header gradient --- */
+.r44-cc-dialog-header {
+  position: relative;
+  overflow: hidden;
+}
+.r44-cc-dialog-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.15) 55%,
+    rgba(255, 255, 255, 0.08) 70%,
+    transparent 85%
+  );
+  background-size: 200% 100%;
+  animation: r44-cc-header-shimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes r44-cc-header-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* --- r44-cc-pref-item: Preference item hover --- */
+.r44-cc-pref-item {
+  transition: background 0.25s ease, border-radius 0.25s ease;
+  border-radius: 0.5rem;
+}
+.r44-cc-pref-item:hover {
+  background: rgba(16, 185, 129, 0.04);
+}
+.dark .r44-cc-pref-item:hover {
+  background: rgba(16, 185, 129, 0.08);
+}
+
+/* --- r44-cc-save-btn: Save preferences button --- */
+.r44-cc-save-btn {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+.r44-cc-save-btn:hover {
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ==================================================================
+   R44 — SmartSuggestions Enhanced Styles
+   ================================================================== */
+
+/* --- r44-smart-card-hover: Suggestion card enhanced hover with scale + layered shadow --- */
+.r44-smart-card-hover {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+}
+.r44-smart-card-hover:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow:
+    0 4px 12px rgba(5, 150, 105, 0.08),
+    0 12px 28px rgba(5, 150, 105, 0.12),
+    0 20px 48px rgba(0, 0, 0, 0.06);
+  border-color: rgba(5, 150, 105, 0.25);
+}
+.dark .r44-smart-card-hover:hover {
+  box-shadow:
+    0 4px 12px rgba(16, 185, 129, 0.12),
+    0 12px 28px rgba(16, 185, 129, 0.18),
+    0 20px 48px rgba(0, 0, 0, 0.2);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* --- r44-smart-card-inner-glow: Subtle inner radial glow on hover --- */
+.r44-smart-card-inner-glow {
+  position: relative;
+  overflow: hidden;
+}
+.r44-smart-card-inner-glow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(5, 150, 105, 0.06) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+.r44-smart-card-inner-glow:hover::after {
+  opacity: 1;
+}
+.dark .r44-smart-card-inner-glow::after {
+  background: radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+}
+
+/* --- r44-ai-badge-glow: AI badge animated glow pulse --- */
+@keyframes r44-ai-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(245, 158, 11, 0.3), 0 0 12px rgba(245, 158, 11, 0.15);
+    text-shadow: 0 0 6px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.5), 0 0 24px rgba(245, 158, 11, 0.25), 0 0 40px rgba(245, 158, 11, 0.1);
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+  }
+}
+@keyframes r44-ai-badge-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+.r44-ai-badge-glow {
+  animation: r44-ai-glow-pulse 2.4s ease-in-out infinite, r44-ai-badge-scale 2.4s ease-in-out infinite;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+.r44-ai-badge-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent 60%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* --- r44-header-shimmer: Section header animated shimmer text --- */
+@keyframes r44-shimmer-text-flow {
+  0% { background-position: -300% center; }
+  100% { background-position: 300% center; }
+}
+.r44-header-shimmer {
+  background: linear-gradient(
+    90deg,
+    #059669 0%,
+    #f59e0b 20%,
+    #10b981 40%,
+    #f59e0b 60%,
+    #059669 80%,
+    #10b981 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: r44-shimmer-text-flow 4s linear infinite;
+}
+.dark .r44-header-shimmer {
+  background: linear-gradient(
+    90deg,
+    #10b981 0%,
+    #fbbf24 20%,
+    #34d399 40%,
+    #fbbf24 60%,
+    #10b981 80%,
+    #34d399 100%
+  );
+  background-size: 300% auto;
+}
+
+/* --- r44-header-subtitle-fade: Subtitle with delayed fade-in --- */
+@keyframes r44-subtitle-in {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.r44-header-subtitle-fade {
+  animation: r44-subtitle-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+/* --- r44-skeleton-shimmer: Enhanced loading skeleton with multi-layer shimmer --- */
+@keyframes r44-skeleton-sweep {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(300%) skewX(-15deg); }
+}
+.r44-skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.r44-skeleton-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.35) 70%,
+    transparent 100%
+  );
+  animation: r44-skeleton-sweep 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+.dark .r44-skeleton-shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 70%,
+    transparent 100%
+  );
+}
+
+/* --- r44-skeleton-card: Skeleton card enhanced with shimmer + border pulse --- */
+@keyframes r44-skeleton-border-pulse {
+  0%, 100% { border-color: rgba(5, 150, 105, 0.08); }
+  50% { border-color: rgba(5, 150, 105, 0.2); }
+}
+.r44-skeleton-card {
+  animation: r44-skeleton-border-pulse 2s ease-in-out infinite;
+  border: 1px solid rgba(5, 150, 105, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* --- r44-card-image-zoom: Card image enhanced zoom on hover --- */
+.r44-card-image-zoom {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+  transform-origin: center center;
+}
+.r44-card-image-zoom:hover,
+.r44-card-image-zoom-wrapper:hover .r44-card-image-zoom {
+  transform: scale(1.12);
+  filter: brightness(1.05) saturate(1.1);
+}
+.dark .r44-card-image-zoom:hover,
+.dark .r44-card-image-zoom-wrapper:hover .r44-card-image-zoom {
+  filter: brightness(1.1) saturate(1.15);
+}
+
+/* --- r44-card-image-overlay: Gradient overlay that appears on hover --- */
+.r44-card-image-zoom-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+.r44-card-image-zoom-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(5, 150, 105, 0.08) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.r44-card-image-zoom-wrapper:hover::after {
+  opacity: 1;
+}
+.dark .r44-card-image-zoom-wrapper::after {
+  background: linear-gradient(180deg, transparent 50%, rgba(16, 185, 129, 0.12) 100%);
+}
+
+/* --- r44-discount-badge-shine: Discount badge with sweep shine --- */
+@keyframes r44-discount-badge-shine {
+  0% { left: -120%; }
+  100% { left: 220%; }
+}
+.r44-discount-badge-shine {
+  position: relative;
+  overflow: hidden;
+}
+.r44-discount-badge-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: skewX(-20deg);
+  animation: r44-discount-badge-shine 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* --- r44-tag-pill: Enhanced suggestion tag with glow on hover --- */
+.r44-tag-pill {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+.r44-tag-pill:hover {
+  box-shadow: 0 0 8px rgba(5, 150, 105, 0.15), 0 2px 6px rgba(5, 150, 105, 0.1);
+  transform: translateY(-1px);
+}
+
+/* ==================================================================
+   R44 — FlashSale Enhanced Styles
+   ================================================================== */
+
+/* --- r44-header-gradient-text: Section header gradient text animation --- */
+@keyframes r44-flash-gradient-cycle {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.r44-header-gradient-text {
+  background: linear-gradient(
+    270deg,
+    #ef4444 0%,
+    #f97316 15%,
+    #eab308 30%,
+    #ef4444 45%,
+    #f97316 60%,
+    #eab308 75%,
+    #ef4444 100%
+  );
+  background-size: 400% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: r44-flash-gradient-cycle 4s ease-in-out infinite;
+}
+.dark .r44-header-gradient-text {
+  background: linear-gradient(
+    270deg,
+    #f87171 0%,
+    #fb923c 15%,
+    #facc15 30%,
+    #f87171 45%,
+    #fb923c 60%,
+    #facc15 75%,
+    #f87171 100%
+  );
+  background-size: 400% auto;
+}
+
+/* --- r44-header-fire-glow: Animated fire glow behind header text --- */
+@keyframes r44-fire-glow-breathe {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.2), 0 0 16px rgba(249, 115, 22, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.35), 0 0 32px rgba(249, 115, 22, 0.18), 0 0 48px rgba(234, 179, 8, 0.08);
+  }
+}
+.r44-header-fire-glow {
+  animation: r44-fire-glow-breathe 2.2s ease-in-out infinite;
+}
+
+/* --- r44-new-badge-sparkle: "New" badge with sparkle particle effect --- */
+@keyframes r44-sparkle-rotate {
+  0% { transform: rotate(0deg) scale(0.6); opacity: 0; }
+  20% { opacity: 1; transform: rotate(72deg) scale(1); }
+  80% { opacity: 1; transform: rotate(288deg) scale(1); }
+  100% { transform: rotate(360deg) scale(0.6); opacity: 0; }
+}
+.r44-new-badge-sparkle {
+  position: relative;
+  overflow: visible;
+}
+.r44-new-badge-sparkle::before,
+.r44-new-badge-sparkle::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  top: -3px;
+  right: -3px;
+  background: radial-gradient(circle, rgba(234, 179, 8, 0.9), transparent 70%);
+  border-radius: 50%;
+  animation: r44-sparkle-rotate 2.8s linear infinite;
+  pointer-events: none;
+}
+.r44-new-badge-sparkle::after {
+  animation-delay: 1.4s;
+  width: 10px;
+  height: 10px;
+  top: -5px;
+  right: -5px;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.7), transparent 70%);
+}
+
+/* --- r44-new-badge-shine: Sweep shine on the new badge itself --- */
+@keyframes r44-new-shine-sweep {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+.r44-new-badge-shine {
+  position: relative;
+  overflow: hidden;
+}
+.r44-new-badge-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: skewX(-20deg);
+  animation: r44-new-shine-sweep 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* --- r44-countdown-ring-shadow: Enhanced shadow for countdown ring --- */
+.r44-countdown-ring-shadow {
+  filter: drop-shadow(0 0 3px rgba(16, 185, 129, 0.25)) drop-shadow(0 0 8px rgba(245, 158, 11, 0.15));
+  transition: filter 0.3s ease;
+}
+.r44-countdown-ring-shadow:hover {
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.4)) drop-shadow(0 0 14px rgba(245, 158, 11, 0.25));
+}
+
+/* --- r44-countdown-digit-bounce: Digit bounce when value changes --- */
+@keyframes r44-digit-bounce-in {
+  0% { transform: scale(1.25) translateY(-2px); opacity: 0.7; }
+  50% { transform: scale(0.95) translateY(1px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.r44-countdown-digit-bounce {
+  animation: r44-digit-bounce-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- r44-scroll-fade-edges: Enhanced gradient fade for scroll container --- */
+.r44-scroll-fade-edges {
+  position: relative;
+  -webkit-mask-image: linear-gradient(to right, transparent 0px, black 32px, black calc(100% - 32px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0px, black 32px, black calc(100% - 32px), transparent 100%);
+}
+.r44-scroll-fade-edges::before,
+.r44-scroll-fade-edges::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  z-index: 5;
+  pointer-events: none;
+}
+.r44-scroll-fade-edges::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(254, 242, 242, 0.9), transparent);
+}
+.r44-scroll-fade-edges::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(254, 242, 242, 0.9), transparent);
+}
+.dark .r44-scroll-fade-edges::before {
+  background: linear-gradient(to right, rgba(127, 29, 29, 0.15), transparent);
+}
+.dark .r44-scroll-fade-edges::after {
+  background: linear-gradient(to left, rgba(127, 29, 29, 0.15), transparent);
+}
+
+/* --- r44-cta-bottom-shimmer: Bottom CTA button shimmer effect --- */
+@keyframes r44-cta-shimmer-flow {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.r44-cta-bottom-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.r44-cta-bottom-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 40%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.15) 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: r44-cta-shimmer-flow 2.2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+.dark .r44-cta-bottom-shimmer::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 40%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* --- r44-progress-bar-glow: Stock progress bar with animated glow --- */
+@keyframes r44-stock-glow-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.3); }
+  50% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5), 0 0 20px rgba(239, 68, 68, 0.2); }
+}
+.r44-progress-bar-glow {
+  animation: r44-stock-glow-pulse 1.8s ease-in-out infinite;
+  border-radius: 9999px;
+}
+
+/* --- r44-scroll-snap: Smooth scroll snap for flash sale cards --- */
+.r44-scroll-snap {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.r44-scroll-snap > * {
+  scroll-snap-align: start;
+}
+
+/* ==================================================================
+   R44 — DealOfTheDay Enhanced Styles
+   ================================================================== */
+
+/* --- r44-comparison-glass: Comparison section glassmorphism --- */
+.r44-comparison-glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(5, 150, 105, 0.12);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(5, 150, 105, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-comparison-glass:hover {
+  box-shadow:
+    0 12px 40px rgba(5, 150, 105, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  border-color: rgba(5, 150, 105, 0.2);
+  transform: translateY(-2px);
+}
+.dark .r44-comparison-glass {
+  background: rgba(20, 40, 30, 0.55);
+  border-color: rgba(16, 185, 129, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.dark .r44-comparison-glass:hover {
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(16, 185, 129, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+/* --- r44-timer-glow: Timer enhanced glow effect --- */
+@keyframes r44-timer-glow-breathe {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(5, 150, 105, 0.2));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(5, 150, 105, 0.4)) drop-shadow(0 0 24px rgba(245, 158, 11, 0.15));
+  }
+}
+.r44-timer-glow {
+  animation: r44-timer-glow-breathe 2.5s ease-in-out infinite;
+}
+.dark .r44-timer-glow {
+  animation-name: r44-timer-glow-breathe-dark;
+}
+@keyframes r44-timer-glow-breathe-dark {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.5)) drop-shadow(0 0 28px rgba(251, 191, 36, 0.2));
+  }
+}
+
+/* --- r44-timer-ring-enhanced: Enhanced countdown ring with pulsing border --- */
+@keyframes r44-ring-pulse-outer {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.2); }
+  50% { box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.05); }
+}
+.r44-timer-ring-enhanced {
+  border-radius: 50%;
+  animation: r44-ring-pulse-outer 2s ease-in-out infinite;
+}
+
+/* --- r44-savings-input-anim: Savings calculator animated input --- */
+@keyframes r44-input-focus-glow {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1); }
+  50% { box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2), 0 0 12px rgba(5, 150, 105, 0.08); }
+}
+.r44-savings-input-anim {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(5, 150, 105, 0.15);
+  border-radius: 10px;
+}
+.r44-savings-input-anim:focus {
+  border-color: rgba(5, 150, 105, 0.4);
+  animation: r44-input-focus-glow 1.8s ease-in-out infinite;
+  outline: none;
+}
+.dark .r44-savings-input-anim {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: rgba(15, 30, 22, 0.6);
+}
+.dark .r44-savings-input-anim:focus {
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+/* --- r44-savings-result-pop: Animated result display pop-in --- */
+@keyframes r44-result-pop {
+  0% { transform: scale(0.8) translateY(6px); opacity: 0; }
+  60% { transform: scale(1.05) translateY(-1px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.r44-savings-result-pop {
+  animation: r44-result-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- r44-social-stagger: Social proof avatars stagger entrance --- */
+@keyframes r44-avatar-stagger-in {
+  0% { transform: scale(0) translateX(8px); opacity: 0; }
+  70% { transform: scale(1.15) translateX(-1px); }
+  100% { transform: scale(1) translateX(0); opacity: 1; }
+}
+.r44-social-stagger {
+  animation: r44-avatar-stagger-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.r44-social-stagger:nth-child(1) { animation-delay: 0s; }
+.r44-social-stagger:nth-child(2) { animation-delay: 0.08s; }
+.r44-social-stagger:nth-child(3) { animation-delay: 0.16s; }
+.r44-social-stagger:nth-child(4) { animation-delay: 0.24s; }
+.r44-social-stagger:nth-child(5) { animation-delay: 0.32s; }
+
+/* --- r44-social-avatar-stack: Overlapping avatar stack --- */
+.r44-social-avatar-stack {
+  display: flex;
+  align-items: center;
+}
+.r44-social-avatar-stack > *:not(:first-child) {
+  margin-left: -8px;
+  border: 2px solid #ffffff;
+}
+.dark .r44-social-avatar-stack > *:not(:first-child) {
+  border-color: #0a1f15;
+}
+
+/* --- r44-social-count-animate: Social count number animation --- */
+@keyframes r44-count-pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.2); color: #059669; }
+  100% { transform: scale(1); }
+}
+.r44-social-count-animate {
+  animation: r44-count-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- r44-trust-entrance: Trust indicators animated entrance --- */
+@keyframes r44-trust-slide-up {
+  0% { opacity: 0; transform: translateY(16px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.r44-trust-entrance {
+  animation: r44-trust-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.r44-trust-entrance:nth-child(1) { animation-delay: 0.1s; }
+.r44-trust-entrance:nth-child(2) { animation-delay: 0.2s; }
+.r44-trust-entrance:nth-child(3) { animation-delay: 0.3s; }
+.r44-trust-entrance:nth-child(4) { animation-delay: 0.4s; }
+
+/* --- r44-trust-icon-glow: Trust icon subtle glow --- */
+@keyframes r44-trust-icon-pulse {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(5, 150, 105, 0.2)); }
+  50% { filter: drop-shadow(0 0 6px rgba(5, 150, 105, 0.35)); }
+}
+.r44-trust-icon-glow {
+  animation: r44-trust-icon-pulse 2.8s ease-in-out infinite;
+}
+
+/* --- r44-deal-image-reveal: Deal image dramatic reveal animation --- */
+@keyframes r44-image-reveal {
+  0% { clip-path: inset(100% 0 0 0); opacity: 0; }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+.r44-deal-image-reveal {
+  animation: r44-image-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+/* --- r44-price-shimmer: Price text with moving shimmer --- */
+@keyframes r44-price-shimmer-flow {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.r44-price-shimmer {
+  background: linear-gradient(
+    90deg,
+    #059669 0%,
+    #10b981 25%,
+    #f59e0b 50%,
+    #10b981 75%,
+    #059669 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: r44-price-shimmer-flow 3s linear infinite;
+}
+.dark .r44-price-shimmer {
+  background: linear-gradient(
+    90deg,
+    #10b981 0%,
+    #34d399 25%,
+    #fbbf24 50%,
+    #34d399 75%,
+    #10b981 100%
+  );
+  background-size: 200% auto;
+}
+
+/* --- r44-cta-glow: Main CTA button glow pulse --- */
+@keyframes r44-cta-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(5, 150, 105, 0.2), 0 4px 12px rgba(5, 150, 105, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(5, 150, 105, 0.35), 0 4px 20px rgba(5, 150, 105, 0.2), 0 0 32px rgba(5, 150, 105, 0.08);
+  }
+}
+.r44-cta-glow {
+  animation: r44-cta-glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* --- r44-upcoming-card: Upcoming deal card hover effect --- */
+.r44-upcoming-card {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-upcoming-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-color: rgba(5, 150, 105, 0.2);
+}
+.dark .r44-upcoming-card:hover {
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+/* --- r44-separator-glow: Animated separator line glow --- */
+@keyframes r44-separator-glow-flow {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.r44-separator-glow {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.3), rgba(245, 158, 11, 0.2), rgba(5, 150, 105, 0.3), transparent);
+  background-size: 200% 100%;
+  animation: r44-separator-glow-flow 3s linear infinite;
+}
+.dark .r44-separator-glow {
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.25), rgba(251, 191, 36, 0.15), rgba(16, 185, 129, 0.25), transparent);
+  background-size: 200% 100%;
+}
+
+/* ==============================================================
+   R44 — PRODUCT CARD ENHANCEMENTS (200+ lines)
+   3D tilt hover, image gradient overlay+zoom, price animated
+   gradient text, Novo/Oferta badge shimmer+pulse, heart burst
+   particles, quick action bar slide-in, rating stars glow,
+   card glow border animated, eco leaf badge pulse
+   ============================================================== */
+
+/* ─── r44-card-3d-tilt: Pure CSS 3D perspective tilt on hover ─── */
+.r44-card-3d-tilt {
+  transform-style: preserve-3d;
+  perspective: 800px;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-card-3d-tilt:hover {
+  transform: rotateX(var(--r44-tilt-x, 2deg)) rotateY(var(--r44-tilt-y, -2deg)) translateY(-6px);
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.12),
+    0 0 40px rgba(16, 185, 129, 0.06),
+    0 20px 40px rgba(0, 0, 0, 0.08);
+}
+.dark .r44-card-3d-tilt:hover {
+  box-shadow:
+    0 0 24px rgba(16, 185, 129, 0.18),
+    0 0 48px rgba(16, 185, 129, 0.08),
+    0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* ─── r44-img-gradient-zoom: Gradient overlay with smooth zoom ─── */
+.r44-img-gradient-zoom {
+  position: relative;
+  overflow: hidden;
+}
+.r44-img-gradient-zoom::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    180deg,
+    transparent 40%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.r44-img-gradient-zoom:hover::before {
+  opacity: 1;
+}
+.r44-img-gradient-zoom img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-img-gradient-zoom:hover img {
+  transform: scale(1.08);
+}
+
+/* ─── r44-price-gradient: Animated gradient text for price ─── */
+.r44-price-gradient {
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    rgba(16, 185, 129, 1) 0%,
+    rgba(52, 211, 153, 1) 25%,
+    rgba(16, 185, 129, 1) 50%,
+    rgba(52, 211, 153, 1) 75%,
+    rgba(16, 185, 129, 1) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: r44-price-gradient-shift 3s linear infinite;
+}
+.dark .r44-price-gradient {
+  background: linear-gradient(
+    90deg,
+    rgba(52, 211, 153, 1) 0%,
+    rgba(110, 231, 183, 1) 25%,
+    rgba(52, 211, 153, 1) 50%,
+    rgba(110, 231, 183, 1) 75%,
+    rgba(52, 211, 153, 1) 100%
+  );
+  background-size: 200% auto;
+}
+@keyframes r44-price-gradient-shift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ─── r44-badge-novo / r44-badge-oferta: Enhanced shimmer + pulse ─── */
+.r44-badge-novo {
+  position: relative;
+  overflow: hidden;
+  animation: r44-badge-pulse-novo 2.5s ease-in-out infinite;
+}
+.r44-badge-novo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 40%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.45) 60%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  animation: r44-badge-shimmer-sweep 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes r44-badge-pulse-novo {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3); }
+  50% { transform: scale(1.06); box-shadow: 0 0 12px 2px rgba(16, 185, 129, 0.15); }
+}
+
+.r44-badge-oferta {
+  position: relative;
+  overflow: hidden;
+  animation: r44-badge-pulse-oferta 2s ease-in-out infinite;
+}
+.r44-badge-oferta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 40%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.4) 60%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  animation: r44-badge-shimmer-sweep 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes r44-badge-pulse-oferta {
+  0%, 100% { transform: scale(1); box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25); }
+  50% { transform: scale(1.08); box-shadow: 0 2px 16px rgba(239, 68, 68, 0.4); }
+}
+@keyframes r44-badge-shimmer-sweep {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* ─── r44-heart-burst: Heart button particle burst on favorite ─── */
+.r44-heart-burst {
+  position: relative;
+}
+.r44-heart-burst::before,
+.r44-heart-burst::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(248, 113, 113, 0.8);
+  pointer-events: none;
+  opacity: 0;
+}
+.r44-heart-burst.is-fav::before {
+  animation: r44-burst-particle-1 0.55s ease-out forwards;
+}
+.r44-heart-burst.is-fav::after {
+  animation: r44-burst-particle-2 0.55s ease-out 0.05s forwards;
+}
+@keyframes r44-burst-particle-1 {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + 12px), calc(-50% - 10px)) scale(0); }
+}
+@keyframes r44-burst-particle-2 {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% - 10px), calc(-50% + 12px)) scale(0); }
+}
+
+/* Extra burst particles using box-shadow for 8 directions */
+.r44-heart-burst.is-fav {
+  animation: r44-heart-ring 0.6s ease-out;
+}
+@keyframes r44-heart-ring {
+  0% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0.15); }
+  100% { box-shadow: 0 0 0 10px rgba(248, 113, 113, 0); }
+}
+
+/* ─── r44-quick-bar: Quick action bar slide-in from bottom ─── */
+.r44-quick-bar {
+  position: relative;
+  overflow: hidden;
+}
+.r44-quick-bar::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  animation: r44-quick-bar-glow 2s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+@keyframes r44-quick-bar-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ─── r44-quick-item: Individual quick action items stagger ─── */
+.r44-quick-item {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.2s ease;
+}
+.r44-quick-item:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ─── r44-stars-glow: Rating stars glow effect ─── */
+.r44-stars-glow {
+  position: relative;
+}
+.r44-stars-glow .lucide-star {
+  filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.5));
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+.r44-stars-glow:hover .lucide-star {
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8));
+  transform: scale(1.15);
+}
+.r44-stars-glow:hover .lucide-star:nth-child(1) { transform: scale(1.15) rotate(-5deg); }
+.r44-stars-glow:hover .lucide-star:nth-child(2) { transform: scale(1.2) rotate(0deg); transition-delay: 0.04s; }
+.r44-stars-glow:hover .lucide-star:nth-child(3) { transform: scale(1.25) rotate(3deg); transition-delay: 0.08s; }
+.r44-stars-glow:hover .lucide-star:nth-child(4) { transform: scale(1.2) rotate(0deg); transition-delay: 0.12s; }
+.r44-stars-glow:hover .lucide-star:nth-child(5) { transform: scale(1.15) rotate(5deg); transition-delay: 0.16s; }
+
+/* ─── r44-card-glow-border: Animated glow border on card ─── */
+.r44-card-glow-border {
+  position: relative;
+}
+.r44-card-glow-border::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--r44-glow-angle, 0deg),
+    rgba(16, 185, 129, 0.5),
+    rgba(52, 211, 153, 0.2),
+    rgba(16, 185, 129, 0),
+    rgba(110, 231, 183, 0.2),
+    rgba(16, 185, 129, 0.5)
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: r44-glow-border-rotate 4s linear infinite;
+}
+.r44-card-glow-border:hover::after {
+  opacity: 1;
+}
+@property --r44-glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes r44-glow-border-rotate {
+  0% { --r44-glow-angle: 0deg; }
+  100% { --r44-glow-angle: 360deg; }
+}
+
+/* ─── r44-eco-pulse: Eco leaf badge pulse animation ─── */
+.r44-eco-pulse {
+  position: relative;
+  animation: r44-eco-breathe 3s ease-in-out infinite;
+}
+.r44-eco-pulse::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  opacity: 0;
+  animation: r44-eco-ring 3s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes r44-eco-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+@keyframes r44-eco-ring {
+  0%, 100% { opacity: 0; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* ─── r44-price-strike: Strikethrough price with fade ─── */
+.r44-price-strike {
+  position: relative;
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+.r44-price-strike::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 50%;
+  height: 1.5px;
+  background: rgba(100, 116, 139, 0.6);
+  transform: rotate(-6deg);
+}
+
+/* ─── r44-btn-pulse: Add-to-cart button pulse border ─── */
+.r44-btn-pulse {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+.r44-btn-pulse:hover {
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.3),
+              0 0 32px rgba(16, 185, 129, 0.1);
+}
+.r44-btn-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.r44-btn-pulse:hover::after {
+  opacity: 1;
+}
+
+/* ─── r44-ver-overlay: "Ver Produto" overlay enhancement ─── */
+.r44-ver-overlay {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── r44-heart-btn: Heart button wrapper with glow ─── */
+.r44-heart-btn {
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+.r44-heart-btn:hover {
+  box-shadow: 0 0 10px rgba(248, 113, 113, 0.25);
+}
+.r44-heart-btn.is-fav {
+  background-color: rgba(254, 226, 226, 0.9);
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.35);
+}
+.dark .r44-heart-btn.is-fav {
+  background-color: rgba(127, 29, 29, 0.6);
+}
+
+/* ==============================================================
+   R44 — PRODUCT CAROUSEL ENHANCEMENTS (150+ lines)
+   Section header shimmer, enhanced scroll snap with gradient
+   fade edges, navigation arrows glow hover, dot indicators
+   animated scale, card hover stagger lift, auto-scroll progress
+   indicator, section background subtle gradient animation
+   ============================================================== */
+
+/* ─── r44-section-header: Shimmer on section header text ─── */
+.r44-section-header {
+  position: relative;
+  overflow: hidden;
+}
+.r44-section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(16, 185, 129, 0.5) 30%,
+    rgba(52, 211, 153, 0.7) 50%,
+    rgba(16, 185, 129, 0.5) 70%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: r44-header-shimmer 3s linear infinite;
+  pointer-events: none;
+  border-radius: 1px;
+}
+@keyframes r44-header-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ─── r44-scroll-snap: Enhanced scroll snap container ─── */
+.r44-scroll-snap {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.r44-scroll-snap > * {
+  scroll-snap-align: start;
+}
+
+/* ─── r44-fade-left / r44-fade-right: Gradient fade edges ─── */
+.r44-fade-left {
+  position: relative;
+}
+.r44-fade-left::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 8px;
+  width: 56px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), transparent);
+  z-index: 10;
+  pointer-events: none;
+  border-radius: 0 8px 8px 0;
+}
+.dark .r44-fade-left::before {
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.95), transparent);
+}
+.r44-fade-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 8px;
+  width: 56px;
+  background: linear-gradient(270deg, rgba(255, 255, 255, 0.95), transparent);
+  z-index: 10;
+  pointer-events: none;
+  border-radius: 8px 0 0 8px;
+}
+.dark .r44-fade-left::after {
+  background: linear-gradient(270deg, rgba(15, 23, 42, 0.95), transparent);
+}
+
+/* ─── r44-arrow-glow: Navigation arrows glow on hover ─── */
+.r44-arrow-glow {
+  transition: box-shadow 0.3s ease, transform 0.25s ease, border-color 0.3s ease;
+  border: 1px solid rgba(200, 200, 200, 0.4);
+}
+.r44-arrow-glow:hover {
+  box-shadow:
+    0 0 12px rgba(16, 185, 129, 0.3),
+    0 0 24px rgba(16, 185, 129, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+  border-color: rgba(16, 185, 129, 0.4);
+  transform: scale(1.08);
+}
+.r44-arrow-glow:active {
+  transform: scale(0.95);
+}
+.dark .r44-arrow-glow {
+  border-color: rgba(100, 100, 100, 0.3);
+}
+.dark .r44-arrow-glow:hover {
+  box-shadow:
+    0 0 14px rgba(52, 211, 153, 0.35),
+    0 0 28px rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.4);
+}
+
+/* ─── r44-dot: Dot indicators with animated scale ─── */
+.r44-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.2);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+.r44-dot:hover {
+  background: rgba(16, 185, 129, 0.45);
+  transform: scale(1.3);
+}
+.r44-dot-active {
+  background: rgba(16, 185, 129, 0.9);
+  width: 20px;
+  transform: scale(1);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.35);
+}
+.r44-dot-active:hover {
+  background: rgba(16, 185, 129, 0.9);
+  transform: scale(1.1);
+}
+.dark .r44-dot {
+  background: rgba(52, 211, 153, 0.15);
+}
+.dark .r44-dot:hover {
+  background: rgba(52, 211, 153, 0.35);
+}
+.dark .r44-dot-active {
+  background: rgba(52, 211, 153, 0.85);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+}
+
+/* ─── r44-card-lift: Card hover stagger lift in carousel ─── */
+.r44-card-lift {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r44-card-lift:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow:
+    0 16px 40px -8px rgba(16, 185, 129, 0.15),
+    0 8px 16px -4px rgba(0, 0, 0, 0.08);
+}
+.dark .r44-card-lift:hover {
+  box-shadow:
+    0 16px 40px -8px rgba(52, 211, 153, 0.12),
+    0 8px 16px -4px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── r44-progress-bar: Auto-scroll progress indicator ─── */
+.r44-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.r44-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(
+    90deg,
+    rgba(16, 185, 129, 0.6),
+    rgba(52, 211, 153, 0.9),
+    rgba(16, 185, 129, 0.6)
+  );
+  background-size: 200% 100%;
+  border-radius: 9999px;
+  animation: r44-progress-run 8s linear infinite;
+}
+.dark .r44-progress-track {
+  background: rgba(52, 211, 153, 0.08);
+}
+.dark .r44-progress-fill {
+  background: linear-gradient(
+    90deg,
+    rgba(52, 211, 153, 0.5),
+    rgba(110, 231, 183, 0.8),
+    rgba(52, 211, 153, 0.5)
+  );
+  background-size: 200% 100%;
+}
+@keyframes r44-progress-run {
+  0% { width: 0%; background-position: 0% 0; }
+  100% { width: 100%; background-position: 200% 0; }
+}
+
+/* ─── r44-section-bg: Subtle section background gradient animation ─── */
+.r44-section-bg {
+  position: relative;
+  overflow: hidden;
+}
+.r44-section-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 10% 50%, rgba(16, 185, 129, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 90% 50%, rgba(52, 211, 153, 0.03) 0%, transparent 60%);
+  animation: r44-section-bg-shift 8s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+@keyframes r44-section-bg-shift {
+  0%, 100% { opacity: 0.6; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(-4px); }
+}
+.dark .r44-section-bg::before {
+  background:
+    radial-gradient(ellipse at 10% 50%, rgba(16, 185, 129, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 90% 50%, rgba(52, 211, 153, 0.05) 0%, transparent 60%);
+}
+
+/* ─── r44-view-all-link: "Ver todos" link enhancement ─── */
+.r44-view-all-link {
+  position: relative;
+  transition: color 0.25s ease;
+}
+.r44-view-all-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: rgba(16, 185, 129, 0.6);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 1px;
+}
+.r44-view-all-link:hover::after {
+  width: 100%;
+}
+.dark .r44-view-all-link::after {
+  background: rgba(52, 211, 153, 0.5);
+}
+
+/* ==============================
+   ProductOriginTracker2 (r44-) Styles
+   ============================== */
+
+/* Main container */
+.r44-origin-tracker {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  transition: box-shadow 0.3s ease;
+}
+.r44-origin-tracker:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.03);
+}
+.dark .r44-origin-tracker {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
+}
+.dark .r44-origin-tracker:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Ring chart animation */
+.r44-ring-svg {
+  filter: drop-shadow(0 2px 6px rgba(16,185,129,0.1));
+}
+.dark .r44-ring-svg {
+  filter: drop-shadow(0 2px 6px rgba(16,185,129,0.15));
+}
+
+/* Ring card hover */
+.r44-ring-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r44-ring-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.dark .r44-ring-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Carbon card */
+.r44-carbon-card {
+  transition: transform 0.25s ease;
+}
+.r44-carbon-card:hover {
+  transform: translateY(-1px);
+}
+
+/* Freshness card */
+.r44-freshness-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r44-freshness-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Map container */
+.r44-map-container {
+  transition: box-shadow 0.3s ease;
+}
+.r44-map-container:hover {
+  box-shadow: 0 2px 8px rgba(16,185,129,0.06);
+}
+
+/* Certification badge */
+.r44-cert-badge {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r44-cert-badge:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.dark .r44-cert-badge:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Quality checkpoint row */
+.r44-checkpoint-row {
+  transition: background-color 0.2s ease;
+}
+.r44-checkpoint-row:hover {
+  background-color: rgba(0,0,0,0.02);
+}
+.dark .r44-checkpoint-row:hover {
+  background-color: rgba(255,255,255,0.03);
+}
+
+/* Temperature chart container */
+.r44-temp-chart-container {
+  transition: box-shadow 0.3s ease;
+}
+.r44-temp-chart-container:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.dark .r44-temp-chart-container:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Producer card */
+.r44-producer-card {
+  transition: box-shadow 0.3s ease;
+}
+.r44-producer-card:hover {
+  box-shadow: 0 4px 16px rgba(245,158,11,0.08);
+}
+.dark .r44-producer-card:hover {
+  box-shadow: 0 4px 16px rgba(245,158,11,0.05);
+}
+
+/* Nutrition panel */
+.r44-nutrition-panel {
+  transition: box-shadow 0.3s ease;
+}
+.r44-nutrition-panel:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Nutrition item */
+.r44-nutrition-item {
+  transition: background-color 0.2s ease;
+}
+.r44-nutrition-item:hover {
+  background-color: rgba(16,185,129,0.05);
+}
+
+/* Nutrition note */
+.r44-nutrition-note {
+  transition: background-color 0.2s ease;
+}
+.r44-nutrition-note:hover {
+  background-color: rgba(59,130,246,0.04);
+}
+
+/* Search bar */
+.r44-search-bar input::placeholder {
+  transition: color 0.2s ease;
+}
+
+/* Product chip */
+.r44-product-chip {
+  transition: all 0.2s ease;
+}
+.r44-product-chip:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.dark .r44-product-chip:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* QR Code block */
+.r44-qrcode-block {
+  transition: box-shadow 0.3s ease;
+}
+.r44-qrcode-block:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Quality summary */
+.r44-quality-summary {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.r44-quality-summary:hover {
+  background-color: rgba(16,185,129,0.08);
+  box-shadow: 0 2px 8px rgba(16,185,129,0.06);
+}
+.dark .r44-quality-summary:hover {
+  background-color: rgba(16,185,129,0.12);
+}
+
+/* ==============================
+   r44-INVOICE GENERATOR
+   ============================== */
+
+/* --- r44-root: Root wrapper --- */
+.r44-root {
+  position: relative;
+}
+
+/* --- r44-container: Main container --- */
+.r44-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* --- r44-card: Invoice card --- */
+.r44-card {
+  border: 1px solid var(--border, #e5e7eb);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.3s ease;
+}
+.r44-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+.dark .r44-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* --- r44-card-content: Card inner content --- */
+.r44-card-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- r44-watermark: Watermark overlay --- */
+.r44-watermark {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+/* --- r44-store-logo: Store logo container --- */
+.r44-store-logo {
+  transition: transform 0.25s ease;
+}
+.r44-store-logo:hover {
+  transform: scale(1.05);
+}
+
+/* --- r44-meta-section: Invoice meta + customer grid --- */
+.r44-meta-section {
+  gap: 1.25rem;
+}
+@media (min-width: 640px) {
+  .r44-meta-section {
+    gap: 1.5rem;
+  }
+}
+
+/* --- r44-invoice-meta: Invoice metadata block --- */
+.r44-invoice-meta {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: rgba(107, 114, 128, 0.03);
+  border: 1px solid rgba(107, 114, 128, 0.08);
+}
+
+/* --- r44-customer-meta: Customer metadata block --- */
+.r44-customer-meta {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: rgba(107, 114, 128, 0.03);
+  border: 1px solid rgba(107, 114, 128, 0.08);
+}
+
+/* --- r44-table-header: Items table header --- */
+.r44-table-header {
+  border-bottom: 2px solid var(--border, #e5e7eb);
+  user-select: none;
+}
+
+/* --- r44-table-row: Items table row --- */
+.r44-table-row {
+  transition: background-color 0.15s ease;
+}
+.r44-table-row:hover {
+  background-color: rgba(16, 185, 129, 0.03);
+}
+.dark .r44-table-row:hover {
+  background-color: rgba(16, 185, 129, 0.06);
+}
+
+/* --- r44-table-body: Items table body --- */
+.r44-table-body {
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 0 0 0.5rem 0.5rem;
+  overflow: hidden;
+}
+
+/* --- r44-toggle-items: Expand/collapse button --- */
+.r44-toggle-items {
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.r44-toggle-items:hover {
+  background-color: rgba(107, 114, 128, 0.08);
+}
+
+/* --- r44-more-items: Collapsed items indicator --- */
+.r44-more-items {
+  border-top: 1px dashed var(--border, #e5e7eb);
+}
+
+/* --- r44-totals-section: Totals container --- */
+.r44-totals-section {
+  padding: 0.75rem 0;
+}
+
+/* --- r44-totals-grid: Totals value rows --- */
+.r44-totals-grid {
+  background-color: rgba(107, 114, 128, 0.03);
+  border: 1px solid rgba(107, 114, 128, 0.08);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+/* --- r44-tax-lines: Individual tax line items --- */
+.r44-tax-lines {
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(107, 114, 128, 0.12);
+  margin-left: 0.25rem;
+}
+
+/* --- r44-payment-section: Payment method block --- */
+.r44-payment-section {
+  margin-bottom: 1.5rem;
+}
+
+/* --- r44-payment-card: Payment info card --- */
+.r44-payment-card {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.r44-payment-card:hover {
+  background-color: rgba(107, 114, 128, 0.06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+.dark .r44-payment-card:hover {
+  background-color: rgba(107, 114, 128, 0.1);
+}
+
+/* --- r44-payment-badge: Payment status badge --- */
+.r44-payment-badge {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  letter-spacing: 0.05em;
+}
+
+/* --- r44-info-grid: Tax chart + timeline grid --- */
+.r44-info-grid {
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .r44-info-grid {
+    gap: 1.25rem;
+  }
+}
+
+/* --- r44-tax-card: Tax pie chart card --- */
+.r44-tax-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r44-tax-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* --- r44-tax-chart-wrapper: Pie chart wrapper --- */
+.r44-tax-chart-wrapper {
+  min-height: 100px;
+}
+
+/* --- r44-timeline-card: Timeline card --- */
+.r44-timeline-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r44-timeline-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* --- r44-timeline-section: Timeline content --- */
+.r44-timeline-section {
+  min-height: 80px;
+}
+
+/* --- r44-notes-section: Notes block --- */
+.r44-notes-section {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+/* --- r44-barcode-wrapper: Barcode container --- */
+.r44-barcode-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 0.375rem;
+  border: 1px dashed var(--border, #e5e7eb);
+}
+.dark .r44-barcode-wrapper {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* --- r44-qr-wrapper: QR code container --- */
+.r44-qr-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px dashed var(--border, #e5e7eb);
+  border-radius: 0.375rem;
+}
+
+/* --- r44-signature-section: Signature block --- */
+.r44-signature-section {
+  margin-top: 0.5rem;
+}
+
+/* --- r44-actions: Action buttons row --- */
+.r44-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+/* --- r44-btn-print: Print button style --- */
+.r44-btn-print {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.r44-btn-print:hover {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* --- r44-btn-pdf: PDF download button style --- */
+.r44-btn-pdf {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.r44-btn-pdf:hover {
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* --- r44-btn-email: Email button style --- */
+.r44-btn-email {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.r44-btn-email:hover {
+  color: #06b6d4;
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+/* --- r44-btn-copy: Copy button style --- */
+.r44-btn-copy {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.r44-btn-copy:hover {
+  color: #8b5cf6;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+/* --- r44-btn-duplicate: Duplicate button style --- */
+.r44-btn-duplicate {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.r44-btn-duplicate:hover {
+  color: #ec4899;
+  border-color: rgba(236, 72, 153, 0.3);
+}
+
+/* ==============================
+   r44-PRINT STYLES
+   ============================== */
+@media print {
+  .r44-root {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .r44-container {
+    max-width: 100% !important;
+  }
+
+  .r44-card {
+    border: 1px solid #d1d5db !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    break-inside: avoid;
+  }
+
+  .r44-watermark {
+    display: none !important;
+  }
+
+  .r44-actions {
+    display: none !important;
+  }
+
+  .r44-toggle-items {
+    display: none !important;
+  }
+
+  .r44-more-items {
+    display: none !important;
+  }
+
+  .r44-table-row:hover {
+    background-color: transparent !important;
+  }
+
+  .r44-store-logo:hover {
+    transform: none !important;
+  }
+
+  body * {
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

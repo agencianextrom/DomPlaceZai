@@ -118,6 +118,9 @@ import { ProductWishlistShare2 } from '@/components/product/ProductWishlistShare
 import { SocialCommerceFeed } from '@/components/home/SocialCommerceFeed'
 import { OrderRatingSystem } from '@/components/orders/OrderRatingSystem'
 import { DeliveryDriverTracking } from '@/components/delivery/DeliveryDriverTracking'
+import { InvoiceGenerator } from '@/components/checkout/InvoiceGenerator'
+import { NeighborhoodEvents2 } from '@/components/home/NeighborhoodEvents2'
+import { ProductOriginTracker2 } from '@/components/product/ProductOriginTracker2'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
@@ -1458,6 +1461,52 @@ export default function Home() {
                       <ScrollReveal delay={0.4}>
                         <section className="mt-6">
                           <DeliveryDriverTracking />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Invoice Generator */}
+                    <LazySection>
+                      <ScrollReveal delay={0.45}>
+                        <section className="mt-6">
+                          <InvoiceGenerator invoice={{
+                            invoiceNumber: `DOM-${new Date().getFullYear()}-${String(42).padStart(4, '0')}`,
+                            date: new Date().toISOString(),
+                            dueDate: new Date(Date.now() + 30 * 86400000).toISOString(),
+                            status: 'paga' as const,
+                            store: { name: 'Supermercado Bom Preço', cnpj: '12.345.678/0001-90', address: 'Rua Principal, 123 - Centro, Dom Eliseu-PA', phone: '(91) 99999-0000', email: 'contato@bompreco.com' },
+                            customer: { name: 'Maria Silva', cpf: '123.456.789-00', address: 'Rua das Flores, 456 - Dom Eliseu-PA', email: 'maria@email.com', phone: '(91) 98888-1111' },
+                            items: [
+                              { id: 'i1', productName: 'Arroz 5kg', quantity: 2, unitPrice: 24.9, discount: 5 },
+                              { id: 'i2', productName: 'Feijão 1kg', quantity: 1, unitPrice: 12.5, discount: 0 },
+                              { id: 'i3', productName: 'Óleo de Soja 900ml', quantity: 1, unitPrice: 8.9, discount: 0 },
+                            ],
+                            subtotal: 71.20,
+                            tax: { icms: 8.54, iss: 1.78, ipi: 0 },
+                            discount: 3.56,
+                            shipping: 5.00,
+                            total: 72.64,
+                            payment: { method: 'credit', cardBrand: 'visa', lastFour: '4242', installmentCount: 3 },
+                            timeline: { issued: new Date().toISOString(), viewed: new Date(Date.now() - 3600000).toISOString(), paid: new Date(Date.now() - 1800000).toISOString() },
+                          }} />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Neighborhood Events 2 */}
+                    <LazySection>
+                      <ScrollReveal delay={0.5}>
+                        <section className="mt-6">
+                          <NeighborhoodEvents2 />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Product Origin Tracker 2 */}
+                    <LazySection>
+                      <ScrollReveal delay={0.55}>
+                        <section className="mt-6">
+                          <ProductOriginTracker2 />
                         </section>
                       </ScrollReveal>
                     </LazySection>
