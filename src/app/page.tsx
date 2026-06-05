@@ -243,6 +243,7 @@ import LocalTalentHub from '@/components/home/LocalTalentHub'
 import CommunityWasteExchange from '@/components/home/CommunityWasteExchange'
 import CommunitySkillsExchange from '@/components/home/CommunitySkillsExchange'
 import LocalArtisansMarket from '@/components/home/LocalArtisansMarket'
+import CommunityGardenHub from '@/components/home/CommunityGardenHub'
 import { MobilePullToRefresh } from '@/components/ui/MobilePullToRefresh'
 
 // Module-level BRL currency formatter
@@ -999,6 +1000,7 @@ export default function Home() {
                           <CommunityWasteExchange />
                           <CommunitySkillsExchange />
                           <LocalArtisansMarket />
+                          <CommunityGardenHub />
                         </section>
                       </ScrollReveal>
                     </LazySection>

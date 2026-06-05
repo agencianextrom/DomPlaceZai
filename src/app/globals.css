@@ -48885,4 +48885,20 @@
   .r101-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(244,63,94,0.1); }
   .r101-trust-badge { transition: transform 0.2s ease; }
   .r101-trust-badge:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(244,63,94,0.08); }
+
+  /* r102 - CommunityGardenHub + section accent */
+  .r102-section-accent { border-left: 3px solid rgba(34,197,94,0.3); }
+  .r102-garden-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r102-garden-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(34,197,94,0.12); }
+  .r102-category-pill { transition: all 0.2s ease; }
+  .r102-category-pill:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(34,197,94,0.15); }
+  .r102-category-pill:active { transform: scale(0.95); }
+  .r102-harvest-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r102-harvest-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,0.1); }
+  .r102-tip-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r102-tip-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34,197,94,0.1); }
+  .r102-stat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r102-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(34,197,94,0.1); }
+  .r102-trust-badge { transition: transform 0.2s ease; }
+  .r102-trust-badge:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(34,197,94,0.08); }
 }
