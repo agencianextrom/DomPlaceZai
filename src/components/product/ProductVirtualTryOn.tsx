@@ -127,7 +127,7 @@ function SizeSelector({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => onSelect(size)}
-          className={`h-9 min-w-[40px] px-3 rounded-lg text-sm font-medium border-2 transition-colors ${
+          className={`h-9 min-h-[44px] min-w-[40px] px-3 rounded-lg text-sm font-medium border-2 transition-colors ${
             selectedSize === size
               ? 'border-primary bg-primary text-primary-foreground shadow-md'
               : 'border-border bg-card hover:border-primary/40 hover:bg-primary/5 text-foreground'

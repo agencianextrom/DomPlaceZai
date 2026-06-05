@@ -693,7 +693,7 @@ export default function SmartReceipt() {
                     onClick={() => handleRate(star)}
                     onMouseEnter={() => setHoveredStar(star)}
                     onMouseLeave={() => setHoveredStar(0)}
-                    className="p-1"
+                    className="p-1 min-h-[44px] min-w-[44px] flex items-center justify-center"
                   >
                     <motion.div animate={rating >= star ? { scale: [1, 1.3, 1] } : {}} transition={{ duration: 0.3 }}>
                       <Star

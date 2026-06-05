@@ -95,7 +95,7 @@ export function OrderFilters({ orders, onFilteredOrdersChange }: OrderFiltersPro
               key={filter.value}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveStatus(filter.value)}
-              className="relative shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+              className="relative shrink-0 px-3 py-1.5 min-h-[44px] rounded-full text-xs font-medium transition-colors"
             >
               {activeStatus === filter.value && (
                 <motion.div

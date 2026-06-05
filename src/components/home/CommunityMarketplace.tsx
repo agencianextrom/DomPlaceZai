@@ -527,7 +527,7 @@ export function CommunityMarketplace() {
   }
 
   return (
-    <section className="r88-marketplace-widget space-y-5">
+    <section className="r88-marketplace-widget space-y-5 r62-heading-gradient">
       {/* ── Header ── */}
       <motion.div
         variants={containerV}

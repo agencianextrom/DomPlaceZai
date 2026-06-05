@@ -317,7 +317,7 @@ export function Footer() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}>
                 <Button
                   size="sm"
-                  className="h-9 px-4 text-sm shrink-0 card-shine r41-submit-btn r43-footer-submit-glow"
+                  className="min-h-[44px] px-4 text-sm shrink-0 card-shine r41-submit-btn r43-footer-submit-glow"
                   onClick={handleSubscribe}
                   disabled={subscribed}
                 >

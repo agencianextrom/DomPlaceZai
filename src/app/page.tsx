@@ -244,6 +244,8 @@ import CommunityWasteExchange from '@/components/home/CommunityWasteExchange'
 import CommunitySkillsExchange from '@/components/home/CommunitySkillsExchange'
 import LocalArtisansMarket from '@/components/home/LocalArtisansMarket'
 import CommunityGardenHub from '@/components/home/CommunityGardenHub'
+import LocalClassesHub from '@/components/home/LocalClassesHub'
+import CommunitySwapHub from '@/components/home/CommunitySwapHub'
 import { MobilePullToRefresh } from '@/components/ui/MobilePullToRefresh'
 
 // Module-level BRL currency formatter
@@ -1001,6 +1003,8 @@ export default function Home() {
                           <CommunitySkillsExchange />
                           <LocalArtisansMarket />
                           <CommunityGardenHub />
+                          <LocalClassesHub />
+                          <CommunitySwapHub />
                         </section>
                       </ScrollReveal>
                     </LazySection>

@@ -48901,4 +48901,40 @@
   .r102-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(34,197,94,0.1); }
   .r102-trust-badge { transition: transform 0.2s ease; }
   .r102-trust-badge:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(34,197,94,0.08); }
+
+  /* r103 - CommunitySwapHub + section accent */
+  .r103-section-accent { border-left: 3px solid rgba(168,85,247,0.3); }
+  .r103-swap-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r103-swap-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(168,85,247,0.12); }
+  .r103-swap-card:active { transform: scale(0.98); }
+  .r103-category-pill { transition: all 0.2s ease; }
+  .r103-category-pill:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(168,85,247,0.15); }
+  .r103-category-pill:active { transform: scale(0.95); }
+  .r103-step-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r103-step-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,92,246,0.1); }
+  .r103-stat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r103-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(168,85,247,0.1); }
+  .r103-trust-badge { transition: transform 0.2s ease; }
+  .r103-trust-badge:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(168,85,247,0.08); }
+  .r103-activity-item { transition: background-color 0.2s ease; }
+  .r103-activity-item:hover { background-color: rgba(168,85,247,0.05); }
+
+  /* r104 - LocalClassesHub + section accent (amber/orange theme) */
+  .r104-section-accent { border-left: 3px solid rgba(245,158,11,0.3); }
+  .r104-class-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r104-class-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(245,158,11,0.12); }
+  .r104-class-card:active { transform: scale(0.98); }
+  .r104-category-pill { transition: all 0.2s ease; }
+  .r104-category-pill:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(245,158,11,0.15); }
+  .r104-category-pill:active { transform: scale(0.95); }
+  .r104-instructor-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r104-instructor-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249,115,22,0.1); }
+  .r104-schedule-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r104-schedule-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,0.1); }
+  .r104-tip-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r104-tip-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,0.1); }
+  .r104-stat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r104-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245,158,11,0.1); }
+  .r104-trust-badge { transition: transform 0.2s ease; }
+  .r104-trust-badge:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,158,11,0.08); }
 }

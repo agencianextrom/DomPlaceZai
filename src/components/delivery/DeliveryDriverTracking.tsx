@@ -576,7 +576,7 @@ function DriverProfileCard({ driver }: { driver: DriverInfo }) {
           <Button
             size="sm"
             variant="outline"
-            className="r43-btn-chat flex-1 h-9 gap-1.5 text-xs"
+            className="r43-btn-chat flex-1 min-h-[44px] gap-1.5 text-xs"
           >
             <MessageCircle className="h-3.5 w-3.5" />
             Chat

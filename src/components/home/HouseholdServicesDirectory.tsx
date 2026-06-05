@@ -142,7 +142,7 @@ export default function HouseholdServicesDirectory() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: sp, stiffness: 260, damping: 24 }}
     >
-      <Card className="overflow-hidden border-border/40 r92-services-card r101-section-accent">
+      <Card className="overflow-hidden border-border/40 r92-services-card r101-section-accent r62-heading-gradient">
         {/* ── Header ── */}
         <CardHeader className="pb-3">
           <div

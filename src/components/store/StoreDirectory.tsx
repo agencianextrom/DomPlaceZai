@@ -381,7 +381,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
                     <motion.div whileTap={{ scale: 0.97 }}>
                       <Button
                         size="sm"
-                        className="w-full h-9 text-xs bg-primary/10 text-primary hover:bg-primary/20 border-0 rounded-lg font-medium"
+                        className="w-full min-h-[44px] text-xs bg-primary/10 text-primary hover:bg-primary/20 border-0 rounded-lg font-medium"
                       >
                         Ver loja
                       </Button>

@@ -315,7 +315,7 @@ function FriendWishlistCard({ friend }: { friend: FriendWishlist }) {
           <h4 className="text-xs font-semibold truncate">{friend.friendName}</h4>
           <p className="text-[9px] text-muted-foreground">{friend.updatedAt}</p>
         </div>
-        <motion.div whileTap={{ scale: 0.9 }} className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
+        <motion.div whileTap={{ scale: 0.9 }} className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-primary/10 flex items-center justify-center">
           <UserPlus className="h-3.5 w-3.5 text-primary" />
         </motion.div>
       </div>
@@ -508,7 +508,7 @@ function StatCard({ icon, label, value, gradient, delay }: { icon: React.ReactNo
 function CategoryFilterPill({ category, isActive, onClick }: { category: CategoryFilter; isActive: boolean; onClick: () => void }) {
   return (
     <motion.button whileTap={{ scale: 0.93 }} onClick={onClick}
-      className={`snap-start shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all border r49-category-pill ${
+      className={`snap-start shrink-0 flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-full text-[11px] font-semibold transition-all border r49-category-pill ${
         isActive ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white border-transparent shadow-md' : 'bg-card text-muted-foreground border-border hover:border-rose-300/50 hover:text-foreground'}`}
       style={isActive ? { boxShadow: '0 4px 16px rgba(244,63,94,0.3)' } : undefined}>
       <span>{CATEGORY_EMOJIS[category]}</span><span>{category}</span>

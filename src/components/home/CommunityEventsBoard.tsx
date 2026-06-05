@@ -851,13 +851,13 @@ export default function CommunityEventsBoard() {
               {selectedDate && (
                 <span className="inline-flex items-center gap-1 text-xs font-medium bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 px-2.5 py-1 rounded-full">
                   {formatDateParts(selectedDate).day}/{formatDateParts(selectedDate).monthShort}
-                  <button onClick={() => setSelectedDate(null)} className="ml-0.5 hover:text-rose-800 dark:hover:text-rose-300" aria-label="Remover filtro de data">✕</button>
+                  <button onClick={() => setSelectedDate(null)} className="ml-0.5 hover:text-rose-800 dark:hover:text-rose-300 min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Remover filtro de data">✕</button>
                 </span>
               )}
               {categoryFilter !== 'todos' && (
                 <span className="inline-flex items-center gap-1 text-xs font-medium bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 px-2.5 py-1 rounded-full">
                   {CATEGORY_LABELS[categoryFilter]}
-                  <button onClick={() => setCategoryFilter('todos')} className="ml-0.5 hover:text-rose-800 dark:hover:text-rose-300" aria-label="Remover filtro de categoria">✕</button>
+                  <button onClick={() => setCategoryFilter('todos')} className="ml-0.5 hover:text-rose-800 dark:hover:text-rose-300 min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Remover filtro de categoria">✕</button>
                 </span>
               )}
             </motion.div>

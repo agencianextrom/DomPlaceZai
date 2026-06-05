@@ -452,7 +452,7 @@ export function AddressManager() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 text-xs gap-1.5 text-muted-foreground"
+                            className="min-h-[44px] min-w-[44px] text-xs gap-1.5 text-muted-foreground"
                             onClick={() => setPrimary(address.id)}
                             disabled={isSaving}
                           >

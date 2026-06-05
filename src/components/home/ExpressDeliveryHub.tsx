@@ -165,7 +165,7 @@ export function ExpressDeliveryHub() {
   }
 
   return (
-    <div className="r32-express-hub">
+    <div className="r32-express-hub r62-heading-gradient">
       {/* ── Hero section ── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

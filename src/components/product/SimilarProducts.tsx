@@ -366,7 +366,7 @@ export function SimilarProducts({
                   {/* Quick-add button appears on hover */}
                   <motion.button
                     onClick={(e) => handleAddToCart(e, product)}
-                    className="absolute bottom-2 right-2 h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute bottom-2 right-2 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
                     whileHover={{ scale: 1.15 }}
                     whileTap={{ scale: 0.9 }}
                     aria-label={`Adicionar ${product.name} ao carrinho`}
@@ -411,7 +411,7 @@ export function SimilarProducts({
                     onClick={(e) => handleAddToCart(e, product)}
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className="mt-2 w-full h-8 rounded-lg bg-primary/10 text-primary text-xs font-semibold flex items-center justify-center gap-1 hover:bg-primary/15 transition-colors"
+                    className="mt-2 w-full h-8 min-h-[44px] rounded-lg bg-primary/10 text-primary text-xs font-semibold flex items-center justify-center gap-1 hover:bg-primary/15 transition-colors"
                   >
                     <ShoppingCart className="h-3 w-3" />
                     Adicionar

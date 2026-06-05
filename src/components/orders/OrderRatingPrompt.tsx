@@ -284,7 +284,7 @@ export function OrderRatingPrompt({
                           onMouseEnter={() => setHoverStar(s)}
                           onMouseLeave={() => setHoverStar(0)}
                           onClick={() => setOverallRating(s)}
-                          className="focus:outline-none relative r34-prompt-star"
+                          className="focus:outline-none relative r34-prompt-star min-h-[44px] min-w-[44px] flex items-center justify-center"
                           aria-label={`${s} estrela${s > 1 ? 's' : ''}`}
                         >
                           <motion.div
@@ -415,7 +415,7 @@ export function OrderRatingPrompt({
                               type="button"
                               whileTap={{ scale: 0.92 }}
                               onClick={() => toggleTag(tag)}
-                              className="px-3 py-1.5 rounded-full text-xs font-medium border transition-colors r34-prompt-tag"
+                              className="px-3 py-1.5 min-h-[44px] rounded-full text-xs font-medium border transition-colors r34-prompt-tag"
                               style={{
                                 borderColor: active ? '#f59e0b' : '#e5e7eb',
                                 backgroundColor: active ? 'rgba(245,158,11,0.12)' : '#ffffff',

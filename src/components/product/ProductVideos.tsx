@@ -640,7 +640,7 @@ function VideoPlayerModal({
                     initial="hidden"
                     animate="visible"
                     whileTap={{ scale: 0.88 }}
-                    className="h-9 w-9 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
+                    className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
                   >
                     <Maximize2 className="h-4 w-4" />
                   </motion.button>

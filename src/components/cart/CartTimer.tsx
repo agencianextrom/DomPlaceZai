@@ -411,7 +411,7 @@ export function CartTimer() {
                   <motion.div whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                     <Button
                       size="sm"
-                      className={`h-8 text-[11px] gap-1.5 rounded-lg ${
+                      className={`min-h-[44px] text-[11px] gap-1.5 rounded-lg ${
                         hasExpired
                           ? 'bg-red-500 hover:bg-red-600 text-white border-0'
                           : `${colors.badge} border hover:opacity-80`

@@ -207,7 +207,7 @@ export function CookieConsent() {
                   <Button
                     size="sm"
                     onClick={handleAcceptAll}
-                    className="r44-cc-accept-btn relative text-xs h-9 px-4 flex-1 sm:flex-none bg-accent hover:bg-accent/90 text-accent-foreground font-semibold overflow-hidden"
+                    className="r44-cc-accept-btn relative text-xs min-h-[44px] px-4 flex-1 sm:flex-none bg-accent hover:bg-accent/90 text-accent-foreground font-semibold overflow-hidden"
                   >
                     Aceitar todos
                   </Button>

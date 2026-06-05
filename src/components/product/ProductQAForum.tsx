@@ -1107,7 +1107,7 @@ function QuestionCard({
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={() => onVote('up')}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all"
+              className="flex items-center gap-1 px-2.5 py-1 min-h-[44px] rounded-lg text-xs font-medium transition-all"
               style={{
                 background: userVote === 'up' ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
                 color: userVote === 'up' ? '#6366f1' : '#9ca3af',
@@ -1126,7 +1126,7 @@ function QuestionCard({
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={() => onVote('down')}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all"
+              className="flex items-center gap-1 px-2.5 py-1 min-h-[44px] rounded-lg text-xs font-medium transition-all"
               style={{
                 background: userVote === 'down' ? 'rgba(239, 68, 68, 0.1)' : 'transparent',
                 color: userVote === 'down' ? '#ef4444' : '#9ca3af',

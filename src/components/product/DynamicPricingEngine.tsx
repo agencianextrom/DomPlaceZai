@@ -568,7 +568,7 @@ function PriceAlertSetter({
           <motion.button
             type="button"
             onClick={handleSetTarget}
-            className="r49-price-alert-btn h-9 px-3 rounded-lg text-[11px] font-bold text-white transition-colors"
+            className="r49-price-alert-btn h-9 min-h-[44px] px-3 rounded-lg text-[11px] font-bold text-white transition-colors"
             style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}
           >
             Definir
@@ -768,7 +768,7 @@ function SavingsCalculator({
             type="button"
             whileTap={{ scale: 0.95 }}
             onClick={() => setWaitHours(h)}
-            className={`r49-price-savings-hour-btn flex-1 h-7 rounded-md text-[10px] font-semibold transition-all ${waitHours === h ? 'text-white' : ''}`}
+            className={`r49-price-savings-hour-btn flex-1 h-7 min-h-[44px] rounded-md text-[10px] font-semibold transition-all ${waitHours === h ? 'text-white' : ''}`}
             style={{
               background: waitHours === h ? 'linear-gradient(135deg, #10b981, #059669)' : 'rgba(0,0,0,0.04)',
               color: waitHours === h ? '#ffffff' : '#6b7280',

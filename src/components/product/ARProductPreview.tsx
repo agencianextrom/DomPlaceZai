@@ -451,7 +451,7 @@ export function ARProductPreview() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setActiveHotspot(null)}
-                      className="w-full h-8 rounded-lg text-xs font-semibold text-white"
+                      className="w-full h-8 min-h-[44px] rounded-lg text-xs font-semibold text-white"
                       style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}
                     >
                       Ver detalhes
@@ -499,7 +499,7 @@ export function ARProductPreview() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowMeasurements(!showMeasurements)}
-                className="r33-ar-measure-btn flex items-center gap-1.5 h-7 px-3 rounded-md text-[11px] font-medium shrink-0 transition-colors"
+                className="r33-ar-measure-btn flex items-center gap-1.5 min-h-[44px] px-3 rounded-md text-[11px] font-medium shrink-0 transition-colors"
                 style={{
                   background: showMeasurements ? 'rgba(225,29,72,0.12)' : 'rgba(0,0,0,0.04)',
                   color: showMeasurements ? '#e11d48' : 'rgba(0,0,0,0.55)',

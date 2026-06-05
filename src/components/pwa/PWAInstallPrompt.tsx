@@ -224,7 +224,7 @@ export function PWAInstallPrompt() {
               <div className="mt-3">
                 <Button
                   size="sm"
-                  className="relative w-full h-9 px-3 bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 overflow-hidden btn-shine"
+                  className="relative w-full min-h-[44px] px-3 bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 overflow-hidden btn-shine"
                   onClick={handleInstall}
                 >
                   <Download className="h-3.5 w-3.5" />

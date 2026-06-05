@@ -80,7 +80,7 @@ export function LocalProducers() {
   }, [sortBy])
 
   return (
-    <section className="r33-producers-section">
+    <section className="r33-producers-section r62-heading-gradient">
       {/* Stats Banner */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}

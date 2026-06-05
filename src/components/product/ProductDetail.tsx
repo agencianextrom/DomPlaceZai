@@ -1036,7 +1036,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                             <Button
                               size="sm"
                               onClick={handleAddBundle}
-                              className="w-full mt-2 h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg btn-glow gap-1"
+                              className="w-full mt-2 min-h-[44px] text-xs bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg btn-glow gap-1"
                             >
                               <ShoppingCart className="h-3.5 w-3.5" />
                               Adicionar todos ao carrinho

@@ -497,7 +497,7 @@ export function PriceDropAlertsWidget({ className = '' }: PriceDropAlertsWidgetP
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.04, type: 'spring' as const, stiffness: 300, damping: 24 }}
-              className={`r64-price-tab active:scale-95 transition-transform shrink-0 px-4 rounded-full text-xs font-semibold border ${
+              className={`r64-price-tab active:scale-95 transition-transform shrink-0 px-4 min-h-[44px] rounded-full text-xs font-semibold border ${
                 activeCategory === cat.key
                   ? 'active border-transparent'
                   : 'bg-card border-border text-muted-foreground hover:border-primary/30 hover:text-foreground'

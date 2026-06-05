@@ -61,7 +61,7 @@ function AnimatedStar({ filled, onClick, delay }: { filled: boolean; onClick: ()
       transition={{ delay, type: 'spring' as const, stiffness: 400, damping: 15 }}
       whileHover={{ scale: 1.2 }}
       whileTap={{ scale: 0.9 }}
-      className="r42-star-btn"
+      className="r42-star-btn min-h-[44px] min-w-[44px]"
       style={{ color: filled ? 'rgba(255, 180, 0, 1)' : 'rgba(255, 255, 255, 0.2)' }}
       aria-label={filled ? 'Estrela preenchida' : 'Estrela vazia'}
     >
@@ -177,10 +177,10 @@ export function OrderRatingSystem() {
 
       {/* Tabs */}
       <div className="r42-tabs">
-        <motion.button className={'r42-tab ' + (activeTab === 'pending' ? 'r42-tab-active' : '')} onClick={() => setActiveTab('pending')} whileTap={{ scale: 0.95 }}>
+        <motion.button className={'r42-tab min-h-[44px] ' + (activeTab === 'pending' ? 'r42-tab-active' : '')} onClick={() => setActiveTab('pending')} whileTap={{ scale: 0.95 }}>
           Pendentes ({pendingOrders.length})
         </motion.button>
-        <motion.button className={'r42-tab ' + (activeTab === 'history' ? 'r42-tab-active' : '')} onClick={() => setActiveTab('history')} whileTap={{ scale: 0.95 }}>
+        <motion.button className={'r42-tab min-h-[44px] ' + (activeTab === 'history' ? 'r42-tab-active' : '')} onClick={() => setActiveTab('history')} whileTap={{ scale: 0.95 }}>
           Histórico ({reviewedOrders.length})
         </motion.button>
       </div>
@@ -281,7 +281,7 @@ export function OrderRatingSystem() {
                 <span className="r42-tags-label">Feedback Rápido</span>
                 <div className="r42-tags-grid">
                   {FEEDBACK_TAGS.map(tag => (
-                    <motion.button key={tag.id} className={'r42-tag-chip ' + (selectedTags.includes(tag.id) ? 'r42-tag-selected' : '')} onClick={() => toggleTag(tag.id)} whileTap={{ scale: 0.9 }}>
+                    <motion.button key={tag.id} className={'r42-tag-chip min-h-[44px] ' + (selectedTags.includes(tag.id) ? 'r42-tag-selected' : '')} onClick={() => toggleTag(tag.id)} whileTap={{ scale: 0.9 }}>
                       <span>{tag.emoji}</span> {tag.label}
                     </motion.button>
                   ))}
@@ -315,7 +315,7 @@ export function OrderRatingSystem() {
               </div>
 
               {/* Submit */}
-              <motion.button className={'r42-submit-btn ' + (overallRating > 0 ? 'r42-submit-active' : '')} onClick={submitReview} whileTap={{ scale: 0.95 }} disabled={overallRating === 0}>
+              <motion.button className={'r42-submit-btn min-h-[44px] ' + (overallRating > 0 ? 'r42-submit-active' : '')} onClick={submitReview} whileTap={{ scale: 0.95 }} disabled={overallRating === 0}>
                 {overallRating > 0 ? 'Enviar Avaliação 🎉' : 'Selecione uma avaliação'}
               </motion.button>
             </motion.div>

@@ -330,7 +330,7 @@ function PublicPrivateToggle({
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0, rotate: 90 }}
               transition={springSnappy}
-              className="r43-lock-icon flex items-center justify-center w-8 h-8 rounded-lg"
+              className="r43-lock-icon flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg"
               style={{
                 backgroundColor: isPublic ? 'rgba(16, 185, 129, 0.12)' : 'rgba(244, 63, 94, 0.12)',
               }}

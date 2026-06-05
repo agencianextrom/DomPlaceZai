@@ -614,7 +614,7 @@ export default function VoiceShoppingAssistant() {
   }
 
   return (
-    <div className="r48-voice-assistant relative">
+    <div className="r48-voice-assistant relative r62-card-lift">
       {/* ── Floating Mic Button ─────────────────────────────── */}
       <AnimatePresence>
         {floatingBtnVisible && (

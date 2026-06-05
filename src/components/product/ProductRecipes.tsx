@@ -692,7 +692,7 @@ export function ProductRecipes() {
               animate="visible"
               whileTap={{ scale: 0.92 }}
               onClick={() => { setActiveFilter(filter); setExpandedId(null) }}
-              className={`relative px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+              className={`relative px-3.5 py-1.5 min-h-[44px] rounded-full text-xs font-semibold border transition-colors ${
                 isActive
                   ? isDiff ? `${cfg!.bg} ${cfg!.text} border-current/20` : 'bg-primary text-primary-foreground border-primary'
                   : 'bg-card text-muted-foreground border-border/50 hover:border-primary/30'

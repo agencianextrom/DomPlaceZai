@@ -535,7 +535,7 @@ export function ProductFAQ({ productId, category, productName }: ProductFAQProps
                   size="sm"
                   onClick={handleSubmitQuestion}
                   disabled={isSubmitting}
-                  className="flex-1 h-9 text-xs gap-1.5 btn-glow"
+                  className="flex-1 min-h-[44px] text-xs gap-1.5 btn-glow"
                 >
                   {isSubmitting ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />

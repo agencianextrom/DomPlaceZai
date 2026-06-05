@@ -1114,7 +1114,7 @@ export function ProductScanSearch() {
               </div>
               {scanHistory.length > 0 && (
                 <motion.button
-                  className="r41-history-clear text-[10px] font-medium px-2 py-1 rounded-md"
+                  className="r41-history-clear text-[10px] font-medium px-2 py-1 min-h-[44px] rounded-md"
                   style={{ color: 'rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.04)' }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setScanHistory([])}

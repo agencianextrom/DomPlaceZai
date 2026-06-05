@@ -381,7 +381,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                         const rating = idx + 1
                         ratingCategories.forEach(cat => handleSetRating(cat.id, rating))
                       }}
-                      className="text-2xl hover:scale-125 active:scale-90 transition-transform cursor-pointer emoji-bounce"
+                      className="text-2xl hover:scale-125 active:scale-90 transition-transform cursor-pointer emoji-bounce min-h-[44px] min-w-[44px] flex items-center justify-center"
                       style={{ animationDelay: `${idx * 0.1}s` }}
                       aria-label={`Reação ${emoji}`}
                     >
@@ -433,7 +433,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                               onMouseEnter={() => setHoverRatings(prev => ({ ...prev, [category.id]: star }))}
                               onMouseLeave={() => setHoverRatings(prev => ({ ...prev, [category.id]: 0 }))}
                               onClick={() => handleSetRating(category.id, star)}
-                              className="focus:outline-none"
+                              className="focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center"
                               aria-label={`${star} estrela${star > 1 ? 's' : ''}`}
                             >
                               <motion.div
