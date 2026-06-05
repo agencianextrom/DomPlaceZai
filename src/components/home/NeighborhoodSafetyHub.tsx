@@ -287,7 +287,7 @@ export default function NeighborhoodSafetyHub() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ ...springConfig, delay: 0.05 }}
-        className="w-full max-w-3xl mx-auto rounded-2xl overflow-hidden"
+        className="w-full max-w-3xl mx-auto rounded-2xl overflow-hidden r101-section-accent"
         style={{
           boxShadow: '0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06)',
         }}
@@ -301,7 +301,7 @@ export default function NeighborhoodSafetyHub() {
         >
           <div className="flex items-center gap-3">
             <Shield className="h-6 w-6 text-white" />
-            <h2 className="text-white font-bold text-lg tracking-tight">
+            <h2 className="text-white font-bold text-lg tracking-tight r62-heading-gradient">
               Segurança do Bairro 🛡️
             </h2>
           </div>
@@ -603,7 +603,7 @@ export default function NeighborhoodSafetyHub() {
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ ...springConfig, delay: 0.8 + i * 0.08 }}
-                  className="flex items-center justify-between rounded-xl border p-3.5"
+                  className="flex items-center justify-between rounded-xl border p-3.5 r62-card-lift"
                   style={{ borderColor: '#e5e7eb', backgroundColor: '#ffffff' }}
                 >
                   <div className="flex items-center gap-3">
@@ -690,7 +690,7 @@ export default function NeighborhoodSafetyHub() {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ ...springConfig, delay: 1.2 + i * 0.08 }}
-                    className="rounded-xl border p-3.5"
+                    className="rounded-xl border p-3.5 r62-card-lift"
                     style={{ borderColor: '#e5e7eb', backgroundColor: '#ffffff' }}
                   >
                     <div className="flex items-center justify-between">

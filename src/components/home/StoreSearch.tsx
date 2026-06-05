@@ -190,7 +190,7 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
           />
         </div>
         {query && (
-          <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
+          <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 z-10 min-h-[44px] min-w-[44px] flex items-center justify-center">
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
         )}

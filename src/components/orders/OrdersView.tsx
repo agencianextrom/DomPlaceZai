@@ -355,7 +355,7 @@ export function OrdersView() {
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="text-xs text-primary hover:underline flex items-center gap-1"
+              className="min-h-[44px] text-xs text-primary hover:underline flex items-center gap-1"
             >
               <X className="h-3 w-3" />
               Limpar filtros

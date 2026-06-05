@@ -1748,7 +1748,7 @@ export function WishListManager() {
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-2 top-1/2 -translate-y-1/2"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                     >
                       <X className="h-3 w-3 text-muted-foreground" />
                     </button>

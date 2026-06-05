@@ -442,7 +442,7 @@ export function ARProductPreview() {
                         <Info className="h-3.5 w-3.5 text-primary shrink-0" />
                         <span className="text-sm font-semibold leading-tight">{hs.title}</span>
                       </div>
-                      <button onClick={() => setActiveHotspot(null)} className="shrink-0 p-0.5 rounded-md hover:bg-black/5 transition-colors">
+                      <button onClick={() => setActiveHotspot(null)} className="shrink-0 min-h-[44px] min-w-[44px] p-0.5 rounded-md hover:bg-black/5 transition-colors flex items-center justify-center">
                         <X className="h-3.5 w-3.5 text-muted-foreground" />
                       </button>
                     </div>

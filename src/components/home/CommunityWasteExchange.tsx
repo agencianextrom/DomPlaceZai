@@ -163,7 +163,7 @@ export default function CommunityWasteExchange() {
   const dashOffset = circumference - (progressPercent / 100) * circumference;
 
   return (
-    <section className="w-full" aria-label="Troca Solidária - Community Waste Exchange">
+    <section className="w-full r101-section-accent" aria-label="Troca Solidária - Community Waste Exchange">
       {/* ===== Header ===== */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-600 via-teal-600 to-emerald-600 px-5 py-8 sm:px-8 sm:py-10">
         <div className="flex flex-col gap-4">
@@ -172,7 +172,7 @@ export default function CommunityWasteExchange() {
               <Leaf className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white sm:text-3xl">Troca Solidária ♻️</h2>
+              <h2 className="text-2xl font-bold text-white sm:text-3xl r62-heading-gradient">Troca Solidária ♻️</h2>
               <p className="text-sm text-emerald-100">Transforme seu lixo em oportunidade</p>
             </div>
           </div>
@@ -260,7 +260,7 @@ export default function CommunityWasteExchange() {
                   key={item.id}
                   variants={cardVariants}
                   whileHover={{ y: -4 }}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm r99-waste-card"
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm r99-waste-card r62-card-lift"
                   style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
                 >
                   <div className={`relative flex h-28 items-center justify-center bg-gradient-to-br ${item.gradient} sm:h-32`}>
@@ -347,7 +347,7 @@ export default function CommunityWasteExchange() {
             <motion.div
               key={card.title}
               whileHover={{ scale: 1.02 }}
-              className={`flex flex-col gap-2 rounded-2xl border-2 ${card.border} ${card.bg} p-4 r99-donate-card`}
+              className={`flex flex-col gap-2 rounded-2xl border-2 ${card.border} ${card.bg} p-4 r99-donate-card r62-card-lift`}
             >
               <span className="text-3xl">{card.icon}</span>
               <div className="flex items-center justify-between">
@@ -425,7 +425,7 @@ export default function CommunityWasteExchange() {
             <motion.div
               key={tip.title}
               whileHover={{ scale: 1.02 }}
-              className="flex min-w-[220px] flex-col gap-2 rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 to-yellow-50 p-4 r99-tip-card"
+              className="flex min-w-[220px] flex-col gap-2 rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 to-yellow-50 p-4 r99-tip-card r62-card-lift"
             >
               <span className="text-3xl">{tip.emoji}</span>
               <h4 className="text-sm font-bold text-gray-800">{tip.title}</h4>

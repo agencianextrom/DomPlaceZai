@@ -568,7 +568,7 @@ export function SmartNotifications() {
                             onClick={() => dismissNotification(notification.id)}
                             whileHover={{ scale: 1.2 }}
                             whileTap={{ scale: 0.8 }}
-                            className="shrink-0 h-5 w-5 rounded-full flex items-center justify-center text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted transition-colors"
+                            className="shrink-0 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted transition-colors"
                             aria-label="Remover notificação"
                           >
                             <X className="h-3 w-3" />

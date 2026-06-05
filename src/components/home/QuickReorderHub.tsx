@@ -130,7 +130,7 @@ function FreqBadge({ freq }: { freq: Freq }) {
 function StarBtn({ on, toggle }: { on: boolean; toggle: () => void }) {
   return (
     <motion.button whileTap={{ scale: 0.8 }} onClick={toggle}
-      className="r52-reorder-star-btn p-1 rounded-lg hover:bg-muted/50 transition-colors">
+      className="r52-reorder-star-btn min-h-[44px] min-w-[44px] p-1 rounded-lg hover:bg-muted/50 transition-colors">
       <motion.div animate={on ? { scale: [1, 1.3, 1], rotate: [0, 15, -15, 0] } : { scale: 1 }}
         transition={{ duration: 0.35 }}>
         <Star className={`h-4 w-4 transition-colors ${on ? 'fill-amber-400 text-amber-400' : 'fill-transparent text-muted-foreground/40'}`} />
@@ -290,7 +290,7 @@ function ItemCard({ item, idx, onReorder, onFav, onQty, onAuto, successId, budge
           <QtyStepper qty={item.quantity} inc={() => onQty(item.id, item.quantity+1)} dec={() => onQty(item.id, Math.max(1, item.quantity-1))} />
           <div className="flex-1" />
           <motion.button whileTap={{ scale: 0.9 }} onClick={() => onAuto(item.id)}
-            className={`flex items-center gap-1 px-2 py-1 rounded-md text-[9px] font-semibold transition-all r52-reorder-auto-btn ${
+            className={`flex items-center gap-1 px-2 py-1 min-h-[44px] rounded-md text-[9px] font-semibold transition-all r52-reorder-auto-btn ${
               item.autoReorder ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-muted/40 text-muted-foreground hover:bg-muted/70'}`}>
             <motion.div animate={item.autoReorder ? { rotate: 360 } : { rotate: 0 }} transition={{ duration: 0.5 }}>
               <CalendarClock className="h-3 w-3" />
@@ -455,11 +455,13 @@ function AutoPanel({ cfg, items, onToggle, onFreq }: { cfg: AutoConfig; items: R
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-sm"><CalendarClock className="h-4 w-4 text-white" /></div>
           <div><h4 className="text-xs font-bold">Auto-Reorder</h4><p className="text-[9px] text-muted-foreground">Reordenar automaticamente</p></div>
         </div>
+        <div className="min-h-[44px] flex items-center">
         <motion.button whileTap={{ scale: 0.9 }} onClick={onToggle}
           className={`relative h-6 w-11 rounded-full transition-colors ${cfg.enabled ? 'bg-emerald-500' : 'bg-muted'}`}>
           <motion.div animate={{ x: cfg.enabled ? 20 : 2 }} transition={{ type: 'spring' as const, stiffness: 500, damping: 25 }}
             className="absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm" />
         </motion.button>
+        </div>
       </div>
       <AnimatePresence>{cfg.enabled && (
         <motion.div initial={{ opacity:0,height:0 }} animate={{ opacity:1,height:'auto' }} exit={{ opacity:0,height:0 }} className="overflow-hidden">
@@ -675,7 +677,7 @@ export function QuickReorderHub() {
                     </div>
                     <div className="flex items-center gap-2">
                       <motion.button whileTap={{ scale:0.9 }} onClick={() => setShowBudget(!showBudget)}
-                        className="h-8 px-3 rounded-lg bg-muted/50 text-muted-foreground text-[10px] font-semibold hover:bg-muted transition-colors flex items-center gap-1">
+                        className="min-h-[44px] px-3 rounded-lg bg-muted/50 text-muted-foreground text-[10px] font-semibold hover:bg-muted transition-colors flex items-center gap-1">
                         <Calculator className="h-3 w-3" />Ver total</motion.button>
                       <motion.div whileTap={{ scale:0.95 }}>
                         <button onClick={() => handleReorderAll(items)}

@@ -48867,4 +48867,22 @@
   .r100-checkout-step:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,158,11,0.08); }
   .r100-profile-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,92,246,0.1); }
   .r100-neighborhood-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,0.1); }
+
+  /* r101 - LocalArtisansMarket + section accent */
+  .r101-section-accent { border-left: 3px solid rgba(244,63,94,0.3); }
+  .r101-artisan-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r101-artisan-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(244,63,94,0.12); }
+  .r101-artisan-card:active { transform: scale(0.97); }
+  .r101-category-pill { transition: all 0.2s ease; }
+  .r101-category-pill:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(244,63,94,0.15); }
+  .r101-category-pill:active { transform: scale(0.95); }
+  .r101-trending-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r101-trending-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(236,72,153,0.12); }
+  .r101-commission-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r101-commission-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(244,63,94,0.1); }
+  .r101-commission-card:active { transform: scale(0.98); }
+  .r101-stat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r101-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(244,63,94,0.1); }
+  .r101-trust-badge { transition: transform 0.2s ease; }
+  .r101-trust-badge:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(244,63,94,0.08); }
 }

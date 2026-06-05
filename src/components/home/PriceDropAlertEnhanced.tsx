@@ -213,6 +213,7 @@ function NotificationToggles({ settings, onToggle }: { settings: NotificationSet
               <p className="text-[10px] text-muted-foreground">{t.desc}</p>
             </div>
           </div>
+          <div className="min-h-[44px] flex items-center">
           <motion.button whileTap={{ scale: 0.92 }} onClick={() => onToggle(t.key)}
             className="relative h-6 w-11 rounded-full transition-colors"
             style={{ backgroundColor: settings[t.key] ? '#3b82f6' : '#d1d5db', boxShadow: settings[t.key] ? '0 2px 8px rgba(59,130,246,0.35)' : '0 1px 3px rgba(0,0,0,0.1)' }}
@@ -222,6 +223,7 @@ function NotificationToggles({ settings, onToggle }: { settings: NotificationSet
               animate={{ left: settings[t.key] ? 22 : 2 }}
               transition={{ type: 'spring' as const, stiffness: 500, damping: 30 }} />
           </motion.button>
+          </div>
         </motion.div>
       ))}
     </div>
@@ -238,7 +240,7 @@ function FilterTabs({ active, onChange }: { active: FilterTab; onChange: (t: Fil
     <div className="relative flex items-center gap-1 p-1 rounded-xl" style={{ background: 'rgba(0,0,0,0.04)' }}>
       {tabs.map((tab) => (
         <motion.button key={tab.key} whileTap={{ scale: 0.96 }} onClick={() => onChange(tab.key)}
-          className="relative z-10 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors"
+          className="relative z-10 min-h-[44px] px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors flex items-center"
           style={{ color: active === tab.key ? '#ffffff' : '#6b7280' }}>
           {tab.label}
           {active === tab.key && (
@@ -263,7 +265,7 @@ function SortDropdown({ active, onChange }: { active: SortOption; onChange: (o: 
   return (
     <div className="relative">
       <motion.button whileTap={{ scale: 0.96 }} onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+        className="min-h-[44px] flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
         style={{ border: '1px solid rgba(0,0,0,0.08)' }}>
         <SlidersHorizontal className="h-3 w-3" /> Ordenar
         <ChevronDown className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} />

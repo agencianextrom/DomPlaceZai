@@ -260,7 +260,7 @@ export default function CommunitySkillsExchange() {
 
   // ── Main Render ───────────────────────────────────────────────
   return (
-    <section className="w-full space-y-6" aria-label="Escola do Bairro - Troca de Conhecimentos">
+    <section className="w-full space-y-6 r101-section-accent" aria-label="Escola do Bairro - Troca de Conhecimentos">
 
       {/* ─── 1. Header ────────────────────────────────────────── */}
       <motion.div
@@ -281,7 +281,7 @@ export default function CommunitySkillsExchange() {
           <div>
             <div className="flex items-center gap-3 mb-1">
               <BookOpen className="h-6 w-6" />
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Escola do Bairro 📚</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight r62-heading-gradient">Escola do Bairro 📚</h2>
               <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
                 <GraduationCap className="h-3.5 w-3.5" /> 156+ aulas disponíveis
               </span>
@@ -312,7 +312,7 @@ export default function CommunitySkillsExchange() {
         ].map((s) => (
           <motion.div
             key={s.label}
-            className="flex-shrink-0 w-40 rounded-xl bg-white border border-gray-100 p-4 flex flex-col gap-1 r100-stat-card"
+            className="flex-shrink-0 w-40 rounded-xl bg-white border border-gray-100 p-4 flex flex-col gap-1 r100-stat-card r62-card-lift"
             style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
             variants={itemVariants}
           >
@@ -378,7 +378,7 @@ export default function CommunitySkillsExchange() {
             {filteredClasses.map((cls) => (
               <motion.div
                 key={cls.id}
-                className="relative rounded-2xl bg-white border border-gray-100 overflow-hidden flex flex-col r100-class-card"
+                className="relative rounded-2xl bg-white border border-gray-100 overflow-hidden flex flex-col r100-class-card r62-card-lift"
                 style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}
                 variants={itemVariants}
                 whileHover={{

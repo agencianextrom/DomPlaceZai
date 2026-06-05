@@ -408,7 +408,7 @@ export function QuickInfo() {
               {statsError && !statsLoading && (
                 <div className="text-center py-4">
                   <p className="text-xs text-muted-foreground mb-2">Erro ao carregar estatísticas</p>
-                  <button onClick={fetchStats} className="text-xs text-primary hover:underline flex items-center gap-1 mx-auto">
+                  <button onClick={fetchStats} className="min-h-[44px] min-w-[44px] text-xs text-primary hover:underline flex items-center gap-1 mx-auto justify-center">
                     <RefreshCw className="h-3 w-3" /> Tentar novamente
                   </button>
                 </div>
@@ -459,7 +459,7 @@ export function QuickInfo() {
           {ordersError && !ordersLoading && (
             <div className="text-center py-4">
               <p className="text-xs text-muted-foreground mb-2">Erro ao carregar pedidos</p>
-              <button onClick={fetchOrders} className="text-xs text-primary hover:underline flex items-center gap-1 mx-auto">
+              <button onClick={fetchOrders} className="min-h-[44px] min-w-[44px] text-xs text-primary hover:underline flex items-center gap-1 mx-auto justify-center">
                 <RefreshCw className="h-3 w-3" /> Tentar novamente
               </button>
             </div>
@@ -543,7 +543,7 @@ export function QuickInfo() {
             {promotionsError && !promotionsLoading && (
               <div className="text-center py-4">
                 <p className="text-xs text-muted-foreground mb-2">Erro ao carregar dicas</p>
-                <button onClick={fetchPromotions} className="text-xs text-primary hover:underline flex items-center gap-1 mx-auto">
+                <button onClick={fetchPromotions} className="min-h-[44px] min-w-[44px] text-xs text-primary hover:underline flex items-center gap-1 mx-auto justify-center">
                   <RefreshCw className="h-3 w-3" /> Tentar novamente
                 </button>
               </div>

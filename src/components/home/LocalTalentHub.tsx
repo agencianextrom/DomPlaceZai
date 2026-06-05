@@ -194,7 +194,7 @@ export default function LocalTalentHub() {
 
   // ── Main Render ───────────────────────────────────────────────
   return (
-    <section className="w-full space-y-6" aria-label="Talento Local - Hub de Profissionais">
+    <section className="w-full space-y-6 r101-section-accent" aria-label="Talento Local - Hub de Profissionais">
 
       {/* ─── 1. Header ────────────────────────────────────────── */}
       <motion.div
@@ -206,7 +206,7 @@ export default function LocalTalentHub() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Talento Local 🌟</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight r62-heading-gradient">Talento Local 🌟</h2>
               <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
                 <Users className="h-3.5 w-3.5" /> 238+ profissionais
               </span>
@@ -291,7 +291,7 @@ export default function LocalTalentHub() {
             {filteredTalents.map((t) => (
               <motion.div
                 key={t.id}
-                className="relative rounded-2xl bg-white border border-gray-100 p-4 flex flex-col gap-3 r98-talent-card"
+                className="relative rounded-2xl bg-white border border-gray-100 p-4 flex flex-col gap-3 r98-talent-card r62-card-lift"
                 style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}
                 variants={itemVariants}
                 whileHover={{

@@ -195,7 +195,7 @@ export default function HomeServicesMarketplace() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: sp, stiffness: 280, damping: 24 }}
-        className="rounded-2xl border border-gray-200 bg-white overflow-hidden"
+        className="rounded-2xl border border-gray-200 bg-white overflow-hidden r101-section-accent"
         style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
       >
         {/* ── 1. Header ── */}
@@ -208,7 +208,7 @@ export default function HomeServicesMarketplace() {
               <Hammer className="h-5 w-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-bold text-white tracking-tight">Serviços para o Lar</h2>
+              <h2 className="text-lg font-bold text-white tracking-tight r62-heading-gradient">Serviços para o Lar</h2>
               <p className="text-xs text-white/70">Profissionais verificados perto de você</p>
             </div>
             <div
@@ -301,7 +301,7 @@ export default function HomeServicesMarketplace() {
                   variants={fadeUp}
                   whileHover={{ scale: 1.02, transition: { type: sp, stiffness: 400, damping: 25 } }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="relative rounded-xl border border-gray-200 bg-white p-4 transition-colors hover:border-violet-200"
+                  className="relative rounded-xl border border-gray-200 bg-white p-4 transition-colors hover:border-violet-200 r62-card-lift"
                   style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}
                 >
                   {/* Favorite toggle */}
