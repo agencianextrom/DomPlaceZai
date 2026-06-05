@@ -31,8 +31,10 @@ import { CityNews } from '@/components/home/CityNews'
 import { WeekendSpecials } from '@/components/home/WeekendSpecials'
 import { StoreComparison } from '@/components/home/StoreComparison'
 import { ProductComparison } from '@/components/product/ProductComparison'
+import { ProductComparisonModal } from '@/components/product/ProductComparisonModal'
 import { OrderMap } from '@/components/orders/OrderMap'
 import { NotificationsPage } from '@/components/notifications/NotificationsPage'
+import { SmartNotifications } from '@/components/notifications/SmartNotifications'
 import { AdminDashboard } from '@/components/dashboard/AdminDashboard'
 import { SmartSuggestions } from '@/components/home/SmartSuggestions'
 import { RecentOrders } from '@/components/home/RecentOrders'
@@ -221,6 +223,7 @@ import GiftFinder from '@/components/home/GiftFinder'
 import QuickRecipes from '@/components/home/QuickRecipes'
 import SustainabilityDashboard from '@/components/home/SustainabilityDashboard'
 import SmartListAssistant from '@/components/home/SmartListAssistant'
+import BudgetTracker from '@/components/home/BudgetTracker'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -337,42 +340,46 @@ function OrderDetailView() {
 
 // Floating compare button component
 function CompareFloatingButton() {
-  const { compareProductIds, navigate } = useAppStore()
-  
-  if (compareProductIds.length === 0) return null
-  
+  const { compareProductIds } = useAppStore()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  if (compareProductIds.length === 0 && !isModalOpen) return null
+
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0, opacity: 0 }}
-        className="fixed bottom-24 md:bottom-6 right-4 z-50"
-      >
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button
-            onClick={() => navigate('product-comparison')}
-            className="h-12 px-4 bg-gradient-to-r from-primary to-emerald-600 text-white hover:from-primary/90 hover:to-emerald-600/90 shadow-xl rounded-full gap-2"
-          >
-            <motion.div
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+    <>
+      <AnimatePresence>
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0, opacity: 0 }}
+          className="fixed bottom-24 md:bottom-6 right-4 z-50"
+        >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              className="h-12 px-4 bg-gradient-to-r from-primary to-emerald-600 text-white hover:from-primary/90 hover:to-emerald-600/90 shadow-xl rounded-full gap-2"
             >
-              <GitCompareArrows className="h-4 w-4" />
-            </motion.div>
-            <span className="text-sm font-semibold">Comparar</span>
-            <motion.div
-              key={compareProductIds.length}
-              initial={{ scale: 0.5 }}
-              animate={{ scale: 1 }}
-              className="h-6 w-6 rounded-full bg-white/25 flex items-center justify-center text-xs font-bold"
-            >
-              {compareProductIds.length}
-            </motion.div>
-          </Button>
+              <motion.div
+                animate={{ rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <GitCompareArrows className="h-4 w-4" />
+              </motion.div>
+              <span className="text-sm font-semibold">Comparar</span>
+              <motion.div
+                key={compareProductIds.length}
+                initial={{ scale: 0.5 }}
+                animate={{ scale: 1 }}
+                className="h-6 w-6 rounded-full bg-white/25 flex items-center justify-center text-xs font-bold"
+              >
+                {compareProductIds.length}
+              </motion.div>
+            </Button>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </AnimatePresence>
+      </AnimatePresence>
+      <ProductComparisonModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   )
 }
 
@@ -746,6 +753,7 @@ export default function Home() {
       : baseTitle
   }, [cartItemCount])
   const [wishlistShareOpen, setWishlistShareOpen] = useQVState(false)
+  const [notifTab, setNotifTab] = useState<'standard' | 'smart'>('standard')
   const [apiProducts, setApiProducts] = useState<ProductData[]>([])
   const [apiStores, setApiStores] = useState<StoreData[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -1166,6 +1174,11 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <SmartListAssistant />
+                        </section>
+                      </ScrollReveal>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <BudgetTracker />
                         </section>
                       </ScrollReveal>
                     </LazySection>
@@ -2016,7 +2029,33 @@ export default function Home() {
           </motion.div>
         ) : currentView === 'notifications' ? (
           <motion.div key="notifications" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <NotificationsPage />
+            {/* Notification sub-tabs */}
+            <div className="flex items-center gap-1 mb-4 bg-secondary/50 rounded-lg p-1">
+              {([
+                { key: 'standard' as const, label: 'Notificações' },
+                { key: 'smart' as const, label: 'Notificações Inteligentes' },
+              ]).map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setNotifTab(tab.key)}
+                  className={`relative flex-1 rounded-md py-2 px-3 text-xs font-semibold transition-colors z-10 ${
+                    notifTab === tab.key
+                      ? 'text-primary'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {notifTab === tab.key && (
+                    <motion.div
+                      layoutId="notif-tab-indicator"
+                      className="absolute inset-0 bg-background rounded-md shadow-sm"
+                      transition={{ type: 'spring' as const, stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{tab.label}</span>
+                </button>
+              ))}
+            </div>
+            {notifTab === 'standard' ? <NotificationsPage /> : <SmartNotifications />}
           </motion.div>
         ) : currentView === 'support-center' ? (
           <motion.div key="support-center" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>

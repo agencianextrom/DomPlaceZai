@@ -1309,7 +1309,7 @@ export function MealDealFinder() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: 'easeOut' as const }}
-      className="space-y-5"
+      className="r62-card-lift space-y-5"
     >
       {/* ═══════ Section Header ═══════ */}
       <motion.div
@@ -1324,7 +1324,7 @@ export function MealDealFinder() {
             <UtensilsCrossed className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h2 className="text-base font-bold r55-shimmer-title">Meal Deal Finder</h2>
+            <h2 className="text-base font-bold r55-shimmer-title r62-heading-gradient">Meal Deal Finder</h2>
             <p className="text-[10px] text-muted-foreground">
               Affordable meal combos from nearby stores
             </p>

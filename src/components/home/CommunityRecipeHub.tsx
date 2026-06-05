@@ -926,7 +926,7 @@ export function CommunityRecipeHub({ className }: CommunityRecipeHubProps) {
 
   return (
     <section
-      className={`r69-community-recipe-hub ${className ?? ''}`}
+      className={`r69-community-recipe-hub r62-card-lift ${className ?? ''}`}
       aria-label="Hub de Receitas da Comunidade"
     >
       {/* Inject @keyframes via style tag for gradient border animation */}
@@ -945,7 +945,7 @@ export function CommunityRecipeHub({ className }: CommunityRecipeHubProps) {
       >
         {/* Header */}
         <motion.div variants={fadeInUp} className="r69-header">
-          <h2 className="r69-title text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="r69-title text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2 r62-heading-gradient">
             <TrendingUp className="r69-title-icon h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             Receitas da Comunidade
           </h2>

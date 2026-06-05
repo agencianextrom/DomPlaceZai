@@ -561,7 +561,7 @@ export default function PriceTracker() {
   // ──────────────────────────────────────────────────────────
 
   return (
-    <section className="w-full max-w-5xl mx-auto px-4 py-6 space-y-8" aria-label="Rastreador de Preços">
+    <section className="r62-card-lift w-full max-w-5xl mx-auto px-4 py-6 space-y-8" aria-label="Rastreador de Preços">
 
       {/* ── 1. Header ──────────────────────────────────────── */}
       <motion.div
@@ -570,7 +570,7 @@ export default function PriceTracker() {
         transition={springTransition}
         style={{ transformOrigin: 'top center' }}
       >
-        <h1 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 bg-clip-text text-transparent">
+        <h1 className="r62-heading-gradient text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 bg-clip-text text-transparent">
           Rastreador de Preços
         </h1>
         <p className="mt-1 text-sm sm:text-base text-gray-600 dark:text-gray-400">

@@ -1029,7 +1029,7 @@ export function NutritionLens({ className }: NutritionLensProps) {
   return (
     <motion.section
       {...motionProps}
-      className={`r71-nutrition-lens space-y-5 ${className ?? ''}`}
+      className={`r71-nutrition-lens r62-card-lift space-y-5 ${className ?? ''}`}
     >
       {/* ── Header ── */}
       <div className="flex items-center gap-3">
@@ -1039,7 +1039,7 @@ export function NutritionLens({ className }: NutritionLensProps) {
           <Leaf className="h-5 w-5 text-white" />
         </div>
         <div>
-          <h2 className="text-base sm:text-lg font-bold r71-title">NutritionLens</h2>
+          <h2 className="text-base sm:text-lg font-bold r71-title r62-heading-gradient">NutritionLens</h2>
           <p className="text-[10px] text-muted-foreground hidden sm:block">
             Compare e acompanhe a nutrição dos alimentos do seu mercado
           </p>

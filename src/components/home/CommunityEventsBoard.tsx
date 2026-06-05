@@ -792,14 +792,14 @@ export default function CommunityEventsBoard() {
   const hasActiveFilters = selectedDate !== null || categoryFilter !== 'todos'
 
   return (
-    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6" aria-label="Agenda de Eventos Comunitários">
+    <section className="r62-card-lift w-full max-w-7xl mx-auto px-4 sm:px-6 py-6" aria-label="Agenda de Eventos Comunitários">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
           <motion.div className="h-9 w-9 rounded-xl bg-gradient-to-br from-rose-500 to-fuchsia-500 flex items-center justify-center" {...pulseGlow}>
             <CalendarDays className="h-5 w-5 text-white" />
           </motion.div>
-          <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-rose-500 via-pink-500 to-fuchsia-500 bg-clip-text text-transparent">
+          <h2 className="r62-heading-gradient text-2xl sm:text-3xl font-black bg-gradient-to-r from-rose-500 via-pink-500 to-fuchsia-500 bg-clip-text text-transparent">
             Agenda Comunitária
           </h2>
         </div>

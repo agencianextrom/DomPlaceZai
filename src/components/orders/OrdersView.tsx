@@ -21,6 +21,7 @@ import type { OrderData } from '@/store/useAppStore'
 import { OrderInvoiceModal, type InvoiceItem } from './OrderInvoice'
 import { OrderToast } from '@/components/notifications/OrderToast'
 import { OrderReorder } from './OrderReorder'
+import { OrderFilters } from './OrderFilters'
 
 const statusConfig: Record<string, { label: string; color: string; icon: any; gradient: string }> = {
   PENDING: { label: 'Pendente', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock, gradient: 'badge-gradient-amber' },
@@ -168,6 +169,7 @@ export function OrdersView() {
   const [returnOrder, setReturnOrder] = useState<OrderData | null>(null)
   const [invoiceOrder, setInvoiceOrder] = useState<OrderData | null>(null)
   const [orders, setOrders] = useState<OrderData[]>([])
+  const [orderFiltersResult, setOrderFiltersResult] = useState<OrderData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -219,7 +221,8 @@ export function OrdersView() {
 
   // Apply filters
   const filteredOrders = useMemo(() => {
-    let result = orders
+    // Use OrderFilters component results as base (includes status, date, search filtering)
+    let result = orderFiltersResult.length > 0 ? orderFiltersResult : orders
 
     // Tab filter
     result = result.filter(order => {
@@ -229,22 +232,11 @@ export function OrdersView() {
       return true
     })
 
-    // Status filter
-    if (activeStatusFilter !== 'ALL') {
-      result = result.filter(o => o.status === activeStatusFilter)
-    }
-
-    // Date filter
-    const dateFn = getDateFilterFn(activeDateFilter)
-    if (dateFn) {
-      result = result.filter(o => dateFn(o.createdAt))
-    }
-
     // Sort
     result = [...result].sort(getSortFn(activeSort))
 
     return result
-  }, [orders, selectedOrderTab, activeStatusFilter, activeDateFilter, activeSort])
+  }, [orderFiltersResult, orders, selectedOrderTab, activeSort])
 
   const clearFilters = () => {
     setActiveStatusFilter('ALL')
@@ -448,6 +440,9 @@ export function OrdersView() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* OrderFilters — status, date range, search filtering */}
+        <OrderFilters orders={orders} onFilteredOrdersChange={setOrderFiltersResult} />
 
         {/* Animated filter tabs with sliding underline */}
         <div className="relative mb-4">

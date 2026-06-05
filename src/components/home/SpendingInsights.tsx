@@ -709,7 +709,7 @@ export function SpendingInsights({ className }: SpendingInsightsProps) {
   }
 
   return (
-    <section className={`r70-spending-insights ${className ?? ''}`} aria-label="Insights de gastos">
+    <section className={`r70-spending-insights r62-card-lift ${className ?? ''}`} aria-label="Insights de gastos">
       {/* Header */}
       <motion.div className="r70-header flex items-center justify-between mb-4"
         initial={reduced(false, { opacity: 0, y: -10 })} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING }}
@@ -720,7 +720,7 @@ export function SpendingInsights({ className }: SpendingInsightsProps) {
             <Receipt className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="r70-title text-base font-bold">Insights de Gastos</h2>
+            <h2 className="r70-title text-base font-bold r62-heading-gradient">Insights de Gastos</h2>
             <p className="r70-subtitle text-[10px] text-muted-foreground">Acompanhe seus hábitos de compra</p>
           </div>
         </div>
