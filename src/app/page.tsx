@@ -5,6 +5,7 @@ import { HeroBanner } from '@/components/home/HeroBanner'
 import { CategoryBar } from '@/components/home/CategoryBar'
 import { ProductCarousel } from '@/components/home/ProductCarousel'
 import { StoreCarousel } from '@/components/home/StoreCarousel'
+import { NearbyStoresMap } from '@/components/home/NearbyStoresMap'
 import { PartnersBanner } from '@/components/home/PartnersBanner'
 import { ProductDetail } from '@/components/product/ProductDetail'
 import { StoreProfile } from '@/components/store/StoreProfile'
@@ -51,6 +52,7 @@ import { DealOfTheDay } from '@/components/home/DealOfTheDay'
 import { StoreSearch } from '@/components/home/StoreSearch'
 import { LoyaltyTier } from '@/components/profile/LoyaltyTier'
 import { LoyaltyWidget } from '@/components/home/LoyaltyWidget'
+import { LoyaltyTierBenefits } from '@/components/home/LoyaltyTierBenefits'
 import { ShoppingTimeline } from '@/components/home/ShoppingTimeline'
 import { LiveDropAlert } from '@/components/home/LiveDropAlert'
 import { BudgetPlanner } from '@/components/home/BudgetPlanner'
@@ -104,6 +106,7 @@ import { ExpressDeliveryHub } from '@/components/home/ExpressDeliveryHub'
 import { NeighborhoodMarketplace } from '@/components/home/NeighborhoodMarketplace'
 import { LocalProducers } from '@/components/home/LocalProducers'
 import { FlashDealAlert } from '@/components/home/FlashDealAlert'
+import { ProductRecallAlerts } from '@/components/home/ProductRecallAlerts'
 import { CashbackTracker } from '@/components/home/CashbackTracker'
 import { SmartShoppingList } from '@/components/home/SmartShoppingList'
 
@@ -805,6 +808,15 @@ export default function Home() {
                     {/* Flash Deal Alert — floating notification */}
                     <FlashDealAlert />
 
+                    {/* Product Recall Alerts — safety feature */}
+                    <LazySection>
+                      <ScrollReveal delay={0.05}>
+                        <section className="mt-3">
+                          <ProductRecallAlerts />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
                     {/* Urgency Strip — social proof ticker */}
                     <section className="-mx-3 sm:-mx-4 lg:-mx-6">
                       <UrgencyStrip />
@@ -971,6 +983,15 @@ export default function Home() {
                       </LazySection>
                     )}
 
+                    {/* Lojas Próximas — NearbyStoresMap */}
+                    <LazySection>
+                      <ScrollReveal delay={0.2}>
+                        <section className="mt-6">
+                          <NearbyStoresMap />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
                     {/* Product Battle — Qual é o Melhor? */}
                     <LazySection>
                       <ScrollReveal delay={0.2}>
@@ -1008,6 +1029,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section>
                           <LoyaltyWidget />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Loyalty Tier Benefits */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <LoyaltyTierBenefits />
                         </section>
                       </ScrollReveal>
                     </LazySection>

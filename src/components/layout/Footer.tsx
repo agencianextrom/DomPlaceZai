@@ -461,7 +461,7 @@ export function Footer() {
             >
             {/* Column 2: Sobre + Categorias */}
             <div>
-              <h4 className="font-semibold text-sm mb-3">Sobre</h4>
+              <h4 className="font-semibold text-sm mb-3 r62-heading-gradient">Sobre</h4>
               <ul className="space-y-2 mb-5">
                 {['Sobre o DomPlace', 'Central de Ajuda', 'Trabalhe Conosco', 'Blog'].map((link) => (
                   <li key={link}>
@@ -476,7 +476,7 @@ export function Footer() {
                 ))}
               </ul>
 
-              <h4 className="font-semibold text-sm mb-3">Categorias</h4>
+              <h4 className="font-semibold text-sm mb-3 r62-heading-gradient">Categorias</h4>
               <ul className="space-y-1.5">
                 {footerCategories.slice(0, 5).map((cat) => (
                   <li key={cat}>
@@ -501,7 +501,7 @@ export function Footer() {
             >
             {/* Column 3: Para Lojistas */}
             <div>
-              <h4 className="font-semibold text-sm mb-3">Para Lojistas</h4>
+              <h4 className="font-semibold text-sm mb-3 r62-heading-gradient">Para Lojistas</h4>
               <ul className="space-y-2.5 mb-5">
                 {forMerchantLinks.map((link) => (
                   <li key={link.label}>
@@ -513,7 +513,7 @@ export function Footer() {
                 ))}
               </ul>
 
-              <h4 className="font-semibold text-sm mb-3">Suporte</h4>
+              <h4 className="font-semibold text-sm mb-3 r62-heading-gradient">Suporte</h4>
               <ul className="space-y-2.5">
                 {supportLinks.map((link) => (
                   <li key={link.label}>
@@ -540,14 +540,14 @@ export function Footer() {
             {/* Column 4: Payment + App Download */}
             <div className="space-y-5">
               <div>
-                <h4 className="font-semibold text-sm mb-3">Formas de Pagamento</h4>
+                <h4 className="font-semibold text-sm mb-3 r62-heading-gradient">Formas de Pagamento</h4>
                 <div className="flex flex-wrap gap-2">
                   {paymentMethods.map((method) => (
                     <motion.div
                       key={method.name}
                       whileHover={{ scale: 1.05, boxShadow: '0 0 16px rgba(16, 185, 129, 0.3), 0 0 4px rgba(16, 185, 129, 0.15)' }}
                       transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary/80 text-xs font-medium text-muted-foreground border border-border/50 cursor-default r41-payment-icon r43-payment-stagger r46-payment-lift"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary/80 text-xs font-medium text-muted-foreground border border-border/50 cursor-default r41-payment-icon r43-payment-stagger r46-payment-lift r62-card-lift"
                     >
                       <method.icon className="h-3.5 w-3.5" />
                       {method.label}
@@ -558,7 +558,7 @@ export function Footer() {
 
               {/* PWA Install Prompt */}
               <div>
-                <h4 className="font-semibold text-sm mb-3">Baixe o App</h4>
+                <h4 className="font-semibold text-sm mb-3 r62-heading-gradient">Baixe o App</h4>
                 <motion.div
                   className="relative group"
                 >

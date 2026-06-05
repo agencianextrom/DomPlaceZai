@@ -416,7 +416,7 @@ function HeroPromoSlide({
             animate={{ scale: 1, rotate: 0 }}
             transition={{ duration: 0.5, ease: EASE_SPRING_OUT }}
           >
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-sm border border-white/15 text-[11px] font-bold tracking-wider text-white uppercase r17-promo-badge-pulse r35-promo-badge">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-sm border border-white/15 text-[11px] font-bold tracking-wider text-white uppercase r17-promo-badge-pulse r35-promo-badge r62-badge-glow">
               <BadgeIcon type={promo.badgeType} />
               <Zap className="h-3 w-3" />
               {promo.badge}
@@ -592,7 +592,7 @@ function PromoCard({
       transition={{ duration: 0.6, delay: index * 0.15, ease: EASE_OUT_EXPO }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative group cursor-pointer r35-promo-card"
+      className="relative group cursor-pointer r35-promo-card r62-card-lift"
     >
       <motion.div
         animate={{
@@ -632,7 +632,7 @@ function PromoCard({
         <div className="relative z-10 flex flex-col justify-between p-5 sm:p-6 min-h-[180px] sm:min-h-[200px]">
           <div className="flex items-start justify-between">
             <motion.div className="relative" initial={{ scale: 0, rotate: -12 }} whileInView={{ scale: 1, rotate: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.15 + 0.3, ease: EASE_SPRING_OUT }}>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-sm border border-white/15 text-[11px] font-bold tracking-wider text-white uppercase r17-promo-badge-pulse r35-promo-badge">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-sm border border-white/15 text-[11px] font-bold tracking-wider text-white uppercase r17-promo-badge-pulse r35-promo-badge r62-badge-glow">
                 <BadgeIcon type={promo.badgeType} />
                 {promo.badge}
               </span>

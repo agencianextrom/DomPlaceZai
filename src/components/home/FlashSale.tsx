@@ -454,7 +454,7 @@ export function FlashSale() {
                 {/* ── r39 pulsing glow ring ring element ── */}
                 <span className="absolute -inset-2 rounded-xl pointer-events-none r39-oferta-pulse-ring" />
                 <div className="relative">
-                <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5 r44-header-fire-glow">
+                <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5 r44-header-fire-glow r62-heading-gradient">
                   <span className="r44-header-gradient-text r58-flash-fire-heading">
                     OFERTA RELÂMPAGO
                   </span>

@@ -216,7 +216,7 @@ export function PriceDropTicker() {
             </div>
 
             {/* Marquee auto-scrolling ticker strip */}
-            <div className="relative overflow-hidden group/ticker">
+            <div className="relative overflow-hidden group/ticker r62-scroll-snap">
               {/* Left/right fade overlays */}
               <div className="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-red-600 to-transparent z-10 pointer-events-none" />
               <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-orange-500 to-transparent z-10 pointer-events-none" />
@@ -277,7 +277,7 @@ export function PriceDropTicker() {
                     </div>
 
                     {/* Discount badge */}
-                    <Badge className="shrink-0 h-6 px-1.5 text-[10px] font-extrabold bg-red-500 text-white border-0 rounded-md shadow-sm">
+                    <Badge className="shrink-0 h-6 px-1.5 text-[10px] font-extrabold bg-red-500 text-white border-0 rounded-md shadow-sm r62-badge-glow">
                       -{item.discount}%
                     </Badge>
 
@@ -290,7 +290,7 @@ export function PriceDropTicker() {
                       }
                       transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
                     >
-                      <Badge className="shrink-0 h-5 px-1 text-[8px] font-extrabold bg-red-700 text-white border-0 rounded-full animate-pulse">
+                      <Badge className="shrink-0 h-5 px-1 text-[8px] font-extrabold bg-red-700 text-white border-0 rounded-full animate-pulse r62-badge-glow">
                         Preço caiu!
                       </Badge>
                     </motion.div>

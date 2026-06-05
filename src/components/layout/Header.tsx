@@ -308,7 +308,7 @@ export function Header() {
                     alt="DomPlace"
                     className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg shrink-0 transition-transform duration-200 group-hover:scale-105"
                   />
-                  <span className="font-bold text-lg sm:text-xl text-primary r38-header-logo-text r44-logo-text-glow">DomPlace</span>
+                  <span className="font-bold text-lg sm:text-xl text-primary r38-header-logo-text r44-logo-text-glow r62-heading-gradient">DomPlace</span>
                 </motion.button>
               )}
               

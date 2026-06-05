@@ -268,7 +268,7 @@ export function WeatherWidget() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className={`relative rounded-2xl overflow-hidden bg-gradient-to-r ${gradient} shadow-lg`}
+        className={`relative rounded-2xl overflow-hidden bg-gradient-to-r ${gradient} shadow-lg r62-card-lift`}
       >
         {/* Floating weather particles */}
         <WeatherParticles icon={weather.icon} />

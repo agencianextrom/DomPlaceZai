@@ -298,7 +298,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
   const pad = (n: number) => String(n).padStart(2, '0')
 
   return (
-    <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl" ref={containerRef}>
+    <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl r62-card-lift" ref={containerRef}>
       <AnimatePresence mode="wait" custom={direction}>
         <motion.div
           key={banner.id}
@@ -437,7 +437,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
 
             <motion.h2
               variants={staggerItem}
-              className="text-xl sm:text-2xl lg:text-3xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer r41-hero-title-enhanced r43-hero-heading-mega r58-hero-shimmer-text"
+              className="text-xl sm:text-2xl lg:text-3xl font-extrabold leading-tight r28-hero-heading-shimmer r34-hero-title-shimmer r41-hero-title-enhanced r43-hero-heading-mega r58-hero-shimmer-text r62-heading-gradient"
               style={{
                 textShadow: '0 2px 12px rgba(0,0,0,0.2)',
                 backgroundImage: headingBg,
@@ -527,7 +527,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
               >
                 <Button
                   onClick={handleVerOfertas}
-                  className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg min-h-11 sm:min-h-12 px-5 sm:px-6 active:scale-95 transition-transform animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer r41-hero-cta-primary r43-cta-shimmer-multi"
+                  className="bg-white text-primary hover:bg-white/90 font-semibold shadow-lg min-h-11 sm:min-h-12 px-5 sm:px-6 active:scale-95 transition-transform animate-pulse-ring elevated-card press-effect relative overflow-hidden r28-cta-shimmer r41-hero-cta-primary r43-cta-shimmer-multi r62-shimmer"
                 >
                   <span className="ripple-effect absolute inset-0 rounded-lg" />
                   <span className="r34-hero-cta-sweep absolute inset-0 rounded-lg" />

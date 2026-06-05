@@ -317,7 +317,7 @@ function StoreCardInner({
       tabIndex={0}
       onKeyDown={handleKeyDown}
       whileHover={{ y: -4, scale: 1.02, boxShadow: '0 16px 40px oklch(0.45 0.1 155 / 0.15), 0 0 24px oklch(0.45 0.1 155 / 0.1)' }}
-      className={`h-full bg-card rounded-xl border overflow-hidden text-left transition-all duration-300 group cursor-pointer hover:shadow-xl hover:shadow-emerald-500/10 ring-2 ring-transparent hover:ring-emerald-400/50 r25-card-lift ${open ? 'card-aurora store-card-glow-border' : 'border-border hover:border-primary/30'}`}
+      className={`h-full bg-card rounded-xl border overflow-hidden text-left transition-all duration-300 group cursor-pointer hover:shadow-xl hover:shadow-emerald-500/10 ring-2 ring-transparent hover:ring-emerald-400/50 r25-card-lift r62-card-lift ${open ? 'card-aurora store-card-glow-border' : 'border-border hover:border-primary/30'}`}
     >
       {/* Gradient header with pattern overlay */}
       <div className={`h-24 bg-gradient-to-br ${gradient} relative overflow-hidden`}>
@@ -685,7 +685,7 @@ export function StoreCarousel({ title, stores, isLoading }: StoreCarouselProps) 
             <div
               ref={scrollRef}
               onScroll={handleScroll}
-              className="flex gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory -mx-4 px-4 pb-2"
+              className="flex gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory -mx-4 px-4 pb-2 r62-scroll-snap"
             >
               {stores.map((store, index) => (
                 <motion.div

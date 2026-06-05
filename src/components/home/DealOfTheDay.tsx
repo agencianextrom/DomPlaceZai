@@ -272,7 +272,7 @@ export function DealOfTheDay() {
       <motion.div variants={itemVariants} className="flex items-center gap-2 mb-3">
         <div className="flex items-center gap-1.5">
           <Zap className="h-4 w-4 text-amber-500" />
-          <h2 className="text-base sm:text-lg font-bold">Oferta do Dia</h2>
+          <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">Oferta do Dia</h2>
         </div>
         <Badge variant="secondary" className="text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-800/30 font-bold r26-glow-pulse-badge">
           <Sparkles className="h-2.5 w-2.5 mr-0.5" />
@@ -287,7 +287,7 @@ export function DealOfTheDay() {
       </motion.div>
 
       {/* Main Deal Card — Glassmorphism */}
-      <motion.div variants={itemVariants} className="relative rounded-2xl overflow-hidden glassmorphism-strong r44-comparison-glass r58-deal-spotlight">
+      <motion.div variants={itemVariants} className="relative rounded-2xl overflow-hidden glassmorphism-strong r44-comparison-glass r58-deal-spotlight r62-card-lift">
         {/* Animated gradient border via CSS — r42 conic rotation */}
         <div className="absolute inset-0 rounded-2xl r26-deal-gradient-border r42-conic-border pointer-events-none" />
 

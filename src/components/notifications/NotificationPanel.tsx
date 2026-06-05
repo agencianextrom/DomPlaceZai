@@ -520,7 +520,7 @@ export function NotificationPanel() {
                   transition={{ type: 'spring' as const, stiffness: 600, damping: 12 }}
                   className="absolute -top-0.5 -right-0.5"
                 >
-                  <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm">
+                  <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm r62-notif-bounce">
                     {unreadCount > 99 ? '99+' : unreadCount}
                   </Badge>
                   {/* Gentle pulse ring when unread */}
@@ -557,7 +557,7 @@ export function NotificationPanel() {
               transition={{ type: 'spring' as const, stiffness: 600, damping: 12 }}
               className="absolute -top-0.5 -right-0.5"
             >
-              <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm">
+              <Badge className="h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white border-2 border-background shadow-sm r62-notif-bounce">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </Badge>
               {/* Gentle pulse ring when unread */}

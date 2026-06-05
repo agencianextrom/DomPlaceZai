@@ -130,7 +130,7 @@ export function CategoryBar() {
                   stiffness: 260,
                   damping: 24,
                 }}
-                className="flex flex-col items-center gap-1 min-w-[68px] min-h-[48px] justify-center snap-start group relative r39-category-btn r42-catbar-pill"
+                className="flex flex-col items-center gap-1 min-w-[68px] min-h-[48px] justify-center snap-start group relative r39-category-btn r42-catbar-pill r62-card-lift"
                 onClick={(e) => handleCategoryClick(cat.id, isActive, e)}
                 onMouseEnter={() => setHoveredId(cat.id)}
                 onMouseLeave={() => setHoveredId(null)}
