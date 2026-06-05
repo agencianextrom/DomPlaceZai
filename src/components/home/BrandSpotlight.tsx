@@ -313,11 +313,11 @@ export function BrandSpotlight() {
       : `R$ ${currentStore.deliveryFee.toFixed(2)}`
 
   return (
-    <section className="w-full relative rounded-2xl overflow-hidden">
+    <section className="w-full relative rounded-2xl overflow-hidden r62-card-lift">
       {/* Section heading */}
       <div className="flex items-center gap-2 mb-3 px-1">
         <Sparkles className="h-5 w-5 text-amber-500" />
-        <h2 className="text-lg sm:text-xl font-bold">Lojas em Destaque</h2>
+        <h2 className="text-lg sm:text-xl font-bold r62-heading-gradient">Lojas em Destaque</h2>
       </div>
 
       {/* Main carousel with 3D tilt + animated gradient border */}

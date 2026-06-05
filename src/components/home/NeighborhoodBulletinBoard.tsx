@@ -1443,7 +1443,7 @@ export function NeighborhoodBulletinBoard() {
             <Button
               variant="outline"
               size="sm"
-              className="h-8 w-8 p-0 rounded-full"
+              className="h-8 w-8 min-h-[44px] min-w-[44px] p-0 rounded-full"
               onClick={handleRefresh}
             >
               <Bell className="h-3.5 w-3.5" />
@@ -1469,7 +1469,7 @@ export function NeighborhoodBulletinBoard() {
             <Button
               variant="outline"
               size="sm"
-              className="h-8 w-8 p-0 rounded-full"
+              className="h-8 w-8 min-h-[44px] min-w-[44px] p-0 rounded-full"
               title="Visualização em grade"
             >
               <Grid3X3 className="h-3.5 w-3.5" />
@@ -1480,7 +1480,7 @@ export function NeighborhoodBulletinBoard() {
           <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }}>
             <Button
               size="sm"
-              className="h-8 gap-1.5 text-xs rounded-full"
+              className="h-8 min-h-[44px] gap-1.5 text-xs rounded-full"
               onClick={() => setIsNewPostOpen(true)}
             >
               <Plus className="h-3.5 w-3.5" />

@@ -306,7 +306,7 @@ function DrawerQuantityStepper({
         animate="idle"
         onClick={handleDecrement}
         disabled={quantity <= 1}
-        className="h-9 w-9 rounded-xl bg-secondary hover:bg-secondary/80 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors border border-border/50"
+        className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-xl bg-secondary hover:bg-secondary/80 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors border border-border/50"
       >
         <Minus className="h-4 w-4" />
       </motion.button>
@@ -328,7 +328,7 @@ function DrawerQuantityStepper({
         animate="idle"
         onClick={handleIncrement}
         disabled={quantity >= stock}
-        className="h-9 w-9 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors shadow-sm"
+        className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors shadow-sm"
       >
         <Plus className="h-4 w-4" />
       </motion.button>

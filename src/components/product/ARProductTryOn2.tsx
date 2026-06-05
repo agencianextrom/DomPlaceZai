@@ -827,7 +827,7 @@ export function ARProductTryOn2() {
       <div className="r42-toolbar flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2.5">
           <motion.div
-            className="r42-toolbar-icon h-8 w-8 rounded-lg flex items-center justify-center"
+            className="r42-toolbar-icon h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center"
             style={{ background: 'rgba(16,185,129,0.12)' }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

@@ -460,7 +460,7 @@ export function TrendingCategories() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scroll('left')}
-              className="absolute left-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/90 dark:bg-card/90 shadow-lg border border-border/50 flex items-center justify-center hover:bg-white transition-colors hidden sm:flex scroll-chevron-anim"
+              className="absolute left-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-white/90 dark:bg-card/90 shadow-lg border border-border/50 flex items-center justify-center hover:bg-white transition-colors hidden sm:flex scroll-chevron-anim"
             >
               <ChevronLeft className="h-4 w-4" />
             </motion.button>
@@ -477,7 +477,7 @@ export function TrendingCategories() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scroll('right')}
-              className="absolute right-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/90 dark:bg-card/90 shadow-lg border border-border/50 flex items-center justify-center hover:bg-white transition-colors hidden sm:flex scroll-chevron-anim"
+              className="absolute right-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-white/90 dark:bg-card/90 shadow-lg border border-border/50 flex items-center justify-center hover:bg-white transition-colors hidden sm:flex scroll-chevron-anim"
             >
               <ChevronRight className="h-4 w-4" />
             </motion.button>

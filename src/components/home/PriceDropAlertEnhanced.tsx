@@ -596,13 +596,13 @@ export default function PriceDropAlertEnhanced() {
           {/* shadcn Buttons wrapped in motion.div */}
           <motion.div whileTap={{ scale: 0.95 }}>
             <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)}
-              className="h-8 px-3 text-[11px] rounded-lg gap-1.5 r48-history-btn">
+              className="h-8 min-h-[44px] px-3 text-[11px] rounded-lg gap-1.5 r48-history-btn">
               <History className="h-3.5 w-3.5" /> Histórico
             </Button>
           </motion.div>
           <motion.div whileTap={{ scale: 0.95 }}>
             <Button size="sm" onClick={() => setShowDialog(true)}
-              className="h-8 px-3 text-[11px] rounded-lg gap-1.5 r48-add-btn">
+              className="h-8 min-h-[44px] px-3 text-[11px] rounded-lg gap-1.5 r48-add-btn">
               <Plus className="h-3.5 w-3.5" /> Novo Alerta
             </Button>
           </motion.div>

@@ -1033,7 +1033,7 @@ function RecipeCard({
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
             <Button
               size="sm"
-              className="w-full text-xs h-8"
+              className="w-full text-xs h-8 min-h-[44px]"
               onClick={() => onViewDetails(recipe.id)}
             >
               <BookOpen className="h-3 w-3 mr-1" />
@@ -1045,7 +1045,7 @@ function RecipeCard({
               <Button
                 size="sm"
                 variant="outline"
-                className="text-xs h-8"
+                className="text-xs h-8 min-h-[44px]"
                 onClick={() => onAddToCart(recipe.id)}
               >
                 <ShoppingCart className="h-3 w-3 mr-1" />

@@ -11,6 +11,7 @@ import { ProductComparisonBar } from "@/components/product/ProductComparisonBar"
 import { NProgressLoader } from "@/components/navigation/NProgressLoader";
 import { PostHogInit } from "@/components/analytics/PostHogInit";
 import CursorGlow from "@/components/effects/CursorGlow";
+import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { FloatingDealAlert, QuickAddFloatingButton } from "@/components/home/FloatingDealAlert";
 
 const geistSans = Geist({
@@ -77,6 +78,7 @@ export default function RootLayout({
           <AuthProvider>
             <div className="min-h-screen flex flex-col relative">
               <CursorGlow />
+              <ScrollProgress />
               <Header />
               <main className="flex-1 pb-20 md:pb-4">
                 {children}

@@ -832,7 +832,7 @@ function CollectionCard({
                     e.stopPropagation()
                     setMenuOpen(!menuOpen)
                   }}
-                  className="r56-more-btn w-6 h-6 rounded-full flex items-center justify-center hover:bg-muted transition-colors"
+                  className="r56-more-btn w-6 h-6 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center hover:bg-muted transition-colors"
                 >
                   <MoreHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
                 </button>
@@ -1879,7 +1879,7 @@ export function WishListManager() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <button
                     onClick={() => openShare(activeCollection)}
-                    className="r56-action-btn flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium bg-background/40 border border-border/50 hover:border-primary/30 text-muted-foreground hover:text-foreground transition-colors"
+                    className="r56-action-btn flex items-center gap-1 px-2 py-1 min-h-[44px] rounded-md text-[10px] font-medium bg-background/40 border border-border/50 hover:border-primary/30 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <Share2 className="h-2.5 w-2.5" />
                     Share
@@ -1890,7 +1890,7 @@ export function WishListManager() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <button
                     onClick={toggleSelectAll}
-                    className="r56-action-btn flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium bg-background/40 border border-border/50 hover:border-primary/30 text-muted-foreground hover:text-foreground transition-colors"
+                    className="r56-action-btn flex items-center gap-1 px-2 py-1 min-h-[44px] rounded-md text-[10px] font-medium bg-background/40 border border-border/50 hover:border-primary/30 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {selectedItems.size === allItems.length && allItems.length > 0 ? (
                       <Check className="h-2.5 w-2.5 text-primary" />
@@ -1918,7 +1918,7 @@ export function WishListManager() {
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                           <button
                             onClick={() => setShowMoveModal(true)}
-                            className="r56-batch-btn flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium bg-primary/10 border border-primary/30 text-primary transition-colors"
+                            className="r56-batch-btn flex items-center gap-1 px-2 py-1 min-h-[44px] rounded-md text-[10px] font-medium bg-primary/10 border border-primary/30 text-primary transition-colors"
                           >
                             <MoveRight className="h-2.5 w-2.5" />
                             Move
@@ -1929,7 +1929,7 @@ export function WishListManager() {
                       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <button
                           onClick={removeSelected}
-                          className="r56-batch-btn flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium bg-red-500/10 border border-red-500/30 text-red-500 transition-colors"
+                          className="r56-batch-btn flex items-center gap-1 px-2 py-1 min-h-[44px] rounded-md text-[10px] font-medium bg-red-500/10 border border-red-500/30 text-red-500 transition-colors"
                         >
                           <Trash2 className="h-2.5 w-2.5" />
                           Remove
@@ -1939,7 +1939,7 @@ export function WishListManager() {
                       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <button
                           onClick={addAllToCart}
-                          className="r56-batch-btn flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 transition-colors"
+                          className="r56-batch-btn flex items-center gap-1 px-2 py-1 min-h-[44px] rounded-md text-[10px] font-medium bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 transition-colors"
                         >
                           <ShoppingCart className="h-2.5 w-2.5" />
                           Add to Cart

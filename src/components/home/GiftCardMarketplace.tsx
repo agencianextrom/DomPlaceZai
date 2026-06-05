@@ -1110,7 +1110,7 @@ function RedeemFlow({ card, onClose, onConfirm }: { card: OwnedCard; onClose: ()
         transition={{ type: 'spring' as const, stiffness: 200, damping: 22 }}
       >
         <motion.button
-          className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-muted flex items-center justify-center"
+          className="absolute top-3 right-3 z-10 w-8 h-8 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center"
           onClick={onClose}
           whileTap={{ scale: 0.9 }}
         >

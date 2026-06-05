@@ -1129,7 +1129,7 @@ function StoreInteriorView({
       {/* Zoom controls overlay */}
       <div className="r53-vtour-zoom-controls absolute bottom-3 right-3 flex flex-col gap-1 z-30">
         <motion.button
-          className="r53-vtour-zoom-in w-8 h-8 rounded-lg flex items-center justify-center"
+          className="r53-vtour-zoom-in w-8 h-8 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center"
           style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)' }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -1138,7 +1138,7 @@ function StoreInteriorView({
           <ZoomIn className="w-4 h-4 text-white" />
         </motion.button>
         <motion.button
-          className="r53-vtour-zoom-out w-8 h-8 rounded-lg flex items-center justify-center"
+          className="r53-vtour-zoom-out w-8 h-8 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center"
           style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)' }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -1746,7 +1746,7 @@ export function VirtualMarketTour() {
   if (!showTour) return null
 
   return (
-    <section className="r53-vtour-section w-full" ref={containerRef}>
+    <section className="r53-vtour-section w-full r62-card-lift" ref={containerRef}>
       {/* Section header */}
       <div className="flex items-center gap-3 mb-4 px-1">
         <motion.div
@@ -1757,7 +1757,7 @@ export function VirtualMarketTour() {
         />
         <div className="flex items-center gap-2">
           <Compass className="w-5 h-5 text-primary" />
-          <h2 className="r53-vtour-title text-lg sm:text-xl font-bold text-foreground">
+          <h2 className="r53-vtour-title text-lg sm:text-xl font-bold text-foreground r62-heading-gradient">
             Tour Virtual do Mercado
           </h2>
         </div>

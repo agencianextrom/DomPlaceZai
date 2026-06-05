@@ -377,9 +377,9 @@ export function ComboBuilder() {
 
   return (
     <style dangerouslySetInnerHTML={{ __html: SHIMMER_STYLE }}>
-      <section className="w-full">
+      <section className="w-full r62-card-lift">
         <div className="flex items-center justify-between mb-4 px-1">
-          <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 r62-heading-gradient">
             <motion.div
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}

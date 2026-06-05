@@ -306,7 +306,7 @@ function SplitCalculator({ total, memberCount }: { total: number; memberCount: n
         {(['equal', 'custom'] as const).map((m) => (
           <motion.button key={m} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={() => setMode(m)}
-            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold transition-all ${mode === m ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
+            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-md text-[11px] font-semibold transition-all ${mode === m ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>
             <Split className="h-3 w-3" />{m === 'equal' ? 'Igual' : 'Personalizado'}
           </motion.button>
         ))}

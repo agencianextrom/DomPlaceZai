@@ -46319,3 +46319,153 @@
     animation: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   r72 — DealComparator + ThemeToggle + ScrollProgress + touch-target polish
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.r72-deal-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r72-deal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -6px rgba(0, 0, 0, 0.06);
+}
+
+.r72-best-deal {
+  border-left: 3px solid #22c55e;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.06), transparent);
+  transition: background 0.2s ease;
+}
+.r72-best-deal:hover {
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.12), transparent);
+}
+
+.r72-price-badge {
+  animation: r72-badge-pulse 2s ease-in-out infinite;
+}
+@keyframes r72-badge-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+.r72-search-input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.r72-search-input:focus-within {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.r72-sort-btn {
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+.r72-sort-btn:active {
+  transform: scale(0.96);
+}
+
+.r72-store-row {
+  transition: background-color 0.2s ease, padding-left 0.2s ease;
+}
+.r72-store-row:hover {
+  background-color: rgba(99, 102, 241, 0.04);
+  padding-left: 4px;
+}
+
+.r72-savings-card {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(16, 185, 129, 0.12));
+  box-shadow: 0 4px 15px -3px rgba(34, 197, 94, 0.2);
+  transition: box-shadow 0.25s ease;
+}
+.r72-savings-card:hover {
+  box-shadow: 0 8px 25px -3px rgba(34, 197, 94, 0.3);
+}
+
+.r72-alert-toggle {
+  transition: background-color 0.3s ease;
+}
+
+.r72-category-chip {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+.r72-category-chip:active {
+  transform: scale(0.95);
+}
+.r72-category-chip:hover {
+  box-shadow: 0 2px 8px -2px rgba(99, 102, 241, 0.3);
+}
+
+.r72-comparison-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.r72-comparison-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -3px rgba(0, 0, 0, 0.08);
+}
+
+.r72-offer-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r72-offer-btn:active {
+  transform: scale(0.97);
+}
+.r72-offer-btn:hover {
+  box-shadow: 0 2px 8px -2px rgba(99, 102, 241, 0.25);
+}
+
+.r72-savings-glow {
+  animation: r72-glow 3s ease-in-out infinite alternate;
+}
+@keyframes r72-glow {
+  0% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.15); }
+  100% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.3); }
+}
+
+.r72-badge-shine {
+  position: relative;
+  overflow: hidden;
+}
+.r72-badge-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: r72-shine 3s ease-in-out infinite;
+}
+@keyframes r72-shine {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r72-deal-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .r72-price-badge {
+    animation: none;
+  }
+  .r72-sort-btn:active,
+  .r72-category-chip:active,
+  .r72-offer-btn:active {
+    transform: none;
+  }
+  .r72-savings-card:hover {
+    box-shadow: 0 4px 15px -3px rgba(34, 197, 94, 0.2);
+  }
+  .r72-comparison-item:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .r72-savings-glow {
+    animation: none;
+  }
+  .r72-badge-shine::after {
+    animation: none;
+  }
+}

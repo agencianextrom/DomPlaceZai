@@ -431,7 +431,7 @@ export function DomEliseuStories() {
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={handleClose}
-                  className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                  className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
                 >
                   <X className="h-4 w-4 text-white" />
                 </motion.button>
@@ -516,7 +516,7 @@ export function DomEliseuStories() {
                 whileTap={{ scale: 0.9 }}
                 onClick={goPrevSlide}
                 disabled={activeSlideIndex === 0 && activeStoryIndex === 0}
-                className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors disabled:opacity-30"
+                className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors disabled:opacity-30"
               >
                 <ChevronLeft className="h-4 w-4 text-white" />
               </motion.button>
@@ -528,7 +528,7 @@ export function DomEliseuStories() {
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={goNextSlide}
-                className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
               >
                 <ChevronRight className="h-4 w-4 text-white" />
               </motion.button>

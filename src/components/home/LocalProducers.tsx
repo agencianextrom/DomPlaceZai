@@ -127,7 +127,7 @@ export function LocalProducers() {
           variant="outline"
           size="sm"
           onClick={cycleSort}
-          className="h-8 text-xs gap-1 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+          className="h-8 min-h-[44px] text-xs gap-1 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
         >
           {sortOptions.find(s => s.key === sortBy)?.label}
         </Button>
@@ -237,7 +237,7 @@ export function LocalProducers() {
                     </Button>
                     <Button
                       size="sm"
-                      className="h-8 text-xs px-3 bg-emerald-600 hover:bg-emerald-700 text-white r33-btn-glow"
+                      className="h-8 min-h-[44px] text-xs px-3 bg-emerald-600 hover:bg-emerald-700 text-white r33-btn-glow"
                     >
                       Encomendar
                     </Button>

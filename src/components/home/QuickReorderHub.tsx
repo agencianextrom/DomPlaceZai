@@ -364,7 +364,7 @@ function BundleCard({ bundle, idx, onAll, budgetMode }: { bundle: Bundle; idx: n
           <div className="flex-1" />
           <motion.div whileTap={{ scale: 0.95 }}>
             <button onClick={() => onAll(bundle.items)}
-              className="h-8 px-4 rounded-lg bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-500/90 text-white text-[11px] font-bold flex items-center gap-1.5 transition-all">
+              className="h-8 min-h-[44px] px-4 rounded-lg bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-500/90 text-white text-[11px] font-bold flex items-center gap-1.5 transition-all">
               <ShoppingCart className="h-3.5 w-3.5" />Reorder All
             </button>
           </motion.div>
@@ -596,12 +596,12 @@ export function QuickReorderHub() {
   )
 
   return (
-    <section className="mt-6"><ShimmerCSS />
+    <section className="mt-6 r62-card-lift"><ShimmerCSS />
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center"><RotateCcw className="h-4 w-4 text-primary" /></div>
-          <h2 className="text-base sm:text-lg font-bold r52-reorder-title">Quick Reorder</h2>
+          <h2 className="text-base sm:text-lg font-bold r52-reorder-title r62-heading-gradient">Quick Reorder</h2>
           <Badge variant="secondary" className="text-[9px] font-bold">{items.length} itens</Badge>
         </div>
         <div className="flex items-center gap-2">

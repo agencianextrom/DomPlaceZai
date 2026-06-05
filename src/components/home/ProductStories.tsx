@@ -1672,12 +1672,12 @@ export function ProductStories() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, type: 'spring' as const, stiffness: 200, damping: 25 }}
-        className="relative r52-stories-section"
+        className="relative r52-stories-section r62-card-lift"
       >
         <div className="mb-1">
           {/* ── Section Header ── */}
           <div className="flex items-center justify-between mb-3 px-1 r52-stories-section-header">
-            <h2 className="text-base font-bold flex items-center gap-2 r52-stories-section-title">
+            <h2 className="text-base font-bold flex items-center gap-2 r52-stories-section-title r62-heading-gradient">
               <motion.span
                 animate={{ rotate: [0, 15, -15, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}

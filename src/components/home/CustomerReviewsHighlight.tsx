@@ -538,7 +538,7 @@ export function CustomerReviewsHighlight() {
   if (loading || reviews.length === 0) return null
 
   return (
-    <section className="w-full relative overflow-hidden rounded-2xl">
+    <section className="w-full relative overflow-hidden rounded-2xl r62-card-lift">
       {/* 4 floating gradient orbs */}
       {orbColors.map((config, i) => (
         <GradientOrb key={`orb-${i}`} config={config} index={i} />
@@ -556,7 +556,7 @@ export function CustomerReviewsHighlight() {
             <MessageCircle className="h-4 w-4 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold r32-review-shimmer">O que dizem nossos clientes</h2>
+            <h2 className="text-base sm:text-lg font-bold r32-review-shimmer r62-heading-gradient">O que dizem nossos clientes</h2>
             <p className="text-[11px] text-muted-foreground">Avaliações reais de quem usa o DomPlace</p>
           </div>
         </div>

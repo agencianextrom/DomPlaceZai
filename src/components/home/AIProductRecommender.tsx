@@ -655,7 +655,7 @@ function SwipeDismissCard({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="r51-recommend-fav-btn h-8 gap-1 text-[10px] text-muted-foreground hover:text-rose-500 px-2"
+                    className="r51-recommend-fav-btn h-8 min-h-[44px] gap-1 text-[10px] text-muted-foreground hover:text-rose-500 px-2"
                   >
                     <Heart className="h-3.5 w-3.5" />
                     Salvar
@@ -665,7 +665,7 @@ function SwipeDismissCard({
                 <motion.div whileTap={{ scale: 0.95 }}>
                   <Button
                     size="sm"
-                    className="r51-recommend-cta-btn h-8 gap-1 text-[11px] font-semibold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white border-0 px-3"
+                    className="r51-recommend-cta-btn h-8 min-h-[44px] gap-1 text-[11px] font-semibold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white border-0 px-3"
                   >
                     Ver produto
                     <ArrowRight className="h-3 w-3" />

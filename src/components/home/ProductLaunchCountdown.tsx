@@ -386,7 +386,7 @@ function LaunchCard({ product, index }: { product: LaunchProduct; index: number 
                   <Button
                     variant={notified ? 'secondary' : 'outline'}
                     size="sm"
-                    className={`w-full h-8 text-[11px] gap-1.5 rounded-lg transition-colors ${
+                    className={`w-full h-8 min-h-[44px] text-[11px] gap-1.5 rounded-lg transition-colors ${
                       notified
                         ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200/50 dark:border-amber-700/30'
                         : 'border-amber-300/50 dark:border-amber-600/30 hover:bg-amber-50 dark:hover:bg-amber-900/20'

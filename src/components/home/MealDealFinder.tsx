@@ -638,7 +638,7 @@ function NutritionalOverlay({
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={onClose}
-            className="w-full h-8 bg-muted rounded-lg text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors"
+            className="w-full h-8 min-h-[44px] bg-muted rounded-lg text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors"
           >
             Close
           </motion.button>

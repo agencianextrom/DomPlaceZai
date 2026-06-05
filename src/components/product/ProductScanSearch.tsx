@@ -359,7 +359,7 @@ function QuantityStepper({
   return (
     <div className="r41-qty-stepper flex items-center rounded-lg overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
       <motion.button
-        className="r41-qty-btn-dec w-8 h-8 flex items-center justify-center"
+        className="r41-qty-btn-dec w-8 h-8 min-h-[44px] min-w-[44px] flex items-center justify-center"
         style={{ background: 'rgba(255,255,255,0.08)' }}
         whileTap={{ scale: 0.9 }}
         onClick={onDecrement}
@@ -378,7 +378,7 @@ function QuantityStepper({
         {quantity}
       </motion.span>
       <motion.button
-        className="r41-qty-btn-inc w-8 h-8 flex items-center justify-center"
+        className="r41-qty-btn-inc w-8 h-8 min-h-[44px] min-w-[44px] flex items-center justify-center"
         style={{ background: 'rgba(255,255,255,0.08)' }}
         whileTap={{ scale: 0.9 }}
         onClick={onIncrement}

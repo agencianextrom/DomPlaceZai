@@ -763,7 +763,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
         variant="ghost"
         size="icon"
         onClick={prev}
-        className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/20 hover:bg-black/40 text-white border-0 rounded-full z-20"
+        className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 min-h-[44px] min-w-[44px] bg-black/20 hover:bg-black/40 text-white border-0 rounded-full z-20"
       >
         <ChevronLeft className="h-5 w-5" />
       </Button>
@@ -771,7 +771,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
         variant="ghost"
         size="icon"
         onClick={next}
-        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/20 hover:bg-black/40 text-white border-0 rounded-full z-20"
+        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 min-h-[44px] min-w-[44px] bg-black/20 hover:bg-black/40 text-white border-0 rounded-full z-20"
       >
         <ChevronRight className="h-5 w-5" />
       </Button>

@@ -380,7 +380,7 @@ export function SmartShoppingList() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setIsWeekly(true)}
-                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold transition-all ${
+                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-md text-[11px] font-semibold transition-all ${
                   isWeekly
                     ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
@@ -393,7 +393,7 @@ export function SmartShoppingList() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setIsWeekly(false)}
-                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold transition-all ${
+                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-md text-[11px] font-semibold transition-all ${
                   !isWeekly
                     ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'

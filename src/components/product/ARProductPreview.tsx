@@ -198,7 +198,7 @@ export function ARProductPreview() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setArMode(!arMode)}
-            className="r33-ar-toggle flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium transition-colors"
+            className="r33-ar-toggle flex items-center gap-1.5 h-8 min-h-[44px] px-3 rounded-lg text-xs font-medium transition-colors"
             style={{
               background: arMode ? 'rgba(16,185,129,0.15)' : 'rgba(0,0,0,0.05)',
               color: arMode ? '#059669' : 'rgba(0,0,0,0.6)',
@@ -211,7 +211,7 @@ export function ARProductPreview() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleShare}
-            className="r33-ar-share relative overflow-hidden flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium bg-primary/10 text-primary"
+            className="r33-ar-share relative overflow-hidden flex items-center gap-1.5 h-8 min-h-[44px] px-3 rounded-lg text-xs font-medium bg-primary/10 text-primary"
           >
             <Share2 className="h-3.5 w-3.5" />
             <span>Compartilhar vista AR</span>

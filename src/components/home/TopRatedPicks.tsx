@@ -118,14 +118,14 @@ export function TopRatedPicks() {
           <div className="flex items-center gap-1">
             <button
               onClick={() => scroll('left')}
-              className="h-8 w-8 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
+              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
               aria-label="Rolar para esquerda"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               onClick={() => scroll('right')}
-              className="h-8 w-8 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
+              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
               aria-label="Rolar para direita"
             >
               <ChevronRight className="h-4 w-4" />

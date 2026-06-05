@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, ShoppingCart, Search, User, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, LogOut, Star, X, Sun, Moon, Share2 } from 'lucide-react'
+import { MapPin, ShoppingCart, Search, User, ArrowLeft, Home, ClipboardList, Heart, UserCircle, Megaphone, ChevronDown, Store, Package, LogOut, Star, X, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -10,10 +10,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAppStore } from '@/store/useAppStore'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { MobileNav } from './MobileNav'
-import { ScrollProgress } from './ScrollProgress'
+import { ThemeToggle } from './ThemeToggle'
 import { NotificationCenter } from '@/components/notifications/NotificationCenter'
-import { useState, useEffect, useRef } from 'react'
-import { useTheme } from 'next-themes'
+import { useState, useEffect } from 'react'
 import { useMagnetic } from '@/lib/use-magnetic'
 
 const desktopNavItems = [
@@ -87,9 +86,6 @@ export function Header() {
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [blurAmount, setBlurAmount] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { theme, setTheme } = useTheme()
-  const mounted = useRef(false)
-  useEffect(() => { mounted.current = true }, [])
 
   const magneticCTA = useMagnetic({ strength: 25, radius: 150 })
   const magneticAuth = useMagnetic({ strength: 20, radius: 120 })
@@ -134,7 +130,6 @@ export function Header() {
   
   return (
     <>
-      <ScrollProgress />
       <motion.header
         animate={{
           boxShadow: isScrolled
@@ -393,31 +388,7 @@ export function Header() {
               <NotificationCenter />
               
               {/* Theme toggle */}
-              {mounted && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative h-10 w-10 transition-all duration-300 hover-glow"
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                  aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
-                >
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={theme}
-                      initial={{ scale: 0, rotate: -90, opacity: 0 }}
-                      animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                      exit={{ scale: 0, rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.25, type: 'spring' as const, stiffness: 300, damping: 20 }}
-                    >
-                      {theme === 'dark' ? (
-                        <Sun className="h-5 w-5 text-amber-400" />
-                      ) : (
-                        <Moon className="h-5 w-5" />
-                      )}
-                    </motion.div>
-                  </AnimatePresence>
-                </Button>
-              )}
+              <ThemeToggle />
               
               {/* Cart - enhanced with animation */}
               <Button

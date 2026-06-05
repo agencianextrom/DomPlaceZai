@@ -108,11 +108,11 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
   }
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 r62-card-lift">
       {/* Title with shimmer text + floating search icon */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 r62-heading-gradient">
             <Store className="h-5 w-5 text-primary" />
             <span className="r33-store-search-shimmer-title">
               Encontrar Lojas
@@ -130,7 +130,7 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowFilters(!showFilters)}
-          className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${showFilters ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:border-primary/30'}`}
+          className={`flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-lg text-xs font-medium border transition-all ${showFilters ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:border-primary/30'}`}
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
           Filtros
@@ -215,7 +215,7 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.05 * 0, type: 'spring' as const, stiffness: 350, damping: 20 }}
                     onClick={() => setActiveCategory(null)}
-                    className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all r33-store-search-chip ${!activeCategory ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/30'}`}
+                    className={`px-2.5 py-1 min-h-[44px] rounded-full text-[10px] font-medium border transition-all r33-store-search-chip ${!activeCategory ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/30'}`}
                   >
                     Todas ({stores.length})
                   </motion.button>
@@ -226,7 +226,7 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.05 + catIdx * 0.05, type: 'spring' as const, stiffness: 350, damping: 20 }}
                       onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all r33-store-search-chip ${cat === activeCategory ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/30'}`}
+                      className={`px-2.5 py-1 min-h-[44px] rounded-full text-[10px] font-medium border transition-all r33-store-search-chip ${cat === activeCategory ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-primary/30'}`}
                     >
                       {categoryLabels[cat] || cat} ({stores.filter(s => s.category === cat).length})
                     </motion.button>
@@ -258,7 +258,7 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.05 + optIdx * 0.05, type: 'spring' as const, stiffness: 350, damping: 20 }}
                       onClick={() => setSortBy(opt)}
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all ${sortBy === opt ? 'bg-primary/10 text-primary border-primary/30' : 'border-border text-muted-foreground hover:border-primary/30'}`}
+                      className={`px-2.5 py-1 min-h-[44px] rounded-full text-[10px] font-medium border transition-all ${sortBy === opt ? 'bg-primary/10 text-primary border-primary/30' : 'border-border text-muted-foreground hover:border-primary/30'}`}
                     >
                       {sortLabels[opt]}
                     </motion.button>

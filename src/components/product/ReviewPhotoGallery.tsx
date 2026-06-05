@@ -308,7 +308,7 @@ export function ReviewPhotoGallery({ photos, onUpload, compact = false }: Review
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-red-500"
+                    className="h-8 w-8 min-h-[44px] min-w-[44px] text-muted-foreground hover:text-red-500"
                     onClick={() => removePreview(i)}
                   >
                     <X className="h-3.5 w-3.5" />

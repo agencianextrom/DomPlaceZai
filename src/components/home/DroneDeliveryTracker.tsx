@@ -988,7 +988,7 @@ export function DroneDeliveryTracker() {
   const progressPercent = Math.round(droneState.progress)
 
   return (
-    <section className="r53-drone-tracker space-y-4">
+    <section className="r53-drone-tracker space-y-4 r62-card-lift">
       {/* ─── Header with Gradient ─── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -1018,7 +1018,7 @@ export function DroneDeliveryTracker() {
             <Plane className="h-6 w-6" />
           </motion.div>
           <div>
-            <h2 className="text-xl font-bold">Rastreador de Drone</h2>
+            <h2 className="text-xl font-bold r62-heading-gradient">Rastreador de Drone</h2>
             <p className="text-sm text-white/70 mt-0.5">Entrega aérea autônoma em tempo real</p>
           </div>
         </div>

@@ -597,7 +597,7 @@ export function BudgetPlanner() {
                       <Button
                         size="sm"
                         onClick={handleAddExpense}
-                        className="flex-1 h-8 text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg btn-glow gap-1"
+                        className="flex-1 h-8 min-h-[44px] text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg btn-glow gap-1"
                       >
                         <Plus className="h-3 w-3" />
                         Adicionar
@@ -606,7 +606,7 @@ export function BudgetPlanner() {
                         size="sm"
                         variant="outline"
                         onClick={() => setShowForm(false)}
-                        className="h-8 text-xs rounded-lg"
+                        className="h-8 min-h-[44px] text-xs rounded-lg"
                       >
                         Cancelar
                       </Button>
