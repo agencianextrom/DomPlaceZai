@@ -1262,7 +1262,7 @@ export function CrowdFundedDeals() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15, type: 'spring' as const, stiffness: 200, damping: 25 }}
-      className="relative overflow-hidden"
+      className="relative overflow-hidden r62-card-lift"
     >
       {/* Tier unlock notifications */}
       <AnimatePresence>

@@ -419,7 +419,7 @@ export function FlashSale() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15, type: 'spring' as const, stiffness: 200, damping: 25 }}
-      className="relative overflow-hidden"
+      className="relative overflow-hidden r62-card-lift"
     >
       <div className="absolute inset-0 gradient-mesh opacity-50 pointer-events-none" />
       <div className="relative">

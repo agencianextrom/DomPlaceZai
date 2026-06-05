@@ -853,7 +853,7 @@ export default function LiveAuctionSystem() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15, type: 'spring' as const, stiffness: 200, damping: 25 }}
-      className="relative overflow-hidden"
+      className="relative overflow-hidden r62-card-lift"
     >
       <div className="relative bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 dark:from-purple-950/10 dark:via-indigo-950/10 dark:to-blue-950/10 rounded-2xl border border-purple-200/40 dark:border-purple-800/20 overflow-hidden r45-auction-section">
         {/* Decorative background glows */}
@@ -871,7 +871,7 @@ export default function LiveAuctionSystem() {
               <Gavel className="h-5 w-5 text-white" />
             </motion.div>
             <div>
-              <h2 className="font-bold text-base sm:text-lg flex items-center gap-2">
+              <h2 className="font-bold text-base sm:text-lg flex items-center gap-2 r62-heading-gradient">
                 <span className="r45-header-gradient-text bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                   Leilões ao Vivo
                 </span>

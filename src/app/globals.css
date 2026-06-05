@@ -47092,3 +47092,128 @@
   .r77-fade-in { animation: none; opacity: 1; transform: none; }
   .r77-shimmer { animation: none; }
 }
+
+/* === R78 — GiftFinder + Component Polish === */
+.r78-recipient-btn {
+  transition: all 0.2s ease;
+}
+.r78-recipient-btn:active {
+  transform: scale(0.96);
+}
+
+.r78-occasion-tab {
+  transition: all 0.2s ease;
+}
+.r78-occasion-tab:active {
+  transform: scale(0.96);
+}
+
+.r78-gift-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.r78-gift-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(244, 114, 182, 0.12), 0 0 0 1px rgba(244, 114, 182, 0.1);
+  border-color: rgba(244, 114, 182, 0.25);
+}
+
+.r78-filter-panel {
+  transition: opacity 0.2s ease;
+}
+
+/* R78 — Component polish classes */
+.r78-carousel-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.r78-carousel-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.r78-auction-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r78-auction-card:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(234, 179, 8, 0.12);
+}
+
+.r78-crowd-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r78-crowd-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(168, 85, 247, 0.12);
+}
+
+.r78-flash-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r78-flash-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.1);
+}
+
+.r78-feed-card {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+.r78-feed-card:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  transform: translateX(2px);
+}
+
+.r78-recent-item {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r78-recent-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.12);
+}
+
+.r78-fav-store {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r78-fav-store:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(244, 114, 182, 0.1);
+}
+
+.r78-glow-rose {
+  transition: box-shadow 0.3s ease;
+}
+.r78-glow-rose:hover {
+  box-shadow: 0 0 20px rgba(244, 114, 182, 0.15);
+}
+
+.r78-shine {
+  position: relative;
+  overflow: hidden;
+}
+.r78-shine::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  transition: left 0.5s ease;
+}
+.r78-shine:hover::after {
+  left: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r78-recipient-btn:active { transform: none; }
+  .r78-occasion-tab:active { transform: none; }
+  .r78-gift-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r78-carousel-hover:hover { transform: none; box-shadow: none; }
+  .r78-auction-card:hover { transform: none; box-shadow: none; }
+  .r78-crowd-card:hover { transform: none; box-shadow: none; }
+  .r78-flash-item:hover { transform: none; box-shadow: none; }
+  .r78-feed-card:hover { background-color: inherit; transform: none; }
+  .r78-recent-item:hover { transform: none; box-shadow: none; }
+  .r78-fav-store:hover { transform: none; box-shadow: none; }
+  .r78-glow-rose:hover { box-shadow: none; }
+  .r78-shine::after { transition: none; }
+  .r78-shine:hover::after { left: -100%; }
+}

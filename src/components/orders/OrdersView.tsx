@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import type { OrderData } from '@/store/useAppStore'
 import { OrderInvoiceModal, type InvoiceItem } from './OrderInvoice'
+import { OrderToast } from '@/components/notifications/OrderToast'
 
 const statusConfig: Record<string, { label: string; color: string; icon: any; gradient: string }> = {
   PENDING: { label: 'Pendente', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock, gradient: 'badge-gradient-amber' },
@@ -861,6 +862,9 @@ export function OrdersView() {
           setReturnOrder(null)
         }}
       />
+
+      {/* Floating Order Toast — auto-plays order status notifications */}
+      <OrderToast />
     </div>
   )
 }

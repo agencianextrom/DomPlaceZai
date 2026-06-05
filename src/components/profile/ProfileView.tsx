@@ -32,6 +32,7 @@ import { AddressManager } from './AddressManager'
 import { SpinWheel } from '@/components/promotions/SpinWheel'
 import { toast } from 'sonner'
 import { signOut } from 'next-auth/react'
+import { PointsEarnedAnimation } from './PointsEarnedAnimation'
 
 // Types
 interface ProfileData {
@@ -161,6 +162,10 @@ export function ProfileView() {
   const [editPhone, setEditPhone] = useState('')
   const [editBio, setEditBio] = useState('')
   const [editSaving, setEditSaving] = useState(false)
+
+  // Points earned animation state
+  const [showPointsEarned, setShowPointsEarned] = useState(false)
+  const [pointsEarnedCount, setPointsEarnedCount] = useState(0)
 
   // Fetch data on mount
   useEffect(() => {
@@ -844,6 +849,39 @@ export function ProfileView() {
       >
         <AchievementsPanel />
       </motion.div>
+
+      {/* Points Earned Animation — confetti overlay when earning points */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, type: 'spring' as const, stiffness: 200, damping: 22 }}
+        className="mb-6 r62-card-lift"
+      >
+        <button
+          onClick={() => {
+            setPointsEarnedCount(loyaltyPoints)
+            setShowPointsEarned(true)
+          }}
+          className="w-full rounded-xl border border-dashed border-amber-400/50 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/15 dark:to-orange-900/15 p-4 flex items-center gap-3 hover:border-amber-400 transition-colors"
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md"
+          >
+            <Star className="h-5 w-5 text-white" />
+          </motion.div>
+          <div className="flex-1 text-left">
+            <p className="font-semibold text-sm">Ver animacao de pontos</p>
+            <p className="text-xs text-muted-foreground">Toque para ver seus pontos ganhos com confete!</p>
+          </div>
+        </button>
+      </motion.div>
+      <PointsEarnedAnimation
+        points={pointsEarnedCount}
+        isOpen={showPointsEarned}
+        onClose={() => setShowPointsEarned(false)}
+      />
 
       {/* Referral Program — Indique Amigos */}
       <motion.div

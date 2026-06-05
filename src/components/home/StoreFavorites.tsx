@@ -132,6 +132,7 @@ export function StoreFavorites({ stores }: StoreFavoritesProps) {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
+      className="r62-card-lift"
     >
       {/* Section header */}
       <div className="flex items-center justify-between mb-3">
@@ -143,7 +144,7 @@ export function StoreFavorites({ stores }: StoreFavoritesProps) {
             <Heart className="h-5 w-5 text-red-500" />
           </motion.div>
           <div>
-            <h2 className="text-base font-bold leading-tight fav-shimmer-header r33-fav-shimmer">
+            <h2 className="text-base font-bold leading-tight fav-shimmer-header r33-fav-shimmer r62-heading-gradient">
               {isShowingSuggestions ? 'Lojas Recomendadas' : 'Seus Favoritos'}
             </h2>
             <p className="text-[11px] text-muted-foreground">

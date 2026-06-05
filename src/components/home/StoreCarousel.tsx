@@ -176,7 +176,7 @@ function ShimmerHeader({ title }: { title: string }) {
           animate={{ scaleY: [1, 1.3, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <h2 className="text-lg sm:text-xl font-bold">
+        <h2 className="text-lg sm:text-xl font-bold r62-heading-gradient">
           <span className="r25-shimmer-text">{title}</span>
         </h2>
       </div>
@@ -637,7 +637,7 @@ export function StoreCarousel({ title, stores, isLoading }: StoreCarouselProps) 
   }
 
   return (
-    <section className="w-full r25-gradient-border p-1 rounded-2xl">
+    <section className="w-full r25-gradient-border p-1 rounded-2xl r62-card-lift">
       <div className="flex items-center justify-between mb-1 px-1">
         <ShimmerHeader title={title} />
         <div className="flex items-center gap-1">
