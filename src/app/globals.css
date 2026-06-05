@@ -46182,3 +46182,140 @@
     animation: none;
   }
 }
+
+/* R71 — NUTRITION LENS */
+@keyframes r71-gauge-fill {
+  from { stroke-dashoffset: 251.2; }
+}
+
+@keyframes r71-score-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes r71-bar-slide {
+  from { width: 0%; }
+  to { width: var(--r71-bar-width); }
+}
+
+@keyframes r71-leaderboard-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2); }
+  50% { box-shadow: 0 0 12px 2px rgba(16, 185, 129, 0.15); }
+}
+
+@keyframes r71-calorie-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.r71-search-input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.r71-search-input:focus {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+.r71-clear-btn {
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+.r71-clear-btn:active {
+  transform: scale(0.9);
+}
+
+.r71-filter-tabs {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.r71-filter-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.r71-score-gauge {
+  transition: transform 0.2s ease;
+}
+.r71-score-gauge:hover {
+  transform: scale(1.05);
+}
+
+.r71-score-gauge-inner {
+  transition: transform 0.15s ease;
+}
+.r71-score-gauge-inner:active {
+  transform: scale(0.95);
+}
+
+.r71-calorie-badge {
+  transition: background-color 0.15s ease;
+}
+
+.r71-macro-chips {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.r71-nutrition-table {
+  animation: r71-bar-slide 0.4s ease forwards;
+}
+
+.r71-health-tips {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r71-health-tips:hover {
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.r71-leaderboard {
+  transition: transform 0.2s ease;
+}
+.r71-leaderboard:hover {
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.r71-comparison-panel {
+  transition: transform 0.2s ease;
+}
+.r71-comparison-panel:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.r71-empty-state {
+  animation: r71-score-pulse 3s ease-in-out infinite;
+}
+
+.r71-skeleton > div {
+  border-radius: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r71-gauge-fill {
+    animation: none;
+  }
+  .r71-score-pulse {
+    animation: none;
+  }
+  .r71-bar-slide {
+    animation: none;
+  }
+  .r71-leaderboard-glow {
+    animation: none;
+  }
+  .r71-calorie-pulse {
+    animation: none;
+  }
+  .r71-score-gauge:hover {
+    transform: none;
+  }
+  .r71-health-tips:hover {
+    box-shadow: none;
+  }
+  .r71-leaderboard:hover {
+    box-shadow: none;
+  }
+  .r71-comparison-panel:hover {
+    box-shadow: none;
+  }
+  .r71-empty-state {
+    animation: none;
+  }
+}

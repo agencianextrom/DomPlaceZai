@@ -11,7 +11,7 @@ import { useAppStore } from '@/store/useAppStore'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { MobileNav } from './MobileNav'
 import { ScrollProgress } from './ScrollProgress'
-import { NotificationPanel } from '@/components/notifications/NotificationPanel'
+import { NotificationCenter } from '@/components/notifications/NotificationCenter'
 import { useState, useEffect, useRef } from 'react'
 import { useTheme } from 'next-themes'
 import { useMagnetic } from '@/lib/use-magnetic'
@@ -390,7 +390,7 @@ export function Header() {
               </Button>
 
               {/* Notifications */}
-              <NotificationPanel />
+              <NotificationCenter />
               
               {/* Theme toggle */}
               {mounted && (

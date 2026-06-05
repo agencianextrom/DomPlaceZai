@@ -210,6 +210,7 @@ import { FamilyGroupOrder } from '@/components/home/FamilyGroupOrder'
 import { FloatingDealAlert } from '@/components/home/FloatingDealAlert'
 import { NProgressLoader } from '@/components/navigation/NProgressLoader'
 import { SpendingInsights } from '@/components/home/SpendingInsights'
+import { NutritionLens } from '@/components/home/NutritionLens'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -1092,6 +1093,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <SpendingInsights />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Nutrition Lens — Food health tracker */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <NutritionLens />
                         </section>
                       </ScrollReveal>
                     </LazySection>

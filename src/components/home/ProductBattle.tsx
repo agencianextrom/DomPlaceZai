@@ -592,7 +592,7 @@ export function ProductBattle() {
             <Swords className="h-5 w-5 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold flex items-center gap-1.5 r32-battle-shimmer">
+            <h2 className="text-base sm:text-lg font-bold flex items-center gap-1.5 r32-battle-shimmer r62-heading-gradient">
               Qual é o Melhor?
               <motion.span
                 animate={{ rotate: [0, 15, -15, 0] }}

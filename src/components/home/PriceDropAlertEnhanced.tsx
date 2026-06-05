@@ -583,7 +583,7 @@ export default function PriceDropAlertEnhanced() {
             <TrendingDown className="h-4.5 w-4.5" style={{ color: '#ef4444' }} />
           </motion.div>
           <div>
-            <h2 className="text-sm font-bold flex items-center gap-1.5">
+            <h2 className="text-sm font-bold flex items-center gap-1.5 r62-heading-gradient">
               Monitoramento de Preços
               <Badge variant="secondary" className="text-[9px] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200/50 dark:border-blue-800/30 font-bold">
                 {products.length} produtos

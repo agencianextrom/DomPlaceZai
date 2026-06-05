@@ -448,7 +448,7 @@ export function PriceDropAlertsWidget({ className = '' }: PriceDropAlertsWidgetP
           >
             <Tag className="h-5 w-5 text-emerald-500" />
           </motion.div>
-          <h2 className="text-lg font-bold">Quedas de Preço</h2>
+          <h2 className="text-lg font-bold r62-heading-gradient">Quedas de Preço</h2>
           <motion.span
             key={drops.length}
             initial={{ scale: 0.5, opacity: 0 }}

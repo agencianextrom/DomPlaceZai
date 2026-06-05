@@ -322,7 +322,7 @@ export function WeekendSpecials() {
               </motion.div>
               <div className="relative">
                 <HeaderSparkles />
-                <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5 relative">
+                <h2 className="font-bold text-base sm:text-lg flex items-center gap-1.5 relative r62-heading-gradient">
                   <span className="gradient-text-animated bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent weekend-title-shimmer">
                     Ofertas de Fim de Semana
                   </span>

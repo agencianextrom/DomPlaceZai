@@ -426,7 +426,7 @@ function PersonalizedHomePage() {
       <motion.div variants={sectionVariants} className="r46-insights-section">
         <div className="flex items-center gap-2 mb-3">
           <BarChart3 className="h-4 w-4 text-primary" />
-          <h2 className="text-base font-bold">Seus Insights</h2>
+          <h2 className="text-base font-bold r62-heading-gradient">Seus Insights</h2>
         </div>
         <motion.div
           className="grid grid-cols-2 gap-3"
@@ -582,7 +582,7 @@ function PersonalizedHomePage() {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-blue-500" />
-            <h2 className="text-base font-bold">Voltou a ver</h2>
+            <h2 className="text-base font-bold r62-heading-gradient">Voltou a ver</h2>
           </div>
           <button className="flex items-center gap-1 text-xs text-primary hover:underline">
             Histórico <ChevronRight className="h-3 w-3" />
@@ -637,7 +637,7 @@ function PersonalizedHomePage() {
       <motion.div variants={sectionVariants} className="r46-fav-stores-section">
         <div className="flex items-center gap-2 mb-3">
           <Heart className="h-4 w-4 text-pink-500" />
-          <h2 className="text-base font-bold">Lojas Favoritas</h2>
+          <h2 className="text-base font-bold r62-heading-gradient">Lojas Favoritas</h2>
         </div>
 
         <motion.div
@@ -703,7 +703,7 @@ function PersonalizedHomePage() {
       <motion.div variants={sectionVariants} className="r46-personalized-deals">
         <div className="flex items-center gap-2 mb-3">
           <Tag className="h-4 w-4 text-green-500" />
-          <h2 className="text-base font-bold">Ofertas baseadas no seu perfil</h2>
+          <h2 className="text-base font-bold r62-heading-gradient">Ofertas baseadas no seu perfil</h2>
           <Badge className="r46-profile-badge bg-green-500/10 text-green-600 border-0 text-[9px] px-1.5">
             <Zap className="h-2.5 w-2.5 mr-0.5" /> Exclusivo
           </Badge>
@@ -794,7 +794,7 @@ function PersonalizedHomePage() {
       <motion.div variants={sectionVariants} className="r46-extra-insights">
         <div className="flex items-center gap-2 mb-3">
           <PiggyBank className="h-4 w-4 text-amber-500" />
-          <h2 className="text-base font-bold">Resumo do Mês</h2>
+          <h2 className="text-base font-bold r62-heading-gradient">Resumo do Mês</h2>
         </div>
 
         <motion.div

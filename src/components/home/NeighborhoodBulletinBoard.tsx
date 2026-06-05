@@ -1420,7 +1420,7 @@ export function NeighborhoodBulletinBoard() {
             <Megaphone className="h-5 w-5 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-lg font-bold flex items-center gap-2">
+            <h2 className="text-lg font-bold flex items-center gap-2 r62-heading-gradient">
               Mural do Bairro
               <motion.span
                 className="r54-header-badge text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary"

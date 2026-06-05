@@ -414,7 +414,7 @@ export function NeighborhoodHub() {
             <MapPin className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h3 className="text-sm font-bold leading-tight">Vizinhança</h3>
+            <h3 className="text-sm font-bold leading-tight r62-heading-gradient">Vizinhança</h3>
             <p className="text-[10px] text-muted-foreground flex items-center gap-0.5">
               <TrendingUp className="h-2.5 w-2.5 text-emerald-500" />
               Dom Eliseu, PA

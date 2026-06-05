@@ -1272,7 +1272,7 @@ export function StoreEventCalendar() {
           <CalendarDays className="h-5 w-5 text-white" />
         </motion.div>
         <div>
-          <h2 className="text-base sm:text-lg font-bold text-foreground">Eventos das Lojas</h2>
+          <h2 className="text-base sm:text-lg font-bold text-foreground r62-heading-gradient">Eventos das Lojas</h2>
           <p className="text-[11px] text-muted-foreground hidden sm:block">
             Participe de promoções, workshops e eventos exclusivos
           </p>
