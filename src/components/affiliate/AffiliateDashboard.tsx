@@ -557,7 +557,7 @@ export function AffiliateDashboard() {
             <Button variant="ghost" size="icon" onClick={() => navigate('home')} className="text-white hover:bg-white/15 h-10 w-10">
               <ChevronRight className="h-5 w-5 rotate-180" />
             </Button>
-            <h1 className="text-lg font-bold">Painel do Afiliado</h1>
+            <h1 className="text-lg font-bold r62-heading-gradient">Painel do Afiliado</h1>
             <Button
               variant="ghost"
               size="icon"
@@ -585,7 +585,7 @@ export function AffiliateDashboard() {
               </div>
             </motion.div>
             <div className="flex-1">
-              <h2 className="text-xl font-bold">Afiliado</h2>
+              <h2 className="text-xl font-bold r62-heading-gradient">Afiliado</h2>
               <p className="text-sm text-white/70 mt-0.5">Status: {dashboard.status === 'ACTIVE' ? 'Ativo' : dashboard.status}</p>
             </div>
           </div>

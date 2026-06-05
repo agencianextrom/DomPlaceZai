@@ -141,7 +141,7 @@ export function OrderToast() {
                 {/* Close button */}
                 <button
                   onClick={handleDismiss}
-                  className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-muted transition-colors shrink-0 -mt-0.5 -mr-1"
+                  className="min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center hover:bg-muted transition-colors shrink-0 -mt-0.5 -mr-1"
                 >
                   <X className="h-4 w-4 text-muted-foreground" />
                 </button>

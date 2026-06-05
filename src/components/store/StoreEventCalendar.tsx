@@ -509,7 +509,7 @@ function ParticiparButton({ eventId, attendeeCount, maxAttendees }: {
         transition={{ type: 'spring' as const, stiffness: 400, damping: 22 }}
         onClick={handleToggle}
         disabled={isFull && !isParticipating}
-        className={`r38-event-participar-btn relative overflow-hidden inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+        className={`r38-event-participar-btn relative overflow-hidden inline-flex items-center gap-1.5 min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold transition-all {
           isParticipating ? 'text-white'
             : isFull ? 'bg-muted text-muted-foreground cursor-not-allowed'
             : 'text-white hover:opacity-90'
@@ -715,7 +715,7 @@ function EventDetailModal({ event, onClose }: { event: StoreEvent; onClose: () =
           <motion.button
             whileTap={{ scale: 0.92 }}
             onClick={handleShare}
-            className="h-10 w-10 rounded-xl border border-border/50 bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+            className="h-10 w-10 min-h-[44px] min-w-[44px] rounded-xl border border-border/50 bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
           >
             <Share2 className="h-4 w-4" />
           </motion.button>
@@ -737,7 +737,7 @@ function EventCard({ event, onOpen }: { event: StoreEvent; onOpen: (e: StoreEven
   return (
     <motion.div variants={itemVariants} layout className="relative group r38-event-card">
       <motion.div
-        className="relative overflow-hidden rounded-xl border bg-card p-4 flex flex-col gap-2.5"
+        className="relative overflow-hidden rounded-xl border bg-card p-4 flex flex-col gap-2.5 r62-card-lift"
         style={{
           borderColor: isPast ? undefined : `${config.dotColor}30`,
           boxShadow: isPast ? undefined : `0 2px 16px ${config.dotColor}10`,
@@ -892,7 +892,7 @@ function CalendarGrid({
 
   return (
     <motion.div
-      className="r38-event-calendar rounded-2xl border bg-card overflow-hidden"
+      className="r38-event-calendar rounded-2xl border bg-card overflow-hidden r62-card-lift"
       style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
       variants={fadeUp}
       initial="hidden"
@@ -1031,7 +1031,7 @@ function CalendarGrid({
             whileHover={dayObj.isCurrentMonth ? { scale: 1.12 } : undefined}
             whileTap={dayObj.isCurrentMonth ? { scale: 0.92 } : undefined}
             onClick={() => dayObj.isCurrentMonth && dayObj.hasEvents && onDaySelect(dayObj.day)}
-            className={`r38-event-day-cell relative aspect-square rounded-lg flex flex-col items-center justify-center text-xs font-medium transition-colors ${
+            className={`r38-event-day-cell relative aspect-square rounded-lg min-h-[44px] flex flex-col items-center justify-center text-xs font-medium transition-colors {
               dayObj.isCurrentMonth
                 ? dayObj.isToday
                   ? 'bg-primary text-primary-foreground font-bold'

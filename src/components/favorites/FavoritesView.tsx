@@ -205,7 +205,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
     >
       {/* Header with shimmer text and animated heart */}
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold flex items-center gap-2">
+        <h1 className="text-xl font-bold flex items-center gap-2 r62-heading-gradient">
           <motion.div
             animate={{ scale: [1, 1.15, 1] }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
@@ -257,13 +257,13 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
           <div className="flex bg-secondary/50 rounded-lg p-0.5">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`min-h-[44px] min-w-[44px] p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <Grid3X3 className="h-4 w-4" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`min-h-[44px] min-w-[44px] p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <List className="h-4 w-4" />
             </button>
@@ -296,7 +296,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
                       initial={{ opacity: 0, x: 10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.05 }}
-                      className={`r43-sort-option w-full text-left px-3 py-2 text-xs transition-colors hover:bg-accent hover:text-accent-foreground ${sortBy === opt ? 'bg-accent/50 font-semibold' : ''}`}
+                      className={`r43-sort-option w-full text-left min-h-[44px] px-3 py-2 text-xs transition-colors hover:bg-accent hover:text-accent-foreground ${sortBy === opt ? 'bg-accent/50 font-semibold' : ''}`}
                       onClick={() => {
                         setSortBy(opt)
                         setSortOpen(false)
@@ -331,7 +331,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setActiveCategory(null)}
-            className={`r39-fav-pill r43-fav-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
+            className={`r39-fav-pill r43-fav-pill shrink-0 min-h-[44px] px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
               !activeCategory
                 ? 'bg-primary text-primary-foreground border-primary r43-fav-pill-active'
                 : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
@@ -363,7 +363,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.05 + i * 0.04 }}
-              className={`r39-fav-pill r43-fav-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
+              className={`r39-fav-pill r43-fav-pill shrink-0 min-h-[44px] px-3 py-1.5 rounded-full text-xs font-medium border transition-all relative overflow-hidden ${
                 cat === activeCategory
                   ? 'bg-primary text-primary-foreground border-primary r43-fav-pill-active'
                   : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'

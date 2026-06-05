@@ -225,6 +225,7 @@ import SustainabilityDashboard from '@/components/home/SustainabilityDashboard'
 import SmartListAssistant from '@/components/home/SmartListAssistant'
 import BudgetTracker from '@/components/home/BudgetTracker'
 import LoyaltyGame from '@/components/home/LoyaltyGame'
+import NeighborhoodWatch from '@/components/home/NeighborhoodWatch'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -894,6 +895,11 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <LoyaltyGame />
+                        </section>
+                      </ScrollReveal>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <NeighborhoodWatch />
                         </section>
                       </ScrollReveal>
                     </LazySection>

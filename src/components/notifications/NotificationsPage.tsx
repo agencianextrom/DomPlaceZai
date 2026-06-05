@@ -229,7 +229,7 @@ export function NotificationsPage() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold">Notificações</h1>
+              <h1 className="text-lg font-bold r62-heading-gradient">Notificações</h1>
               {unreadCount > 0 && (
                 <motion.div
                   key={unreadCount}
@@ -275,7 +275,7 @@ export function NotificationsPage() {
             <button
               key={filter.id}
               onClick={() => setReadFilter(filter.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`min-h-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                 readFilter === filter.id
                   ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
@@ -354,7 +354,7 @@ export function NotificationsPage() {
                         onClick={() => !notification.isRead && handleMarkRead(notification.id)}
                         className="cursor-pointer"
                       >
-                        <Card className={`border-border/50 transition-all hover:shadow-sm ${!notification.isRead ? 'bg-primary/[0.03] border-primary/15' : ''}`}>
+                        <Card className={`border-border/50 transition-all hover:shadow-sm r62-card-lift ${!notification.isRead ? 'bg-primary/[0.03] border-primary/15' : ''}`}>
                           <CardContent className="p-3 flex items-start gap-3 relative">
                             {/* Unread dot */}
                             {!notification.isRead && (

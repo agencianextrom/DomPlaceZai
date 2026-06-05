@@ -161,7 +161,7 @@ export function CookieConsent() {
               </motion.span>
             ))}
 
-            <div className="r44-cc-glass max-w-3xl mx-auto rounded-xl p-4 sm:p-5 relative overflow-hidden">
+            <div className="r44-cc-glass max-w-3xl mx-auto rounded-xl p-4 sm:p-5 relative overflow-hidden r62-card-lift">
               {/* Subtle gradient background */}
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 pointer-events-none" />
               <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -179,7 +179,7 @@ export function CookieConsent() {
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 mb-1">
                       <Shield className="h-3.5 w-3.5 text-primary" />
-                      <h3 className="text-sm font-semibold">Sua Privacidade é Importante</h3>
+                      <h3 className="text-sm font-semibold r62-heading-gradient">Sua Privacidade é Importante</h3>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       Utilizamos cookies para melhorar sua experiência. Ao continuar navegando, você concorda com nossa{' '}
@@ -217,7 +217,7 @@ export function CookieConsent() {
               {/* Close / reject button with hover glow */}
               <button
                 onClick={handleRejectAll}
-                className="r44-cc-close-hover absolute top-2 right-2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
+                className="r44-cc-close-hover absolute top-2 right-2 min-h-[44px] min-w-[44px] p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
                 aria-label="Rejeitar e fechar"
               >
                 <X className="h-3.5 w-3.5" />

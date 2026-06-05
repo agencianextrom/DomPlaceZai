@@ -392,7 +392,7 @@ function TierCard({
       <motion.div
         whileHover={{ y: -6, boxShadow: `0 20px 40px ${tier.shadowColor}` }}
         transition={{ type: 'spring' as const, stiffness: 300, damping: 22 }}
-        className={`relative rounded-2xl overflow-hidden bg-card border-2 border-transparent bg-gradient-to-b ${tier.popular ? 'r39-tier-card-popular ring-2 ring-primary/30' : 'hover:ring-2 hover:ring-primary/10'}`}
+        className={`relative rounded-2xl overflow-hidden bg-card border-2 border-transparent bg-gradient-to-b r62-card-lift ${tier.popular ? 'r39-tier-card-popular ring-2 ring-primary/30' : 'hover:ring-2 hover:ring-primary/10'}`}
       >
         {/* Top gradient header */}
         <div className={`relative h-28 bg-gradient-to-br ${tier.gradient} r39-tier-header-${tier.id}`}>
@@ -654,7 +654,7 @@ export function StoreMembershipTiers() {
         >
           <Shield className="h-7 w-7 text-primary" />
         </motion.div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground r39-section-title">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground r39-section-title r62-heading-gradient">
           Níveis de Associação
         </h2>
         <p className="text-sm text-muted-foreground max-w-lg mx-auto">
@@ -668,7 +668,7 @@ export function StoreMembershipTiers() {
         initial="hidden"
         animate="visible"
       >
-        <Card className="border-primary/20 bg-gradient-to-r from-primary/5 via-emerald-500/5 to-primary/5 r39-progress-card">
+        <Card className="border-primary/20 bg-gradient-to-r from-primary/5 via-emerald-500/5 to-primary/5 r39-progress-card r62-card-lift">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-3">
               <div className="h-9 w-9 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
@@ -754,7 +754,7 @@ export function StoreMembershipTiers() {
         initial="hidden"
         animate="visible"
       >
-        <Card className="border-border/50 r39-comparison-card">
+        <Card className="border-border/50 r39-comparison-card r62-card-lift">
           <CardHeader className="pb-0">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-bold flex items-center gap-2">
@@ -877,7 +877,7 @@ export function StoreMembershipTiers() {
         initial="hidden"
         animate="visible"
       >
-        <Card className="border-border/50 r39-savings-card">
+        <Card className="border-border/50 r39-savings-card r62-card-lift">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-bold flex items-center gap-2">
               <Calculator className="h-5 w-5 text-primary" />
@@ -897,7 +897,7 @@ export function StoreMembershipTiers() {
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
                   onClick={() => setSelectedCalcFrequency(i)}
-                  className={`px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+                  className={`min-h-[44px] px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                     selectedCalcFrequency === i
                       ? 'bg-primary text-primary-foreground shadow-md r39-calc-active'
                       : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
@@ -999,7 +999,7 @@ export function StoreMembershipTiers() {
         initial="hidden"
         animate="visible"
       >
-        <Card className="border-border/50 r39-benefits-detail-card">
+        <Card className="border-border/50 r39-benefits-detail-card r62-card-lift">
           <CardHeader>
             <CardTitle className="text-lg font-bold flex items-center gap-2">
               <Gift className="h-5 w-5 text-primary" />

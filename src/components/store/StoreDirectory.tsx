@@ -153,7 +153,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
           >
             <StoreIcon className="h-5 w-5 text-primary" />
           </motion.div>
-          <h2 className="text-lg font-bold r18-header-shimmer r30-dir-shimmer">Lojas</h2>
+          <h2 className="text-lg font-bold r18-header-shimmer r30-dir-shimmer r62-heading-gradient">Lojas</h2>
         </div>
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}
@@ -217,7 +217,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setActiveCategory(null)}
-          className={`shrink-0 px-4 py-2 rounded-full text-xs font-medium border transition-all duration-200 ${
+          className={`shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-medium border transition-all duration-200 ${
             !activeCategory
               ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 r18-pill-breathing r30-filter-pill'
               : 'bg-card text-muted-foreground border-border/60 hover:border-primary/30 hover:text-foreground'
@@ -233,7 +233,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
-              className={`shrink-0 px-4 py-2 rounded-full text-xs font-medium border transition-all duration-200 flex items-center gap-1.5 ${
+              className={`shrink-0 min-h-[44px] px-4 py-2 rounded-full text-xs font-medium border transition-all duration-200 flex items-center gap-1.5 ${
                 cat === activeCategory
                   ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 r30-filter-pill'
                   : 'bg-card text-muted-foreground border-border/60 hover:border-primary/30 hover:text-foreground'
@@ -290,7 +290,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
                 <motion.div
                   whileHover={{ y: -4, boxShadow: '0 12px 40px -8px rgba(0,0,0,0.15)' }}
                   transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                  className="relative bg-card rounded-xl border border-border/50 overflow-hidden group cursor-pointer r18-store-card-glow r30-card-hover"
+                  className="relative bg-card rounded-xl border border-border/50 overflow-hidden group cursor-pointer r18-store-card-glow r30-card-hover r62-card-lift"
                   onClick={() => handleViewStore(store)}
                 >
                   {/* Cover gradient */}

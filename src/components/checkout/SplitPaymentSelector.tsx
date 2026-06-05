@@ -940,11 +940,11 @@ export function SplitPaymentSelector({
   }
 
   return (
-    <Card className="r39-root-card overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+    <Card className="r39-root-card overflow-hidden r62-card-lift" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
       {/* Header */}
       <CardHeader className="r39-header pb-3">
         <div className="r39-title-row flex items-center justify-between">
-          <CardTitle className="r39-title text-lg font-bold text-zinc-800">
+          <CardTitle className="r39-title text-lg font-bold text-zinc-800 r62-heading-gradient">
             Dividir Pagamento
           </CardTitle>
           <Badge variant="outline" className="r39-total-badge border-zinc-200 text-sm font-semibold">

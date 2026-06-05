@@ -212,7 +212,7 @@ export function PromoCodeWidget() {
               <Tag className="h-4 w-4 text-white" />
             </motion.div>
             <div>
-              <span className="text-sm font-semibold">Código Promocional</span>
+              <span className="text-sm font-semibold r62-heading-gradient">Código Promocional</span>
               <p className="text-[10px] text-muted-foreground -mt-0.5">Aplique seu cupom de desconto</p>
             </div>
           </div>

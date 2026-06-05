@@ -408,7 +408,7 @@ export function SmartNotifications() {
             <Bell className="h-4 w-4 text-primary-foreground" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-bold">Notificações</h2>
+            <h2 className="text-lg sm:text-xl font-bold r62-heading-gradient">Notificações</h2>
             {totalUnread > 0 && (
               <motion.p
                 className="text-[11px] text-muted-foreground r40-timestamp"
@@ -429,7 +429,7 @@ export function SmartNotifications() {
           >
             <button
               onClick={markAllAsRead}
-              className="text-xs text-primary font-medium hover:bg-primary/10 px-3 py-1.5 rounded-full transition-colors r40-mark-all-btn"
+              className="min-h-[44px] text-xs text-primary font-medium hover:bg-primary/10 px-3 py-1.5 rounded-full transition-colors r40-mark-all-btn"
             >
               Marcar todas como lidas
             </button>

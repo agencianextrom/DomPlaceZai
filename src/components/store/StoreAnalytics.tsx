@@ -309,7 +309,7 @@ function AnimatedOverviewCard({ card, idx }: { card: OverviewCardData; idx: numb
         boxShadow: '0 8px 30px -8px rgba(0,0,0,0.12)',
       }}
       transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
-      className="r36-analytics-card r36-analytics-card-hover relative bg-card rounded-xl border border-border/50 p-4 cursor-default overflow-hidden"
+      className="r36-analytics-card r36-analytics-card-hover relative bg-card rounded-xl border border-border/50 p-4 cursor-default overflow-hidden r62-card-lift"
     >
       {/* Accent glow */}
       <div
@@ -470,7 +470,7 @@ export function StoreAnalytics() {
           >
             <BarChart3 className="h-5 w-5 text-primary" />
           </motion.div>
-          <h2 className="text-lg font-bold">Analytics das Lojas</h2>
+          <h2 className="text-lg font-bold r62-heading-gradient">Analytics das Lojas</h2>
         </div>
 
         {/* Period selector pills */}
@@ -480,7 +480,7 @@ export function StoreAnalytics() {
               key={p.value}
               whileTap={{ scale: 0.93 }}
               onClick={() => handlePeriodChange(p.value)}
-              className={`relative px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              className={`relative min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors {
                 activePeriod === p.value
                   ? 'text-primary-foreground'
                   : 'text-muted-foreground hover:text-foreground'
@@ -528,7 +528,7 @@ export function StoreAnalytics() {
       {/* ── 3. Revenue Chart ──────────────────────────────────────────── */}
       <motion.div
         variants={itemVariants}
-        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5"
+        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5 r62-card-lift"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -673,7 +673,7 @@ export function StoreAnalytics() {
       {/* ── 4. Top Stores Ranking ──────────────────────────────────────── */}
       <motion.div
         variants={itemVariants}
-        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5"
+        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5 r62-card-lift"
       >
         <div className="flex items-center gap-2 mb-4">
           <Flame className="h-4 w-4 text-orange-500" />
@@ -751,7 +751,7 @@ export function StoreAnalytics() {
       {/* ── 5. Category Performance (Donut Chart) ────────────────────── */}
       <motion.div
         variants={itemVariants}
-        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5"
+        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5 r62-card-lift"
       >
         <div className="flex items-center gap-2 mb-4">
           <Activity className="h-4 w-4 text-primary" />
@@ -844,7 +844,7 @@ export function StoreAnalytics() {
       {/* ── 6. Orders Heatmap ─────────────────────────────────────────── */}
       <motion.div
         variants={itemVariants}
-        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5"
+        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5 r62-card-lift"
       >
         <div className="flex items-center gap-2 mb-4">
           <Clock className="h-4 w-4 text-primary" />
@@ -975,7 +975,7 @@ export function StoreAnalytics() {
       {/* ── 7. Performance Alerts ─────────────────────────────────────── */}
       <motion.div
         variants={itemVariants}
-        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5"
+        className="r36-analytics-card bg-card rounded-xl border border-border/50 p-5 r62-card-lift"
       >
         <div className="flex items-center gap-2 mb-4">
           <AlertTriangle className="h-4 w-4 text-amber-500" />
@@ -1069,7 +1069,7 @@ export function StoreAnalytics() {
             setIsLoading(true)
             cachedFetch('/api/stores').then(() => setIsLoading(false)).catch(() => setIsLoading(false))
           }}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full border border-border/40 hover:border-border/60"
+          className="flex items-center gap-1.5 min-h-[44px] text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full border border-border/40 hover:border-border/60"
         >
           <motion.div
             animate={{ rotate: 360 }}
