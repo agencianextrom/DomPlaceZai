@@ -197,7 +197,7 @@ function BattleCard({
 
       {/* Card */}
       <motion.div
-        className={`relative bg-card rounded-2xl border-2 overflow-hidden cursor-pointer transition-colors r32-card-glow ${
+        className={`relative bg-card rounded-2xl border-2 overflow-hidden cursor-pointer transition-colors r32-card-glow r62-card-lift ${
           isWinner === side
             ? 'border-primary shadow-lg'
             : (isWinner !== null)

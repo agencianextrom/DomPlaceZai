@@ -230,14 +230,16 @@ function MiniCartPopup({ product, onClose }: { product: ProductData; onClose: ()
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="h-7 w-7 rounded-md border border-border flex items-center justify-center text-sm hover:bg-muted transition-colors"
+                  className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-md border border-border flex items-center justify-center text-sm hover:bg-muted transition-colors active:scale-95 transition-transform"
+                  aria-label="Diminuir quantidade"
                 >
                   -
                 </button>
                 <span className="h-7 w-8 flex items-center justify-center text-sm font-bold">{qty}</span>
                 <button
                   onClick={() => setQty(Math.min(product.stock || 99, qty + 1))}
-                  className="h-7 w-7 rounded-md border border-border flex items-center justify-center text-sm hover:bg-muted transition-colors"
+                  className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-md border border-border flex items-center justify-center text-sm hover:bg-muted transition-colors active:scale-95 transition-transform"
+                  aria-label="Aumentar quantidade"
                 >
                   +
                 </button>
@@ -383,7 +385,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: Math.min(index * 0.06, 0.5), duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         whileHover={{ y: -5, scale: 1.02, boxShadow: '0 0 20px rgba(16,185,129,0.15), 0 0 40px rgba(16,185,129,0.08), 0 8px 24px rgba(0,0,0,0.08)' }}
-        className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm card-shadow-cascade card-spotlight card-shine card-glow-border hover:shadow-xl transition-shadow duration-300 r41-card-3d r44-card-3d-tilt r44-card-glow-border r58-pcard-border-glow"
+        className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm card-shadow-cascade card-spotlight card-shine card-glow-border hover:shadow-xl transition-shadow duration-300 r41-card-3d r44-card-3d-tilt r44-card-glow-border r58-pcard-border-glow r62-card-lift"
         onClick={handleCardClick}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setShowCartBtn(true)}
@@ -639,7 +641,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={handleFavoriteClick}
-                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors r41-quick-item r44-quick-item"
+                      className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors active:scale-95 transition-transform r41-quick-item r44-quick-item"
                       style={{ transitionDelay: '0ms' }}
                       aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
                     >
@@ -651,7 +653,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={handleQuickView}
-                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors r41-quick-item r44-quick-item"
+                      className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors active:scale-95 transition-transform r41-quick-item r44-quick-item"
                       style={{ transitionDelay: '60ms' }}
                       aria-label="Visualização rápida"
                     >
@@ -663,7 +665,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={handleShare}
-                      className="h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors relative r41-quick-item r44-quick-item"
+                      className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors active:scale-95 transition-transform relative r41-quick-item r44-quick-item"
                       style={{ transitionDelay: '120ms' }}
                       aria-label="Compartilhar produto"
                     >

@@ -215,7 +215,7 @@ function RatingChallengeSkeleton() {
           <Skeleton key={i} className="h-20 rounded-xl" />
         ))}
       </div>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-24 rounded-xl" />
         ))}
@@ -552,7 +552,7 @@ export function RatingChallenge() {
               <Gift className="h-4 w-4 text-rose-500" />
               <span className="text-sm font-semibold text-foreground">Recompensas</span>
             </div>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {MILESTONES.map((ms, i) => {
                 const isReached = state.userRatings >= ms.target || state.milestonesReached.includes(ms.target)
                 const isNew = newlyUnlocked === ms.target

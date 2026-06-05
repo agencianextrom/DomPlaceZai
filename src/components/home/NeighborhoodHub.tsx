@@ -259,7 +259,7 @@ export function NeighborhoodHub() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, type: 'spring' as const, stiffness: 300, damping: 25 }}
-        className="grid grid-cols-4 gap-2"
+        className="grid grid-cols-2 sm:grid-cols-4 gap-2"
       >
         {[
           { value: stats.totalStores, label: 'Lojas', icon: Store, color: 'text-blue-500' },

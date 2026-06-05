@@ -488,7 +488,7 @@ function MemoryGameUI({ cards, moves, matchedPairs, timer, gameWon, onFlip, onRe
         ) : (
           <motion.div
             key="grid"
-            className="grid grid-cols-4 gap-2 sm:gap-3"
+            className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
@@ -763,7 +763,7 @@ function GameZoneSkeleton() {
     <div className="glass-card rounded-2xl p-5">
       <Skeleton className="h-7 w-48 mb-4" />
       <Skeleton className="h-10 w-full mb-4" />
-      <div className="grid grid-cols-4 gap-2 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
         {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="aspect-square rounded-xl" />)}
       </div>
       <div className="flex gap-4">

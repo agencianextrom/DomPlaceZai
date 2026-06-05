@@ -1354,7 +1354,7 @@ export function MealDealFinder() {
               whileTap={{ scale: 0.9 }}
               onClick={() => scrollCarousel('left')}
               disabled={carouselIndex === 0}
-              className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 disabled:opacity-30 transition-opacity"
+              className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 disabled:opacity-30 transition-opacity active:scale-95 transition-transform"
             >
               <ChevronLeft className="h-3.5 w-3.5" />
             </motion.button>
@@ -1363,7 +1363,7 @@ export function MealDealFinder() {
               whileTap={{ scale: 0.9 }}
               onClick={() => scrollCarousel('right')}
               disabled={carouselIndex === topPicks.length - 1}
-              className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 disabled:opacity-30 transition-opacity"
+              className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 disabled:opacity-30 transition-opacity active:scale-95 transition-transform"
             >
               <ChevronRight className="h-3.5 w-3.5" />
             </motion.button>

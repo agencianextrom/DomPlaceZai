@@ -527,11 +527,11 @@ export function QuickInfo() {
             </h3>
             {promotions.length > 1 && (
               <div className="flex items-center gap-1">
-                <button onClick={prevTip} className="h-6 w-6 rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
+                <button onClick={prevTip} className="h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
                   <ChevronLeft className="h-3.5 w-3.5" />
                 </button>
                 <span className="text-[10px] text-muted-foreground tabular-nums">{currentTip + 1}/{promotions.length}</span>
-                <button onClick={nextTip} className="h-6 w-6 rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
+                <button onClick={nextTip} className="h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
                   <ChevronRight className="h-3.5 w-3.5" />
                 </button>
               </div>

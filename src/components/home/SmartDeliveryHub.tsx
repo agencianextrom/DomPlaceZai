@@ -413,7 +413,7 @@ export default function SmartDeliveryHub() {
       </motion.div>
 
       {/* ─── 11. Stats Summary ─── */}
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
         {[
           { icon: <Package className="h-4 w-4" />, value: 32, suffix: ' entregas', label: 'realizadas', color: 'rgba(13,148,136,0.1)', iconColor: '#0d9488' },
           { icon: <Star className="h-4 w-4" />, value: 4.8, suffix: '★', label: 'nota média', decimals: 1, color: 'rgba(245,158,11,0.1)', iconColor: '#f59e0b' },
@@ -1060,7 +1060,7 @@ export default function SmartDeliveryHub() {
               </div>
 
               {/* Time slots */}
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {scheduleSlots.map((slot, idx) => (
                   <motion.div
                     key={slot.time}

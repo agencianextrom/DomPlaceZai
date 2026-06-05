@@ -802,7 +802,7 @@ function TipSelector({ selectedTip, onTipChange }: { selectedTip: number; onTipC
         <h4 className="text-sm font-bold">Gorjeta para o Entregador</h4>
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {TIP_OPTIONS_INIT.map((opt, idx) => {
           const isSelected = opt.value === -1 ? showCustom : selectedTip === opt.value
 

@@ -143,10 +143,10 @@ function QtyStepper({ qty, inc, dec }: { qty: number; inc: () => void; dec: () =
   return (
     <div className="flex items-center gap-1 r52-reorder-qty">
       <motion.button whileTap={{ scale: 0.85 }} onClick={dec}
-        className="h-7 w-7 rounded-md bg-muted/60 hover:bg-muted flex items-center justify-center"><Minus className="h-3 w-3" /></motion.button>
+        className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-md bg-muted/60 hover:bg-muted flex items-center justify-center active:scale-95 transition-transform"><Minus className="h-3 w-3" /></motion.button>
       <span className="w-7 text-center text-xs font-bold tabular-nums">{qty}</span>
       <motion.button whileTap={{ scale: 0.85 }} onClick={inc}
-        className="h-7 w-7 rounded-md bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center"><Plus className="h-3 w-3" /></motion.button>
+        className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-md bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center active:scale-95 transition-transform"><Plus className="h-3 w-3" /></motion.button>
     </div>
   )
 }
@@ -411,7 +411,7 @@ function BudgetPreview({ items, qtys, close }: { items: ReorderItem[]; qtys: Rec
       className="rounded-xl border border-primary/20 bg-card p-4 r52-reorder-budget-preview">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2"><Calculator className="h-4 w-4 text-primary" /><h4 className="text-xs font-bold">Impacto no Orçamento</h4></div>
-        <motion.button whileTap={{ scale: 0.9 }} onClick={close} className="h-6 w-6 rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center"><X className="h-3 w-3" /></motion.button>
+        <motion.button whileTap={{ scale: 0.9 }} onClick={close} className="h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center active:scale-95 transition-transform"><X className="h-3 w-3" /></motion.button>
       </div>
       <div className="space-y-1.5 mb-3 max-h-40 overflow-y-auto">
         {items.map(i => { const q=qtys[i.id]||i.quantity; return (

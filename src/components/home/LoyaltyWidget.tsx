@@ -496,7 +496,7 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
           </div>
 
           {/* Quick stats row — enhanced with animated counter entrance, icon bounce, gradient hover */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {[
               { icon: <Star className="h-3.5 w-3.5 text-amber-500" />, label: 'Mês atual', value: `${Math.floor(points / 3)} pts`, color: 'text-amber-600 dark:text-amber-400' },
               { icon: <Flame className="h-3.5 w-3.5 text-orange-500" />, label: 'Sequência', value: '5 dias', color: 'text-orange-600 dark:text-orange-400' },

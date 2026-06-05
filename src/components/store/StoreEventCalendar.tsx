@@ -823,6 +823,7 @@ function CalendarGrid({
   onDaySelect: (day: number) => void
 }) {
   const today = new Date()
+  const mobileStripRef = useRef<HTMLDivElement>(null)
 
   const calendarDays = useMemo(() => {
     const firstDay = new Date(currentYear, currentMonth, 1).getDay()
@@ -863,6 +864,19 @@ function CalendarGrid({
 
     return days
   }, [currentMonth, currentYear, events])
+
+  // Auto-scroll mobile day strip to selected day or today
+  useEffect(() => {
+    const container = mobileStripRef.current
+    if (!container) return
+    const targetDay = selectedDay ?? (calendarDays.find(d => d.isToday)?.day ?? null)
+    if (targetDay === null) return
+    const btn = container.querySelector(`[data-day="${targetDay}"]`) as HTMLElement | null
+    if (btn) {
+      const scrollLeft = btn.offsetLeft - container.offsetWidth / 2 + btn.offsetWidth / 2
+      container.scrollTo({ left: scrollLeft, behavior: 'smooth' })
+    }
+  }, [selectedDay, calendarDays])
 
   const handlePrev = useCallback(() => {
     const m = currentMonth === 0 ? 11 : currentMonth - 1
@@ -921,7 +935,86 @@ function CalendarGrid({
         </div>
       </div>
 
-      {/* Weekday headers */}
+      {/* Mobile day strip */}
+      <div className="md:hidden px-3 pt-3 pb-2">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-sm font-semibold text-foreground">
+            {MONTHS_LONG[currentMonth]} {currentYear}
+          </span>
+        </div>
+        <div
+          ref={mobileStripRef}
+          className="flex gap-2 overflow-x-auto r62-scroll-snap hide-scrollbar pb-1"
+        >
+          {calendarDays.filter(d => d.isCurrentMonth).map((dayObj, idx) => (
+            <motion.button
+              key={idx}
+              data-day={dayObj.day}
+              whileTap={dayObj.hasEvents ? { scale: 0.92 } : undefined}
+              onClick={() => dayObj.hasEvents && onDaySelect(dayObj.day)}
+              className={`flex flex-col items-center justify-center min-h-[44px] min-w-[44px] w-12 h-14 rounded-lg text-sm font-medium transition-colors shrink-0 scroll-snap-align-center ${
+                dayObj.isToday
+                  ? 'bg-primary text-primary-foreground'
+                  : selectedDay === dayObj.day
+                    ? 'bg-primary/10 text-primary ring-2 ring-primary/30'
+                    : dayObj.hasEvents
+                      ? 'bg-card border border-border/50 text-foreground'
+                      : 'bg-muted/30 text-muted-foreground'
+              }`}
+            >
+              <span>{dayObj.day}</span>
+              {dayObj.hasEvents && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-0.5" />
+              )}
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Mobile selected-day event preview */}
+        <AnimatePresence mode="wait">
+          {selectedDay !== null && (() => {
+            const dayData = calendarDays.find(d => d.isCurrentMonth && d.day === selectedDay)
+            if (!dayData) return null
+            return (
+              <motion.div
+                key={`mobile-preview-${selectedDay}`}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
+                className="overflow-hidden mt-2 space-y-2"
+              >
+                {dayData.events.length > 0 ? dayData.events.map(ev => {
+                  const cfg = EVENT_TYPE_CONFIG[ev.eventType]
+                  return (
+                    <div
+                      key={ev.id}
+                      className="flex items-center gap-2.5 p-2 rounded-lg bg-muted/40 border border-border/30"
+                    >
+                      <div className={`h-8 w-8 shrink-0 rounded-lg bg-gradient-to-br ${cfg.gradient} flex items-center justify-center text-white`}>
+                        {cfg.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold truncate">{ev.title}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {ev.storeLogo} {ev.store} · {ev.time}–{ev.endTime}
+                        </p>
+                      </div>
+                      <span className="text-[10px] text-muted-foreground shrink-0">{ev.attendees.length}/{ev.maxAttendees}</span>
+                    </div>
+                  )
+                }) : (
+                  <p className="text-[11px] text-muted-foreground/50 italic text-center py-2">
+                    Nenhum evento para este dia
+                  </p>
+                )}
+              </motion.div>
+            )
+          })()}
+        </AnimatePresence>
+      </div>
+
+      {/* Desktop: Weekday headers */}
       <div className="hidden md:grid md:grid-cols-7 px-3 pt-3 bg-muted/20">
         {WEEKDAYS.map(w => (
           <div key={w} className="text-center text-[10px] font-semibold text-muted-foreground py-1.5">

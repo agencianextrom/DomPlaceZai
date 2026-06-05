@@ -174,7 +174,7 @@ export function LocalProducers() {
               exit={{ opacity: 0, scale: 0.9, y: -10 }}
               transition={{ delay: idx * 0.06, type: 'spring' as const, stiffness: 280, damping: 22 }}
               whileHover={{ y: -6, transition: { type: 'spring' as const, stiffness: 400, damping: 20 } }}
-              className="r33-producer-card group"
+              className="r33-producer-card r62-card-lift group"
             >
               <div className="relative rounded-2xl border border-border/60 bg-card overflow-hidden r33-card-glow">
                 {/* Gradient top bar */}

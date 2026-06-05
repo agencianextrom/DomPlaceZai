@@ -196,6 +196,7 @@ import { DynamicPricingEngine } from '@/components/product/DynamicPricingEngine'
 import { InteractiveProductTour } from '@/components/home/InteractiveProductTour'
 import { MobileQuickActions } from '@/components/home/MobileQuickActions'
 import { MobileOrderTracker } from '@/components/orders/MobileOrderTracker'
+import { QuickBillSplitter } from '@/components/home/QuickBillSplitter'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -1799,6 +1800,7 @@ export default function Home() {
               <QuickInfo />
               <ScanToShop />
               <LazySection><ScrollReveal><EcoImpactWidget /></ScrollReveal></LazySection>
+              <LazySection><ScrollReveal><QuickBillSplitter /></ScrollReveal></LazySection>
             </div>
           </motion.div>
         ) : currentView === 'product' ? (

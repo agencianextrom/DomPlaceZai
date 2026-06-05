@@ -788,7 +788,7 @@ function DeliveryMethodSelector({
   return (
     <div className="space-y-2">
       <p className="text-xs font-semibold text-muted-foreground">Forma de entrega</p>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {methods.map((m) => {
           const isSelected = method === m.key;
           return (
@@ -1692,7 +1692,7 @@ export function GiftCardMarketplace() {
             )}
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {[
                 {
                   label: 'Total investido',

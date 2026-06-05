@@ -626,12 +626,12 @@ function EcoTipsCarousel() {
         </div>
         <div className="flex items-center gap-1">
           <motion.div whileTap={{ scale: 0.9 }}>
-            <button className="h-7 w-7 flex items-center justify-center rounded-lg text-muted-foreground hover:text-emerald-600 hover:bg-secondary/40 transition-colors" onClick={prev}>
+            <button className="h-7 w-7 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-muted-foreground hover:text-emerald-600 hover:bg-secondary/40 transition-colors" onClick={prev}>
               <ChevronLeft className="h-4 w-4" />
             </button>
           </motion.div>
           <motion.div whileTap={{ scale: 0.9 }}>
-            <button className="h-7 w-7 flex items-center justify-center rounded-lg text-muted-foreground hover:text-emerald-600 hover:bg-secondary/40 transition-colors" onClick={next}>
+            <button className="h-7 w-7 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-muted-foreground hover:text-emerald-600 hover:bg-secondary/40 transition-colors" onClick={next}>
               <ChevronRight className="h-4 w-4" />
             </button>
           </motion.div>
