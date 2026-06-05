@@ -370,7 +370,7 @@ function CookingTimer({ totalMinutes, recipeId, stepIndex }: { totalMinutes: num
         <motion.button
           whileTap={{ scale: 0.88 }}
           onClick={() => { if (finished) reset(); else setRunning(!running) }}
-          className={`h-8 w-8 rounded-full flex items-center justify-center text-white ${
+          className={`h-8 w-8 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-white ${
             finished ? 'bg-green-500' : running ? 'bg-orange-500' : 'bg-muted'
           }`}
         >
@@ -476,14 +476,14 @@ function RecipeDetail({ recipe, onClose }: { recipe: Recipe; onClose: () => void
         {/* Action buttons */}
         <div className="flex items-center gap-2 mt-4">
           <motion.button whileTap={{ scale: 0.88 }} onClick={() => toggle(recipe.id)}
-            className="h-9 px-4 rounded-full bg-white/20 backdrop-blur-sm flex items-center gap-1.5 text-white text-xs font-semibold">
+            className="h-9 min-h-[44px] px-4 rounded-full bg-white/20 backdrop-blur-sm flex items-center gap-1.5 text-white text-xs font-semibold">
             <motion.div variants={heartPopVariants} animate={isFav ? 'liked' : 'idle'} key={isFav ? 'on' : 'off'}>
               <Heart className={`h-4 w-4 ${isFav ? 'fill-red-400 text-red-400' : ''}`} />
             </motion.div>
             {isFav ? 'Salvo' : 'Salvar'}
           </motion.button>
           <motion.button whileTap={{ scale: 0.88 }} onClick={handleShare}
-            className="relative h-9 px-4 rounded-full bg-white/20 backdrop-blur-sm flex items-center gap-1.5 text-white text-xs font-semibold overflow-hidden r34-share-btn">
+            className="relative h-9 min-h-[44px] px-4 rounded-full bg-white/20 backdrop-blur-sm flex items-center gap-1.5 text-white text-xs font-semibold overflow-hidden r34-share-btn">
             <Share2 className="h-4 w-4" /> Compartilhar
             <span className="r34-shimmer-bar" />
           </motion.button>
@@ -725,13 +725,13 @@ export function ProductRecipes() {
           {/* Scroll arrows */}
           <div className="hidden sm:flex absolute -left-3 top-0 bottom-0 z-10 items-center">
             <motion.button whileTap={{ scale: 0.88 }} onClick={() => scrollBy('left')}
-              className="h-8 w-8 rounded-full bg-background border border-border/60 flex items-center justify-center shadow-sm">
+              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-background border border-border/60 flex items-center justify-center shadow-sm">
               <ArrowLeft className="h-3.5 w-3.5" />
             </motion.button>
           </div>
           <div className="hidden sm:flex absolute -right-3 top-0 bottom-0 z-10 items-center">
             <motion.button whileTap={{ scale: 0.88 }} onClick={() => scrollBy('right')}
-              className="h-8 w-8 rounded-full bg-background border border-border/60 flex items-center justify-center shadow-sm">
+              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-background border border-border/60 flex items-center justify-center shadow-sm">
               <ArrowRight className="h-3.5 w-3.5" />
             </motion.button>
           </div>

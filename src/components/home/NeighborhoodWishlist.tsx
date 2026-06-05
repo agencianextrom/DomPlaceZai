@@ -608,7 +608,7 @@ export default function NeighborhoodWishlist() {
           </div>
           <motion.div whileTap={{ scale: 0.9 }}
             onClick={() => setLocalState((p) => ({ ...p, showNotification: !p.showNotification }))}
-            className={`h-9 w-9 rounded-xl flex items-center justify-center border cursor-pointer transition-colors ${
+            className={`h-9 w-9 min-h-[44px] min-w-[44px] rounded-xl flex items-center justify-center border cursor-pointer transition-colors ${
               localState.showNotification ? 'bg-rose-500 border-rose-500 text-white' : 'bg-card border-border text-muted-foreground hover:border-primary/30'}`}>
             {localState.showNotification ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
           </motion.div>

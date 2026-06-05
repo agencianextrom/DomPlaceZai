@@ -288,7 +288,7 @@ export function DailyRewards() {
                 <motion.div
                   animate={isCurrent ? { scale: [1, 1.12, 1] } : {}}
                   transition={{ duration: 1.5, repeat: isCurrent ? Infinity : 0, ease: 'easeInOut' as const }}
-                  className={`h-8 w-8 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-300 r43-day-card r43-day-card-${isCompleted ? 'completed' : isCurrent ? 'current' : isPast ? 'past' : 'locked'} ${
+                  className={`h-8 w-8 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-300 r43-day-card r43-day-card-${isCompleted ? 'completed' : isCurrent ? 'current' : isPast ? 'past' : 'locked'} ${
                     isRewardDay && !isCompleted ? 'r43-day-card-reward' : ''
                   } ${
                     isCompleted

@@ -221,7 +221,7 @@ export function ProductBundlesSlider() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={goPrev}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm border border-border shadow-lg flex items-center justify-center r33-nav-arrow r33-nav-left"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-background/90 backdrop-blur-sm border border-border shadow-lg flex items-center justify-center r33-nav-arrow r33-nav-left"
           aria-label="Anterior"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -232,7 +232,7 @@ export function ProductBundlesSlider() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={goNext}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm border border-border shadow-lg flex items-center justify-center r33-nav-arrow r33-nav-right"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-background/90 backdrop-blur-sm border border-border shadow-lg flex items-center justify-center r33-nav-arrow r33-nav-right"
           aria-label="Próximo"
         >
           <ChevronRight className="h-4 w-4" />

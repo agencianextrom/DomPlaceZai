@@ -48727,3 +48727,30 @@
   .r95-quickinfo-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
   .r95-spending-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(236,72,153,0.08); }
 }
+
+/* ==============================
+   R96 — HomeServicesMarketplace + polished components
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+  /* HomeServicesMarketplace themed */
+  .r96-services-stat { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r96-services-stat:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,102,241,0.1); }
+  .r96-service-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r96-service-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99,102,241,0.12); }
+  .r96-book-btn { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  .r96-book-btn:hover { box-shadow: 0 4px 12px rgba(16,185,129,0.2); }
+  .r96-book-btn:active { transform: scale(0.97); }
+  .r96-category-pill { transition: all 0.2s ease; }
+  .r96-category-pill:hover { transform: translateY(-1px); }
+  .r96-urgent-card { transition: transform 0.2s ease; }
+  .r96-urgent-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(245,158,11,0.12); }
+  .r96-trust-badge { transition: transform 0.15s ease; }
+  .r96-trust-badge:hover { transform: translateY(-1px); }
+
+  /* Polished component effects */
+  .r96-community-events-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.08); }
+  .r96-battle-arena-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(236,72,153,0.08); }
+  .r96-product-gallery-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.08); }
+  .r96-stock-urgency-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(239,68,68,0.08); }
+  .r96-order-tracker-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
+}

@@ -56,7 +56,7 @@ export function StockUrgency({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mt-1"
+          className="mt-1 r62-card-lift r96-stock-urgency-card"
         >
           <div className="flex items-center gap-1">
             <div className="h-1 flex-1 rounded-full bg-muted overflow-hidden">
@@ -77,7 +77,7 @@ export function StockUrgency({
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
-          className={`mt-1.5 flex items-center gap-1.5 urgency-pulse r27-critical-warning`}
+          className={`mt-1.5 flex items-center gap-1.5 urgency-pulse r27-critical-warning r62-card-lift r96-stock-urgency-card`}
         >
           <div className="h-1.5 flex-1 rounded-full bg-red-100 dark:bg-red-900/30 overflow-hidden r27-stock-shimmer">
             <motion.div
@@ -100,7 +100,7 @@ export function StockUrgency({
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
-          className="mt-1.5 flex items-center gap-1.5"
+          className="mt-1.5 flex items-center gap-1.5 r62-card-lift r96-stock-urgency-card"
         >
           <div className="h-1.5 flex-1 rounded-full bg-amber-100 dark:bg-amber-900/30 overflow-hidden r27-stock-shimmer">
             <motion.div
@@ -119,7 +119,7 @@ export function StockUrgency({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="mt-1.5 flex items-center gap-1.5"
+        className="mt-1.5 flex items-center gap-1.5 r62-card-lift r96-stock-urgency-card"
       >
         <div className="h-1 flex-1 rounded-full bg-muted overflow-hidden">
           <motion.div
@@ -140,7 +140,7 @@ export function StockUrgency({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ type: 'spring' as const, stiffness: 300, damping: 20, delay: 0.25 }}
         whileHover={{ scale: 1.01 }}
-        className="flex items-center gap-3 mt-3 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-900/15 border border-red-200/60 dark:border-red-800/40 urgency-pulse r27-critical-warning"
+        className="flex items-center gap-3 mt-3 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-900/15 border border-red-200/60 dark:border-red-800/40 urgency-pulse r27-critical-warning r62-card-lift r96-stock-urgency-card"
       >
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
@@ -180,7 +180,7 @@ export function StockUrgency({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="flex items-center gap-3 mt-3 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-900/15 border border-amber-200/50 dark:border-amber-800/30"
+        className="flex items-center gap-3 mt-3 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-900/15 border border-amber-200/50 dark:border-amber-800/30 r62-card-lift r96-stock-urgency-card"
       >
         <span className="text-lg">⚡</span>
         <div className="flex-1 min-w-0">
@@ -207,7 +207,7 @@ export function StockUrgency({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring' as const, stiffness: 300, damping: 22, delay: 0.25 }}
-      className="flex items-center gap-3 mt-3 px-4 py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/15 border border-emerald-200/50 dark:border-emerald-800/30"
+      className="flex items-center gap-3 mt-3 px-4 py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/15 border border-emerald-200/50 dark:border-emerald-800/30 r62-card-lift r96-stock-urgency-card"
     >
       <span className="text-sm">✓</span>
       <div className="flex-1">

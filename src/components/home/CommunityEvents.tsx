@@ -412,7 +412,7 @@ export function CommunityEvents() {
   }, [filteredEvents.length])
 
   return (
-    <section className="mt-6 relative overflow-hidden">
+    <section className="mt-6 relative overflow-hidden r62-card-lift r96-community-events-card">
       {/* Floating particles in background */}
       <FloatingParticles
         count={12}
@@ -432,7 +432,7 @@ export function CommunityEvents() {
           <CalendarDays className="h-4 w-4 text-white" />
         </motion.div>
         <div>
-          <h2 className="text-base sm:text-lg font-bold r29-event-shimmer">Eventos da Comunidade</h2>
+          <h2 className="text-base sm:text-lg font-bold r29-event-shimmer r62-heading-gradient">Eventos da Comunidade</h2>
           <p className="text-[11px] text-muted-foreground hidden sm:block">
             Fique por dentro do que acontece em Dom Eliseu
           </p>

@@ -954,7 +954,7 @@ export default function ProductBattleArena() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring' as const, stiffness: 200, damping: 25 }}
-      className="relative overflow-hidden"
+      className="relative overflow-hidden r62-card-lift r96-battle-arena-card"
     >
       {/* Background decoration */}
       <div className="absolute -inset-4 rounded-3xl pointer-events-none"
@@ -981,7 +981,7 @@ export default function ProductBattleArena() {
               <Trophy className="h-5 w-5 text-white" />
             </motion.div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-bold flex items-center gap-2 r62-heading-gradient">
                 <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 bg-clip-text text-transparent r46-battle-title">
                   Batalha de Produtos
                 </span>

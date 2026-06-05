@@ -322,7 +322,7 @@ function AudioGuideController({
       transition={springGentle}
     >
       <motion.button
-        className="r53-vtour-audio-toggle w-9 h-9 rounded-full flex items-center justify-center"
+        className="r53-vtour-audio-toggle w-9 h-9 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center"
         style={{
           background: isPlaying ? '#10b981' : 'rgba(255,255,255,0.15)',
         }}

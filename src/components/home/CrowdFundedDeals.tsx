@@ -1065,7 +1065,7 @@ function FilterBar({
         <motion.button
           key={filter.value}
           onClick={() => onFilterChange(filter.value)}
-          className={`relative z-10 flex items-center gap-1 px-3 py-1.5 text-[11px] font-semibold rounded-lg transition-colors whitespace-nowrap shrink-0 ${
+          className={`relative z-10 flex items-center gap-1 px-3 py-1.5 min-h-[44px] text-[11px] font-semibold rounded-lg transition-colors whitespace-nowrap shrink-0 ${
             activeFilter === filter.value
               ? 'text-primary-foreground'
               : 'text-muted-foreground hover:text-foreground'

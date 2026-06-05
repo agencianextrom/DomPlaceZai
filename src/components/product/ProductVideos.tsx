@@ -490,7 +490,7 @@ function VideoPlayerModal({
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0, rotate: 90 }}
               onClick={onClose}
-              className="absolute top-3 right-3 z-20 h-9 w-9 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm flex items-center justify-center transition-colors"
+              className="absolute top-3 right-3 z-20 h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm flex items-center justify-center transition-colors"
             >
               <X className="h-4 w-4 text-white" />
             </motion.button>
@@ -577,7 +577,7 @@ function VideoPlayerModal({
                     animate="visible"
                     whileTap={{ scale: 0.88 }}
                     onClick={() => setProgress(Math.max(0, progress - 10))}
-                    className="h-9 w-9 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
+                    className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
                   >
                     <SkipBack className="h-4 w-4" />
                   </motion.button>
@@ -614,7 +614,7 @@ function VideoPlayerModal({
                     animate="visible"
                     whileTap={{ scale: 0.88 }}
                     onClick={() => setProgress(Math.min(100, progress + 10))}
-                    className="h-9 w-9 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
+                    className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
                   >
                     <SkipForward className="h-4 w-4" />
                   </motion.button>
@@ -628,7 +628,7 @@ function VideoPlayerModal({
                     initial="hidden"
                     animate="visible"
                     whileTap={{ scale: 0.88 }}
-                    className="h-9 w-9 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
+                    className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
                   >
                     <Volume2 className="h-4 w-4" />
                   </motion.button>

@@ -237,6 +237,7 @@ import HouseholdServicesDirectory from '@/components/home/HouseholdServicesDirec
 import EcoTipsTracker from '@/components/home/EcoTipsTracker'
 import PetCareHub from '@/components/home/PetCareHub'
 import LocalEventsCalendar from '@/components/home/LocalEventsCalendar'
+import HomeServicesMarketplace from '@/components/home/HomeServicesMarketplace'
 import { MobilePullToRefresh } from '@/components/ui/MobilePullToRefresh'
 
 // Module-level BRL currency formatter
@@ -987,6 +988,7 @@ export default function Home() {
                           <EcoTipsTracker />
                           <PetCareHub />
                           <LocalEventsCalendar />
+                          <HomeServicesMarketplace />
                         </section>
                       </ScrollReveal>
                     </LazySection>

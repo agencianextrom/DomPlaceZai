@@ -89,7 +89,7 @@ export function OrderTracker({ orderNumber = 'DP000003', storeName = 'Mercado do
   }
 
   return (
-    <Card className="border-primary/20 overflow-hidden">
+    <Card className="border-primary/20 overflow-hidden r62-card-lift r96-order-tracker-card">
       <CardContent className="p-0">
         {/* Map Placeholder */}
         <div className="relative h-36 bg-gradient-to-br from-emerald-100 via-emerald-50 to-teal-100 dark:from-emerald-900/20 dark:via-emerald-900/10 dark:to-teal-900/20 overflow-hidden">

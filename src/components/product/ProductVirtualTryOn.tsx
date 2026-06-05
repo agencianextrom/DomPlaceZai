@@ -440,21 +440,21 @@ export function ProductVirtualTryOn({ product }: ProductVirtualTryOnProps) {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => setRotation((r) => r - 45)}
-          className="h-9 w-9 rounded-lg bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors"
+          className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-lg bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
         </motion.button>
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => setRotation(0)}
-          className="h-9 px-3 rounded-lg bg-card border border-border text-xs font-medium hover:bg-muted transition-colors"
+          className="h-9 min-h-[44px] px-3 rounded-lg bg-card border border-border text-xs font-medium hover:bg-muted transition-colors"
         >
           Resetar
         </motion.button>
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => setRotation((r) => r + 45)}
-          className="h-9 w-9 rounded-lg bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors"
+          className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-lg bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors"
         >
           <ChevronRight className="h-4 w-4" />
         </motion.button>
