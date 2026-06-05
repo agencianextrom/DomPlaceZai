@@ -1,4 +1,86 @@
 ---
+Task ID: R66-NearbyStoresMap-CSSPolish8Components-HeaderFooterEnhance
+Agent: Main Agent
+Task: NearbyStoresMap feature, 8 components CSS polish, Header/Footer enhance, wire unused components, r66-* CSS
+
+Work Log:
+
+**Build Status:**
+- Production build passes cleanly (next build, 19.7s compile)
+- CSS: 45,587 lines (R66, +126 from r65)
+
+**New Feature — NearbyStoresMap:**
+- `src/components/home/NearbyStoresMap.tsx` — "Lojas próximas" nearby stores widget
+- SVG-based neighborhood map placeholder with pulsing store dots (green=open, gray=closed)
+- 6 nearby stores in vertical list with: name, category, distance (color-coded), status dot, rating, delivery
+- Distance filter tabs: Todos, Menos de 1km, Menos de 3km
+- Search input for name/category filtering
+- Summary bar: "X lojas abertas" + "Y com entrega"
+- 3 action buttons per store: Ver loja, Pedir agora, favorite (all 44px)
+- Favorites in localStorage (key: r66-nearby-favorites)
+- Data: cachedFetch('/api/stores') with 6 hardcoded fallbacks
+
+**CSS Polish Applied to 8 Homepage Components (16 edits):**
+1. HeroBanner: r62-card-lift on container, r62-heading-gradient on heading, r62-shimmer on CTA
+2. WeatherWidget: r62-card-lift on card
+3. FlashSale: r62-heading-gradient on heading
+4. CategoryBar: r62-card-lift on all 13 category buttons
+5. DealOfTheDay: r62-card-lift on card, r62-heading-gradient on heading
+6. StoreCarousel: r62-scroll-snap on container, r62-card-lift on cards
+7. PromoBanner: r62-card-lift on cards, r62-badge-glow on badges
+8. PriceDropTicker: r62-scroll-snap on container, r62-badge-glow on discount badges
+
+**Header Enhancement:**
+- r62-heading-gradient on "DomPlace" logo text
+- r62-notif-bounce on notification badges (desktop + mobile)
+
+**Footer Enhancement:**
+- r62-heading-gradient on 6 column headers (Sobre, Categorias, Para Lojistas, Suporte, Formas de Pagamento, Baixe o App)
+- r62-card-lift on payment method icons
+
+**Wired Unused Components:**
+- LoyaltyTierBenefits: Added after LoyaltyWidget section (LazySection + ScrollReveal)
+- ProductRecallAlerts: Added after FlashDealAlert (safety feature, prominent position)
+
+**CSS — r66-* Classes (126 lines):**
+- r66-map-card: distance-coded left border + hover lift (near/medium/far variants)
+- r66-distance-badge: color-coded distance pill
+- r66-status-online: green pulse dot with ping animation
+- r66-status-offline: gray dot
+- r66-map-bg: gradient background with radial gradient decorations
+- r66-map-dot: pulsing store location dots
+- r66-store-action: 44px action button
+- r66-fav-btn: favorite toggle button with color states
+- All wrapped in prefers-reduced-motion guard
+
+Stage Summary:
+- 14 files changed, 803 insertions, 26 deletions
+- 1 new component (NearbyStoresMap)
+- 8 components: CSS polish applied (r62-* classes)
+- Header + Footer: visual enhancements
+- 2 unused components wired (LoyaltyTierBenefits, ProductRecallAlerts)
+- 126 lines r66-* CSS added
+- Build: successful
+- Commit: 18958dc pushed to GitHub main
+- Total CSS: 45,587 lines (R66)
+
+## Current Project Status Assessment
+- DomPlace marketplace: stable, feature-rich, 348+ components
+- Production build passes cleanly
+- 6 new components added across R61-R66: ScanToShop, EcoImpactWidget, QuickBillSplitter, PriceDropAlertsWidget, FlashDealAlert, NearbyStoresMap
+- Mobile responsiveness: ~120+ touch targets + 80+ grids fixed
+- Visual polish: r62-r66 CSS classes applied to 20+ visible components
+- Eco consolidated (4→1), unused components wired
+- All commits use agencianextrom@gmail.com
+
+## Unresolved Issues / Risks
+1. Vercel live site behind SSO (private project) — user must adjust settings
+2. .env not persisted across sessions
+3. SPA-style navigation (no deep linking)
+4. ~39K lines CSS lost from R47-R56 (recovering gradually)
+5. Dev server slow on 45K+ CSS (Turbopack parsing)
+6. 3 orphaned eco components can be deleted (EcoImpactTracker, EcoImpactTracker2, EcoImpactDashboard)
+---
 Task ID: R65-FlashDealAlert-FinalTouchTargets-WireUnused-r65CSS
 Agent: Main Agent
 Task: FlashDealAlert feature, final 17 touch targets, wire unused components, r65-* CSS
