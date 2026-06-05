@@ -440,7 +440,7 @@ export function Header() {
                       animate={{ scale: [0, 1.35, 0.85, 1.1, 1], y: 0 }}
                       exit={{ scale: 0, y: 10 }}
                       transition={{ duration: 0.5, ease: 'easeOut' as const }}
-                      className={`absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] r38-header-cart-badge r44-cart-badge rounded-full font-bold ${cartBounce ? 'r44-cart-badge-bouncing' : ''}`}
+                      className={`absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] r38-header-cart-badge r44-cart-badge rounded-full font-bold r62-badge-glow ${cartBounce ? 'r44-cart-badge-bouncing' : ''}`}
                     >
                       {cartCount > 99 ? '99+' : cartCount}
                       {/* Ping animation when count changes */}
@@ -570,7 +570,7 @@ export function Header() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring' as const, stiffness: 500, damping: 20 }}
-                    className="h-5 min-w-5 px-1.5 flex items-center justify-center text-[10px] font-bold bg-primary text-primary-foreground rounded-full"
+                    className="h-5 min-w-5 px-1.5 flex items-center justify-center text-[10px] font-bold bg-primary text-primary-foreground rounded-full r62-badge-glow"
                   >
                     {cartCount > 99 ? '99+' : cartCount}
                   </motion.span>

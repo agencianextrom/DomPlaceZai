@@ -840,7 +840,7 @@ function DealCard({
       layout
     >
       <div
-        className="relative rounded-xl border overflow-hidden h-full flex flex-col"
+        className="relative rounded-xl border overflow-hidden h-full flex flex-col r62-card-lift"
         style={{
           borderColor: gradient.border,
           background: gradient.bg,
@@ -877,7 +877,7 @@ function DealCard({
                 <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                   {deal.isTrending && (
                     <Badge
-                      className="text-[8px] px-1.5 py-0 h-4 border-0 font-bold"
+                      className="text-[8px] px-1.5 py-0 h-4 border-0 font-bold r62-badge-glow"
                       style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' }}
                     >
                       <Flame className="h-2.5 w-2.5 mr-0.5" />
@@ -1301,7 +1301,7 @@ export function CrowdFundedDeals() {
               <TrendingUp className="h-5 w-5 text-white" />
             </motion.div>
             <div>
-              <h2 className="font-bold text-base sm:text-lg flex items-center gap-2">
+              <h2 className="font-bold text-base sm:text-lg flex items-center gap-2 r62-heading-gradient">
                 <span className="r50-crowd-header-gradient bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
                   Crowd-Funded Deals
                 </span>

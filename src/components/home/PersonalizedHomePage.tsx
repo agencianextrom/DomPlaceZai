@@ -499,7 +499,7 @@ function PersonalizedHomePage() {
             >
               <Sparkles className="h-5 w-5 text-amber-500" />
             </motion.div>
-            <h2 className="text-base font-bold">Para Você</h2>
+            <h2 className="text-base font-bold r62-heading-gradient">Para Você</h2>
             <Badge className="r46-rec-badge bg-primary/10 text-primary border-0 text-[10px] px-1.5">6 sugestões</Badge>
           </div>
           <button className="flex items-center gap-1 text-xs text-primary hover:underline">
@@ -523,7 +523,7 @@ function PersonalizedHomePage() {
               <motion.div
                 key={product.id}
                 variants={itemFadeIn}
-                className="r46-person-card shrink-0 w-[155px] sm:w-[175px]"
+                className="r46-person-card shrink-0 w-[155px] sm:w-[175px] r62-card-lift"
                 initial="rest"
                 whileHover="hover"
               >
@@ -597,7 +597,7 @@ function PersonalizedHomePage() {
           viewport={{ once: true }}
         >
           {MOCK_RECENTLY_VIEWED.map((product) => (
-            <motion.div key={product.id} variants={itemFadeIn} className="r46-recent-card">
+            <motion.div key={product.id} variants={itemFadeIn} className="r46-recent-card r62-card-lift">
               <Card className="overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
                 <div className="flex p-3 gap-3">
                   <div
@@ -651,7 +651,7 @@ function PersonalizedHomePage() {
             <motion.div
               key={store.id}
               variants={itemFadeIn}
-              className="r46-store-card"
+              className="r46-store-card r62-card-lift"
               initial="rest"
               whileHover="hover"
             >
@@ -717,7 +717,7 @@ function PersonalizedHomePage() {
           viewport={{ once: true }}
         >
           {MOCK_DEALS.map((deal) => (
-            <motion.div key={deal.id} variants={itemFadeIn} className="r46-deal-card">
+            <motion.div key={deal.id} variants={itemFadeIn} className="r46-deal-card r62-card-lift">
               <Card
                 className="overflow-hidden border-0"
                 style={{

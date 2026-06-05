@@ -569,7 +569,7 @@ function SentimentRing({ score, animated }: { score: number; animated: boolean }
         </div>
       </div>
       <span
-        className="r39-sentiment-ring-badge text-[11px] font-bold rounded-full px-3 py-1"
+        className="r39-sentiment-ring-badge text-[11px] font-bold rounded-full px-3 py-1 r62-badge-glow"
         style={{ backgroundColor: bg, color }}
       >
         {label}
@@ -734,7 +734,7 @@ function ReviewHighlights({ best, worst }: { best: ReviewData | null; worst: Rev
           variants={r39FadeInVariants}
           initial="hidden"
           animate="visible"
-          className="relative rounded-xl p-3 border border-green-200/60"
+          className="relative rounded-xl p-3 border border-green-200/60 r62-card-lift"
           style={{ backgroundColor: 'rgba(34,197,94,0.04)' }}
         >
           <div className="absolute top-0 left-0 w-1 h-full rounded-r bg-green-500" />
@@ -765,7 +765,7 @@ function ReviewHighlights({ best, worst }: { best: ReviewData | null; worst: Rev
           initial="hidden"
           animate="visible"
           transition={{ delay: 0.15 }}
-          className="relative rounded-xl p-3 border border-red-200/60"
+          className="relative rounded-xl p-3 border border-red-200/60 r62-card-lift"
           style={{ backgroundColor: 'rgba(239,68,68,0.04)' }}
         >
           <div className="absolute top-0 left-0 w-1 h-full rounded-r bg-red-500" />
@@ -1085,7 +1085,7 @@ function SentimentStatsRow({
   ]
 
   return (
-    <div className="r39-stats-row grid grid-cols-3 gap-2 sm:gap-3">
+    <div className="r39-stats-row grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
       {stats.map((stat, idx) => (
         <motion.div
           key={stat.label}
@@ -1269,7 +1269,7 @@ export function ReviewSentimentAI() {
               <Brain className="h-4.5 w-4.5 text-white" />
             </motion.div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold tracking-tight r62-heading-gradient">
                 Análise de Sentimentos
               </h2>
               <p className="text-[11px] text-muted-foreground">

@@ -475,7 +475,7 @@ function GiftCardFlip({
 
   return (
     <motion.div
-      className={`r51-gift-flip-card cursor-pointer ${cardHeight}`}
+      className={`r51-gift-flip-card cursor-pointer r62-card-lift ${cardHeight}`}
       onClick={() => {
         setIsFlipped((f) => !f);
         onClick();
@@ -1035,7 +1035,7 @@ function OwnedCardsGallery({
           return (
             <motion.div
               key={card.id}
-              className="r51-gift-owned-card relative"
+              className="r51-gift-owned-card relative r62-card-lift"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8 }}
@@ -1430,7 +1430,7 @@ export function GiftCardMarketplace() {
             <Gift className="w-5 h-5 text-white" />
           </motion.div>
           <div>
-            <h2 className="r51-gift-title text-lg font-bold">Gift Cards</h2>
+            <h2 className="r51-gift-title text-lg font-bold r62-heading-gradient">Gift Cards</h2>
             <p className="r51-gift-subtitle text-xs text-muted-foreground">Presenteie com estilo</p>
           </div>
         </div>

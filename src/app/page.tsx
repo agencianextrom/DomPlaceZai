@@ -205,6 +205,7 @@ import { MobileQuickActions } from '@/components/home/MobileQuickActions'
 import { MobileOrderTracker } from '@/components/orders/MobileOrderTracker'
 import { QuickBillSplitter } from '@/components/home/QuickBillSplitter'
 import { WeeklyMealPlanner } from '@/components/home/WeeklyMealPlanner'
+import { FamilyGroupOrder } from '@/components/home/FamilyGroupOrder'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -1048,6 +1049,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <CashbackTracker />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Family Group Order — Pedidos em grupo para a família */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <FamilyGroupOrder />
                         </section>
                       </ScrollReveal>
                     </LazySection>

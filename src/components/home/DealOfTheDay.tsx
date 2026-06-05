@@ -274,7 +274,7 @@ export function DealOfTheDay() {
           <Zap className="h-4 w-4 text-amber-500" />
           <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">Oferta do Dia</h2>
         </div>
-        <Badge variant="secondary" className="text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-800/30 font-bold r26-glow-pulse-badge">
+        <Badge variant="secondary" className="text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-800/30 font-bold r26-glow-pulse-badge r62-badge-glow">
           <Sparkles className="h-2.5 w-2.5 mr-0.5" />
           Exclusiva
         </Badge>
@@ -329,7 +329,7 @@ export function DealOfTheDay() {
                 transition={{ type: 'spring' as const, stiffness: 300, damping: 25, delay: 0.3 }}
                 className="absolute top-3 left-3"
               >
-                <div className="r26-offerta-badge px-3 py-1.5 rounded-lg bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold text-xs tracking-wider shadow-lg">
+                <div className="r26-offerta-badge px-3 py-1.5 rounded-lg bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold text-xs tracking-wider shadow-lg r62-badge-glow">
                   <span className="relative z-10 flex items-center gap-1">
                     <Flame className="h-3.5 w-3.5" />
                     OFERTA
@@ -345,7 +345,7 @@ export function DealOfTheDay() {
                   transition={{ type: 'spring' as const, stiffness: 400, damping: 20, delay: 0.4 }}
                   className="absolute top-3 right-3"
                 >
-                  <div className="r26-savings-badge px-2.5 py-1 rounded-full bg-red-500 text-white text-xs font-bold shadow-md r42-discount-pulse r58-deal-sparkle-container">
+                  <div className="r26-savings-badge px-2.5 py-1 rounded-full bg-red-500 text-white text-xs font-bold shadow-md r42-discount-pulse r58-deal-sparkle-container r62-badge-glow">
                     -{discount}%
                   </div>
                   {/* r58 floating sparkle particles */}
@@ -471,7 +471,7 @@ export function DealOfTheDay() {
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
-                  <Badge className="text-[9px] bg-red-500 text-white border-0 px-1.5 py-0 font-bold gap-0.5">
+                  <Badge className="text-[9px] bg-red-500 text-white border-0 px-1.5 py-0 font-bold gap-0.5 r62-badge-glow">
                     🔥 Super Quente
                   </Badge>
                 </motion.div>

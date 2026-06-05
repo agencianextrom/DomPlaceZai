@@ -632,7 +632,7 @@ export function FlashSale() {
                                     )}
 
                                     {/* ── r39 animated discount badge ── */}
-                                    <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[10px] px-1.5 py-0 font-bold shadow-sm r27-badge-pulse r39-discount-badge r42-flash-badge-glow r44-new-badge-sparkle">
+                                    <Badge className="absolute top-2 left-2 bg-red-500 text-white border-0 text-[10px] px-1.5 py-0 font-bold shadow-sm r27-badge-pulse r39-discount-badge r42-flash-badge-glow r44-new-badge-sparkle r62-badge-glow">
                                       <TrendingDown className="h-2.5 w-2.5 mr-0.5" />
                                       -{discount}%
                                     </Badge>
@@ -648,7 +648,7 @@ export function FlashSale() {
                                           <motion.div
                                             animate={{ opacity: [1, 0.6, 1] }}
                                             transition={{ duration: 1.2, repeat: Infinity }}
-                                            className="flex items-center gap-0.5 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm badge-floating r58-flash-urgency-badge"
+                                            className="flex items-center gap-0.5 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm badge-floating r58-flash-urgency-badge r62-badge-glow"
                                           >
                                             <AlertTriangle className="h-2.5 w-2.5" />
                                             ÚLTIMAS UNIDADES
@@ -665,7 +665,7 @@ export function FlashSale() {
                                         className="absolute top-2 right-2"
                                       >
                                         <UrgencyBadge>
-                                          <div className="flex items-center gap-0.5 bg-amber-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm">
+                                          <div className="flex items-center gap-0.5 bg-amber-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-sm r62-badge-glow">
                                             <AlertTriangle className="h-2.5 w-2.5" />
                                             Quase esgotando!
                                           </div>

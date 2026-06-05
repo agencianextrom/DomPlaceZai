@@ -208,7 +208,7 @@ export function GiftGuide() {
           >
             <Gift className="h-5 w-5 text-rose-500" />
           </motion.div>
-          <h2 className="text-lg sm:text-xl font-bold">Guia de Presentes</h2>
+          <h2 className="text-lg sm:text-xl font-bold r62-heading-gradient">Guia de Presentes</h2>
         </div>
 
         {/* ── Occasion selector pills ── */}
@@ -339,7 +339,7 @@ export function GiftGuide() {
                         boxShadow: '0 16px 48px -8px rgba(244, 63, 94, 0.2), 0 6px 20px -4px rgba(0,0,0,0.1)',
                       }}
                       transition={{ type: 'spring' as const, stiffness: 280, damping: 20 }}
-                      className="gift-card-3d relative bg-card rounded-xl border border-border overflow-hidden group r34-gift-guide-tilt"
+                      className="gift-card-3d relative bg-card rounded-xl border border-border overflow-hidden group r34-gift-guide-tilt r62-card-lift"
                       style={{ perspective: '600px' }}
                     >
                       {/* "Presente ideal" badge with sparkle */}

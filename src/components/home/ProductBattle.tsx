@@ -229,7 +229,7 @@ function BattleCard({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
-              className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-sm"
+              className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-sm r62-badge-glow"
             >
               -{discount}%
             </motion.div>
@@ -237,7 +237,7 @@ function BattleCard({
 
           {/* New badge */}
           {product.isNew && (
-            <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground text-[9px] border-0 px-1.5 py-0">
+            <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground text-[9px] border-0 px-1.5 py-0 r62-badge-glow">
               Novo
             </Badge>
           )}
@@ -613,7 +613,7 @@ export function ProductBattle() {
             animate={{ scale: 1 }}
             transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
           >
-            <Badge variant="secondary" className="text-[10px] bg-primary/10 text-primary border-primary/20 font-bold">
+            <Badge variant="secondary" className="text-[10px] bg-primary/10 text-primary border-primary/20 font-bold r62-badge-glow">
               <Sparkles className="h-3 w-3 mr-1" />
               Rodada #{battleStats.totalVotes}
             </Badge>

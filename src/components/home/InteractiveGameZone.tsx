@@ -408,7 +408,7 @@ function MiniLeaderboard({ userPoints }: { userPoints: number }) {
   ).sort((a, b) => b.points - a.points)
 
   return (
-    <div className="bg-card/60 dark:bg-card/40 rounded-xl p-4 border border-border/50">
+    <div className="bg-card/60 dark:bg-card/40 rounded-xl p-4 border border-border/50 r62-card-lift">
       <h3 className="text-sm font-bold flex items-center gap-2 mb-3">
         <Trophy className="h-4 w-4 text-amber-500" />
         Ranking Semanal
@@ -816,7 +816,7 @@ export function InteractiveGameZone() {
             <Gamepad2 className="h-5 w-5 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base font-bold flex items-center gap-1.5">
+            <h2 className="text-base font-bold flex items-center gap-1.5 r62-heading-gradient">
               Zona de Jogos
               <Sparkles className="h-3.5 w-3.5 text-amber-400" />
             </h2>
