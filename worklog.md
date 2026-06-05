@@ -1,5 +1,88 @@
 ---
-Task ID: R89-SharedCart-TouchTargetFixes10-1MobileGridFix-3CSSPolish-r89CSS
+Task ID: R90-WeeklyFarmersMarket-TouchTargetFixes12-5CSSPolish-r90CSS
+Agent: Main Agent
+Task: WeeklyFarmersMarket feature, 12 touch target fixes, 5 CSS polish, r90-* CSS
+
+Work Log:
+
+**QA Assessment:**
+- Production build passes cleanly
+- agent-browser QA: domplace.vercel.app loads successfully, 3 screenshots captured
+- Clean working tree from R89 (fe683ad)
+
+**Build Status:**
+- Production build passes cleanly
+- CSS: 48,569 lines (R90, +35 from r89)
+- 18 files changed (1 new + 17 modified)
+- +616/-24 lines
+
+**New Feature — WeeklyFarmersMarket (~547 lines):**
+- `src/components/home/WeeklyFarmersMarket.tsx` — "Feira da Semana" farmers market hub
+- Green gradient header with Leaf icon, average savings badge (35% economia)
+- Market Day Selector: 3 upcoming markets (Sábado/Terça/Quinta) with weather icons, temp, location
+- Day Details Grid: 2×2 cards (Local, Horário, Feirantes count, Produtos count)
+- Category Filters: 7 categories (Todos, Frutas, Legumes, Verduras, Raízes, Frutas Nativas, Temperos) horizontal scroll (44px)
+- Organic Filter toggle + Sort buttons (Maior economia/Menor preço/A–Z) all 44px
+- Produce Grid: 10 items with emoji, name, organic/safra badges, price comparison (feira vs supermarket), savings %, "Pedir ao [farmer]" button
+- Favorite toggle per item (44px), animated produce cards with layout animation
+- Savings Summary: 3 stat cards (avg savings %, total savings R$, product count) + animated savings bars for top 5 items
+- Local Farmers: 5 farmer profiles with emoji avatar, farm name, rating/reviews, distance, specialty tags, open/closed status
+- Delivery from Farmers: CTA card with free delivery for R$30+
+- Loading skeleton (1.2s), wired into page.tsx after SharedCart
+
+**Touch Target Fixes — 12 elements across 10 files:**
+1. SearchView.tsx: 2 fixes (category filter pills min-h-[36px]→44px — "Todos" + category map pills)
+2. FamilyGroupOrder.tsx: 2 fixes (qty −/+ buttons min-h-[36px]→44px)
+3. DeliveryScheduler.tsx: 1 fix (quick tag buttons px-2 py-1→px-3 py-2 + min-h-[44px])
+4. PaymentMethods.tsx: 1 fix (quick cash amount buttons px-2.5 py-1→px-3 py-2 + min-h-[44px])
+5. OrderFilters.tsx: 1 fix (date filter pill px-2.5 py-1→px-2.5 py-2 + min-h-[44px])
+6. QuantityStepper.tsx: 1 fix (qty selector buttons px-2.5 py-1→px-2.5 py-2 + min-h-[44px])
+7. OrdersView.tsx: 3 fixes (status/date/sort filter pills py-1.5→py-2.5 + min-h-[44px])
+8. ProductQAForum.tsx: 1 fix ("Útil" vote button py-0.5→py-2 + min-h-[44px])
+9. NeighborhoodBulletinBoard.tsx: 4 fixes (like/bookmark/share/expand py-1→py-2 + min-h-[44px])
+10. SupportTicketSystem.tsx: 2 fixes (attach file + send reply h-9 w-9→min-h-[44px] min-w-[44px])
+
+**CSS Polish — r62-* Classes Applied to 5 Components:**
+1. ProductLaunchCountdown: r62-card-lift + r90-countdown-card
+2. ExpressDeliveryHub: r62-card-lift + r90-express-delivery
+3. CommunityMarketplace: r62-card-lift + r90-marketplace-card
+4. SharedCart: r62-card-lift + r90-shared-cart-root
+5. ProductSizeGuide: r62-card-lift + r62-heading-gradient + r90-size-guide-card
+
+**CSS — r90-* Classes (35 lines):**
+- r90-farmers-card / r90-day-active / r90-day-inactive / r90-produce-card / r90-produce-emoji: WeeklyFarmersMarket themed
+- r90-order-btn / r90-savings-card / r90-farmer-card / r90-delivery-card: interactive elements polish
+- r90-countdown-card / r90-express-delivery / r90-marketplace-card / r90-shared-cart-root / r90-size-guide-card: polished component effects
+- All wrapped in prefers-reduced-motion guard
+
+Stage Summary:
+- 18 files changed, +616/-24 lines (including 1 new file: WeeklyFarmersMarket)
+- 1 new component (WeeklyFarmersMarket, ~547 lines)
+- 12 touch target fixes across 10 files (~537+ total targets now fixed)
+- 5 CSS polish edits across 5 components (174+ components polished total)
+- 35 lines r90-* CSS added
+- Build: successful
+- Total CSS: 48,569 lines (R90)
+
+## Current Project Status Assessment
+- DomPlace marketplace: stable, feature-rich, 371+ components
+- Production build passes cleanly
+- 29 new components added across R61-R90: ScanToShop, EcoImpactWidget, QuickBillSplitter, PriceDropAlertsWidget, FlashDealAlert, NearbyStoresMap, CommunityRecipeHub, SpendingInsights, NutritionLens, DealComparator, PantryManager, LocalServicesHub, CommunityEventsBoard, PriceTracker, WeatherShopper, GiftFinder, QuickRecipes, SustainabilityDashboard, SmartListAssistant, BudgetTracker, LoyaltyGame, NeighborhoodWatch, FamilyActivityFeed, DeliveryTracker, FamilyChallengeHub, CommunityMarketplace, SharedCart, WeeklyFarmersMarket + cached-fetch utility
+- Mobile responsiveness: ~537+ touch targets fixed (96+ via global Button fix in R78), ~120+ mobile grids fixed
+- Visual polish: r62-r90 CSS classes applied to 174+ components
+- 40+ unused components wired/deleted across R65-R90
+- All commits use agencianextrom@gmail.com
+
+## Unresolved Issues / Risks
+1. Vercel live site behind SSO (private project, TEAM_ACCESS_REQUIRED) — user must adjust settings
+2. .env not persisted across sessions
+3. SPA-style navigation (no deep linking)
+4. ~39K lines CSS lost from R47-R56 (recovering gradually)
+5. Dev server slow on 48K+ CSS (Turbopack parsing)
+6. Homepage has 141+ components (information overload, mitigated by LazySection)
+7. 2 unused custom UI components remain (GlassCard, SkeletonEnhanced — use oklch() colors, deferred)
+8. ~24 remaining sub-44px touch targets (medium/low priority — tabs, vote buttons, AR controls)
+---
 Agent: Main Agent
 Task: SharedCart feature, 10 touch target fixes, 1 mobile grid fix, 3 CSS polish, r89-* CSS
 
