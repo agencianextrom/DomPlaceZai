@@ -579,7 +579,7 @@ function CountdownTimer({ etaSeconds }: { etaSeconds: number }) {
 
 function ContactButtons() {
   return (
-    <div className="r56-contact-buttons grid grid-cols-2 gap-2.5">
+    <div className="r56-contact-buttons grid grid-cols-1 sm:grid-cols-2 gap-2.5">
       <motion.div
         whileHover={{ scale: 1.03, boxShadow: '0 4px 20px rgba(22,163,74,0.25)' }}
         whileTap={{ scale: 0.97 }}

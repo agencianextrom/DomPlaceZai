@@ -408,7 +408,7 @@ export default function LocalRecipesHub() {
                   </div>
 
                   {/* Stats */}
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {[
                       { icon: Clock, label: 'Tempo', value: selectedRecipe.time },
                       { icon: Users, label: 'Porções', value: String(selectedRecipe.servings) },

@@ -273,7 +273,7 @@ export function StoreQuickView() {
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto px-4 pb-4">
               {/* Info cards grid */}
-              <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                 {/* Delivery info */}
                 <div className="bg-primary/5 rounded-xl p-3 border border-primary/10">
                   <div className="flex items-center gap-1.5 mb-1">

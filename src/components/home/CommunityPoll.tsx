@@ -661,7 +661,7 @@ export function CommunityPoll() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: 'easeOut' as const }}
-      className="space-y-4"
+      className="space-y-4 r62-card-lift r97-community-poll"
     >
       {/* Section header */}
       <div className="flex items-center gap-2">
@@ -673,7 +673,7 @@ export function CommunityPoll() {
           <MessageCircle className="h-4 w-4 text-white" />
         </motion.div>
         <div>
-          <h2 className="text-base font-bold flex items-center gap-1.5">
+          <h2 className="text-base font-bold flex items-center gap-1.5 r62-heading-gradient">
             <span className="r39-poll-header-gradient">Enquete da Comunidade</span>
             <Badge variant="secondary" className="text-[9px] bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border-violet-200/40 font-bold">
               Semanal

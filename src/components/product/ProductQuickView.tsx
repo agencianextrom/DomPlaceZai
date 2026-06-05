@@ -79,7 +79,7 @@ export function ProductQuickView({ product, open, onClose }: ProductQuickViewPro
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden rounded-2xl max-h-[90vh] overflow-y-auto r25-modal-overlay" style={{ backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)' }}>
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden rounded-2xl max-h-[90vh] overflow-y-auto r25-modal-overlay r62-card-lift r97-product-quickview" style={{ backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)' }}>
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
 
         {/* Floating particles */}
@@ -169,7 +169,7 @@ export function ProductQuickView({ product, open, onClose }: ProductQuickViewPro
 
           {/* Name + Price */}
           <div>
-            <h3 className="font-bold text-base line-clamp-2">{product.name}</h3>
+            <h3 className="font-bold text-base line-clamp-2 r62-heading-gradient">{product.name}</h3>
             <div className="flex items-end gap-2 mt-1.5">
               <span className="text-xl font-bold text-primary">{formatBRL(product.price)}</span>
               {product.comparePrice && product.comparePrice > product.price && (

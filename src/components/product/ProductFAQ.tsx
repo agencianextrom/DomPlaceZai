@@ -417,10 +417,11 @@ export function ProductFAQ({ productId, category, productName }: ProductFAQProps
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.3 }}
+      className="r62-card-lift r97-product-faq"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold flex items-center gap-2">
+        <h3 className="font-semibold flex items-center gap-2 r62-heading-gradient">
           <MessageSquare className="h-4 w-4 text-primary" />
           Perguntas Frequentes
           <Badge variant="secondary" className="text-[10px] bg-primary/5 text-primary font-bold">

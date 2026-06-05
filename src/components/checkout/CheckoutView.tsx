@@ -476,7 +476,7 @@ export function CheckoutView() {
                   transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
                   className="font-semibold mb-3 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent r62-heading-gradient"
                 >Tipo de entrega</motion.h3>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <motion.button
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.97 }}

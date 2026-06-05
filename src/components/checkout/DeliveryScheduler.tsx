@@ -585,7 +585,7 @@ export function DeliveryScheduler() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowReschedule(true)}
-          className="flex items-center gap-1 text-[10px] text-primary bg-primary/10 rounded-lg px-2.5 py-1.5 font-semibold"
+          className="flex items-center gap-1 text-[10px] text-primary bg-primary/10 rounded-lg px-2.5 py-1.5 font-semibold min-h-[44px]"
         >
           <RotateCcw className="h-3 w-3" />
           Reagendar

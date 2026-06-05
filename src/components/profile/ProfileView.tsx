@@ -349,7 +349,7 @@ export function ProfileView() {
                 </Button>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
               <div className="bg-white/15 rounded-xl p-3">
                 <p className="text-2xl font-bold">5</p>
                 <p className="text-[10px] text-white/70">Amigos indicados</p>

@@ -151,7 +151,7 @@ export function NeighborhoodSelector() {
           initial={{ opacity: 0, y: 24 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="px-4 pb-6 relative glassmorphism-strong rounded-t-2xl r25-gradient-border" style={{ padding: '16px 16px 24px' }}
+          className="px-4 pb-6 relative glassmorphism-strong rounded-t-2xl r25-gradient-border r62-card-lift r97-neighborhood-selector" style={{ padding: '16px 16px 24px' }}
         >
           {/* Subtle floating particles */}
           <FloatingParticles />
@@ -184,7 +184,7 @@ export function NeighborhoodSelector() {
               animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
               transition={{ duration: 0.4, delay: 0.15 }}
             >
-              <h3 className="font-bold text-base">Selecione seu bairro</h3>
+              <h3 className="font-bold text-base r62-heading-gradient">Selecione seu bairro</h3>
               <p className="text-xs text-muted-foreground">Escolha para ver taxas e tempos de entrega</p>
             </motion.div>
           </div>

@@ -48754,3 +48754,30 @@
   .r96-stock-urgency-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(239,68,68,0.08); }
   .r96-order-tracker-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
 }
+
+/* ==============================
+   R97 — NeighborhoodSafetyHub + polished components
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+  /* NeighborhoodSafetyHub themed */
+  .r97-safety-stat { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r97-safety-stat:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(20,184,166,0.1); }
+  .r97-alert-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r97-alert-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(20,184,166,0.12); }
+  .r97-alert-level { transition: all 0.2s ease; }
+  .r97-alert-level:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(20,184,166,0.1); }
+  .r97-report-btn { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  .r97-report-btn:hover { box-shadow: 0 4px 12px rgba(20,184,166,0.2); }
+  .r97-report-btn:active { transform: scale(0.97); }
+  .r97-emergency-card { transition: transform 0.2s ease; }
+  .r97-emergency-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(239,68,68,0.1); }
+  .r97-tip-card { transition: transform 0.2s ease; }
+  .r97-tip-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(20,184,166,0.08); }
+
+  /* Polished component effects */
+  .r97-neighborhood-selector:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(20,184,166,0.08); }
+  .r97-community-poll:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(168,85,247,0.08); }
+  .r97-urgency-strip:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,158,11,0.08); }
+  .r97-product-quickview:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.08); }
+  .r97-product-faq:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
+}

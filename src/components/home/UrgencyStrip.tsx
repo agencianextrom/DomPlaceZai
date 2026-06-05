@@ -177,7 +177,7 @@ export function UrgencyStrip() {
 
   return (
     <div
-      className="relative"
+      className="relative r62-card-lift r97-urgency-strip"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >

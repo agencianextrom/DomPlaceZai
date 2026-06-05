@@ -395,7 +395,7 @@ export default function WeeklyFarmersMarket() {
               </div>
               <h3 className="text-sm font-bold">Economia na Feira</h3>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="text-center">
                 <p className="text-lg font-black text-green-600 dark:text-green-400">{avgSavings}%</p>
                 <p className="text-[10px] text-muted-foreground">Economia média</p>

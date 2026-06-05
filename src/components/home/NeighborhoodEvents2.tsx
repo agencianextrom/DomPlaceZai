@@ -659,7 +659,7 @@ function EventDetailDialog({ event, onClose }: { event: NeighborhoodEvent | null
         </div>
 
         {/* Info grid */}
-        <div className="r44-info-grid grid grid-cols-2 gap-3">
+        <div className="r44-info-grid grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="flex items-center gap-2 p-2 rounded-lg bg-secondary/30">
             <CalendarDays className="h-4 w-4 text-primary" />
             <div>

@@ -52,8 +52,8 @@ export function QuantityStepper({
 
   const sizeConfig = {
     sm: {
-      container: 'h-7 w-7',
-      button: 'h-7 w-7',
+      container: 'h-9 w-9 min-h-[44px] min-w-[44px]',
+      button: 'h-9 w-9 min-h-[44px] min-w-[44px]',
       display: 'min-w-[2rem] h-7 text-xs',
       icon: 'h-3 w-3',
     },
