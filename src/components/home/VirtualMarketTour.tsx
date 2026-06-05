@@ -556,7 +556,7 @@ function ProductPinDetail({
             {pin.price}
           </span>
           <motion.button
-            className="r53-vtour-pin-detail-cta flex items-center gap-1 px-3 py-1.5 rounded-lg text-white text-[11px] font-semibold"
+            className="r53-vtour-pin-detail-cta flex items-center gap-1 px-3 py-1.5 rounded-lg text-white text-[11px] font-semibold min-h-[44px]"
             style={{ background: accentColor }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -1746,7 +1746,7 @@ export function VirtualMarketTour() {
   if (!showTour) return null
 
   return (
-    <section className="r53-vtour-section w-full r62-card-lift" ref={containerRef}>
+    <section className="r53-vtour-section w-full r62-card-lift r93-vtour-card" ref={containerRef}>
       {/* Section header */}
       <div className="flex items-center gap-3 mb-4 px-1">
         <motion.div

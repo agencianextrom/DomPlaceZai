@@ -160,7 +160,7 @@ export function LiveOrderMap() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleRefresh}
-          className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center"
+          className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-secondary flex items-center justify-center"
           aria-label="Atualizar mapa"
         >
           <motion.div

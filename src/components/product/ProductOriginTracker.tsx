@@ -738,7 +738,7 @@ function ProducerCard({ isVisible }: { isVisible: boolean }) {
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="mt-2.5 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-600 text-white text-[10px] font-bold transition-colors"
+            className="mt-2.5 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-600 text-white text-[10px] font-bold transition-colors min-h-[44px]"
           >
             <ExternalLink className="h-3 w-3" />
             Ver Produtor

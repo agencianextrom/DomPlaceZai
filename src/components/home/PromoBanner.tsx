@@ -208,7 +208,7 @@ function CouponCopier({ promoCode }: { promoCode: string }) {
       onClick={handleCopy}
       whileTap={{ scale: 0.92 }}
       whileHover={{ scale: 1.04 }}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/15 backdrop-blur-sm border border-white/20 text-white text-[11px] font-semibold hover:bg-white/25 transition-colors"
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/15 backdrop-blur-sm border border-white/20 text-white text-[11px] font-semibold hover:bg-white/25 transition-colors min-h-[44px]"
     >
       <AnimatePresence mode="wait">
         {copied ? (
@@ -592,7 +592,7 @@ function PromoCard({
       transition={{ duration: 0.6, delay: index * 0.15, ease: EASE_OUT_EXPO }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative group cursor-pointer r35-promo-card r62-card-lift"
+      className="relative group cursor-pointer r35-promo-card r62-card-lift r93-promo-banner-card"
     >
       <motion.div
         animate={{

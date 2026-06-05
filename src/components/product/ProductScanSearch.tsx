@@ -1036,7 +1036,7 @@ export function ProductScanSearch() {
         {/* View toggles */}
         <div className="r41-header-actions flex items-center gap-1.5">
           <motion.button
-            className="r41-history-toggle w-8 h-8 rounded-lg flex items-center justify-center"
+            className="r41-history-toggle w-8 h-8 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center"
             style={{
               background: isHistoryOpen ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.06)',
             }}
@@ -1051,7 +1051,7 @@ export function ProductScanSearch() {
             <History className="h-4 w-4" style={{ color: isHistoryOpen ? '#10b981' : 'rgba(255,255,255,0.5)' }} />
           </motion.button>
           <motion.button
-            className="r41-manual-toggle w-8 h-8 rounded-lg flex items-center justify-center"
+            className="r41-manual-toggle w-8 h-8 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center"
             style={{
               background: viewMode === 'manual' ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.06)',
             }}

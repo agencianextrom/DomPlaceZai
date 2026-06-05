@@ -142,7 +142,7 @@ function PercentageIndicator({ percentage }: { percentage: number }) {
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{ type: 'spring' as const, stiffness: 500, damping: 12, delay: 0.15 }}
-      className={`flex items-center justify-center h-10 w-10 rounded-xl ${bg} ${border} border shrink-0 relative`}
+      className={`flex items-center justify-center h-10 w-10 rounded-xl ${bg} ${border} border shrink-0 relative r93-pricedrop-card`}
     >
       <motion.div
         animate={percentage >= 30
@@ -196,7 +196,7 @@ function AddToListButton({ product, index }: { product: ProductData; index: numb
         whileTap={{ scale: 0.92 }}
         whileHover={{ scale: 1.04 }}
         onClick={handleAddWishlist}
-        className={`flex-1 h-7 rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors relative overflow-hidden ${
+        className={`flex-1 h-7 min-h-[44px] rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors relative overflow-hidden ${
           isFav
             ? 'bg-red-50 dark:bg-red-950/30 text-red-500 border border-red-200/60 dark:border-red-800/40'
             : 'bg-secondary/60 hover:bg-secondary text-foreground border border-border/50'

@@ -61,7 +61,7 @@ export function MobileBottomSheet({
         <>
           {/* Backdrop overlay */}
           <motion.div
-            className="fixed inset-0 bg-black/50 z-[60]"
+            className="fixed inset-0 bg-black/50 z-[60] r93-bottomsheet-card"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -106,7 +106,7 @@ export function MobileBottomSheet({
                 </h3>
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-95 transition-transform"
+                  className="w-8 h-8 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-95 transition-transform"
                   aria-label="Fechar"
                 >
                   <span className="text-gray-500 dark:text-gray-400 text-xl leading-none" aria-hidden="true">

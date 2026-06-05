@@ -793,7 +793,7 @@ export function PriceDropAlerts2() {
         <motion.div whileTap={{ scale: 0.95 }}>
           <button
             onClick={fetchAlerts}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors min-h-[44px]"
             style={{ border: '1px solid rgba(0,0,0,0.08)' }}
           >
             <Search className="h-3.5 w-3.5" />

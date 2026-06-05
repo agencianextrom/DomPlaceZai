@@ -48617,3 +48617,25 @@
   .r92-event-hub-card:hover { transform: none; box-shadow: none; }
   .r92-store-event-card:hover { transform: none; box-shadow: none; }
 }
+
+/* ─── r93-* CSS: EcoTipsTracker + 5 CSS-polished components ─── */
+@media (prefers-reduced-motion: no-preference) {
+  .r93-eco-card { transition: box-shadow 0.25s ease; }
+  .r93-eco-card:hover { box-shadow: 0 4px 24px rgba(16,185,129,0.12); }
+
+  .r93-tip-card { transition: transform 0.2s ease, border-color 0.2s ease; }
+  .r93-tip-card:hover { transform: translateX(2px); }
+
+  .r93-challenge-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r93-challenge-card:hover { transform: translateY(-1px); box-shadow: 0 2px 12px rgba(139,92,246,0.08); }
+
+  .r93-leaderboard-row { transition: transform 0.15s ease; }
+  .r93-leaderboard-row:hover { transform: translateX(2px); }
+
+  /* Polished component effects */
+  .r93-bottomsheet-card:hover { transform: none; }
+  .r93-search-suggest-card:hover { transform: none; }
+  .r93-scansearch-card:hover { transform: none; }
+  .r93-pricedrop-card:hover { transform: none; }
+  .r93-promo-banner-card:hover { transform: none; }
+}

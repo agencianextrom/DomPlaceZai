@@ -238,7 +238,7 @@ function HeartToggleButton({ isWished, onToggle, size = 'md' }: { isWished: bool
 
   return (
     <motion.button whileTap={{ scale: 0.8 }} onClick={handleToggle}
-      className={`relative flex items-center justify-center rounded-full transition-colors ${isSm ? 'h-7 w-7' : 'h-9 w-9'} ${
+      className={`relative flex items-center justify-center rounded-full transition-colors min-h-[44px] min-w-[44px] ${isSm ? 'h-7 w-7' : 'h-9 w-9'} ${
         isWished ? 'bg-rose-500 text-white' : 'bg-white/90 dark:bg-black/50 backdrop-blur-sm border border-border hover:border-rose-300'}`}
       aria-label={isWished ? 'Remover da wishlist' : 'Adicionar à wishlist'}>
       <AnimatePresence mode="wait">

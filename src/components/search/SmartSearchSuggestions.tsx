@@ -353,7 +353,7 @@ export function SmartSearchSuggestions({
           animate="visible"
           exit="exit"
           style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
-          className="r60-suggestions-panel absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-gray-100 overflow-hidden z-50 max-h-[60vh] overflow-y-auto"
+          className="r60-suggestions-panel absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-gray-100 overflow-hidden z-50 max-h-[60vh] overflow-y-auto r93-search-suggest-card"
         >
           {/* ── Header ───────────────────────────────────────────────── */}
           <div className="r60-suggestions-header flex items-center justify-between px-3 py-2.5 border-b border-gray-100">
@@ -367,14 +367,14 @@ export function SmartSearchSuggestions({
               {localRecentSearches.length > 0 && (
                 <button
                   onClick={clearRecent}
-                  className="text-[10px] text-red-500 hover:text-red-600 font-medium px-2 py-1.5 rounded-md hover:bg-red-50 transition-colors active:scale-95 transition-transform"
+                  className="text-[10px] text-red-500 hover:text-red-600 font-medium px-2 py-1.5 rounded-md hover:bg-red-50 transition-colors active:scale-95 transition-transform min-h-[44px]"
                 >
                   Limpar
                 </button>
               )}
               <button
                 onClick={onClose}
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 active:scale-95 transition-transform"
+                className="w-8 h-8 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-gray-100 active:scale-95 transition-transform"
                 aria-label="Fechar sugestões"
               >
                 <X className="h-4 w-4 text-gray-400" />
