@@ -263,7 +263,8 @@ export function WeatherWidget() {
   if (!weather) return null
 
   return (
-    <style dangerouslySetInnerHTML={{ __html: WEATHER_STYLE }}>
+    <>
+      <style dangerouslySetInnerHTML={{ __html: WEATHER_STYLE }} />
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -367,6 +368,6 @@ export function WeatherWidget() {
           </motion.div>
         </div>
       </motion.div>
-    </style>
+    </>
   )
 }

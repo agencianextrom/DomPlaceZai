@@ -198,7 +198,8 @@ export function GiftGuide() {
   }, [])
 
   return (
-    <style dangerouslySetInnerHTML={{ __html: RIBBON_STYLE }}>
+    <>
+      <style dangerouslySetInnerHTML={{ __html: RIBBON_STYLE }} />
       <section className="w-full bg-gradient-to-br from-rose-50/30 via-background to-amber-50/20 rounded-2xl p-4 sm:p-5 r61-gift-border">
         {/* ── Header ── */}
         <div className="flex items-center gap-2 mb-4 px-1">
@@ -451,6 +452,6 @@ export function GiftGuide() {
           </AnimatePresence>
         )}
       </section>
-    </style>
+    </>
   )
 }

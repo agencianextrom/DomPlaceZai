@@ -376,7 +376,8 @@ export function ComboBuilder() {
   if (!loading && combos.length === 0) return null
 
   return (
-    <style dangerouslySetInnerHTML={{ __html: SHIMMER_STYLE }}>
+    <>
+      <style dangerouslySetInnerHTML={{ __html: SHIMMER_STYLE }} />
       <section className="w-full r62-card-lift">
         <div className="flex items-center justify-between mb-4 px-1">
           <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 r62-heading-gradient">
@@ -576,6 +577,6 @@ export function ComboBuilder() {
           </motion.div>
         )}
       </section>
-    </style>
+    </>
   )
 }
