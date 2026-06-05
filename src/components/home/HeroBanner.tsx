@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { KenBurns } from '@/components/effects/KenBurns'
+import { TypewriterText } from '@/components/effects/TypewriterText'
 
 interface HeroBannerProps {
   banners: { id: string; title: string; subtitle: string | null; image: string; gradient: string }[]
@@ -451,7 +452,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                 backgroundClip: 'text',
               }}
             >
-              {banner.title}
+              <TypewriterText text={banner.title} speed={40} />
             </motion.h2>
 
             {banner.subtitle && (

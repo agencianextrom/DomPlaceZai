@@ -576,7 +576,7 @@ export function ProductBattle() {
   if (allProducts.length < 2) return <EmptyState />
 
   return (
-    <section className="mt-6">
+    <section className="mt-6 r62-card-lift">
       {/* Section header */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}

@@ -180,7 +180,7 @@ export function SmartSuggestions() {
             <Sparkles className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold">Sugestões para Você</h2>
+            <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">Sugestões para Você</h2>
             <p className="text-[11px] text-muted-foreground hidden sm:block">
               Produtos selecionados especialmente para você
             </p>
@@ -209,7 +209,7 @@ export function SmartSuggestions() {
             <Sparkles className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold">Sugestões para Você</h2>
+            <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">Sugestões para Você</h2>
           </div>
         </div>
         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -226,7 +226,7 @@ export function SmartSuggestions() {
   const displayProducts = products.length > 0 ? products : dealProducts.slice(0, 4)
 
   return (
-    <section className="mt-4 relative overflow-hidden">
+    <section className="mt-4 relative overflow-hidden r62-card-lift">
       {/* 5 floating sparkle particles */}
       <motion.div className="absolute top-2 right-4 w-1.5 h-1.5 rounded-full bg-amber-400/30 pointer-events-none" animate={{ y: [0, -10, -20], opacity: [0, 0.6, 0], scale: [0.4, 1, 0.2] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0 }} />
       <motion.div className="absolute top-4 left-1/3 w-1 h-1 rounded-full bg-emerald-400/25 pointer-events-none" animate={{ y: [0, -12, -24], opacity: [0, 0.5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.6 }} />
@@ -261,7 +261,7 @@ export function SmartSuggestions() {
             <Sparkles className="h-4 w-4 text-white" />
           </motion.div>
           <div className="relative">
-            <h2 className="text-base sm:text-lg font-bold r44-header-shimmer r59-suggest-header-sparkle">Sugestões para Você</h2>
+            <h2 className="text-base sm:text-lg font-bold r44-header-shimmer r59-suggest-header-sparkle r62-heading-gradient">Sugestões para Você</h2>
             <p className="text-[11px] text-muted-foreground hidden sm:block r44-header-subtitle-fade">
               Produtos selecionados especialmente para você
             </p>

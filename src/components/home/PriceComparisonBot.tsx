@@ -1315,7 +1315,7 @@ export function PriceComparisonBot() {
   if (!mounted) return null
 
   return (
-    <section className="mt-6">
+    <section className="mt-6 r62-card-lift">
       {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
@@ -1338,7 +1338,7 @@ export function PriceComparisonBot() {
             <BadgePercent className="h-5 w-5 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold flex items-center gap-1.5">
+            <h2 className="text-base sm:text-lg font-bold flex items-center gap-1.5 r62-heading-gradient">
               Comparador de Preços
               <motion.span
                 animate={{ rotate: [0, 10, -10, 0] }}

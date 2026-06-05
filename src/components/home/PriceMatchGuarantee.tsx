@@ -1205,7 +1205,7 @@ export function PriceMatchGuarantee() {
   };
 
   return (
-    <section className="r55-price-match-container" aria-label="Price Match Guarantee">
+    <section className="r55-price-match-container r62-card-lift" aria-label="Price Match Guarantee">
       {/* ── Header ─────────────────────────────── */}
       <motion.div
         className="r55-header"
@@ -1221,7 +1221,7 @@ export function PriceMatchGuarantee() {
           <div className="flex items-center gap-3">
             <AnimatedShieldBadge />
             <div>
-              <h2 className="r55-title">Price Match Guarantee</h2>
+              <h2 className="r55-title r62-heading-gradient">Price Match Guarantee</h2>
               <p className="r55-subtitle">
                 Economize sempre — nos garantimos o menor preco
               </p>

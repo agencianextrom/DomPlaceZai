@@ -330,7 +330,7 @@ function PersonalizedHomePage() {
   /* ---- Main personalized view ---- */
   return (
     <motion.section
-      className="r46-personalized-home space-y-8 p-4"
+      className="r46-personalized-home space-y-8 p-4 r62-card-lift"
       variants={staggerContainer}
       initial="hidden"
       animate="visible"

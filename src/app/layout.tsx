@@ -11,6 +11,7 @@ import { ProductComparisonBar } from "@/components/product/ProductComparisonBar"
 import { NProgressLoader } from "@/components/navigation/NProgressLoader";
 import { PostHogInit } from "@/components/analytics/PostHogInit";
 import CursorGlow from "@/components/effects/CursorGlow";
+import { ConfettiProvider } from "@/components/effects/ConfettiProvider";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { FloatingDealAlert, QuickAddFloatingButton } from "@/components/home/FloatingDealAlert";
 
@@ -74,6 +75,7 @@ export default function RootLayout({
       >
         <NProgressLoader />
         <PostHogInit />
+        <ConfettiProvider>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <AuthProvider>
             <div className="min-h-screen flex flex-col relative">
@@ -91,6 +93,7 @@ export default function RootLayout({
             </div>
           </AuthProvider>
         </ThemeProvider>
+        </ConfettiProvider>
         <Toaster />
       </body>
     </html>

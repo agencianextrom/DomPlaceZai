@@ -47315,3 +47315,112 @@
   .r79-loyalty-shine::after { animation: none; }
   .r79-ingredient-row:hover { background-color: inherit; transform: none; }
 }
+
+/* === R80 — SustainabilityDashboard + Component Polish === */
+.r80-metric-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+.r80-metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.r80-stats-bar {
+  transition: box-shadow 0.3s ease;
+}
+.r80-stats-bar:hover {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.08);
+}
+
+.r80-featured-producer {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r80-featured-producer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.1);
+}
+
+.r80-producer-row {
+  transition: all 0.2s ease;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+.r80-producer-row:hover {
+  border-color: rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.06);
+}
+
+.r80-tip-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r80-tip-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08);
+}
+
+.r80-challenge-header {
+  transition: box-shadow 0.3s ease;
+}
+.r80-challenge-header:hover {
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.12);
+}
+
+.r80-badge-glow {
+  box-shadow: 0 0 60px rgba(16, 185, 129, 0.2), 0 0 120px rgba(16, 185, 129, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+/* R80 — Additional component polish */
+.r80-smart-suggest {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r80-smart-suggest:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.1);
+}
+
+.r80-price-compare {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r80-price-compare:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(234, 179, 8, 0.1);
+}
+
+.r80-price-match {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r80-price-match:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.1);
+}
+
+.r80-product-battle {
+  transition: transform 0.2s ease;
+}
+.r80-product-battle:hover {
+  transform: scale(1.01);
+}
+
+.r80-personalized {
+  transition: box-shadow 0.3s ease;
+}
+.r80-personalized:hover {
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r80-metric-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r80-stats-bar:hover { box-shadow: none; }
+  .r80-featured-producer:hover { transform: none; box-shadow: none; }
+  .r80-producer-row:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r80-tip-card:hover { transform: none; box-shadow: none; }
+  .r80-challenge-header:hover { box-shadow: none; }
+  .r80-badge-glow { box-shadow: none; }
+  .r80-smart-suggest:hover { transform: none; box-shadow: none; }
+  .r80-price-compare:hover { transform: none; box-shadow: none; }
+  .r80-price-match:hover { transform: none; box-shadow: none; }
+  .r80-product-battle:hover { transform: none; }
+  .r80-personalized:hover { box-shadow: none; }
+}
