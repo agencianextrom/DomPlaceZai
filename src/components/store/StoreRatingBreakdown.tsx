@@ -115,7 +115,7 @@ export function StoreRatingBreakdown({ rating, totalReviews, storeName, ratingDi
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 border-amber-200/50 dark:border-amber-800/30 overflow-hidden">
+      <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 border-amber-200/50 dark:border-amber-800/30 overflow-hidden r62-card-lift">
         <CardContent className="p-0">
           {/* Header with overall rating */}
           <div className="p-5 pb-4">
@@ -129,7 +129,7 @@ export function StoreRatingBreakdown({ rating, totalReviews, storeName, ratingDi
                     transition={{ delay: 0.2, type: 'spring' as const, stiffness: 300, damping: 20 }}
                     className="relative"
                   >
-                    <span className="text-5xl font-black bg-gradient-to-br from-amber-500 to-orange-600 bg-clip-text text-transparent">
+                    <span className="text-5xl font-black bg-gradient-to-br from-amber-500 to-orange-600 bg-clip-text text-transparent r62-heading-gradient">
                       {rating.toFixed(1)}
                     </span>
                     <motion.div

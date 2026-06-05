@@ -12,6 +12,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { MobileNav } from './MobileNav'
 import { ThemeToggle } from './ThemeToggle'
 import { NotificationCenter } from '@/components/notifications/NotificationCenter'
+import { NotificationPanel } from '@/components/notifications/NotificationPanel'
 import { useState, useEffect } from 'react'
 import { useMagnetic } from '@/lib/use-magnetic'
 
@@ -385,7 +386,7 @@ export function Header() {
               </Button>
 
               {/* Notifications */}
-              <NotificationCenter />
+              <NotificationPanel />
               
               {/* Theme toggle */}
               <ThemeToggle />

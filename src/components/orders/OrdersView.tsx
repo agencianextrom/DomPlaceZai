@@ -20,6 +20,7 @@ import { toast } from 'sonner'
 import type { OrderData } from '@/store/useAppStore'
 import { OrderInvoiceModal, type InvoiceItem } from './OrderInvoice'
 import { OrderToast } from '@/components/notifications/OrderToast'
+import { OrderReorder } from './OrderReorder'
 
 const statusConfig: Record<string, { label: string; color: string; icon: any; gradient: string }> = {
   PENDING: { label: 'Pendente', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock, gradient: 'badge-gradient-amber' },
@@ -791,6 +792,11 @@ export function OrdersView() {
                             </Button>
                           </div>
                         </div>
+
+                        {/* OrderReorder — enhanced reorder with confirmation & confetti */}
+                        {order.items && order.items.length > 0 && (
+                          <OrderReorder order={order as any} onReorder={() => handleReorder(order)} />
+                        )}
                       </motion.div>
                       </React.Fragment>
                     )

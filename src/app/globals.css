@@ -47424,3 +47424,111 @@
   .r80-product-battle:hover { transform: none; }
   .r80-personalized:hover { box-shadow: none; }
 }
+
+/* ─── R81 — SmartListAssistant + Polish ─── */
+
+.r81-smart-list-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.r81-smart-list-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.25);
+}
+
+.r81-list-tab {
+  transition: all 0.2s ease;
+}
+.r81-list-tab:hover {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
+}
+.r81-list-tab.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(59, 130, 246, 0.15));
+  border-color: rgba(6, 182, 212, 0.4);
+}
+
+.r81-suggestion-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r81-suggestion-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.12);
+}
+
+.r81-item-row {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.r81-item-row:hover {
+  transform: translateX(3px);
+}
+
+.r81-budget-bar {
+  transition: box-shadow 0.3s ease;
+}
+.r81-budget-bar.over-budget {
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+}
+.r81-budget-bar.under-budget {
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+}
+
+.r81-rating-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r81-rating-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(234, 179, 8, 0.1);
+}
+
+.r81-budget-planner {
+  transition: box-shadow 0.25s ease;
+}
+.r81-budget-planner:hover {
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.08);
+}
+
+.r81-toprated-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r81-toprated-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
+}
+
+.r81-nearby-card {
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.r81-nearby-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.r81-community-card {
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.r81-community-card:hover {
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.08);
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+.r81-spotlight-glow {
+  transition: box-shadow 0.3s ease;
+}
+.r81-spotlight-glow:hover {
+  box-shadow: 0 12px 32px rgba(245, 158, 11, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r81-smart-list-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r81-list-tab:hover { background: none; }
+  .r81-suggestion-card:hover { transform: none; box-shadow: none; }
+  .r81-item-row:hover { transform: none; }
+  .r81-budget-bar.over-budget { box-shadow: none; }
+  .r81-budget-bar.under-budget { box-shadow: none; }
+  .r81-rating-card:hover { transform: none; box-shadow: none; }
+  .r81-budget-planner:hover { box-shadow: none; }
+  .r81-toprated-card:hover { transform: none; box-shadow: none; }
+  .r81-nearby-card:hover { transform: none; border-color: inherit; }
+  .r81-community-card:hover { box-shadow: none; border-color: inherit; }
+  .r81-spotlight-glow:hover { box-shadow: none; }
+}

@@ -194,7 +194,7 @@ export function ProductSpotlight() {
 
             {/* ── Product info ── */}
             <div className="relative z-10">
-              <h3 className="text-white text-lg sm:text-xl font-bold mb-1 line-clamp-2 leading-tight">
+              <h3 className="text-white text-lg sm:text-xl font-bold mb-1 line-clamp-2 leading-tight r62-heading-gradient">
                 {product.name}
               </h3>
 

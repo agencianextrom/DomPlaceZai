@@ -354,7 +354,7 @@ export function BudgetPlanner() {
 
   return (
     <div className="r28-budget-planner">
-      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative">
+      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative r62-card-lift">
         {/* Background mesh */}
         <div className="absolute inset-0 gradient-mesh-2 opacity-20 pointer-events-none" />
 
@@ -366,7 +366,7 @@ export function BudgetPlanner() {
                 <Wallet className="h-4.5 w-4.5 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-bold r29-budget-shimmer">Planejador de Orçamento</h3>
+                <h3 className="text-sm font-bold r29-budget-shimmer r62-heading-gradient">Planejador de Orçamento</h3>
                 <p className="text-[10px] text-muted-foreground">Controle seus gastos mensais</p>
               </div>
             </div>

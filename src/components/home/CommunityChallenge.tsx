@@ -1287,7 +1287,7 @@ export function CommunityChallenge() {
   }
 
   return (
-    <section className="mt-6 relative overflow-hidden">
+    <section className="mt-6 relative overflow-hidden r62-card-lift">
       {/* ═══════════════════════════════════════════════════════════════════════ */}
       {/* CELEBRATION OVERLAY */}
       {/* ═══════════════════════════════════════════════════════════════════════ */}

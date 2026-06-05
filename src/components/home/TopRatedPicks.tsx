@@ -102,10 +102,10 @@ export function TopRatedPicks() {
 
   return (
     <style dangerouslySetInnerHTML={{ __html: SHIMMER_STYLE }}>
-      <section className="w-full bg-gradient-to-br from-amber-50/40 via-background to-background rounded-2xl p-4 sm:p-5">
+      <section className="w-full bg-gradient-to-br from-amber-50/40 via-background to-background rounded-2xl p-4 sm:p-5 r62-card-lift">
         {/* ── Header ── */}
         <div className="flex items-center justify-between mb-4 px-1">
-          <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 r62-heading-gradient">
             <motion.div
               animate={{ rotate: [0, 15, -15, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}

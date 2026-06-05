@@ -33,6 +33,7 @@ import { SpinWheel } from '@/components/promotions/SpinWheel'
 import { toast } from 'sonner'
 import { signOut } from 'next-auth/react'
 import { PointsEarnedAnimation } from './PointsEarnedAnimation'
+import { PromoCodeRedemption } from './PromoCodeRedemption'
 
 // Types
 interface ProfileData {
@@ -305,50 +306,8 @@ export function ProfileView() {
             Meus Cupons
           </h1>
         </div>
-        
-        <div className="space-y-3">
-          {coupons.map((coupon) => (
-            <Card key={coupon.code} className={coupon.used ? 'opacity-60' : 'border-primary/20'}>
-              <CardContent className="p-0">
-                <div className="flex">
-                  {/* Coupon left side */}
-                  <div className={`w-28 flex flex-col items-center justify-center p-3 border-r border-dashed border-border ${coupon.used ? 'bg-muted' : 'bg-gradient-to-b from-primary to-emerald-600 text-white'}`}>
-                    <span className={`text-xl font-bold ${coupon.used ? 'text-muted-foreground' : ''}`}>
-                      {coupon.discount}
-                    </span>
-                    <span className={`text-[10px] mt-0.5 ${coupon.used ? 'text-muted-foreground/60' : 'text-white/80'}`}>
-                      {coupon.used ? 'Usado' : 'Desconto'}
-                    </span>
-                  </div>
-                  {/* Coupon right side */}
-                  <div className="flex-1 p-4">
-                    <div className="flex items-center justify-between">
-                      <p className="font-bold text-sm">{coupon.code}</p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 min-h-[44px] text-xs"
-                        onClick={() => {
-                          navigator.clipboard.writeText(coupon.code)
-                          toast.success(`Cupom ${coupon.code} copiado!`)
-                        }}
-                        disabled={coupon.used}
-                      >
-                        <Copy className="h-3 w-3 mr-1" />
-                        Copiar
-                      </Button>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">{coupon.desc}</p>
-                    <p className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-1">
-                      <Clock className="h-2.5 w-2.5" />
-                      Válido até {coupon.validUntil}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+
+        <PromoCodeRedemption />
       </div>
     )
   }

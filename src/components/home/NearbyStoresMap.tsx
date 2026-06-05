@@ -535,7 +535,7 @@ export function NearbyStoresMap({ className }: NearbyStoresMapProps) {
   ]
 
   return (
-    <section className={className}>
+    <section className={`${className} r62-card-lift`}>
       {/* Section header */}
       <motion.div
         className="flex items-center gap-2 mb-4"
