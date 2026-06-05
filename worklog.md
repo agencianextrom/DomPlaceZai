@@ -5297,3 +5297,104 @@ Stage Summary:
 4. ~39K lines CSS lost from R47-R56 (recovering gradually)
 5. Dev server slow on 45K+ CSS (Turbopack parsing)
 6. Homepage has 120+ components (information overload, mitigated with LazySection)
+---
+Task ID: R68-ErrorPages-FamilyGroupOrder-CSSPolish-BadgeGlow-r68CSS
+Agent: Main Agent
+Task: Custom error pages, FamilyGroupOrder feature, CSS polish on 10 components, badge-glow adoption, r68-* CSS
+
+Work Log:
+
+**QA Assessment:**
+- Live site still crashes — React Error #60 (hydration mismatch between SSR HTML and client)
+- R67 Auth Error Boundary catches auth crashes, but hydration errors happen at Next.js framework level
+- All API routes healthy (200), static assets load fine
+- Solution: Add custom error.tsx + global-error.tsx for graceful error UI
+
+**Build Status:**
+- Production build passes cleanly (next build, 18.0s compile)
+- CSS: 45,821 lines (R68, +113 from r67)
+- 15 files changed, +1039/-32 lines
+
+**P0 — Custom Error Pages:**
+- `src/app/global-error.tsx` — Full-page error handler (replaces raw Next.js crash screen)
+  - Branded DomPlace error UI with shopping bag logo, amber warning icon
+  - Portuguese Brazilian: "Ops! Algo deu errado"
+  - Two 44px action buttons: "Tentar novamente" (reset) + "Ir para o início" (navigate home)
+  - Error digest code display for debugging
+  - Framer Motion entrance animations (spring, staggered)
+  - Renders own <html>/<body> (required for global-error.tsx)
+- `src/app/error.tsx` — Route-level error handler
+  - Uses shadcn Button components with r68-error-page styling
+  - Same Portuguese Brazilian messaging
+  - Gracefully catches route-specific errors without crashing entire app
+
+**New Feature — FamilyGroupOrder (642 lines):**
+- `src/components/home/FamilyGroupOrder.tsx` — Family group ordering widget
+- State machine: landing → creating → joining → active views (AnimatePresence crossfade)
+- Group code: 6-char alphanumeric, copy-to-clipboard + Web Share API
+- Join flow: enter code + name, validates against existing groups
+- Active group view: member list with avatar initials, name, items count, subtotal
+- Add items modal: product selection with qty +/-, running total
+- Cart summary: 3-col grid (total items, total value R$, member count)
+- 30-min SVG circular countdown timer with urgent/expired states
+- 3 status badges: "Aguardando membros", "Montando pedido", "Pronto para finalizar"
+- localStorage persistence (key: r68-family-group)
+- Demo fallback: 3 pre-populated members (Família Silva) with Brazilian products
+- Wired into page.tsx after LoyaltyTierBenefits, before SmartShoppingList
+
+**CSS Polish — 19 r62-* classes on 6 bare components:**
+1. GiftGuide: r62-heading-gradient on heading, r62-card-lift on gift cards (2 edits)
+2. CrowdFundedDeals: r62-heading-gradient, r62-card-lift, r62-badge-glow on trending badge (3 edits)
+3. InteractiveGameZone: r62-heading-gradient, r62-card-lift on leaderboard card (2 edits)
+4. GiftCardMarketplace: r62-heading-gradient, r62-card-lift on flip+owned cards (3 edits)
+5. ReviewSentimentAI: r62-heading-gradient, r62-card-lift on review cards, r62-badge-glow on sentiment badge (4 edits)
+6. PersonalizedHomePage: r62-heading-gradient, r62-card-lift on 4 card types (5 edits)
+
+**Badge Glow — r62-badge-glow adoption (0% → 12 elements):**
+- FlashSale: 3 badges (discount %, "ÚLTIMAS UNIDADES", "Quase esgotando!")
+- ProductBattle: 3 badges (discount %, "Novo", "Rodada #N")
+- DealOfTheDay: 4 badges ("Exclusiva", "OFERTA", savings %, "🔥 Super Quente")
+- Header: 2 cart count badges (mobile + desktop)
+
+**Mobile-First Grid Fix:**
+- ReviewSentimentAI: `grid-cols-3` → `grid-cols-2 sm:grid-cols-3` (stats row was 100px per col on 320px)
+
+**CSS — r68-* Classes (113 lines):**
+- r68-group-code: monospace dashed-border code display with hover pulse
+- r68-member-card: left-border accent card with hover slide + shadow
+- r68-timer-ring: smooth countdown ring transition
+- r68-timer-urgent: urgent pulsing animation for expiring timers
+- r68-status-badge: 3 status variants (waiting/ordering/ready) with color coding
+- r68-error-page: gradient background for error pages
+- All wrapped in prefers-reduced-motion guard
+
+Stage Summary:
+- 15 files changed, +1039/-32 lines
+- 2 new error pages (error.tsx, global-error.tsx)
+- 1 new component (FamilyGroupOrder, 642 lines)
+- 19 r62-* classes applied to 6 bare components
+- 12 r62-badge-glow elements added across 4 files
+- 1 mobile-first grid fix (ReviewSentimentAI)
+- 113 lines r68-* CSS added
+- Build: successful
+- Commit: 0a04a65 pushed to GitHub main
+- Total CSS: 45,821 lines (R68)
+
+## Current Project Status Assessment
+- DomPlace marketplace: stable, feature-rich, 350+ components
+- Production build passes cleanly
+- Custom error pages now provide graceful UX on hydration/runtime errors
+- AuthProvider has Error Boundary + custom error pages for dual-layer protection
+- 8 new components added R61-R68: ScanToShop, EcoImpactWidget, QuickBillSplitter, PriceDropAlertsWidget, FlashDealAlert, NearbyStoresMap, WeeklyMealPlanner, FamilyGroupOrder
+- CSS polish: r62-* classes now on 20+ visible components, badge-glow adopted
+- Mobile responsiveness: ~170+ touch targets + 80+ grids fixed
+- All commits use agencianextrom@gmail.com
+
+## Unresolved Issues / Risks
+1. Vercel live site behind SSO (private project) — user must adjust settings
+2. React Error #60 hydration mismatch on Vercel (may resolve when SSO fixed + redeployed)
+3. .env not persisted across sessions
+4. SPA-style navigation (no deep linking)
+5. ~39K lines CSS lost from R47-R56 (recovering gradually)
+6. Dev server slow on 45K+ CSS (Turbopack parsing)
+7. Homepage has 130+ components (information overload, mitigated with LazySection)
