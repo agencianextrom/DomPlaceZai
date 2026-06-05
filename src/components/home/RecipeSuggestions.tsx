@@ -257,7 +257,7 @@ export function RecipeSuggestions() {
   }
 
   return (
-    <section className="w-full">
+    <section className="w-full r62-card-lift">
       {/* Section header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
@@ -269,7 +269,7 @@ export function RecipeSuggestions() {
             <ChefHat className="h-4 w-4 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold">Sugestões de Receitas</h2>
+            <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">Sugestões de Receitas</h2>
             <p className="text-[11px] text-muted-foreground">Inspire-se com produtos locais</p>
           </div>
         </div>
@@ -291,7 +291,7 @@ export function RecipeSuggestions() {
               whileTap={{ scale: 0.93 }}
               whileHover={{ scale: 1.05 }}
               onClick={() => setActiveFilter(filter)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+              className={`px-3.5 py-1.5 min-h-[44px] rounded-full text-xs font-semibold border transition-all ${
                 isActive
                   ? isDiff
                     ? `${diffCfg!.bg} ${diffCfg!.text} ${diffCfg!.border}`
@@ -400,7 +400,7 @@ export function RecipeSuggestions() {
                           >
                             <Button
                               size="sm"
-                              className="w-full h-8 text-[11px] bg-white/20 hover:bg-white/30 text-white border-0 rounded-lg gap-1.5"
+                              className="w-full h-8 min-h-[44px] text-[11px] bg-white/20 hover:bg-white/30 text-white border-0 rounded-lg gap-1.5"
                               onClick={(e) => {
                                 e.stopPropagation()
                                 handleViewIngredients(recipe)

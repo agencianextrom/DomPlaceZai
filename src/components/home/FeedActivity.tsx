@@ -352,7 +352,7 @@ export function FeedActivity() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4 }}
-      className="w-full feed-bg-animated"
+      className="w-full feed-bg-animated r62-card-lift"
     >
       {/* Floating notification bell */}
       <motion.div
@@ -376,7 +376,7 @@ export function FeedActivity() {
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
           className="h-2.5 w-2.5 rounded-full bg-emerald-500"
         />
-        <h3 className="font-semibold text-sm flex items-center gap-1.5">Atividade Recente</h3>
+        <h3 className="font-semibold text-sm flex items-center gap-1.5 r62-heading-gradient">Atividade Recente</h3>
         <motion.div
           initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -401,7 +401,7 @@ export function FeedActivity() {
             <RefreshCw className="h-6 w-6 text-muted-foreground" />
           </div>
           <p className="text-sm text-muted-foreground mb-3">Não foi possível carregar as atividades</p>
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={fetchFeed}>
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs min-h-[44px]" onClick={fetchFeed}>
             <RefreshCw className="h-3.5 w-3.5" />
             Tentar novamente
           </Button>

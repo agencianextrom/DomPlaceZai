@@ -215,6 +215,7 @@ import DealComparator from '@/components/home/DealComparator'
 import PantryManager from '@/components/home/PantryManager'
 import LocalServicesHub from '@/components/home/LocalServicesHub'
 import CommunityEventsBoard from '@/components/home/CommunityEventsBoard'
+import PriceTracker from '@/components/home/PriceTracker'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -1130,6 +1131,11 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <CommunityEventsBoard />
+                        </section>
+                      </ScrollReveal>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <PriceTracker />
                         </section>
                       </ScrollReveal>
                     </LazySection>

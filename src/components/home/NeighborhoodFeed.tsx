@@ -236,7 +236,7 @@ export function NeighborhoodFeed() {
   const hasMore = visibleCount < feedItems.length
 
   return (
-    <section className="w-full">
+    <section className="w-full r62-card-lift">
       {/* Section header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
@@ -248,7 +248,7 @@ export function NeighborhoodFeed() {
             <Heart className="h-4 w-4 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold">Vizinhança</h2>
+            <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">Vizinhança</h2>
             <p className="text-[11px] text-muted-foreground">O que está acontecendo no bairro</p>
           </div>
         </div>
@@ -267,7 +267,7 @@ export function NeighborhoodFeed() {
             <RefreshCw className="h-6 w-6 text-muted-foreground" />
           </div>
           <p className="text-sm text-muted-foreground mb-3">Não foi possível carregar a vizinhança</p>
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={fetchFeed}>
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs min-h-[44px]" onClick={fetchFeed}>
             <RefreshCw className="h-3.5 w-3.5" />
             Tentar novamente
           </Button>

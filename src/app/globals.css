@@ -46875,3 +46875,100 @@
   .r75-event-card:hover .r75-attendee-stack { transform: none; }
   .r75-event-card:hover .r75-attendee-count { color: inherit; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   r76 — PriceTracker + profile wiring + touch targets + CSS polish
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.r76-tracked-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.r76-tracked-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -6px rgba(245, 158, 11, 0.12), 0 4px 10px -4px rgba(0, 0, 0, 0.05);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.r76-add-form {
+  border-radius: 16px;
+  transition: box-shadow 0.3s ease;
+}
+.r76-add-form:focus-within {
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.08);
+}
+
+.r76-sparkline {
+  transition: opacity 0.2s ease;
+}
+.r76-tracked-card:hover .r76-sparkline {
+  opacity: 0.9;
+}
+
+.r76-chart {
+  transition: box-shadow 0.25s ease;
+}
+.r76-chart:hover {
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.06);
+}
+
+.r76-target-progress {
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.r76-status-badge {
+  transition: transform 0.15s ease;
+}
+.r76-status-badge:hover {
+  transform: scale(1.05);
+}
+
+.r76-alert-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r76-alert-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -3px rgba(245, 158, 11, 0.15);
+}
+
+.r76-remove-btn {
+  transition: transform 0.12s ease, background-color 0.15s ease;
+}
+.r76-remove-btn:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+}
+.r76-remove-btn:active {
+  transform: scale(0.9);
+}
+
+.r76-stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r76-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.06);
+}
+
+.r76-price-change {
+  transition: transform 0.15s ease;
+}
+.r76-price-change.dropped {
+  animation: r76-drop-bounce 0.4s ease;
+}
+@keyframes r76-drop-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r76-tracked-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r76-add-form:focus-within { box-shadow: none; }
+  .r76-sparkline, .r76-chart { transition: none; }
+  .r76-chart:hover { box-shadow: none; }
+  .r76-target-progress { transition: none; }
+  .r76-status-badge:hover { transform: none; }
+  .r76-alert-card:hover { transform: none; box-shadow: none; }
+  .r76-remove-btn:active, .r76-remove-btn:hover { transform: none; }
+  .r76-stat-card:hover { transform: none; box-shadow: none; }
+  .r76-price-change.dropped { animation: none; }
+}

@@ -217,7 +217,7 @@ function GroupCard({ group, index, onSelect }: { group: ShoppingGroup; index: nu
             </div>
           </div>
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-            className="h-7 w-7 rounded-lg bg-secondary/60 flex items-center justify-center"
+            className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-lg bg-secondary/60 flex items-center justify-center"
             onClick={(e) => { e.stopPropagation(); onSelect() }}>
             <Pencil className="h-3 w-3 text-muted-foreground" />
           </motion.div>
@@ -259,7 +259,7 @@ function SharedCartItems({ items, onToggle }: { items: CartItem[]; onToggle: (id
           <motion.div key={item.id} variants={slideIn} initial="hidden" animate="visible" exit="exit"
             className={`flex items-center gap-3 p-2.5 rounded-lg border transition-colors ${item.grabbed ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-border/20 bg-background/40 hover:bg-secondary/20'}`}>
             <motion.button whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.85 }} onClick={() => onToggle(item.id)}
-              className="h-6 w-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-colors"
+              className="h-6 w-6 min-h-[44px] min-w-[44px] rounded-md border-2 flex items-center justify-center shrink-0 transition-colors"
               style={{ borderColor: item.grabbed ? '#10b981' : 'rgba(148,163,184,0.4)', backgroundColor: item.grabbed ? '#10b981' : 'transparent' }}>
               <AnimatePresence>
                 {item.grabbed && (
@@ -427,7 +427,7 @@ function InviteLink({ groupId }: { groupId: string }) {
         </motion.div>
       </div>
       <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
-        <Button variant="outline" className="w-full h-9 text-[11px] font-semibold gap-2 rounded-lg" onClick={handleShare}>
+        <Button variant="outline" className="w-full h-9 min-h-[44px] text-[11px] font-semibold gap-2 rounded-lg" onClick={handleShare}>
           <Share2 className="h-3.5 w-3.5" />Compartilhar lista
         </Button>
       </motion.div>
@@ -480,12 +480,12 @@ function CreateNewGroup({ onCreate }: { onCreate: (g: ShoppingGroup) => void }) 
               </div>
               <div className="flex items-center gap-2">
                 <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }} className="flex-1">
-                  <Button onClick={handleCreate} className="w-full h-9 text-[11px] font-bold gap-2 rounded-lg">
+                  <Button onClick={handleCreate} className="w-full h-9 min-h-[44px] text-[11px] font-bold gap-2 rounded-lg">
                     <Plus className="h-3.5 w-3.5" />Criar lista
                   </Button>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button variant="ghost" size="sm" className="h-9 px-3 text-[11px] rounded-lg" onClick={() => setOpen(false)}>Cancelar</Button>
+                  <Button variant="ghost" size="sm" className="h-9 min-h-[44px] px-3 text-[11px] rounded-lg" onClick={() => setOpen(false)}>Cancelar</Button>
                 </motion.div>
               </div>
             </motion.div>
@@ -554,7 +554,7 @@ function GroupDetailPanel({ group, onClose, onToggleGrab, onDelete }: {
           </div>
         </div>
         <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={onClose}
-          className="h-7 w-7 rounded-full bg-secondary/80 flex items-center justify-center">
+          className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-secondary/80 flex items-center justify-center">
           <X className="h-3.5 w-3.5 text-muted-foreground" />
         </motion.button>
       </div>
@@ -595,7 +595,7 @@ function GroupDetailPanel({ group, onClose, onToggleGrab, onDelete }: {
       </div>
       {/* Delete */}
       <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
-        <Button variant="ghost" className="w-full h-9 text-[11px] font-semibold gap-2 rounded-lg text-red-500 hover:text-red-600 hover:bg-red-500/10" onClick={onDelete}>
+        <Button variant="ghost" className="w-full h-9 min-h-[44px] text-[11px] font-semibold gap-2 rounded-lg text-red-500 hover:text-red-600 hover:bg-red-500/10" onClick={onDelete}>
           <Trash2 className="h-3.5 w-3.5" />Excluir lista
         </Button>
       </motion.div>
@@ -652,7 +652,7 @@ export default function CollaborativeShopping() {
   }
 
   return (
-    <motion.section className="r47-collab-container" variants={containerV} initial="hidden" animate="visible">
+    <motion.section className="r47-collab-container r62-card-lift" variants={containerV} initial="hidden" animate="visible">
       {/* 1. Shared Lists Header */}
       <motion.div variants={fadeUp} className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2.5">
@@ -662,7 +662,7 @@ export default function CollaborativeShopping() {
             <Users className="h-5 w-5" style={{ color: '#10b981' }} />
           </motion.div>
           <div>
-            <h2 className="text-lg font-black" style={{
+            <h2 className="text-lg font-black r62-heading-gradient" style={{
               background: 'linear-gradient(135deg, #10b981, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
             }}>Compras em Equipe</h2>
             <p className="text-[10px] text-muted-foreground flex items-center gap-1">

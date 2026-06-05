@@ -362,7 +362,7 @@ function MealCard({
           <motion.div whileTap={{ scale: 0.95 }}>
             <Button
               size="sm"
-              className="w-full h-7 text-[10px] font-semibold flex items-center justify-center gap-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 shadow-sm"
+              className="w-full h-7 min-h-[44px] text-[10px] font-semibold flex items-center justify-center gap-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 shadow-sm"
               onClick={(e) => {
                 e.stopPropagation()
                 handleAdd()
@@ -560,7 +560,7 @@ export function QuickMealFinder() {
   const activeFilterConfig = MOOD_FILTERS.find((f) => f.key === activeFilter)!
 
   return (
-    <section className="r58-meal-finder w-full" aria-label="Quick Meal Finder">
+    <section className="r58-meal-finder w-full r62-card-lift" aria-label="Quick Meal Finder">
       {/* Header */}
       <motion.div
         variants={fadeInUp}
@@ -574,7 +574,7 @@ export function QuickMealFinder() {
             <UtensilsCrossed className="h-4.5 w-4.5 text-white" />
           </div>
           <div>
-            <h2 className="text-base font-bold leading-tight">Comida Rápida</h2>
+            <h2 className="text-base font-bold leading-tight r62-heading-gradient">Comida Rápida</h2>
             <p className="text-[10px] text-muted-foreground flex items-center gap-1">
               {timeEmoji} Recomendado agora: <span className="font-semibold capitalize">{timeOfDay}</span>
             </p>
@@ -604,7 +604,7 @@ export function QuickMealFinder() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setActiveFilter(filter.key)}
-            className={`r58-meal-pill shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] font-semibold border transition-all cursor-pointer ${
+            className={`r58-meal-pill shrink-0 flex items-center gap-1.5 px-3.5 py-2 min-h-[44px] rounded-full text-[11px] font-semibold border transition-all cursor-pointer ${
               activeFilter === filter.key
                 ? `bg-gradient-to-r ${filter.gradient} text-white border-transparent shadow-md`
                 : 'bg-card text-muted-foreground border-border hover:border-primary/30'

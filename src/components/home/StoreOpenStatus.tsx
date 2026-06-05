@@ -211,7 +211,7 @@ export function StoreOpenStatus() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleFilterClick(pill.key)}
-              className={`relative shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all overflow-hidden ${
+              className={`relative shrink-0 px-3.5 py-1.5 min-h-[44px] rounded-full text-xs font-semibold border transition-all overflow-hidden ${
                 activeFilter === pill.key
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
@@ -237,7 +237,7 @@ export function StoreOpenStatus() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar loja..."
-              className="h-8 pl-8 pr-8 text-xs rounded-full bg-card border border-border focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/40 placeholder:text-muted-foreground w-36 sm:w-48 transition-all"
+              className="h-8 min-h-[44px] pl-8 pr-8 text-xs rounded-full bg-card border border-border focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/40 placeholder:text-muted-foreground w-36 sm:w-48 transition-all"
             />
             {searchQuery && (
               <button onClick={() => setSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2">

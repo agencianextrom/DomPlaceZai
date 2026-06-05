@@ -381,7 +381,7 @@ export function NeighborhoodHub() {
                 e.stopPropagation();
                 handleToggleTip(tip.id);
               }}
-              className="text-[10px] text-amber-700 dark:text-amber-400 font-medium"
+              className="text-[10px] text-amber-700 dark:text-amber-400 font-medium min-h-[44px] inline-flex items-center"
             >
               {expandedTip === tip.id ? 'Ver menos' : 'Saiba mais'}
             </button>
@@ -406,7 +406,7 @@ export function NeighborhoodHub() {
   // ── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 r62-card-lift">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -421,7 +421,7 @@ export function NeighborhoodHub() {
             </p>
           </div>
         </div>
-        <button className="text-xs text-primary font-medium flex items-center gap-0.5 active:scale-95 transition-transform">
+        <button className="text-xs text-primary font-medium flex items-center gap-0.5 active:scale-95 transition-transform min-h-[44px]">
           Ver tudo <ChevronRight className="h-3 w-3" />
         </button>
       </div>
@@ -435,7 +435,7 @@ export function NeighborhoodHub() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all active:scale-[0.97] ${
+            className={`flex-1 py-2 min-h-[44px] rounded-lg text-xs font-medium transition-all active:scale-[0.97] ${
               activeTab === tab.key
                 ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
                 : 'text-gray-500 dark:text-gray-400'

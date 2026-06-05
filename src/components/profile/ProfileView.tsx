@@ -24,6 +24,8 @@ import { LoyaltyHistory } from './LoyaltyHistory'
 import { FamilyAccountManager } from './FamilyAccountManager'
 import { LoyaltyTier } from './LoyaltyTier'
 import { LoyaltyCard } from './LoyaltyCard'
+import { RewardsSection } from './RewardsSection'
+import { SpendingTracker } from './SpendingTracker'
 import { AchievementsPanel } from './AchievementsPanel'
 import { ReferralProgram } from './ReferralProgram'
 import { AddressManager } from './AddressManager'
@@ -823,6 +825,16 @@ export function ProfileView() {
         />
       </motion.div>
 
+      {/* Rewards Section — redeemable rewards, level badge, points history */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.12, type: 'spring' as const, stiffness: 200, damping: 22 }}
+        className="mb-6"
+      >
+        <RewardsSection />
+      </motion.div>
+
       {/* Achievements Panel — gamification badges */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -843,11 +855,21 @@ export function ProfileView() {
         <ReferralProgram />
       </motion.div>
 
+      {/* Spending Tracker — spending insights, budget, categories */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.19, type: 'spring' as const, stiffness: 200, damping: 22 }}
+        className="mb-6"
+      >
+        <SpendingTracker />
+      </motion.div>
+
       {/* Recent orders */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.18, type: 'spring' as const, stiffness: 200, damping: 22 }}
+        transition={{ delay: 0.21, type: 'spring' as const, stiffness: 200, damping: 22 }}
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">

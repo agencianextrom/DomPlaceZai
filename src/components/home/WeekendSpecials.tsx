@@ -303,6 +303,7 @@ export function WeekendSpecials() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5 }}
+      className="r62-card-lift"
     >
       <div className="relative rounded-2xl overflow-hidden">
         {/* Animated gradient background that shifts colors (warm tones) */}
@@ -547,7 +548,7 @@ function TiltCard({ product, idx, claimPct, catColor }: TiltCardProps) {
             {/* ---- Feature 5: Hover overlay with CTA ---- */}
             <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/0 group-hover:bg-black/35 transition-all duration-300">
               <motion.div
-                className="flex items-center gap-1.5 bg-white/95 dark:bg-black/90 text-amber-700 dark:text-amber-300 px-3.5 py-2 rounded-full font-semibold text-xs shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
+                className="flex items-center gap-1.5 bg-white/95 dark:bg-black/90 text-amber-700 dark:text-amber-300 px-3.5 py-2 min-h-[44px] rounded-full font-semibold text-xs shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
               >
                 <span>Ver Oferta</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -576,7 +577,7 @@ function TiltCard({ product, idx, claimPct, catColor }: TiltCardProps) {
               <div className="flex gap-1.5 mt-2">
                 <Button
                   size="sm"
-                  className="flex-1 h-7 text-[10px] bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 gap-1"
+                  className="flex-1 h-7 min-h-[44px] text-[10px] bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 gap-1"
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="h-3 w-3" />
@@ -585,7 +586,7 @@ function TiltCard({ product, idx, claimPct, catColor }: TiltCardProps) {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-7 w-7 p-0 border-amber-300/50 hover:bg-amber-50 dark:hover:bg-amber-900/20 shrink-0"
+                  className="h-7 w-7 min-h-[44px] min-w-[44px] p-0 border-amber-300/50 hover:bg-amber-50 dark:hover:bg-amber-900/20 shrink-0"
                   onClick={handleShare}
                 >
                   <Share2 className="h-3 w-3 text-amber-600 dark:text-amber-400" />

@@ -339,7 +339,7 @@ export function StoreReviews() {
           <Button
             variant="ghost"
             size="sm"
-            className="gap-1 text-xs text-primary"
+            className="gap-1 text-xs text-primary min-h-[44px]"
             onClick={() => navigate('stores')}
           >
             Ver todas
