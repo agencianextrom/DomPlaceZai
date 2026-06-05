@@ -1808,7 +1808,7 @@ export function RecipeDiscovery() {
             variants={fadeInUp}
             initial="hidden"
             animate="visible"
-            className="r55-fridge-input rounded-2xl border border-border/50 bg-card p-5"
+            className="r55-fridge-input r62-card-lift rounded-2xl border border-border/50 bg-card p-5"
             style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}
           >
             <div className="flex items-center gap-2 mb-4">

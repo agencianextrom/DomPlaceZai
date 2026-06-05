@@ -442,7 +442,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
       </motion.p>
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mt-5">
         <motion.div whileTap={{ scale: 0.95 }}>
-          <Button className="rounded-full px-6 h-9 text-xs font-semibold gap-2">
+          <Button className="rounded-full px-6 min-h-[44px] text-xs font-semibold gap-2">
             <ShoppingBag className="h-3.5 w-3.5" />Explorar Produtos
           </Button>
         </motion.div>

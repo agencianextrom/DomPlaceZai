@@ -349,7 +349,7 @@ export function SmartListAssistant() {
                     <Input type="number" value={budgetInput} onChange={(e) => setBudgetInput(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && updateBudget()} className="h-6 w-20 text-xs p-0 px-1"
                       placeholder={String(budgetLimit)} autoFocus />
-                    <Button size="sm" onClick={updateBudget} className="h-6 px-2 text-[10px]">OK</Button>
+                    <Button size="sm" onClick={updateBudget} className="min-h-[44px] px-2 text-[10px]">OK</Button>
                   </div>
                 ) : (
                   <button onClick={() => { setShowBudgetEdit(true); setBudgetInput(String(budgetLimit)) }} className="text-sm font-bold truncate">
@@ -402,10 +402,10 @@ export function SmartListAssistant() {
               {deleteConfirm && deleteConfirm === activeList.id && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
                   <span className="text-[10px] text-red-500 font-medium">Excluir esta lista?</span>
-                  <Button variant="destructive" size="sm" className="h-7 px-2 text-[10px]" onClick={() => deleteList(activeList.id)}>
+                  <Button variant="destructive" size="sm" className="min-h-[44px] px-2 text-[10px]" onClick={() => deleteList(activeList.id)}>
                     Sim, excluir
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-7 px-2 text-[10px]" onClick={() => setDeleteConfirm(null)}>
+                  <Button variant="ghost" size="sm" className="min-h-[44px] px-2 text-[10px]" onClick={() => setDeleteConfirm(null)}>
                     Cancelar
                   </Button>
                 </motion.div>

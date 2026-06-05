@@ -772,7 +772,7 @@ export function LiveStreamingWidget() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button className="h-9 px-4 text-xs font-bold bg-red-600 hover:bg-red-700 text-white gap-1.5 rounded-lg relative overflow-hidden">
+                <Button className="min-h-[44px] px-4 text-xs font-bold bg-red-600 hover:bg-red-700 text-white gap-1.5 rounded-lg relative overflow-hidden">
                   <Play className="h-3.5 w-3.5 fill-white" />
                   Assistir
                   {/* Shimmer sweep */}

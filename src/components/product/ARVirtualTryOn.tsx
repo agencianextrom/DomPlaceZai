@@ -1582,7 +1582,7 @@ export function ARVirtualTryOn() {
   const categoryProducts = PRODUCTS.filter((p) => p.category === activeCategory)
 
   return (
-    <div className="r50-artry-container rounded-2xl overflow-hidden border border-border shadow-xl" style={{ background: '#ffffff' }}>
+    <div className="r50-artry-container rounded-2xl overflow-hidden border border-border shadow-xl r62-card-lift" style={{ background: '#ffffff' }}>
       {/* ═══ TOOLBAR ═══ */}
       <div className="r50-artry-toolbar flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2.5">
@@ -1601,7 +1601,7 @@ export function ARVirtualTryOn() {
             </motion.span>
           </motion.div>
           <div>
-            <h3 className="text-sm font-bold leading-tight">AR Virtual Try-On</h3>
+            <h3 className="text-sm font-bold leading-tight r62-heading-gradient">AR Virtual Try-On</h3>
             <p className="text-[10px]" style={{ color: 'rgba(0,0,0,0.45)' }}>Experimente em realidade aumentada</p>
           </div>
         </div>

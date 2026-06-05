@@ -228,6 +228,8 @@ import LoyaltyGame from '@/components/home/LoyaltyGame'
 import NeighborhoodWatch from '@/components/home/NeighborhoodWatch'
 import FamilyActivityFeed from '@/components/home/FamilyActivityFeed'
 import DeliveryTracker from '@/components/home/DeliveryTracker'
+import FamilyChallengeHub from '@/components/home/FamilyChallengeHub'
+import { MobilePullToRefresh } from '@/components/ui/MobilePullToRefresh'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -912,6 +914,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <DeliveryTracker />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Family Challenge Hub — Gamified family challenges */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <FamilyChallengeHub />
                         </section>
                       </ScrollReveal>
                     </LazySection>
@@ -1788,7 +1799,9 @@ export default function Home() {
                 </button>
               ))}
             </div>
-            {notifTab === 'standard' ? <NotificationsPage /> : <SmartNotifications />}
+            <MobilePullToRefresh onRefresh={async () => { await new Promise(r => setTimeout(r, 800)) }}>
+              {notifTab === 'standard' ? <NotificationsPage /> : <SmartNotifications />}
+            </MobilePullToRefresh>
           </motion.div>
         ) : currentView === 'support-center' ? (
           <motion.div key="support-center" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>

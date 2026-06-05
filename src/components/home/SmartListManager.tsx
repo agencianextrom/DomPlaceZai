@@ -798,7 +798,7 @@ export function SmartListManager() {
 
   return (
     <div className="r53-listmgr-root">
-      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative">
+      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative r62-card-lift">
         {/* Background mesh */}
         <div className="absolute inset-0 gradient-mesh opacity-10 pointer-events-none" />
 
@@ -810,7 +810,7 @@ export function SmartListManager() {
                 <ShoppingCart className="h-4.5 w-4.5 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-bold r53-listmgr-title">Listas Inteligentes</h3>
+                <h3 className="text-sm font-bold r53-listmgr-title r62-heading-gradient">Listas Inteligentes</h3>
                 <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                   <Sparkles className="h-3 w-3" />
                   Gerencie suas compras

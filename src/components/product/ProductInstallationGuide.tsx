@@ -374,7 +374,7 @@ export function ProductInstallationGuide({ category }: { category: string }) {
             <p className="text-xs font-semibold">Precisa de ajuda?</p>
             <p className="text-[10px] text-muted-foreground">Entre em contato com nosso suporte técnico</p>
           </div>
-          <Button size="sm" className="h-7 text-[10px] bg-primary hover:bg-primary/90 text-primary-foreground px-3">
+          <Button size="sm" className="min-h-[44px] text-[10px] bg-primary hover:bg-primary/90 text-primary-foreground px-3">
             Contato
           </Button>
         </div>

@@ -1185,11 +1185,11 @@ export default function SmartComparisonMatrix() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="border-border/50 overflow-hidden">
+      <Card className="border-border/50 overflow-hidden r62-card-lift">
         {/* Header */}
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-base">
+            <CardTitle className="flex items-center gap-2 text-base r62-heading-gradient">
               <div
                 className="h-8 w-8 rounded-lg flex items-center justify-center shadow-sm"
                 style={{

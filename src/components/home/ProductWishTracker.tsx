@@ -613,7 +613,7 @@ function EmptyState() {
         transition={{ delay: 0.4 }}
         className="mt-5"
       >
-        <Button className="btn-glow btn-shine bg-primary text-primary-foreground rounded-full px-6 h-9 text-xs font-semibold gap-2">
+        <Button className="btn-glow btn-shine bg-primary text-primary-foreground rounded-full px-6 min-h-[44px] text-xs font-semibold gap-2">
           <ShoppingBag className="h-3.5 w-3.5" />
           Explorar Produtos
         </Button>

@@ -1597,7 +1597,7 @@ export function WishListManager() {
 
   return (
     <div className="r56-wishlist-root">
-      <div className="r56-wishlist-container rounded-2xl overflow-hidden glassmorphism-strong relative">
+      <div className="r56-wishlist-container r62-card-lift rounded-2xl overflow-hidden glassmorphism-strong relative">
         {/* Background mesh */}
         <div className="absolute inset-0 gradient-mesh opacity-10 pointer-events-none" />
 
@@ -1609,7 +1609,7 @@ export function WishListManager() {
                 <Heart className="h-4.5 w-4.5 text-white" />
               </div>
               <div>
-                <h3 className="r56-title text-sm font-bold">Wishlist Manager</h3>
+                <h3 className="r56-title text-sm font-bold r62-heading-gradient">Wishlist Manager</h3>
                 <p className="r56-subtitle text-[10px] text-muted-foreground flex items-center gap-1">
                   <Sparkles className="h-3 w-3" />
                   {collections.length} collections · {allItems.length} items
@@ -2128,7 +2128,7 @@ export function WishListManager() {
                         {rec.reason}
                       </p>
                       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="mt-2">
-                        <button className="r56-rec-add-btn w-full py-1 rounded-md bg-primary/10 text-primary text-[9px] font-semibold hover:bg-primary/20 transition-colors">
+                        <button className="r56-rec-add-btn w-full py-1 min-h-[44px] rounded-md bg-primary/10 text-primary text-[9px] font-semibold hover:bg-primary/20 transition-colors">
                           <Plus className="h-2.5 w-2.5 inline mr-0.5" />
                           Add to Wishlist
                         </button>

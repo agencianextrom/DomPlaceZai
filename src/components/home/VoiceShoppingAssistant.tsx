@@ -752,7 +752,7 @@ export default function VoiceShoppingAssistant() {
                     <motion.div whileTap={{ scale: 0.92 }}>
                       <button
                         onClick={toggleLanguage}
-                        className="r48-lang-toggle h-7 px-2.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center gap-1 cursor-pointer"
+                        className="r48-lang-toggle min-h-[44px] px-2.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center gap-1 cursor-pointer"
                       >
                         <Globe className="h-3.5 w-3.5 text-white" />
                         <span className="text-[10px] font-bold text-white">

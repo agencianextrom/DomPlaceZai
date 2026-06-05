@@ -655,7 +655,7 @@ export function SubscriptionBoxBuilder() {
   /* ── Render ── */
   return (
     <section className="w-full r54-subbox-section" ref={containerRef}>
-      <div className="bg-gradient-to-br from-emerald-50/40 via-background to-violet-50/30 rounded-2xl p-4 sm:p-6 r54-subbox-inner">
+      <div className="bg-gradient-to-br from-emerald-50/40 via-background to-violet-50/30 rounded-2xl p-4 sm:p-6 r54-subbox-inner r62-card-lift">
 
         {/* ═══ Header ═══ */}
         <div className="flex items-center justify-between mb-5">
@@ -668,7 +668,7 @@ export function SubscriptionBoxBuilder() {
               <Box className="h-5 w-5 text-emerald-500" />
             </motion.div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold r54-subbox-title">Subscription Box</h2>
+              <h2 className="text-lg sm:text-xl font-bold r54-subbox-title r62-heading-gradient">Subscription Box</h2>
               <p className="text-xs text-muted-foreground">Build your perfect monthly box</p>
             </div>
           </div>

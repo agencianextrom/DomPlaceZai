@@ -647,7 +647,7 @@ function StoresTab() {
                               <XCircle className="h-3 w-3 mr-1" /> Suspender
                             </Button>
                           )}
-                          <Button size="sm" variant="ghost" className="h-7 text-xs"><Eye className="h-3 w-3" /></Button>
+                          <Button size="sm" variant="ghost" className="min-h-[44px] text-xs"><Eye className="h-3 w-3" /></Button>
                         </div>
                       </TableCell>
                     </TableRow>

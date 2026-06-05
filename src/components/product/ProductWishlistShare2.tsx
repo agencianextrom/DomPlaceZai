@@ -1131,7 +1131,7 @@ export function ProductWishlistShare2() {
     <div className="r43-root w-full max-w-2xl mx-auto">
       {/* ===== HEADER CARD ===== */}
       <motion.div
-        className="r43-header-card rounded-2xl overflow-hidden shadow-sm border border-border/60 mb-4"
+        className="r43-header-card rounded-2xl overflow-hidden shadow-sm border border-border/60 mb-4 r62-card-lift"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={springTransition}
@@ -1169,7 +1169,7 @@ export function ProductWishlistShare2() {
                   {catConfig.label}
                 </Badge>
               </div>
-              <h2 className="r43-wl-name text-xl font-bold text-foreground mb-0.5">{wishlist.name}</h2>
+              <h2 className="r43-wl-name text-xl font-bold text-foreground mb-0.5 r62-heading-gradient">{wishlist.name}</h2>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="r43-item-count flex items-center gap-1">
                   <Package className="w-3 h-3" />
@@ -1228,7 +1228,7 @@ export function ProductWishlistShare2() {
             </span>
           </div>
           <motion.div whileTap={{ scale: 0.95 }}>
-            <Button variant="ghost" size="sm" className="r43-invite-btn text-[11px] h-7 gap-1 text-primary">
+            <Button variant="ghost" size="sm" className="r43-invite-btn text-[11px] min-h-[44px] gap-1 text-primary">
               <UserPlus className="w-3 h-3" />
               Invite
             </Button>

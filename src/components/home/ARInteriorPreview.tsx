@@ -1366,7 +1366,7 @@ export default function ARInteriorPreview() {
 
   /* ─── Render ─── */
   return (
-    <section className="r48-container rounded-2xl overflow-hidden border border-border" style={{ background: '#ffffff', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+    <section className="r48-container rounded-2xl overflow-hidden border border-border r62-card-lift" style={{ background: '#ffffff', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
       {/* ═══ TOOLBAR ═══ */}
       <div className="r48-toolbar flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2.5">
@@ -1378,7 +1378,7 @@ export default function ARInteriorPreview() {
             <Sparkles className="h-4 w-4" style={{ color: '#10b981' }} />
           </motion.div>
           <div>
-            <h3 className="text-sm font-bold leading-tight">AR Interior Preview</h3>
+            <h3 className="text-sm font-bold leading-tight r62-heading-gradient">AR Interior Preview</h3>
             <p className="text-[10px] text-muted-foreground">Visualize móveis no seu ambiente</p>
           </div>
         </div>

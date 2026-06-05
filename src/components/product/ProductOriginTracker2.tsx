@@ -812,7 +812,7 @@ function ProducerCard({ producer, isVisible }: { producer: ProductData2['produce
             <span>📦 {producer.productsCount} produtos</span>
           </div>
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-2.5">
-            <motion.button className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-600 text-white text-[10px] font-bold transition-colors cursor-pointer">
+            <motion.button className="inline-flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-lg bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-600 text-white text-[10px] font-bold transition-colors cursor-pointer">
               <ExternalLink className="h-3 w-3" />
               Ver Produtor
             </motion.button>
