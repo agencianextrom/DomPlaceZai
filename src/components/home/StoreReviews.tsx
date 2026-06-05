@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cachedFetch } from '@/lib/api-cache'
 import { useAppStore } from '@/store/useAppStore'
+import { InteractiveStars } from '@/components/store/InteractiveStars'
 
 /* ── Review types ── */
 interface ReviewData {
@@ -357,7 +358,7 @@ export function StoreReviews() {
             className="mb-4 p-4 rounded-2xl border border-border/50 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20"
           >
             <div className="flex items-center gap-6">
-              {/* Average rating */}
+              {/* Average rating with InteractiveStars */}
               <div className="flex flex-col items-center">
                 <motion.span
                   key={animatedRating}
@@ -368,7 +369,13 @@ export function StoreReviews() {
                 >
                   {animatedRating.toFixed(1)}
                 </motion.span>
-                <AnimatedStars rating={averageRating} />
+                <InteractiveStars
+                  rating={averageRating}
+                  totalReviews={totalReviews}
+                  interactive={false}
+                  size="sm"
+                  showCount={false}
+                />
                 <span className="text-[10px] text-muted-foreground mt-1">
                   {totalReviews} avaliações
                 </span>

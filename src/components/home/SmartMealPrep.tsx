@@ -644,7 +644,7 @@ function ServingAdjuster({
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => onChange(Math.max(1, servings - 1))}
-        className="h-6 w-6 rounded-md bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 transition-colors"
+        className="min-h-[44px] min-w-[44px] h-6 w-6 rounded-md bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 transition-colors"
       >
         <Minus className="h-3 w-3" />
       </motion.button>
@@ -661,7 +661,7 @@ function ServingAdjuster({
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => onChange(Math.min(8, servings + 1))}
-        className="h-6 w-6 rounded-md bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 transition-colors"
+        className="min-h-[44px] min-w-[44px] h-6 w-6 rounded-md bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted/80 transition-colors"
       >
         <Plus className="h-3 w-3" />
       </motion.button>
@@ -1229,7 +1229,7 @@ export function SmartMealPrep() {
 
   return (
     <div className="r50-meal-prep-container">
-      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative">
+      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative r62-card-lift">
         {/* Background mesh */}
         <div className="absolute inset-0 gradient-mesh opacity-10 pointer-events-none" />
 
@@ -1245,7 +1245,7 @@ export function SmartMealPrep() {
                 <UtensilsCrossed className="h-4.5 w-4.5 text-white" />
               </motion.div>
               <div>
-                <h3 className="text-sm font-bold r50-meal-shimmer-text">Smart Meal Prep</h3>
+                <h3 className="text-sm font-bold r50-meal-shimmer-text r62-heading-gradient">Smart Meal Prep</h3>
                 <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                   <Brain className="h-3 w-3" />
                   Planejamento inteligente de refeições
@@ -1464,7 +1464,7 @@ export function SmartMealPrep() {
                                             size="sm"
                                             variant="ghost"
                                             onClick={() => setMealForSlot(dk, cellIdx, null)}
-                                            className="w-full h-7 text-[9px] text-red-500 hover:text-red-600"
+                                            className="w-full min-h-[44px] h-7 text-[9px] text-red-500 hover:text-red-600"
                                           >
                                             Remover refeição
                                           </Button>

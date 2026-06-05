@@ -429,7 +429,7 @@ function QuestCard({
                   <Button
                     variant={isCompleteable ? 'default' : 'outline'}
                     size="sm"
-                    className={`h-6 text-[10px] px-2.5 rounded-lg gap-1 ${
+                    className={`min-h-[44px] h-6 text-[10px] px-2.5 rounded-lg gap-1 ${
                       isCompleteable
                         ? 'bg-gradient-to-r ' + quest.color + ' text-white border-0 shadow-sm'
                         : ''

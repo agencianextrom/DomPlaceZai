@@ -912,7 +912,7 @@ function RewardCard({
           {isAvailable ? (
             canAfford ? (
               <motion.button
-                className="px-3 py-1 rounded-full text-[10px] font-bold text-white r39-loyalty-redeem-btn"
+                className="min-h-[44px] px-3 py-1 rounded-full text-[10px] font-bold text-white r39-loyalty-redeem-btn"
                 style={{
                   background: `linear-gradient(135deg, ${tierData.gradientFrom}, ${tierData.gradientTo})`,
                   boxShadow: `0 2px 8px ${tierData.color}30`,
@@ -970,7 +970,7 @@ function SectionHeader() {
     <motion.div variants={sectionVariants} className="text-center mb-8">
       <div className="flex items-center justify-center gap-3 mb-2">
         <CrownAnimation />
-        <h2 className="text-2xl font-black text-foreground tracking-tight">
+        <h2 className="text-2xl font-black text-foreground tracking-tight r62-heading-gradient">
           Benefícios do Programa
         </h2>
         <CrownAnimation />
@@ -1112,7 +1112,7 @@ export function LoyaltyTierBenefits() {
   }
 
   return (
-    <section className="relative py-12 px-4 md:px-8 max-w-5xl mx-auto r39-loyalty-section">
+    <section className="relative py-12 px-4 md:px-8 max-w-5xl mx-auto r39-loyalty-section r62-card-lift">
       {/* Confetti on tier unlock */}
       <TierConfetti show={showConfetti} tierColor={currentTier.color} />
 
@@ -1188,7 +1188,7 @@ export function LoyaltyTierBenefits() {
         <motion.div variants={sectionVariants} className="mt-10 flex justify-center">
           <motion.div whileTap={{ scale: 0.95 }}>
             <button
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white r39-loyalty-add-points-btn"
+              className="min-h-[44px] flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white r39-loyalty-add-points-btn"
               style={{
                 background: 'linear-gradient(135deg, #10b981, #059669)',
                 boxShadow: '0 4px 16px rgba(16,185,129,0.3)',

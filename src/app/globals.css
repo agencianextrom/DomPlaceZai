@@ -46686,3 +46686,133 @@
     box-shadow: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   r74 — LocalServicesHub + StoreRatingBreakdown + InteractiveStars + touch polish
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.r74-service-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+.r74-service-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px -8px rgba(99, 102, 241, 0.15), 0 4px 12px -4px rgba(0, 0, 0, 0.06);
+}
+
+.r74-featured-card {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06), rgba(168, 85, 247, 0.08));
+  box-shadow: 0 4px 20px -4px rgba(99, 102, 241, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+.r74-featured-card:hover {
+  box-shadow: 0 8px 30px -4px rgba(99, 102, 241, 0.25);
+}
+
+.r74-availability {
+  transition: opacity 0.2s ease;
+}
+.r74-availability.disponivel {
+  animation: r74-available-pulse 2.5s ease-in-out infinite;
+}
+@keyframes r74-available-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.r74-skill-tag {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: default;
+}
+.r74-skill-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px -2px rgba(99, 102, 241, 0.25);
+}
+
+.r74-contact-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r74-contact-btn:active {
+  transform: scale(0.96);
+}
+.r74-contact-btn:hover {
+  box-shadow: 0 4px 14px -4px rgba(99, 102, 241, 0.4);
+}
+
+.r74-search-input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.r74-search-input:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.r74-category-chip {
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+.r74-category-chip:active {
+  transform: scale(0.95);
+}
+.r74-category-chip.active {
+  background-color: rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3);
+}
+
+.r74-review-card {
+  transition: transform 0.2s ease;
+}
+.r74-review-card:hover {
+  transform: translateX(2px);
+}
+
+.r74-stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r74-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.08);
+}
+
+.r74-avatar-ring {
+  animation: r74-ring-glow 3s ease-in-out infinite alternate;
+}
+@keyframes r74-ring-glow {
+  0% { box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15); }
+  100% { box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r74-service-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .r74-featured-card:hover {
+    box-shadow: 0 4px 20px -4px rgba(99, 102, 241, 0.15);
+  }
+  .r74-availability.disponivel {
+    animation: none;
+  }
+  .r74-skill-tag:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .r74-contact-btn:active {
+    transform: none;
+  }
+  .r74-contact-btn:hover {
+    box-shadow: none;
+  }
+  .r74-category-chip:active {
+    transform: none;
+  }
+  .r74-review-card:hover {
+    transform: none;
+  }
+  .r74-stat-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .r74-avatar-ring {
+    animation: none;
+  }
+}

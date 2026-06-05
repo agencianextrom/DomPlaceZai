@@ -216,7 +216,7 @@ export function FlashCoupon() {
   if (!isLoaded) return <FlashCouponSkeleton />
 
   return (
-    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-amber-950/20 dark:via-orange-950/20 dark:to-rose-950/20 border border-amber-200/40 dark:border-amber-800/30">
+    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-amber-950/20 dark:via-orange-950/20 dark:to-rose-950/20 border border-amber-200/40 dark:border-amber-800/30 r62-card-lift">
       {/* Confetti overlay */}
       <ConfettiBurst active={confettiActive} particleCount={50} spread={250} duration={1000} />
 
@@ -230,7 +230,7 @@ export function FlashCoupon() {
             >
               <Ticket className="h-5 w-5 text-amber-500" />
             </motion.div>
-            <h3 className="font-bold text-lg">Cupons Flash</h3>
+            <h3 className="font-bold text-lg r62-heading-gradient">Cupons Flash</h3>
             <Badge className="text-[10px] bg-amber-500 text-white border-0 font-bold">
               <Sparkles className="h-3 w-3 mr-0.5" />
               Diários
@@ -239,7 +239,7 @@ export function FlashCoupon() {
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 text-[10px] text-muted-foreground hover:text-foreground"
+            className="min-h-[44px] min-w-[44px] h-7 text-[10px] text-muted-foreground hover:text-foreground"
             onClick={handleResetDaily}
           >
             <RotateCcw className="h-3 w-3 mr-1" />
@@ -344,7 +344,7 @@ export function FlashCoupon() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleCollect(coupon)}
-                          className="w-full py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[11px] font-bold flex items-center justify-center gap-1"
+                          className="w-full min-h-[44px] py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[11px] font-bold flex items-center justify-center gap-1"
                         >
                           {isFlipping ? (
                             <motion.span
@@ -420,7 +420,7 @@ export function FlashCoupon() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleUseCoupon(coupon.code)}
-                          className="w-full py-1.5 rounded-lg bg-gradient-to-r from-primary to-emerald-600 text-white text-[11px] font-bold flex items-center justify-center gap-1"
+                          className="w-full min-h-[44px] py-1.5 rounded-lg bg-gradient-to-r from-primary to-emerald-600 text-white text-[11px] font-bold flex items-center justify-center gap-1"
                         >
                           <Copy className="h-3 w-3" />
                           Usar Cupom

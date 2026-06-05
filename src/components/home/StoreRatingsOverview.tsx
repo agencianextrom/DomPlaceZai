@@ -20,6 +20,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cachedFetch } from '@/lib/api-cache'
 import { useAppStore, type StoreData } from '@/store/useAppStore'
+import { StoreRatingBreakdown } from '@/components/store/StoreRatingBreakdown'
 
 /* ── Types ── */
 interface StoreWithRating extends StoreData {
@@ -670,6 +671,30 @@ export function StoreRatingsOverview() {
       {/* Summary stats */}
       {!loading && stores.length > 0 && (
         <SummaryStatsBar stores={sortedStores} />
+      )}
+
+      {/* Rating breakdown for top-rated store */}
+      {!loading && sortedStores.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-5"
+        >
+          <StoreRatingBreakdown
+            rating={sortedStores[0].rating}
+            totalReviews={sortedStores[0].totalReviews}
+            storeName={sortedStores[0].name}
+            ratingDistribution={
+              sortedStores[0].ratingDistribution
+                ? [5, 4, 3, 2, 1].map((star, i) => ({
+                    rating: star,
+                    count: sortedStores[0].ratingDistribution![i] || 0,
+                  }))
+                : undefined
+            }
+          />
+        </motion.div>
       )}
 
       {/* Loading skeleton */}

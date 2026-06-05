@@ -455,7 +455,7 @@ export function MysteryDealBox() {
           />
 
           {/* Main card */}
-          <div className="relative bg-gradient-to-br from-gray-50 via-white to-amber-50/30 dark:from-gray-950 dark:via-card dark:to-amber-950/20 rounded-2xl p-5">
+          <div className="relative bg-gradient-to-br from-gray-50 via-white to-amber-50/30 dark:from-gray-950 dark:via-card dark:to-amber-950/20 rounded-2xl p-5 r62-card-lift">
             <ConfettiParticles show={phase === 'revealed'} rarity={activeDeal?.rarity || 'comum'} />
             <SparkleStars show={phase === 'revealed' && (activeDeal?.rarity === 'lendario' || activeDeal?.rarity === 'epico')} color={rarityConfig?.color || '#f59e0b'} />
 
@@ -470,7 +470,7 @@ export function MysteryDealBox() {
                   <Package className="h-5 w-5 text-white" />
                 </motion.div>
                 <div>
-                  <h3 className="text-sm font-bold flex items-center gap-1.5">
+                  <h3 className="text-sm font-bold flex items-center gap-1.5 r62-heading-gradient">
                     Caixa Mistério
                     <motion.span
                       animate={{ rotate: [0, 15, -15, 0] }}
@@ -693,7 +693,7 @@ export function MysteryDealBox() {
                     <Button
                       onClick={handleDismiss}
                       variant="outline"
-                      className="w-full h-10 rounded-xl text-sm font-medium"
+                      className="w-full min-h-[44px] h-10 rounded-xl text-sm font-medium"
                     >
                       {remaining > 1 ? (
                         <>

@@ -244,7 +244,7 @@ export function StoreSubscriptionBox() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 r62-card-lift">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -256,7 +256,7 @@ export function StoreSubscriptionBox() {
             <Gift className="h-4 w-4 text-primary" />
           </motion.div>
           <div>
-            <h2 className="text-lg font-bold">Caixa de Assinatura</h2>
+            <h2 className="text-lg font-bold r62-heading-gradient">Caixa de Assinatura</h2>
             <p className="text-xs text-muted-foreground">
               Receba produtos selecionados todo mês · <span className="text-primary font-medium">{storeCount} lojas parceiras</span>
             </p>
@@ -457,7 +457,7 @@ export function StoreSubscriptionBox() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleUnsubscribe(tier.id)}
-                        className="w-full h-10 text-xs border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 gap-1"
+                        className="w-full min-h-[44px] h-10 text-xs border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 gap-1"
                       >
                         <Check className="h-3.5 w-3.5" />
                         Assinado · Cancelar
@@ -474,7 +474,7 @@ export function StoreSubscriptionBox() {
                         size="sm"
                         onClick={() => handleSubscribe(tier.id)}
                         disabled={isSubscribing}
-                        className="w-full h-10 text-xs bg-primary hover:bg-primary/90 text-primary-foreground btn-glow gap-1.5 r37-sub-cta relative overflow-hidden"
+                        className="w-full min-h-[44px] h-10 text-xs bg-primary hover:bg-primary/90 text-primary-foreground btn-glow gap-1.5 r37-sub-cta relative overflow-hidden"
                       >
                         {!isSubscribing && (
                           <motion.span

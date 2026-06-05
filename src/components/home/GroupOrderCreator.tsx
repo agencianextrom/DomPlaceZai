@@ -662,7 +662,7 @@ function ActiveGroupCard({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setExpanded((v) => !v)}
-                className="h-7 w-7 rounded-full bg-secondary/80 flex items-center justify-center"
+                className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full bg-secondary/80 flex items-center justify-center"
               >
                 <motion.div
                   animate={{ rotate: expanded ? 180 : 0 }}
@@ -863,7 +863,7 @@ function CreateGroupModal({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={handleClose}
-              className="h-7 w-7 rounded-full bg-secondary/80 flex items-center justify-center"
+              className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full bg-secondary/80 flex items-center justify-center"
             >
               <X className="h-3.5 w-3.5 text-muted-foreground" />
             </motion.button>
@@ -1167,7 +1167,7 @@ export function GroupOrderCreator() {
 
   return (
     <div className="r37-group-card">
-      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative">
+      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative r62-card-lift">
         {/* Background mesh */}
         <div className="absolute inset-0 gradient-mesh-2 opacity-20 pointer-events-none" aria-hidden="true" />
 
@@ -1185,7 +1185,7 @@ export function GroupOrderCreator() {
               </motion.div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-foreground">Pedidos em Grupo</h3>
+                  <h3 className="text-sm font-bold text-foreground r62-heading-gradient">Pedidos em Grupo</h3>
                   <motion.span
                     className="flex items-center justify-center px-1.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[9px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums"
                     initial={{ scale: 0 }}

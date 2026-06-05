@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MapPin, Search, Star, Clock, Heart, Store, Filter } from 'lucide-react'
 import { cachedFetch } from '@/lib/api-cache'
+import { useAppStore, type StoreData } from '@/store/useAppStore'
+import { StoreContact } from '@/components/store/StoreContact'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -616,6 +618,40 @@ export function NearbyStoresMap({ className }: NearbyStoresMapProps) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Store contact for the first open store */}
+      {!isLoading && stores.length > 0 && (() => {
+        const firstStore = stores.find(s => s.isOpen) || stores[0]
+        const storeData: StoreData = {
+          id: firstStore.id,
+          name: firstStore.name,
+          slug: firstStore.name.toLowerCase().replace(/\s+/g, '-'),
+          description: null,
+          category: firstStore.category === 'Alimentação' ? 'FOOD'
+            : firstStore.category === 'Saúde' ? 'HEALTH'
+            : firstStore.category === 'Beleza' ? 'BEAUTY'
+            : firstStore.category === 'Animais' ? 'ANIMALS'
+            : firstStore.category === 'Mercado' ? 'FOOD'
+            : firstStore.category === 'Bebidas' ? 'FOOD'
+            : 'FOOD',
+          logo: null,
+          coverImage: null,
+          phone: null,
+          whatsapp: null,
+          address: null,
+          neighborhood: null,
+          city: 'Dom Eliseu',
+          state: 'PA',
+          deliveryFee: firstStore.deliveryFee,
+          freeDeliveryAbove: null,
+          rating: firstStore.rating,
+          totalReviews: firstStore.reviewCount,
+          opensAt: null,
+          closesAt: null,
+          openDays: '1,2,3,4,5,6,7',
+        }
+        return <StoreContact store={storeData} />
+      })()}
     </section>
   )
 }

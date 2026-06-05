@@ -662,7 +662,7 @@ function FilterPills({
                   variant={isActive ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => onCategoryChange(cat.value)}
-                  className={`text-[11px] px-3 py-1 h-7 rounded-full font-semibold transition-all r41-filter-pill ${
+                  className={`min-h-[44px] text-[11px] px-3 py-1 h-7 rounded-full font-semibold transition-all r41-filter-pill ${
                     isActive ? '' : 'hover:bg-primary/10'
                   }`}
                 >
@@ -680,7 +680,7 @@ function FilterPills({
             variant="outline"
             size="sm"
             onClick={() => setShowSort(!showSort)}
-            className="text-[11px] gap-1.5 h-7 rounded-full r41-sort-toggle"
+            className="min-h-[44px] text-[11px] gap-1.5 h-7 rounded-full r41-sort-toggle"
           >
             <ArrowUpDown className="h-3 w-3" />
             <span className="hidden sm:inline">{sortLabels[sortOption]}</span>
@@ -916,7 +916,7 @@ function ProductComparisonCard({
                   variant="ghost"
                   size="sm"
                   onClick={() => setExpanded(!expanded)}
-                  className="h-7 w-7 p-0 r41-expand-btn"
+                  className="min-h-[44px] min-w-[44px] h-7 w-7 p-0 r41-expand-btn"
                 >
                   <AnimatePresence mode="wait">
                     <motion.div
@@ -1411,7 +1411,7 @@ export function PriceComparisonBot() {
                   variant="ghost"
                   size="sm"
                   onClick={clearSearch}
-                  className="h-6 w-6 p-0 rounded-full r41-clear-btn"
+                  className="min-h-[44px] min-w-[44px] h-6 w-6 p-0 rounded-full r41-clear-btn"
                 >
                   <X className="h-3.5 w-3.5" />
                 </Button>
@@ -1527,7 +1527,7 @@ export function PriceComparisonBot() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowRecommendations(false)}
-                  className="text-[10px] text-muted-foreground h-7 r41-hide-rec-btn"
+                  className="min-h-[44px] text-[10px] text-muted-foreground h-7 r41-hide-rec-btn"
                 >
                   Ocultar
                 </Button>

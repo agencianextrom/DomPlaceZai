@@ -634,7 +634,7 @@ export function PersonalShopperBot() {
       className="w-full r54-personal-shopper-container"
     >
       <div
-        className="rounded-2xl overflow-hidden border r54-personal-shopper-main"
+        className="rounded-2xl overflow-hidden border r54-personal-shopper-main r62-card-lift"
         style={{
           background: 'linear-gradient(145deg, rgba(16, 185, 129, 0.04), rgba(245, 158, 11, 0.03))',
           borderColor: 'rgba(16, 185, 129, 0.15)',
@@ -656,7 +656,7 @@ export function PersonalShopperBot() {
               <ShoppingBag className="h-5 w-5" style={{ color: '#10b981' }} />
             </motion.div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold">Personal Shopper</h2>
+              <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">Personal Shopper</h2>
               <p className="text-[11px] text-muted-foreground">AI-powered style assistant</p>
             </div>
           </div>
@@ -667,7 +667,7 @@ export function PersonalShopperBot() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleStartOver}
-                  className="p-1.5 rounded-full border r54-personal-shopper-reset-btn"
+                  className="min-h-[44px] min-w-[44px] p-1.5 rounded-full border r54-personal-shopper-reset-btn"
                   style={{ borderColor: 'rgba(16, 185, 129, 0.25)' }}
                 >
                   <RotateCcw className="h-3.5 w-3.5" style={{ color: '#10b981' }} />
@@ -761,7 +761,7 @@ export function PersonalShopperBot() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleLoadSaved}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border cursor-pointer text-sm font-medium r54-personal-shopper-saved-btn"
+                    className="min-h-[44px] inline-flex items-center gap-2 px-4 py-2 rounded-full border cursor-pointer text-sm font-medium r54-personal-shopper-saved-btn"
                     style={{
                       borderColor: 'rgba(16, 185, 129, 0.25)',
                       background: 'rgba(16, 185, 129, 0.06)',

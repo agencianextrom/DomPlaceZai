@@ -502,7 +502,7 @@ export function ShoppingTimeline() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="glass-card rounded-2xl overflow-hidden">
+      <Card className="glass-card rounded-2xl overflow-hidden r62-card-lift">
         <CardContent className="p-5">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
@@ -511,7 +511,7 @@ export function ShoppingTimeline() {
                 <TrendingUp className="h-4 w-4 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-bold">Sua Jornada de Compras</h3>
+                <h3 className="text-sm font-bold r62-heading-gradient">Sua Jornada de Compras</h3>
                 <p className="text-[10px] text-muted-foreground">
                   {achievedCount} de {totalMilestones} conquistas
                 </p>
@@ -643,7 +643,7 @@ export function ShoppingTimeline() {
               <Button
                 variant="outline"
                 size="sm"
-                className="text-xs gap-1.5 border-primary/20 hover:bg-primary/5"
+                className="min-h-[44px] text-xs gap-1.5 border-primary/20 hover:bg-primary/5"
                 onClick={handleSimulateAchievement}
               >
                 <Sparkles className="h-3 w-3 text-primary" />
