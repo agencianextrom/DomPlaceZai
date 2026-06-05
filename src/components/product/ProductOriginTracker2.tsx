@@ -927,7 +927,7 @@ function SearchBar({ onSelect }: { onSelect: (product: ProductData2) => void }) 
           className="w-full h-9 pl-9 pr-3 rounded-lg bg-muted/50 border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50 transition-all"
         />
         {query && (
-          <button onClick={() => { setQuery(''); inputRef.current?.focus() }} className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors cursor-pointer">
+          <button onClick={() => { setQuery(''); inputRef.current?.focus() }} className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors cursor-pointer">
             <XCircle className="h-3 w-3 text-muted-foreground" />
           </button>
         )}

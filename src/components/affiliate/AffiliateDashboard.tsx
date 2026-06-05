@@ -753,7 +753,7 @@ export function AffiliateDashboard() {
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center hover:bg-pink-100 dark:hover:bg-pink-900/20 transition-colors"
+                  className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-muted/50 flex items-center justify-center hover:bg-pink-100 dark:hover:bg-pink-900/20 transition-colors"
                   onClick={shareInstagram}
                 >
                   <Instagram className="h-4 w-4 text-muted-foreground" />
@@ -761,7 +761,7 @@ export function AffiliateDashboard() {
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center hover:bg-sky-100 dark:hover:bg-sky-900/20 transition-colors"
+                  className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-muted/50 flex items-center justify-center hover:bg-sky-100 dark:hover:bg-sky-900/20 transition-colors"
                   onClick={shareFacebook}
                 >
                   <Facebook className="h-4 w-4 text-muted-foreground" />
@@ -769,7 +769,7 @@ export function AffiliateDashboard() {
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center hover:bg-amber-100 dark:hover:bg-amber-900/20 transition-colors"
+                  className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-muted/50 flex items-center justify-center hover:bg-amber-100 dark:hover:bg-amber-900/20 transition-colors"
                   onClick={shareEmail}
                 >
                   <Mail className="h-4 w-4 text-muted-foreground" />
@@ -777,7 +777,7 @@ export function AffiliateDashboard() {
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center hover:bg-emerald-100 dark:hover:bg-emerald-900/20 transition-colors"
+                  className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-muted/50 flex items-center justify-center hover:bg-emerald-100 dark:hover:bg-emerald-900/20 transition-colors"
                   onClick={copyLink}
                 >
                   <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -1260,7 +1260,7 @@ export function AffiliateDashboard() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-7 text-xs text-primary hover:bg-primary/5 gap-1"
+                          className="h-7 min-h-[44px] min-w-[44px] text-xs text-primary hover:bg-primary/5 gap-1"
                           onClick={() => toast.success('Banner copiado!')}
                         >
                           <Copy className="h-3 w-3" />
@@ -1306,7 +1306,7 @@ export function AffiliateDashboard() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-7 text-xs text-primary hover:bg-primary/5 gap-1"
+                          className="h-7 min-h-[44px] min-w-[44px] text-xs text-primary hover:bg-primary/5 gap-1"
                           onClick={() => {
                             navigator.clipboard.writeText(template.text.replace('{link}', referralLink).replace('{code}', dashboard?.referralCode))
                             toast.success('Texto copiado!')

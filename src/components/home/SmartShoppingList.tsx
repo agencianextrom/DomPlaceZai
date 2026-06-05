@@ -510,7 +510,7 @@ export function SmartShoppingList() {
                               ) : (
                                 <button
                                   onClick={() => handleAddItem(item)}
-                                  className="h-7 w-7 rounded-lg bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
+                                  className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-lg bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
                                   aria-label={`Adicionar ${item.name} à lista`}
                                 >
                                   <Plus className="h-3.5 w-3.5 text-primary" />

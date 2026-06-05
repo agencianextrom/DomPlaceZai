@@ -271,7 +271,7 @@ function QuickAddButton({ product, onAdd }: { product: ProductData; onAdd: (e: R
       whileTap={{ scale: 0.9 }}
       whileHover={{ scale: 1.04 }}
       onClick={handleClick}
-      className="w-full mt-2 h-7 bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-semibold rounded-lg flex items-center justify-center gap-1 transition-colors r26-shimmer-sweep relative overflow-hidden"
+      className="w-full mt-2 h-7 min-h-[44px] bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-semibold rounded-lg flex items-center justify-center gap-1 transition-colors r26-shimmer-sweep relative overflow-hidden"
     >
       <AnimatePresence mode="wait">
         {added ? (
@@ -480,7 +480,7 @@ function DealCard({
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 onClick={(e) => handleAdd(e)}
-                className="h-7 px-3 bg-white dark:bg-card text-primary text-[10px] font-semibold rounded-lg flex items-center gap-1 shadow-lg"
+                className="h-7 min-h-[44px] px-3 bg-white dark:bg-card text-primary text-[10px] font-semibold rounded-lg flex items-center gap-1 shadow-lg"
               >
                 <Plus className="h-3 w-3" />
                 Adicionar

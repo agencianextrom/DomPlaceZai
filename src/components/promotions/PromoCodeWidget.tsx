@@ -184,7 +184,7 @@ export function PromoCodeWidget() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="r62-card-lift space-y-3">
       {/* Promo code input — Glassmorphism card */}
       <Card className="border-primary/20 overflow-hidden promo-glass relative">
         {/* Floating discount tag particles */}

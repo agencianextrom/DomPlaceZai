@@ -462,7 +462,7 @@ export function StoreComparison({ stores }: { stores: StoreData[] }) {
   /* ---------- Render ---------- */
   return (
     <motion.section
-      className="r43-comparison-section"
+      className="r43-comparison-section r62-card-lift"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
@@ -474,7 +474,7 @@ export function StoreComparison({ stores }: { stores: StoreData[] }) {
           {/* ---------- Header ---------- */}
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-base">
+              <CardTitle className="flex items-center gap-2 text-base r62-heading-gradient">
                 <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm">
                   <Eye className="h-4 w-4 text-white" />
                 </div>

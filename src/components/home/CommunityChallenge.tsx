@@ -722,7 +722,7 @@ function ChallengeCard({
               e.stopPropagation()
               onIncrement()
             }}
-            className="absolute top-2 right-2 h-6 w-6 rounded-full bg-secondary/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-2 right-2 h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-secondary/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
             title="Simular progresso"
           >
             <span className="text-[10px] font-bold text-muted-foreground">+1</span>

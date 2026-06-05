@@ -269,7 +269,7 @@ function OutfitCard({ outfit, index }: { outfit: typeof OUTFIT_SUGGESTIONS[numbe
           <Button
             size="sm"
             variant={added ? 'secondary' : 'default'}
-            className="r34-outfit-btn h-7 text-xs px-3"
+            className="r34-outfit-btn h-7 min-h-[44px] min-w-[44px] text-xs px-3"
             onClick={() => setAdded(true)}
           >
             {added ? (

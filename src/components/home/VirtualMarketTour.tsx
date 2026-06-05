@@ -609,7 +609,7 @@ function StoreInfoOverlay({
         <div className="p-4">
           {/* Toggle collapse */}
           <motion.button
-            className="r53-vtour-store-info-toggle absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center"
+            className="r53-vtour-store-info-toggle absolute top-2 right-2 w-6 h-6 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center"
             style={{ background: 'rgba(255,255,255,0.1)' }}
             onClick={onToggleCollapse}
             whileHover={{ scale: 1.15 }}

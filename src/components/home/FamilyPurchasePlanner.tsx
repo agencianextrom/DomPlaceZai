@@ -1035,7 +1035,7 @@ export default function FamilyPurchasePlanner() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="text-[10px] gap-1 rounded-lg h-7 px-2.5"
+                              className="text-[10px] gap-1 rounded-lg h-7 min-h-[44px] min-w-[44px] px-2.5"
                               onClick={() => handleReuseWeek(week)}
                             >
                               <RotateCcw className="h-3 w-3" />
@@ -1379,7 +1379,7 @@ export default function FamilyPurchasePlanner() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="w-full h-7 text-[10px] font-semibold rounded-lg gap-1"
+                                className="w-full h-7 min-h-[44px] text-[10px] font-semibold rounded-lg gap-1"
                               >
                                 <Timer className="h-3 w-3" />
                                 Ver receita completa
@@ -1405,7 +1405,7 @@ export default function FamilyPurchasePlanner() {
                     <motion.div className="mt-2" whileTap={{ scale: 0.97 }}>
                       <Button
                         size="sm"
-                        className="text-[10px] font-bold rounded-lg h-7 gap-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+                        className="text-[10px] font-bold rounded-lg h-7 min-h-[44px] min-w-[44px] gap-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                       >
                         <Sparkles className="h-3 w-3" />
                         Perguntar à IA

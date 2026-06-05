@@ -665,7 +665,7 @@ function ColorSwatches({ colors, selected, onSelect }: {
         {colors.map((c) => (
           <motion.button
             key={c.id}
-            className="r42-color-swatch relative h-8 w-8 rounded-full flex-shrink-0 transition-shadow"
+            className="r42-color-swatch relative h-8 w-8 min-h-[44px] min-w-[44px] rounded-full flex-shrink-0 transition-shadow"
             style={{
               backgroundColor: c.hex,
               boxShadow: selected.id === c.id
@@ -1099,7 +1099,7 @@ export function ARProductTryOn2() {
             <span className="text-sm font-semibold">Rotação 360°</span>
           </div>
           <motion.button
-            className="r42-auto-spin-btn flex items-center gap-1.5 h-7 px-2.5 rounded-md text-[10px] font-semibold transition-colors"
+            className="r42-auto-spin-btn flex items-center gap-1.5 h-7 min-h-[44px] px-2.5 rounded-md text-[10px] font-semibold transition-colors"
             style={{
               background: autoSpin ? 'rgba(16,185,129,0.12)' : 'rgba(0,0,0,0.04)',
               color: autoSpin ? '#059669' : 'rgba(0,0,0,0.5)',

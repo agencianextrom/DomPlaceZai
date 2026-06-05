@@ -613,7 +613,7 @@ function EventDetailModal({ event, onClose }: { event: StoreEvent; onClose: () =
           }} />
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors z-10"
+            className="absolute top-3 right-3 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors z-10"
           >
             <X className="h-4 w-4" />
           </button>
@@ -794,7 +794,7 @@ function EventCard({ event, onOpen }: { event: StoreEvent; onOpen: (e: StoreEven
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => onOpen(event)}
-              className="h-8 w-8 rounded-lg border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
             >
               <Eye className="h-3.5 w-3.5" />
             </motion.button>
@@ -909,7 +909,7 @@ function CalendarGrid({
             whileTap={{ scale: 0.85 }}
             whileHover={{ scale: 1.1 }}
             onClick={handlePrev}
-            className="h-8 w-8 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors r38-event-nav-arrow"
+            className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors r38-event-nav-arrow"
           >
             <ChevronLeft className="h-4 w-4" />
           </motion.button>
@@ -928,7 +928,7 @@ function CalendarGrid({
             whileTap={{ scale: 0.85 }}
             whileHover={{ scale: 1.1 }}
             onClick={handleNext}
-            className="h-8 w-8 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors r38-event-nav-arrow"
+            className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors r38-event-nav-arrow"
           >
             <ChevronRight className="h-4 w-4" />
           </motion.button>

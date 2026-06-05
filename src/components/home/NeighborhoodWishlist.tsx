@@ -477,7 +477,7 @@ function MatchNotificationToast({ notification, onDismiss }: { notification: Mat
         <p className="text-[8px] text-muted-foreground mt-0.5">{notification.timestamp}</p>
       </div>
       <motion.button whileTap={{ scale: 0.85 }} onClick={onDismiss}
-        className="h-6 w-6 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors shrink-0">
+        className="h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors shrink-0">
         <X className="h-3 w-3 text-muted-foreground" />
       </motion.button>
     </motion.div>

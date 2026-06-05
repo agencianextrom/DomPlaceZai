@@ -469,7 +469,7 @@ function ProductSlotCard({
           />
           <motion.button
             whileTap={{ scale: 0.85 }}
-            className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-colors z-10"
+            className="absolute top-1.5 right-1.5 h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-colors z-10"
             onClick={onRemove}
           >
             <X className="h-3 w-3 text-white" />

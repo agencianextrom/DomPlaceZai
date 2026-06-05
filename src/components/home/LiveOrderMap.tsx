@@ -386,7 +386,7 @@ export function LiveOrderMap() {
                     <motion.button
                       whileTap={{ scale: 0.9 }}
                       onClick={() => setSelectedDelivery(null)}
-                      className="h-6 w-6 rounded-full bg-secondary flex items-center justify-center"
+                      className="h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-secondary flex items-center justify-center"
                     >
                       <X className="h-3 w-3" />
                     </motion.button>

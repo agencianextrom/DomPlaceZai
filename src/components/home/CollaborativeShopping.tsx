@@ -470,7 +470,7 @@ function CreateNewGroup({ onCreate }: { onCreate: (g: ShoppingGroup) => void }) 
                 <div className="flex items-center gap-2">
                   {COLORS.map((c) => (
                     <motion.button key={c} whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.85 }} onClick={() => setColor(c)}
-                      className="h-7 w-7 rounded-full flex items-center justify-center transition-all"
+                      className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center transition-all"
                       style={{ backgroundColor: c, boxShadow: color === c ? `0 0 0 3px rgba(255,255,255,0.8), 0 0 0 5px ${c}` : '0 2px 6px rgba(0,0,0,0.15)' }}>
                       {color === c && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
                         transition={{ type: 'spring' as const, stiffness: 400, damping: 15 }}><Check className="h-3.5 w-3.5 text-white" strokeWidth={3} /></motion.div>}

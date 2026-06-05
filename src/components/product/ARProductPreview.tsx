@@ -485,7 +485,7 @@ export function ARProductPreview() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => snapToAngle(av.deg)}
-                  className="r33-ar-angle-btn shrink-0 h-7 px-3 rounded-md text-[11px] font-medium transition-colors"
+                  className="r33-ar-angle-btn shrink-0 h-7 min-h-[44px] px-3 rounded-md text-[11px] font-medium transition-colors"
                   style={{
                     background: Math.abs(rotation - av.deg) < 5 ? 'rgba(16,185,129,0.15)' : 'rgba(0,0,0,0.04)',
                     color: Math.abs(rotation - av.deg) < 5 ? '#059669' : 'rgba(0,0,0,0.55)',
@@ -551,7 +551,7 @@ export function ARProductPreview() {
                 whileHover={{ scale: 1.15 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setSelectedColor(c)}
-                className="relative h-7 w-7 rounded-full shrink-0 transition-shadow"
+                className="relative h-7 w-7 min-h-[44px] min-w-[44px] rounded-full shrink-0 transition-shadow"
                 style={{ backgroundColor: c.hex, boxShadow: selectedColor.id === c.id ? `0 0 0 2px #fff, 0 0 0 4px ${c.hex}` : '0 1px 3px rgba(0,0,0,0.15)' }}
                 title={c.name}
               >

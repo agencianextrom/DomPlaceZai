@@ -255,7 +255,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
   }
   
   return (
-    <div className="max-w-3xl mx-auto pb-20 lg:pb-0 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
+    <div className="r62-card-lift max-w-3xl mx-auto pb-20 lg:pb-0 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
       {/* Header */}
       <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center justify-between">
@@ -343,7 +343,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
           </motion.button>
         )}
         
-        <h1 className="text-xl sm:text-2xl font-bold mt-2 r42-detail-title-entrance">{product.name}</h1>
+        <h1 className="text-xl sm:text-2xl font-bold mt-2 r42-detail-title-entrance r62-heading-gradient">{product.name}</h1>
         
         {/* Rating using StarRating */}
         {product.rating > 0 && (

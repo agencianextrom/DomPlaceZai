@@ -187,7 +187,7 @@ function RecentlyAddedItem({
       <motion.button
         whileTap={{ scale: 0.85 }}
         onClick={() => onRemove(item.productId)}
-        className="h-7 w-7 rounded-full bg-muted/60 hover:bg-destructive/10 hover:text-destructive flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+        className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-muted/60 hover:bg-destructive/10 hover:text-destructive flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
       >
         <Trash2 className="h-3 w-3" />
       </motion.button>

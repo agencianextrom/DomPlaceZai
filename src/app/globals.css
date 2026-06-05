@@ -46972,3 +46972,123 @@
   .r76-stat-card:hover { transform: none; box-shadow: none; }
   .r76-price-change.dropped { animation: none; }
 }
+
+/* === R77 — WeatherShopper + Component Polish === */
+.r77-weather-card {
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  will-change: box-shadow;
+}
+.r77-weather-card:hover {
+  box-shadow: 0 8px 32px rgba(56, 189, 248, 0.15), 0 0 0 1px rgba(56, 189, 248, 0.1);
+}
+
+.r77-forecast-day {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  cursor: default;
+}
+.r77-forecast-day:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.r77-condition-tab {
+  transition: all 0.2s ease;
+}
+.r77-condition-tab:active {
+  transform: scale(0.96);
+}
+
+.r77-suggestion-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.r77-suggestion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.25);
+}
+
+.r77-tips-panel {
+  transition: opacity 0.3s ease;
+}
+
+/* R77 — Component-specific polish */
+.r77-hero-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.r77-hero-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.r77-store-row {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.r77-store-row:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  transform: translateX(2px);
+}
+
+.r77-product-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r77-product-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.r77-input-glow {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.r77-input-glow:focus-within {
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.r77-badge-pulse {
+  animation: r77-pulse-glow 2s ease-in-out infinite;
+}
+@keyframes r77-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); }
+}
+
+.r77-fade-in {
+  animation: r77-fade-slide 0.4s ease forwards;
+}
+@keyframes r77-fade-slide {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.r77-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: r77-shimmer-move 2s ease-in-out infinite;
+}
+@keyframes r77-shimmer-move {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.r77-scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.r77-scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r77-weather-card:hover { box-shadow: none; }
+  .r77-weather-card { transition: none; }
+  .r77-forecast-day:hover { background-color: inherit; transform: none; }
+  .r77-condition-tab:active { transform: none; }
+  .r77-suggestion-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r77-hero-card:hover { transform: none; box-shadow: none; }
+  .r77-store-row:hover { background-color: inherit; transform: none; }
+  .r77-product-hover:hover { transform: none; box-shadow: none; }
+  .r77-input-glow:focus-within { box-shadow: none; }
+  .r77-badge-pulse { animation: none; }
+  .r77-fade-in { animation: none; opacity: 1; transform: none; }
+  .r77-shimmer { animation: none; }
+}

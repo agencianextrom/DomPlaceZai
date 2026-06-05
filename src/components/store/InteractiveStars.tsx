@@ -92,7 +92,7 @@ function StarButton({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
-      className="relative focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-sm"
+      className="relative focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-sm min-h-[44px] min-w-[44px] flex items-center justify-center"
       whileHover={interactive && !prefersReducedMotion ? { scale: 1.2 } : undefined}
       whileTap={interactive && !prefersReducedMotion ? { scale: 0.85 } : undefined}
       aria-label={`Avaliar ${index + 1} estrela${index > 0 ? 's' : ''}`}

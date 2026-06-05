@@ -1090,7 +1090,7 @@ export function StoreMembershipTiers() {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8 disabled:opacity-30"
+                    className="h-8 w-8 min-h-[44px] min-w-[44px] disabled:opacity-30"
                     onClick={() => scrollCarousel('left')}
                     disabled={!canScrollLeft}
                   >
@@ -1105,7 +1105,7 @@ export function StoreMembershipTiers() {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8 disabled:opacity-30"
+                    className="h-8 w-8 min-h-[44px] min-w-[44px] disabled:opacity-30"
                     onClick={() => scrollCarousel('right')}
                     disabled={!canScrollRight}
                   >

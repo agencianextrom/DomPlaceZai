@@ -1633,7 +1633,7 @@ export function WishListManager() {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowCreateModal(true)}
-                  className="r56-add-collection-btn h-7 px-2 text-[10px] font-semibold"
+                  className="r56-add-collection-btn h-7 min-h-[44px] min-w-[44px] px-2 text-[10px] font-semibold"
                 >
                   <Plus className="h-3 w-3 mr-0.5" />
                   New
@@ -2174,7 +2174,7 @@ export function WishListManager() {
                     variant="outline"
                     size="sm"
                     onClick={addAllToCart}
-                    className="r56-cart-all-btn h-8 text-[10px] font-semibold"
+                    className="r56-cart-all-btn h-8 min-h-[44px] text-[10px] font-semibold"
                   >
                     <ShoppingCart className="h-3 w-3 mr-1" />
                     Add All to Cart

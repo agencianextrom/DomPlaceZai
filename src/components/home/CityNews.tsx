@@ -155,6 +155,7 @@ export function CityNews() {
 
   return (
     <motion.section
+      className="r62-card-lift"
       ref={sectionRef}
       variants={sectionVariants}
       initial="hidden"
@@ -163,7 +164,7 @@ export function CityNews() {
     >
       {/* Section header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base sm:text-lg font-bold flex items-center gap-2">
+        <h2 className="text-base sm:text-lg font-bold flex items-center gap-2 r62-heading-gradient">
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center">
             <Newspaper className="h-4 w-4 text-primary-foreground" />
           </div>

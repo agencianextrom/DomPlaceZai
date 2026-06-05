@@ -234,7 +234,7 @@ function AddToListButton({ product, index }: { product: ProductData; index: numb
         whileTap={{ scale: 0.92 }}
         whileHover={{ scale: 1.04 }}
         onClick={handleAddCart}
-        className="flex-1 h-7 rounded-lg text-[10px] font-semibold bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 flex items-center justify-center gap-1 transition-colors relative overflow-hidden"
+        className="flex-1 h-7 min-h-[44px] rounded-lg text-[10px] font-semibold bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 flex items-center justify-center gap-1 transition-colors relative overflow-hidden"
       >
         <AnimatePresence mode="wait">
           {added && listMode === 'cart' ? (

@@ -485,7 +485,7 @@ export function SpinWheel() {
               {/* Close button */}
               <button
                 onClick={() => setShowResult(false)}
-                className="absolute top-3 right-3 h-8 w-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors z-10 r43-modal-close-btn"
+                className="absolute top-3 right-3 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors z-10 r43-modal-close-btn"
               >
                 <X className="h-4 w-4 text-muted-foreground" />
               </button>

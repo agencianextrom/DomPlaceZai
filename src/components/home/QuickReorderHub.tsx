@@ -724,7 +724,7 @@ export function QuickReorderHub() {
                         <p className="text-[9px] text-muted-foreground">{fmt(item.price)} · {freqMap[item.frequency].label}</p>
                       </div>
                       <motion.button whileTap={{ scale:0.9 }} onClick={() => toggleAuto(item.id)}
-                        className="h-7 px-2.5 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[9px] font-bold hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors flex items-center gap-1">
+                        className="h-7 min-h-[44px] px-2.5 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[9px] font-bold hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors flex items-center gap-1">
                         <Plus className="h-3 w-3" />Adicionar</motion.button>
                     </motion.div>
                   ))}</div>

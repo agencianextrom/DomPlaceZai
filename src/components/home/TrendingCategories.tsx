@@ -429,7 +429,7 @@ export function TrendingCategories() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7"
+          className="h-7 w-7 min-h-[44px] min-w-[44px]"
           onClick={() => fetchCategories(true)}
           disabled={refreshing}
         >

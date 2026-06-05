@@ -121,7 +121,7 @@ export function NeighborhoodMarketplace() {
   const sortOptions: SortMode[] = ['nearest', 'rating', 'recent']
 
   return (
-    <div className="bg-card rounded-2xl border border-border overflow-hidden">
+    <div className="r62-card-lift bg-card rounded-2xl border border-border overflow-hidden">
       {/* Header */}
       <div className="p-4 pb-3">
         <div className="flex items-center gap-2 mb-1">
@@ -135,7 +135,7 @@ export function NeighborhoodMarketplace() {
           </motion.div>
           <div>
             <motion.h3
-              className="font-bold text-base r37-shimmer-text"
+              className="font-bold text-base r37-shimmer-text r62-heading-gradient"
               animate={{ backgroundPosition: ['0% 50%', '200% 50%'] }}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
               style={{ background: 'linear-gradient(90deg, #8b5cf6, #c4b5fd, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundSize: '200% 100%' }}

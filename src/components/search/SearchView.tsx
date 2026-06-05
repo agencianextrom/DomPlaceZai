@@ -13,6 +13,8 @@ import { ProductCard } from '@/components/product/ProductCard'
 import { ProductCardSkeletonGrid } from '@/components/product/ProductCardSkeleton'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { ProductData, StoreData } from '@/store/useAppStore'
+import { SearchHistory } from '@/components/search/SearchHistory'
+import { SmartSearchSuggestions } from '@/components/search/SmartSearchSuggestions'
 
 // Sort filter options
 const sortFilters = [
@@ -246,6 +248,7 @@ export function SearchView() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [isVoiceActive, setIsVoiceActive] = useState(false)
   const [isInputFocused, setIsInputFocused] = useState(false)
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   // NEW: Price range filter
@@ -438,8 +441,14 @@ export function SearchView() {
               placeholder="Buscar produtos, lojas..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setIsInputFocused(true)}
-              onBlur={() => setIsInputFocused(false)}
+              onFocus={() => { setIsInputFocused(true); setIsSuggestionsOpen(true) }}
+              onBlur={(e) => {
+                // Delay to allow click on suggestion item to register
+                requestAnimationFrame(() => {
+                  setIsInputFocused(false)
+                  setIsSuggestionsOpen(false)
+                })
+              }}
               className={`relative z-10 pl-9 pr-20 h-12 min-h-12 text-base rounded-xl border-2 transition-all duration-300 ${
                 isInputFocused
                   ? 'border-transparent shadow-[0_0_0_4px_rgba(16,185,129,0.2),0_0_28px_rgba(16,185,129,0.12),0_0_56px_rgba(16,185,129,0.04)] search-input-glow search-input-focused-animated'
@@ -478,6 +487,14 @@ export function SearchView() {
                 )}
               </AnimatePresence>
             </div>
+
+            {/* SmartSearchSuggestions dropdown below search input */}
+            <SmartSearchSuggestions
+              query={searchQuery}
+              onSelect={(q) => { setSearchQuery(q); setIsSuggestionsOpen(false) }}
+              isOpen={isSuggestionsOpen && !isSearching}
+              onClose={() => setIsSuggestionsOpen(false)}
+            />
           </div>
           {/* Filter toggle button with active count badge */}
           <Button
@@ -1061,64 +1078,20 @@ export function SearchView() {
               </motion.p>
             </motion.div>
 
-            {/* Recent searches — slide in from right with stagger */}
-            {recentSearches.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-6"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                    <h3 className="text-sm font-semibold r60-heading-shimmer">Buscas recentes</h3>
-                    <span className="text-[10px] text-muted-foreground bg-muted rounded-full px-1.5 py-0.5">
-                      {recentSearches.length}
-                    </span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 text-xs text-muted-foreground hover:text-foreground gap-1 px-2"
-                    onClick={clearRecentSearches}
-                  >
-                    <X className="h-3 w-3" />
-                    Limpar tudo
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <AnimatePresence>
-                    {recentSearches.slice(0, 8).map((term, index) => (
-                      <motion.button
-                        key={term}
-                        custom={index}
-                        variants={recentSearchVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setSearchQuery(term)}
-                        className="group shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/50 bg-secondary/50 text-sm font-medium hover:bg-secondary transition-colors r42-recent-chip"
-                      >
-                        <Clock className="h-3 w-3 text-muted-foreground/60" />
-                        <span>{term}</span>
-                        <motion.button
-                          whileTap={{ scale: 0.8 }}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            removeRecentSearch(term)
-                          }}
-                          className="h-4 w-4 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-black/10 dark:hover:bg-white/10 transition-opacity"
-                        >
-                          <X className="h-2.5 w-2.5" />
-                        </motion.button>
-                      </motion.button>
-                    ))}
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-            )}
+            {/* SearchHistory component — recent searches cloud + trending */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.35 }}
+              className="mb-6 r62-card-lift"
+            >
+              <SearchHistory
+                onSearch={(q) => setSearchQuery(q)}
+                maxItems={8}
+                showTrending={true}
+                compact={false}
+              />
+            </motion.div>
 
             {/* Trending / Popular searches */}
             <motion.div

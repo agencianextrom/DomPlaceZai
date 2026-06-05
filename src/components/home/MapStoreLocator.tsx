@@ -108,6 +108,7 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
 
   return (
     <motion.section
+      className="r62-card-lift"
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -119,7 +120,7 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
             <MapPin className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h2 className="text-base font-bold leading-tight">Lojas Proximas</h2>
+            <h2 className="text-base font-bold leading-tight r62-heading-gradient">Lojas Proximas</h2>
             <p className="text-[11px] text-muted-foreground flex items-center gap-1">
               <Navigation className="h-2.5 w-2.5" />
               Dom Eliseu, PA

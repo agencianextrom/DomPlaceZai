@@ -334,7 +334,7 @@ function SetAlertDialog({ onClose, onAdd }: { onClose: () => void; onAdd: (p: Tr
             <h3 className="text-sm font-bold">Criar Alerta de Preço</h3>
           </div>
           <motion.button whileTap={{ scale: 0.9 }} onClick={onClose}
-            className="h-7 w-7 rounded-full flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.05)' }}>
+            className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.05)' }}>
             <X className="h-4 w-4 text-muted-foreground" />
           </motion.button>
         </div>

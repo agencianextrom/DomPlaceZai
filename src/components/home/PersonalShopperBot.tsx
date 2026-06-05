@@ -1358,7 +1358,7 @@ export function PersonalShopperBot() {
                             <motion.button
                               whileTap={{ scale: 0.8 }}
                               onClick={() => handleToggleFavorite(product.id)}
-                              className="absolute top-1.5 right-1.5 w-7 h-7 rounded-full flex items-center justify-center transition-colors r54-personal-shopper-fav-btn"
+                              className="absolute top-1.5 right-1.5 w-7 h-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center transition-colors r54-personal-shopper-fav-btn"
                               style={{
                                 background: isFav ? 'rgba(239, 68, 68, 0.9)' : 'rgba(255, 255, 255, 0.85)',
                                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',

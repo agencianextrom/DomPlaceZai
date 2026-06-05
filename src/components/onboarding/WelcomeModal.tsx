@@ -323,7 +323,7 @@ export function WelcomeModal() {
             onClick={handleSkip}
             whileHover={{ scale: 1.05, rotate: 90 }}
             whileTap={{ scale: 0.9 }}
-            className="r44-wm-close-btn flex items-center justify-center w-8 h-8 rounded-full bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+            className="r44-wm-close-btn flex items-center justify-center w-8 h-8 min-h-[44px] min-w-[44px] rounded-full bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
             aria-label="Fechar"
           >
             <X className="h-4 w-4" />

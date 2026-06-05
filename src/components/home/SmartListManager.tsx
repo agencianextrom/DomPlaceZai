@@ -1352,7 +1352,7 @@ export function SmartListManager() {
                                     <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="shrink-0">
                                       <button
                                         onClick={() => findCheapest(item.id)}
-                                        className="h-6 w-6 rounded-md bg-amber-500/10 hover:bg-amber-500/20 flex items-center justify-center transition-colors"
+                                        className="h-6 w-6 min-h-[44px] min-w-[44px] rounded-md bg-amber-500/10 hover:bg-amber-500/20 flex items-center justify-center transition-colors"
                                         title="Encontrar mais barato"
                                       >
                                         <TrendingDown className="h-3 w-3 text-amber-500" />
