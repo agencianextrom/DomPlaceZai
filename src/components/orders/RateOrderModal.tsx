@@ -545,7 +545,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                             {/* Remove button */}
                             <button
                               onClick={() => removePhoto(idx)}
-                              className="absolute bottom-0.5 right-0.5 h-5 w-5 rounded-full bg-destructive/90 flex items-center justify-center hover:bg-destructive transition-colors"
+                              className="absolute bottom-0.5 right-0.5 h-5 w-5 min-h-[44px] min-w-[44px] rounded-full bg-destructive/90 flex items-center justify-center hover:bg-destructive transition-colors"
                             >
                               <Trash2 className="h-3 w-3 text-white" />
                             </button>

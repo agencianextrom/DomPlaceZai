@@ -247,7 +247,7 @@ export function SimilarProducts({
       <div className="flex items-center justify-between mb-4 px-1">
         <div className="flex items-center gap-2">
           <span className="w-1 h-5 rounded-full bg-primary" />
-          <h2 className="text-lg sm:text-xl font-bold">Produtos Similares</h2>
+          <h2 className="text-lg sm:text-xl font-bold r62-heading-gradient">Produtos Similares</h2>
           <span className="text-xs text-muted-foreground hidden sm:inline">
             ({products.length} itens)
           </span>
@@ -323,7 +323,7 @@ export function SimilarProducts({
               }}
             >
               <motion.div
-                className="bg-card rounded-xl border border-border overflow-hidden cursor-pointer transition-colors hover:border-primary/20"
+                className="bg-card rounded-xl border border-border overflow-hidden cursor-pointer transition-colors hover:border-primary/20 r62-card-lift r99-similar-product"
                 whileHover={{
                   scale: 1.02,
                   boxShadow: '0 12px 32px -8px rgba(0,0,0,0.12)',

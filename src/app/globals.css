@@ -48808,3 +48808,32 @@
   .r98-pantry-item:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.08); }
   .r98-eco-tip:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.1); }
 }
+
+/* ==============================
+   R99 — CommunityWasteExchange + polished components
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+  /* CommunityWasteExchange themed */
+  .r99-waste-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r99-waste-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(16,185,129,0.12); }
+  .r99-waste-card:active { transform: scale(0.98); }
+  .r99-category-pill { transition: all 0.2s ease; }
+  .r99-category-pill:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16,185,129,0.15); }
+  .r99-category-pill:active { transform: scale(0.96); }
+  .r99-donate-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r99-donate-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,0.1); }
+  .r99-donate-card:active { transform: scale(0.97); }
+  .r99-tip-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r99-tip-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(16,185,129,0.1); }
+  .r99-stat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r99-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.08); }
+  .r99-impact-ring { transition: transform 0.3s ease; }
+  .r99-impact-ring:hover { transform: scale(1.03); }
+
+  /* Polished component effects */
+  .r99-timeline-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
+  .r99-filter-panel:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.06); }
+  .r99-similar-product:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,0.1); }
+  .r99-reward-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(168,85,247,0.1); }
+  .r99-order-success-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,0.1); }
+}

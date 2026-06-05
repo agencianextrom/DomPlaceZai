@@ -116,7 +116,7 @@ export function OrderFilters({ orders, onFilteredOrdersChange }: OrderFiltersPro
           <Button
             variant={showFilters ? 'default' : 'outline'}
             size="sm"
-            className="h-8 text-xs gap-1.5 shrink-0"
+            className="h-8 min-h-[44px] text-xs gap-1.5 shrink-0"
             onClick={() => setShowFilters(!showFilters)}
           >
             <Filter className="h-3 w-3" />
@@ -139,7 +139,7 @@ export function OrderFilters({ orders, onFilteredOrdersChange }: OrderFiltersPro
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="bg-card rounded-xl border border-border p-3 space-y-3">
+            <div className="bg-card rounded-xl border border-border p-3 space-y-3 r62-card-lift r99-filter-panel">
               {/* Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -152,7 +152,7 @@ export function OrderFilters({ orders, onFilteredOrdersChange }: OrderFiltersPro
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-secondary flex items-center justify-center"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-secondary flex items-center justify-center"
                   >
                     <X className="h-3 w-3" />
                   </button>

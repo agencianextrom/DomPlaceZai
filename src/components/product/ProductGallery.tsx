@@ -306,7 +306,7 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0, rotate: 90 }}
               onClick={() => setIsZoomed(false)}
-              className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center z-10"
+              className="absolute top-4 right-4 h-10 w-10 min-h-[44px] min-w-[44px] rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center z-10"
             >
               <X className="h-5 w-5 text-white" />
             </motion.button>

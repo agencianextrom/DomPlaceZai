@@ -1393,14 +1393,14 @@ export function StoreDashboard() {
         {/* Header */}
         <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={goBack} className="h-10 w-10">
+            <Button variant="ghost" size="icon" onClick={goBack} className="h-10 w-10 min-h-[44px] min-w-[44px]">
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-2 flex-1">
               <Store className="h-5 w-5 text-primary" />
               <h1 className="text-lg font-bold">Dashboard da Loja</h1>
             </div>
-            <Button variant="ghost" size="icon" onClick={handleRefresh} className="h-10 w-10" disabled={loading}>
+            <Button variant="ghost" size="icon" onClick={handleRefresh} className="h-10 w-10 min-h-[44px] min-w-[44px]" disabled={loading}>
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>
           </div>

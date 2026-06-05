@@ -89,7 +89,7 @@ export function OrderStatusTimeline({ steps }: OrderStatusTimelineProps) {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="relative r33-timeline-shimmer"
+      className="relative r33-timeline-shimmer r62-card-lift r99-timeline-card"
     >
       {/* Animated connecting line behind the steps */}
       <div className="absolute left-[18px] top-0 bottom-0 w-0.5 bg-border/40">

@@ -90,7 +90,7 @@ export function ProductComparisonModal({ isOpen, onClose }: ProductComparisonMod
               variant="ghost"
               size="sm"
               onClick={handleClear}
-              className="text-destructive h-8 text-xs gap-1.5 shrink-0"
+              className="text-destructive h-8 min-h-[44px] text-xs gap-1.5 shrink-0"
             >
               <Trash2 className="h-3 w-3" />
               Limpar comparação

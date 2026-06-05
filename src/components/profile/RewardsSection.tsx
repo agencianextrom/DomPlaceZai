@@ -95,7 +95,7 @@ export function RewardsSection() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
       >
-        <Card className="bg-gradient-to-br from-primary via-emerald-600 to-teal-700 border-0 overflow-hidden relative">
+        <Card className="bg-gradient-to-br from-primary via-emerald-600 to-teal-700 border-0 overflow-hidden relative r62-card-lift r99-reward-card">
           <CardContent className="p-6 text-white relative">
             {/* Decorative circles */}
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -162,7 +162,7 @@ export function RewardsSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <Card className="border-primary/20">
+        <Card className="border-primary/20 r62-card-lift">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm">
@@ -186,7 +186,7 @@ export function RewardsSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <h3 className="font-semibold text-sm mb-3">Recompensas disponíveis</h3>
+        <h3 className="font-semibold text-sm mb-3 r62-heading-gradient">Recompensas disponíveis</h3>
         <div className="space-y-3">
           {rewards.map((reward, idx) => {
             const canRedeem = totalPoints >= reward.pts
@@ -241,7 +241,7 @@ export function RewardsSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
       >
-        <h3 className="font-semibold text-sm mb-3">Histórico de pontos</h3>
+        <h3 className="font-semibold text-sm mb-3 r62-heading-gradient">Histórico de pontos</h3>
         <Card>
           <CardContent className="p-0 divide-y divide-border/30">
             {pointsHistory.map((item) => (

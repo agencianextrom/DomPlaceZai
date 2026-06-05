@@ -281,7 +281,7 @@ export function ProductQuickView({ product, open, onClose }: ProductQuickViewPro
           </div>
 
           {/* View details */}
-          <Button variant="outline" onClick={handleViewDetails} className="w-full h-10 text-xs gap-1.5">
+          <Button variant="outline" onClick={handleViewDetails} className="w-full h-10 min-h-[44px] text-xs gap-1.5">
             <Eye className="h-3.5 w-3.5" />
             Ver detalhes completos
           </Button>

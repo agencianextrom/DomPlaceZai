@@ -89,7 +89,7 @@ export function ProductComparisonBar() {
           <Button
             size="sm"
             onClick={() => setIsModalOpen(true)}
-            className="gap-1.5 bg-white/10 hover:bg-white/20 text-white border-0 text-xs font-semibold h-9"
+            className="gap-1.5 bg-white/10 hover:bg-white/20 text-white border-0 text-xs font-semibold h-9 min-h-[44px]"
           >
             <GitCompareArrows className="h-3.5 w-3.5" />
             Comparar ({comparingProducts.length})
@@ -100,7 +100,7 @@ export function ProductComparisonBar() {
             variant="ghost"
             size="icon"
             onClick={clearComparison}
-            className="h-9 w-9 text-white/60 hover:text-white hover:bg-white/10 shrink-0"
+            className="h-9 w-9 min-h-[44px] min-w-[44px] text-white/60 hover:text-white hover:bg-white/10 shrink-0"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>

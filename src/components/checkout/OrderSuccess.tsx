@@ -477,7 +477,7 @@ export function OrderSuccess({
         transition={{ delay: 1.1 }}
         className="text-center mb-6"
       >
-        <h1 className="text-2xl font-bold text-shadow-sm">Pedido Confirmado! 🎉</h1>
+        <h1 className="text-2xl font-bold text-shadow-sm r62-heading-gradient">Pedido Confirmado! 🎉</h1>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -526,7 +526,7 @@ export function OrderSuccess({
         transition={{ delay: 1.3, duration: 0.4 }}
         className="w-full max-w-md mb-5"
       >
-        <Card className="border-border/50">
+        <Card className="border-border/50 r62-card-lift r99-order-success-card">
           <CardContent className="p-4 pb-5">
             <h3 className="font-semibold text-xs mb-4 text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
               <ArrowRight className="h-3 w-3" />
@@ -546,7 +546,7 @@ export function OrderSuccess({
       >
         {/* Estimated delivery */}
         <motion.div variants={staggerItem}>
-          <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 border-emerald-200/50 dark:border-emerald-800/30">
+          <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 border-emerald-200/50 dark:border-emerald-800/30 r62-card-lift">
             <CardContent className="p-4 flex items-center gap-4">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shrink-0">
                 {deliveryType === 'PICKUP' ? (
@@ -592,9 +592,9 @@ export function OrderSuccess({
 
         {/* Order Summary */}
         <motion.div variants={staggerItem}>
-          <Card className="border-border/50">
+          <Card className="border-border/50 r62-card-lift r99-order-success-card">
             <CardContent className="p-4">
-              <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+              <h3 className="font-semibold text-sm mb-3 flex items-center gap-2 r62-heading-gradient">
                 <Package className="h-4 w-4 text-primary" />
                 Resumo do Pedido
               </h3>
