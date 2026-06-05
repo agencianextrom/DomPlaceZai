@@ -147,6 +147,7 @@ import SmartDeliveryHub from '@/components/home/SmartDeliveryHub'
 import { SupportTicketSystem } from '@/components/support/SupportTicketSystem'
 import { OrderSummaryReceipt } from '@/components/orders/OrderSummaryReceipt'
 import { RealTimeDealsTicker } from '@/components/home/RealTimeDealsTicker'
+import SmartShoppingReminder from '@/components/home/SmartShoppingReminder'
 import { AIStyleAdvisor } from '@/components/product/AIStyleAdvisor'
 import { SmartShoppingAssistant } from '@/components/chat/SmartShoppingAssistant'
 import { Share2 } from 'lucide-react'
@@ -1011,6 +1012,7 @@ export default function Home() {
                           <CommunityGardenHub />
                           <LocalClassesHub />
                           <CommunitySwapHub />
+                          <SmartShoppingReminder />
                         </section>
                       </ScrollReveal>
                     </LazySection>
