@@ -782,7 +782,7 @@ function IngredientTag({
       >
         <button
           onClick={onRemove}
-          className="h-4 w-4 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors"
+          className="min-h-[44px] min-w-[44px] rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/30 transition-colors"
           aria-label={`Remove ${name}`}
         >
           <X className="h-2.5 w-2.5" />
@@ -1199,7 +1199,7 @@ function RecipeDetailModal({
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setServings(Math.max(1, servings - 1))}
-                    className="h-7 w-7 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+                    className="min-h-[44px] min-w-[44px] rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
                   >
                     <Minus className="h-3 w-3" />
                   </motion.button>
@@ -1216,7 +1216,7 @@ function RecipeDetailModal({
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setServings(Math.min(12, servings + 1))}
-                    className="h-7 w-7 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+                    className="min-h-[44px] min-w-[44px] rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
                   >
                     <Plus className="h-3 w-3" />
                   </motion.button>
@@ -1563,7 +1563,7 @@ function MealPlannerGrid({
                           e.stopPropagation()
                           onClearSlot(slotIndex)
                         }}
-                        className="absolute top-0.5 right-0.5 h-3.5 w-3.5 rounded-full bg-destructive/80 flex items-center justify-center"
+                        className="absolute top-0.5 right-0.5 min-h-[44px] min-w-[44px] rounded-full bg-destructive/80 flex items-center justify-center"
                       >
                         <XCircle className="h-2 w-2 text-white" />
                       </button>
@@ -1900,7 +1900,7 @@ export function RecipeDiscovery() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 text-[10px] text-muted-foreground"
+                      className="min-h-[44px] text-[10px] text-muted-foreground"
                       onClick={() => setUserIngredients([])}
                     >
                       <XCircle className="h-3 w-3 mr-1" />
@@ -2168,7 +2168,7 @@ export function RecipeDiscovery() {
                         setShowPlannerRecipes(false)
                         setPlannerAssignTarget(null)
                       }}
-                      className="h-7 w-7 rounded-full bg-muted flex items-center justify-center"
+                      className="min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
