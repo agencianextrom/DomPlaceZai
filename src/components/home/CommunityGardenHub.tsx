@@ -177,7 +177,7 @@ export default function CommunityGardenHub() {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: sp, stiffness: 260, damping: 24 }}
-      className="space-y-5"
+      className="space-y-5 r102-section-accent"
     >
       {/* ── 1. Header ── */}
       <Section>
@@ -249,7 +249,7 @@ export default function CommunityGardenHub() {
 
       {/* ── 4. Featured Gardens ── */}
       <Section>
-        <h3 className="text-sm font-bold flex items-center gap-1.5 mb-3">
+        <h3 className="text-sm font-bold flex items-center gap-1.5 mb-3 r62-heading-gradient">
           <Flower2 className="h-4 w-4 text-green-600" />
           Hortas em Destaque
           <ChevronRight className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
@@ -263,7 +263,7 @@ export default function CommunityGardenHub() {
 
       {/* ── 5. Harvest Calendar ── */}
       <Section>
-        <h3 className="text-sm font-bold flex items-center gap-1.5 mb-3">
+        <h3 className="text-sm font-bold flex items-center gap-1.5 mb-3 r62-heading-gradient">
           <Calendar className="h-4 w-4 text-emerald-600" />
           Calendário de Colheita
         </h3>
@@ -276,7 +276,7 @@ export default function CommunityGardenHub() {
 
       {/* ── 6. Quick Tips ── */}
       <Section>
-        <h3 className="text-sm font-bold flex items-center gap-1.5 mb-3">
+        <h3 className="text-sm font-bold flex items-center gap-1.5 mb-3 r62-heading-gradient">
           <Leaf className="h-4 w-4 text-green-600" />
           Dicas Rápidas
         </h3>
@@ -289,7 +289,7 @@ export default function CommunityGardenHub() {
 
       {/* ── 7. Community Board ── */}
       <Section>
-        <h3 className="text-sm font-bold flex items-center gap-1.5 mb-3">
+        <h3 className="text-sm font-bold flex items-center gap-1.5 mb-3 r62-heading-gradient">
           <Users className="h-4 w-4 text-teal-600" />
           Eventos da Comunidade
         </h3>
@@ -354,7 +354,7 @@ function GardenCard({ garden, index }: { garden: Garden; index: number }) {
       initial={{ opacity: 0, y: 12 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
       transition={{ type: sp, stiffness: 300, damping: 26, delay: index * 0.07, ease: easeOut }}
-      className="r102-garden-card rounded-xl border border-border/40 bg-card overflow-hidden"
+      className="r102-garden-card rounded-xl border border-border/40 bg-card overflow-hidden r62-card-lift"
     >
       {/* Gradient header */}
       <div
@@ -433,7 +433,7 @@ function HarvestCard({ month, index }: { month: HarvestMonth; index: number }) {
       initial={{ opacity: 0, y: 12 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
       transition={{ type: sp, stiffness: 300, damping: 26, delay: index * 0.08, ease: easeOut }}
-      className="r102-harvest-card rounded-xl border border-border/40 bg-card p-3.5"
+      className="r102-harvest-card rounded-xl border border-border/40 bg-card p-3.5 r62-card-lift"
     >
       <div className="flex items-center gap-1.5 mb-2.5">
         <Calendar className="h-4 w-4 text-emerald-600" />
@@ -462,7 +462,7 @@ function TipCard({ tip, index }: { tip: Tip; index: number }) {
       initial={{ opacity: 0, y: 12 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
       transition={{ type: sp, stiffness: 300, damping: 26, delay: index * 0.07, ease: easeOut }}
-      className="r102-tip-card rounded-xl border border-border/40 bg-card p-3.5"
+      className="r102-tip-card rounded-xl border border-border/40 bg-card p-3.5 r62-card-lift"
     >
       <div className="flex items-start gap-3">
         <div className={`flex items-center justify-center w-9 h-9 rounded-lg shrink-0 ${tip.color}`}>

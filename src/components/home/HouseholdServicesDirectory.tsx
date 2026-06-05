@@ -142,7 +142,7 @@ export default function HouseholdServicesDirectory() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: sp, stiffness: 260, damping: 24 }}
     >
-      <Card className="overflow-hidden border-border/40 r92-services-card">
+      <Card className="overflow-hidden border-border/40 r92-services-card r101-section-accent">
         {/* ── Header ── */}
         <CardHeader className="pb-3">
           <div
@@ -244,7 +244,7 @@ export default function HouseholdServicesDirectory() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ type: sp, stiffness: 350, damping: 28, delay: i * 0.03 }}
-                  className="r92-provider-card relative p-3 rounded-xl border border-border/40 bg-card/60 hover:border-violet-200/50 transition-colors"
+                  className="r92-provider-card relative p-3 rounded-xl border border-border/40 bg-card/60 hover:border-violet-200/50 transition-colors r62-card-lift"
                 >
                   {/* Favorite */}
                   <motion.button

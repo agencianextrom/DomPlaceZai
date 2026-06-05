@@ -85,7 +85,7 @@ function CommunityOrb({ color, delay, x, y, size }: { color: string; delay: numb
 
 export function CommunityHighlights() {
   return (
-    <section className="mt-6 relative overflow-hidden">
+    <section className="mt-6 relative overflow-hidden r101-section-accent">
       {/* Section Header — enhanced shimmer */}
       <div className="flex items-center gap-2 mb-4">
         <motion.div
@@ -96,7 +96,7 @@ export function CommunityHighlights() {
           <Heart className="h-4 w-4 text-white" />
         </motion.div>
         <div>
-          <h2 className="text-base sm:text-lg font-bold r18-shimmer-header">Destaques da Comunidade</h2>
+          <h2 className="text-base sm:text-lg font-bold r62-heading-gradient r18-shimmer-header">Destaques da Comunidade</h2>
           <p className="text-[11px] text-muted-foreground hidden sm:block">
             O que torna o DomPlace especial para você
           </p>
@@ -131,7 +131,7 @@ export function CommunityHighlights() {
             >
               {/* Glassmorphism card — enhanced hover glow */}
               <motion.div
-                className="relative overflow-hidden rounded-xl border border-white/20 dark:border-white/10 p-5 sm:p-6 community-highlight-card r36-community-card"
+                className="relative overflow-hidden rounded-xl border border-white/20 dark:border-white/10 p-5 sm:p-6 community-highlight-card r36-community-card r62-card-lift"
                 style={{
                   backdropFilter: 'blur(16px) saturate(180%)',
                   WebkitBackdropFilter: 'blur(16px) saturate(180%)',

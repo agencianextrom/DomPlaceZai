@@ -339,7 +339,7 @@ export default function LocalArtisansMarket() {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: sp, stiffness: 260, damping: 24 }}
-      className="space-y-6"
+      className="space-y-6 r101-section-accent"
     >
       {/* ════════════════════════════════════════════════════════════════════════
           1. HEADER
@@ -437,7 +437,7 @@ export default function LocalArtisansMarket() {
           ════════════════════════════════════════════════════════════════════════ */}
       <AnimatedSection delay={0.15}>
         <div className="flex items-center gap-2 mb-4">
-          <h3 className="text-lg font-bold">Artesãos em Destaque</h3>
+          <h3 className="text-lg font-bold r62-heading-gradient">Artesãos em Destaque</h3>
           <span className="text-xs text-muted-foreground">{filteredArtisans.length} artesãos</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -450,7 +450,7 @@ export default function LocalArtisansMarket() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ type: sp, stiffness: 300, damping: 26, delay: i * 0.04 }}
-                className="r101-artisan-card rounded-xl border border-border/40 bg-card overflow-hidden"
+                className="r101-artisan-card rounded-xl border border-border/40 bg-card overflow-hidden r62-card-lift"
                 style={{
                   boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
                   borderTop: `3px solid ${artisan.gradient.includes('#f43f5e') ? '#f43f5e' : artisan.gradient.includes('#f59e0b') ? '#f59e0b' : artisan.gradient.includes('#8b5cf6') ? '#8b5cf6' : artisan.gradient.includes('#06b6d4') ? '#06b6d4' : artisan.gradient.includes('#ec4899') ? '#ec4899' : '#84cc16'}`,
@@ -533,7 +533,7 @@ export default function LocalArtisansMarket() {
           ════════════════════════════════════════════════════════════════════════ */}
       <AnimatedSection delay={0.2}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold flex items-center gap-2">
+          <h3 className="text-lg font-bold flex items-center gap-2 r62-heading-gradient">
             <Sparkles className="h-5 w-5 text-rose-500" />
             Peças em Alta
           </h3>
@@ -550,7 +550,7 @@ export default function LocalArtisansMarket() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ type: sp, stiffness: 260, damping: 24, delay: i * 0.08 }}
-              className="r101-trending-card shrink-0 w-64 rounded-xl border border-border/40 bg-card overflow-hidden"
+              className="r101-trending-card shrink-0 w-64 rounded-xl border border-border/40 bg-card overflow-hidden r62-card-lift"
               style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}
             >
               {/* Image placeholder */}
@@ -601,7 +601,7 @@ export default function LocalArtisansMarket() {
           ════════════════════════════════════════════════════════════════════════ */}
       <AnimatedSection delay={0.25}>
         <div className="flex items-center gap-2 mb-4">
-          <h3 className="text-lg font-bold flex items-center gap-2">
+          <h3 className="text-lg font-bold flex items-center gap-2 r62-heading-gradient">
             <HandHeart className="h-5 w-5 text-pink-500" />
             Encomende Artesanal
           </h3>
@@ -616,7 +616,7 @@ export default function LocalArtisansMarket() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ type: sp, stiffness: 260, damping: 24, delay: i * 0.06 }}
-                className="r101-commission-card group relative overflow-hidden rounded-xl border border-border/40 bg-card p-4 cursor-pointer"
+                className="r101-commission-card group relative overflow-hidden rounded-xl border border-border/40 bg-card p-4 cursor-pointer r62-card-lift"
                 style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
               >
                 {/* Gradient accent top border */}

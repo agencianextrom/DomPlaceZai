@@ -164,7 +164,7 @@ function ChallengeCard({ challenge, index }: { challenge: FamilyChallenge; index
 
   return (
     <motion.div variants={cardV} whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(249,115,22,0.12)' }}>
-      <Card className="r87-challenge-card overflow-hidden border-border/60">
+      <Card className="r87-challenge-card overflow-hidden border-border/60 r62-card-lift">
         <CardContent className="p-4">
           <div className="flex items-start gap-3 mb-3">
             <motion.span
@@ -368,7 +368,7 @@ function StatsSummary() {
           const Icon = s.icon
           return (
             <motion.div key={s.label} variants={cardV} whileHover={{ y: -2, boxShadow: '0 6px 18px rgba(249,115,22,0.1)' }}>
-              <Card className="r87-stat-card overflow-hidden border-border/60 text-center py-3 px-2">
+              <Card className="r87-stat-card overflow-hidden border-border/60 text-center py-3 px-2 r62-card-lift">
                 <CardContent className="p-2 flex flex-col items-center gap-1.5">
                   <div className="h-9 w-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.15), rgba(234,88,12,0.1))' }}>
                     <Icon className="h-4 w-4 text-orange-600" />
@@ -459,7 +459,7 @@ export function FamilyChallengeHub() {
       initial="hidden"
       animate="visible"
       variants={containerV}
-      className="rounded-2xl border border-border bg-card overflow-hidden"
+      className="rounded-2xl border border-border bg-card overflow-hidden r100-section-accent"
       style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
     >
       <Header />
@@ -474,7 +474,7 @@ export function FamilyChallengeHub() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Target className="h-4 w-4 text-orange-500" />
-            <h3 className="text-sm font-bold">Desafios Ativos</h3>
+            <h3 className="text-sm font-bold r62-heading-gradient">Desafios Ativos</h3>
             <Badge variant="secondary" className="text-[10px] h-5 px-2 font-semibold bg-orange-100 text-orange-700 border-0">
               {activeCount}
             </Badge>
