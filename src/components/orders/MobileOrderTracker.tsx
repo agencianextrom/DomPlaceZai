@@ -421,7 +421,7 @@ export function MobileOrderTracker({ orderId }: MobileOrderTrackerProps) {
         {/* ── Dismiss button ───────────────────────────────────────────────── */}
         <button
           onClick={() => setIsDismissed(true)}
-          className="absolute -top-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center border border-gray-200 active:scale-90 transition-transform"
+          className="absolute -top-1 -right-1 w-7 h-7 min-h-[44px] min-w-[44px] bg-white rounded-full flex items-center justify-center border border-gray-200 active:scale-90 transition-transform"
           style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
           aria-label="Fechar rastreador"
         >

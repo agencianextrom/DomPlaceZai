@@ -204,7 +204,7 @@ export function CartRecoveryBanner() {
 
                   <button
                     onClick={handleDismiss}
-                    className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/15 transition-colors shrink-0"
+                    className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center hover:bg-white/15 transition-colors shrink-0"
                     aria-label="Fechar"
                   >
                     <X className="h-3.5 w-3.5 text-white/70" />
@@ -274,7 +274,7 @@ export function CartRecoveryBanner() {
                       variant="ghost"
                       size="sm"
                       onClick={handleClear}
-                      className="h-8 px-3 text-white/70 hover:text-white hover:bg-white/15 text-xs rounded-full"
+                      className="h-8 min-h-[44px] px-3 text-white/70 hover:text-white hover:bg-white/15 text-xs rounded-full"
                     >
                       Limpar
                     </Button>
@@ -288,7 +288,7 @@ export function CartRecoveryBanner() {
                       variant="ghost"
                       size="sm"
                       onClick={handleViewCart}
-                      className="h-8 px-3 text-white hover:text-white hover:bg-white/15 text-xs rounded-full gap-1"
+                      className="h-8 min-h-[44px] px-3 text-white hover:text-white hover:bg-white/15 text-xs rounded-full gap-1"
                     >
                       <ArrowLeft className="h-3 w-3" />
                       Voltar para o carrinho
@@ -304,7 +304,7 @@ export function CartRecoveryBanner() {
                     <Button
                       size="sm"
                       onClick={handleCheckout}
-                      className="relative h-8 px-4 bg-white text-emerald-700 hover:bg-white/90 font-semibold text-xs rounded-full shadow-lg overflow-hidden btn-shine"
+                      className="relative h-8 min-h-[44px] px-4 bg-white text-emerald-700 hover:bg-white/90 font-semibold text-xs rounded-full shadow-lg overflow-hidden btn-shine"
                     >
                       Finalizar compra
                       <ChevronRight className="h-3.5 w-3.5" />

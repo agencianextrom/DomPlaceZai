@@ -124,7 +124,7 @@ export function ProductSpotlight() {
   if (!isLoaded || products.length === 0 || !product) return null;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl">
+    <div className="relative overflow-hidden rounded-2xl r62-card-lift">
       <AnimatePresence mode="wait">
         <motion.div
           key={product.id}

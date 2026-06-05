@@ -363,7 +363,7 @@ function AnimatedBell({ shaking, alertCount }: { shaking: boolean; alertCount: n
         className="relative"
       >
         <motion.div
-          className="h-9 w-9 rounded-xl flex items-center justify-center cursor-pointer"
+          className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-xl flex items-center justify-center cursor-pointer"
           style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
@@ -577,7 +577,7 @@ function AlertToggle({
       whileTap={{ scale: 0.92 }}
       whileHover={{ scale: 1.04 }}
       onClick={handleToggle}
-      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-colors border relative overflow-hidden"
+      className="flex items-center gap-1.5 px-2.5 py-1 min-h-[44px] rounded-lg text-[10px] font-semibold transition-colors border relative overflow-hidden"
       style={{
         background: isOn ? `rgba(16,185,129,0.12)` : 'rgba(0,0,0,0.04)',
         color: isOn ? '#059669' : '#6b7280',
@@ -834,7 +834,7 @@ function FilterTabs({
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.03 }}
             onClick={() => onChange(tab.key)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all relative overflow-hidden"
+            className="flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-full text-[11px] font-semibold whitespace-nowrap transition-all relative overflow-hidden"
             style={{
               background: isActive ? '#10b981' : 'rgba(0,0,0,0.04)',
               color: isActive ? '#ffffff' : '#6b7280',
@@ -1225,7 +1225,7 @@ export function DynamicPricingAlerts() {
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.04 }}
             onClick={fetchAlerts}
-            className="mt-4 h-8 px-4 rounded-full text-xs font-semibold flex items-center gap-1.5 border"
+            className="mt-4 h-8 min-h-[44px] px-4 rounded-full text-xs font-semibold flex items-center gap-1.5 border"
             style={{
               background: 'rgba(16,185,129,0.08)',
               color: '#059669',

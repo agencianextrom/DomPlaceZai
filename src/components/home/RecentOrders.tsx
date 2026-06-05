@@ -352,7 +352,7 @@ export function RecentOrders() {
             <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
               <Clock className="h-4 w-4 text-primary" />
             </div>
-            <h2 className="text-base sm:text-lg font-bold">
+            <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">
               <span className="shimmer-text r30-order-shimmer">Pedidos Recentes</span>
             </h2>
           </div>
@@ -364,7 +364,7 @@ export function RecentOrders() {
             <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
-        <div className="flex flex-col items-center justify-center py-10 text-center rounded-2xl border border-dashed border-border/60 bg-muted/20">
+        <div className="flex flex-col items-center justify-center py-10 text-center rounded-2xl border border-dashed border-border/60 bg-muted/20 r62-card-lift">
           <motion.div
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
@@ -400,7 +400,7 @@ export function RecentOrders() {
           <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
             <Clock className="h-4 w-4 text-primary" />
           </div>
-          <h2 className="text-base sm:text-lg font-bold">
+          <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">
             <span className="shimmer-text r30-order-shimmer">Pedidos Recentes</span>
           </h2>
         </div>

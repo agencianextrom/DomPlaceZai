@@ -46469,3 +46469,220 @@
     animation: none;
   }
 }
+
+/* ==============================
+   R73 PANTRY MANAGER STYLES
+   ============================== */
+
+/* r73-pantry-card — item card hover lift */
+.r73-pantry-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.r73-pantry-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.dark .r73-pantry-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* r73-pantry-form — form container */
+.r73-pantry-form {
+  border-radius: 12px;
+}
+
+/* r73-expiring-glow — red glow for expiring items */
+.r73-expiring-glow {
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.15), 0 0 12px rgba(239, 68, 68, 0.08);
+}
+.dark .r73-expiring-glow {
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25), 0 0 16px rgba(239, 68, 68, 0.12);
+}
+
+/* r73-low-stock — yellow glow for low stock */
+.r73-low-stock {
+  box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.15), 0 0 12px rgba(234, 179, 8, 0.06);
+}
+.dark .r73-low-stock {
+  box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.25), 0 0 16px rgba(234, 179, 8, 0.1);
+}
+
+/* r73-add-btn — add button press feedback */
+.r73-add-btn {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
+}
+.r73-add-btn:active {
+  transform: scale(0.97);
+}
+
+/* r73-action-btn — action button hover */
+.r73-action-btn {
+  transition: background-color 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+}
+.r73-action-btn:hover {
+  background-color: rgba(16, 185, 129, 0.06);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+.dark .r73-action-btn:hover {
+  background-color: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+/* r73-stat-card — stat card hover */
+.r73-stat-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+.r73-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+.dark .r73-stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* r73-filter-chip — filter chip active/hover */
+.r73-filter-chip {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+.r73-filter-chip:active {
+  transform: scale(0.96);
+}
+
+/* r73-suggestion-card — suggestion card hover */
+.r73-suggestion-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+.r73-suggestion-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.dark .r73-suggestion-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* r73-progress-bar — animated progress fill */
+.r73-progress-bar {
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* r73-quick-btn — quick action button hover */
+.r73-quick-btn {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+.r73-quick-btn:hover {
+  background-color: rgba(16, 185, 129, 0.04);
+}
+.r73-quick-btn:active {
+  transform: scale(0.97);
+}
+
+/* r73-prefers-reduced-motion guard */
+@media (prefers-reduced-motion: reduce) {
+  .r73-pantry-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .r73-expiring-glow {
+    box-shadow: none;
+  }
+  .r73-low-stock {
+    box-shadow: none;
+  }
+  .r73-stat-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .r73-filter-chip:active {
+    transform: none;
+  }
+  .r73-add-btn:active {
+    transform: none;
+  }
+  .r73-action-btn:active {
+    transform: none;
+  }
+  .r73-suggestion-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .r73-progress-bar {
+    animation: none;
+  }
+  .r73-quick-btn:active {
+    transform: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   r73 — additional: touch-targets polish, cart/checkout/order/profile styling
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.r73-touch-expand {
+  transition: transform 0.1s ease;
+}
+.r73-touch-expand:active {
+  transform: scale(0.96);
+}
+
+.r73-back-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r73-back-btn:active {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.r73-cta-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r73-cta-btn:active {
+  transform: scale(0.97);
+}
+.r73-cta-btn:hover {
+  box-shadow: 0 4px 14px -4px rgba(99, 102, 241, 0.4);
+}
+
+.r73-icon-btn {
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+.r73-icon-btn:hover {
+  background-color: rgba(99, 102, 241, 0.06);
+}
+.r73-icon-btn:active {
+  transform: scale(0.93);
+  background-color: rgba(99, 102, 241, 0.12);
+}
+
+.r73-close-btn {
+  transition: transform 0.12s ease;
+}
+.r73-close-btn:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+}
+.r73-close-btn:active {
+  transform: scale(0.9);
+}
+
+.r73-copy-btn {
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+.r73-copy-btn:active {
+  transform: scale(0.95);
+}
+.r73-copy-btn.copied {
+  background-color: rgba(34, 197, 94, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r73-touch-expand:active,
+  .r73-back-btn:active,
+  .r73-cta-btn:active,
+  .r73-icon-btn:active,
+  .r73-close-btn:active,
+  .r73-copy-btn:active {
+    transform: none;
+  }
+  .r73-cta-btn:hover {
+    box-shadow: none;
+  }
+}

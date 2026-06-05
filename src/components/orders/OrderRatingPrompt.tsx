@@ -225,7 +225,7 @@ export function OrderRatingPrompt({
             {/* Close */}
             <button
               onClick={handleDismiss}
-              className="absolute top-4 right-4 h-8 w-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors r34-prompt-close"
+              className="absolute top-4 right-4 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors r34-prompt-close"
               aria-label="Fechar"
             >
               <X className="h-4 w-4 text-gray-500" />

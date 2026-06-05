@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useAppStore } from '@/store/useAppStore'
 import { formatBRL } from '@/components/product/ProductCard'
 import { DeliveryTracker } from './DeliveryTracker'
+import { OrderTracker } from './OrderTracker'
 import { OrderTimeline } from './OrderTimeline'
 import { TipCalculator } from './TipCalculator'
 import { OrderMap } from './OrderMap'
@@ -289,7 +290,7 @@ export function OrdersView() {
             <Button
               size="sm"
               variant="outline"
-              className="h-7 text-xs gap-1 mt-2"
+              className="h-7 min-h-[44px] text-xs gap-1 mt-2"
               onClick={() => {
                 toast.dismiss()
                 // Undo: remove reordered items from cart
@@ -734,7 +735,7 @@ export function OrdersView() {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="h-9 sm:h-8 text-xs gap-1 r42-orders-reorder-btn r62-touch-ripple relative overflow-hidden font-semibold border-2 border-primary text-primary bg-primary/5 sm:bg-transparent"
+                                    className="h-9 sm:h-8 min-h-[44px] text-xs gap-1 r42-orders-reorder-btn r62-touch-ripple relative overflow-hidden font-semibold border-2 border-primary text-primary bg-primary/5 sm:bg-transparent"
                                   onClick={() => handleReorder(order)}
                                 >
                                   <PackageCheck className="h-3 w-3" />
@@ -914,7 +915,7 @@ export function OrderDetail() {
             <Button
               size="sm"
               variant="outline"
-              className="h-7 text-xs gap-1 mt-2"
+              className="h-7 min-h-[44px] text-xs gap-1 mt-2"
               onClick={() => {
                 toast.dismiss()
                 addedProductIds.forEach(id => {
@@ -939,7 +940,7 @@ export function OrderDetail() {
       {/* Header */}
       <div className="sticky top-14 sm:top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border -mx-4 px-4 -mt-4 pt-4">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={goBack} className="h-10 w-10">
+          <Button variant="ghost" size="icon" onClick={goBack} className="h-10 w-10 min-h-[44px] min-w-[44px]">
             <ChevronRight className="h-5 w-5 rotate-180" />
           </Button>
           <div>
@@ -982,6 +983,14 @@ export function OrderDetail() {
             )}
           </div>
         </div>
+
+        {/* Order Tracker for DELIVERING orders — visual map, driver info, timeline */}
+        {order.status === 'DELIVERING' && (
+          <OrderTracker
+            orderNumber={order.orderNumber}
+            storeName={order.storeName || 'Loja'}
+          />
+        )}
 
         {/* Order Map for DELIVERING orders */}
         {order.status === 'DELIVERING' && (

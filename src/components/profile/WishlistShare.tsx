@@ -186,7 +186,7 @@ export function WishlistShare({ items, open, onOpenChange }: WishlistShareProps)
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20"
+                className="h-8 w-8 min-h-[44px] min-w-[44px] text-white/80 hover:text-white hover:bg-white/20"
                 onClick={() => onOpenChange(false)}
               >
                 <X className="h-4 w-4" />

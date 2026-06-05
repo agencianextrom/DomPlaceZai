@@ -258,7 +258,7 @@ export function DomEliseuStories() {
       {/* Horizontal scrollable story circles */}
       <div className="mb-2">
         <div className="flex items-center justify-between mb-2.5 px-1">
-          <h2 className="text-base font-bold flex items-center gap-2">
+          <h2 className="text-base font-bold flex items-center gap-2 r62-heading-gradient">
             <span className="text-xl">📖</span>
             Histórias de Dom Eliseu
           </h2>

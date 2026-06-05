@@ -805,7 +805,7 @@ export function LiveOrderChat() {
                     />
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }}>
                       <Button type="submit" size="icon"
-                        className="r51-chat-send-btn h-10 w-10 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
+                        className="r51-chat-send-btn h-10 w-10 min-h-[44px] min-w-[44px] rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
                         disabled={!inputText.trim() || isTyping}
                       >
                         <Send className="h-4 w-4" />

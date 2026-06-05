@@ -627,7 +627,7 @@ export function StoreRatingsOverview() {
   }
 
   return (
-    <section className="w-full">
+    <section className="w-full r62-card-lift">
       {/* Section header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2.5">
@@ -639,7 +639,7 @@ export function StoreRatingsOverview() {
             <BarChart3 className="h-5 w-5 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold flex items-center gap-1.5">
+            <h2 className="text-base sm:text-lg font-bold flex items-center gap-1.5 r62-heading-gradient">
               <span className="r27-shimmer-text">Avaliações das Lojas</span>
               <motion.div
                 animate={{ rotate: [0, 15, -15, 0] }}

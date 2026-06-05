@@ -212,6 +212,7 @@ import { NProgressLoader } from '@/components/navigation/NProgressLoader'
 import { SpendingInsights } from '@/components/home/SpendingInsights'
 import { NutritionLens } from '@/components/home/NutritionLens'
 import DealComparator from '@/components/home/DealComparator'
+import PantryManager from '@/components/home/PantryManager'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -1108,6 +1109,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <DealComparator />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Pantry Manager — Kitchen inventory tracker */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <PantryManager />
                         </section>
                       </ScrollReveal>
                     </LazySection>

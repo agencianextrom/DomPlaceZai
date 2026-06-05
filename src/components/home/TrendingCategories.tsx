@@ -395,7 +395,7 @@ export function TrendingCategories() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, type: 'spring' as const, stiffness: 260, damping: 22 }}
-      className="relative"
+      className="relative r62-card-lift"
     >
       {/* ── Section header ── */}
       <div className="flex items-center justify-between px-4 mb-3">
@@ -409,7 +409,7 @@ export function TrendingCategories() {
             <TrendingUp className="h-5 w-5 text-white" />
           </motion.div>
           <div>
-            <h2 className="font-bold text-sm sm:text-base flex items-center gap-1.5">
+            <h2 className="font-bold text-sm sm:text-base flex items-center gap-1.5 r62-heading-gradient">
               <ShimmerText className="trending-shimmer-header bg-gradient-to-r from-orange-600 via-red-500 to-amber-500 bg-clip-text text-transparent font-bold">
                 Tendências
               </ShimmerText>

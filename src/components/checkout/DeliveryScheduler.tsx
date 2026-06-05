@@ -374,10 +374,10 @@ function DriverCard({ driver }: { driver: DriverInfo }) {
         </div>
       </div>
       <motion.div className="flex items-center gap-1.5">
-        <motion.button whileTap={{ scale: 0.9 }} className="h-9 w-9 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600">
+        <motion.button whileTap={{ scale: 0.9 }} className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600">
           <Phone className="h-4 w-4" />
         </motion.button>
-        <motion.button whileTap={{ scale: 0.9 }} className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+        <motion.button whileTap={{ scale: 0.9 }} className="h-9 w-9 min-h-[44px] min-w-[44px] rounded-full bg-primary/10 flex items-center justify-center text-primary">
           <MessageSquare className="h-4 w-4" />
         </motion.button>
       </motion.div>

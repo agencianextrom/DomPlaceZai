@@ -688,7 +688,7 @@ export function OrderSuccess({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 text-xs shrink-0"
+                          className="h-7 min-h-[44px] text-xs shrink-0"
                           onClick={() => {
                             navigator.clipboard.writeText('119998888776@domplace.com')
                             toast.success('Chave Pix copiada!')

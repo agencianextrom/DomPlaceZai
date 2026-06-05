@@ -213,7 +213,7 @@ export function OrderMap({ storeName, estimatedMinutes, orderId }: OrderMapProps
                   <Button
                     size="icon"
                     variant="outline"
-                    className="h-10 w-10 rounded-xl border-primary/30 hover:bg-primary/10"
+                    className="h-10 w-10 min-h-[44px] min-w-[44px] rounded-xl border-primary/30 hover:bg-primary/10"
                     aria-label="Ligar para entregador"
                     onClick={() => {
                       window.open(`https://wa.me/55${driver.phone}`, '_blank')
@@ -223,7 +223,7 @@ export function OrderMap({ storeName, estimatedMinutes, orderId }: OrderMapProps
                   </Button>
                   <Button
                     size="icon"
-                    className="h-10 w-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="h-10 w-10 min-h-[44px] min-w-[44px] rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white"
                     aria-label="Chat com entregador"
                     onClick={() => {
                       window.open(`https://wa.me/55${driver.phone}`, '_blank')

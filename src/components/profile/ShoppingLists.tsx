@@ -234,7 +234,7 @@ export function ShoppingLists() {
         </h2>
         <Button
           size="sm"
-          className="bg-primary text-primary-foreground gap-1 h-8 text-xs"
+          className="bg-primary text-primary-foreground gap-1 h-8 min-h-[44px] text-xs"
           onClick={createList}
         >
           <Plus className="h-3.5 w-3.5" />
@@ -392,7 +392,7 @@ export function ShoppingLists() {
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                                    className="h-7 w-7 min-h-[44px] min-w-[44px] opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
                                     onClick={() => removeItem(list.id, item.id)}
                                   >
                                     <X className="h-3.5 w-3.5 text-muted-foreground" />
@@ -438,7 +438,7 @@ export function ShoppingLists() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-8 w-8 min-h-[44px] min-w-[44px]"
                                 onClick={() => startEditListName(list.id, list.name)}
                                 title="Editar nome"
                               >
@@ -447,7 +447,7 @@ export function ShoppingLists() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-8 w-8 min-h-[44px] min-w-[44px]"
                                 onClick={() => handleShareList(list)}
                                 title="Copiar lista"
                               >
@@ -456,7 +456,7 @@ export function ShoppingLists() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-8 w-8 min-h-[44px] min-w-[44px]"
                                 onClick={() => deleteList(list.id)}
                                 title="Excluir lista"
                               >

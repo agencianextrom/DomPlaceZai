@@ -236,7 +236,7 @@ export function PromoCodeRedemption() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="h-7 text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/5"
+                              className="h-7 min-h-[44px] text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/5"
                               onClick={() => handleCopy(promo.code, promo.id)}
                             >
                               {isCopied ? (

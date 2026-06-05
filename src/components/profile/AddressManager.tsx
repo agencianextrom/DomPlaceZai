@@ -376,7 +376,7 @@ export function AddressManager() {
         </h2>
         <Button
           size="sm"
-          className="bg-primary text-primary-foreground gap-1 h-8 text-xs"
+          className="bg-primary text-primary-foreground gap-1 h-8 min-h-[44px] text-xs"
           onClick={openAddDialog}
         >
           <Plus className="h-3.5 w-3.5" />
@@ -474,7 +474,7 @@ export function AddressManager() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8"
+                          className="h-8 w-8 min-h-[44px] min-w-[44px]"
                           onClick={() => openEditDialog(address)}
                         >
                           <Pencil className="h-4 w-4 text-muted-foreground" />
@@ -482,7 +482,7 @@ export function AddressManager() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8"
+                          className="h-8 w-8 min-h-[44px] min-w-[44px]"
                           onClick={() => handleDelete(address.id)}
                           disabled={addresses.length === 1 || isSaving}
                         >

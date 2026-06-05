@@ -248,7 +248,7 @@ export function ProfileView() {
     return (
       <div className="min-h-screen p-4 pb-24">
         <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10 min-h-[44px] min-w-[44px]">
             <ChevronRight className="h-5 w-5 rotate-180" />
           </Button>
           <h1 className="text-lg font-bold">Programa de Fidelidade</h1>
@@ -262,7 +262,7 @@ export function ProfileView() {
     return (
       <div className="min-h-screen p-4 pb-24">
         <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10 min-h-[44px] min-w-[44px]">
             <ChevronRight className="h-5 w-5 rotate-180" />
           </Button>
           <h1 className="text-lg font-bold">Conta Familiar</h1>
@@ -276,7 +276,7 @@ export function ProfileView() {
     return (
       <div className="min-h-screen p-4 pb-24">
         <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10 min-h-[44px] min-w-[44px]">
             <ChevronRight className="h-5 w-5 rotate-180" />
           </Button>
           <h1 className="text-lg font-bold">Endereços</h1>
@@ -290,7 +290,7 @@ export function ProfileView() {
     return (
       <div className="min-h-screen p-4 pb-24">
         <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10 min-h-[44px] min-w-[44px]">
             <ChevronRight className="h-5 w-5 rotate-180" />
           </Button>
           <h1 className="text-lg font-bold flex items-center gap-2">
@@ -320,7 +320,7 @@ export function ProfileView() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-7 text-xs"
+                        className="h-7 min-h-[44px] text-xs"
                         onClick={() => {
                           navigator.clipboard.writeText(coupon.code)
                           toast.success(`Cupom ${coupon.code} copiado!`)
@@ -351,7 +351,7 @@ export function ProfileView() {
     return (
       <div className="min-h-screen p-4 pb-24">
         <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10 min-h-[44px] min-w-[44px]">
             <ChevronRight className="h-5 w-5 rotate-180" />
           </Button>
           <h1 className="text-lg font-bold">Indique Amigos</h1>
@@ -408,7 +408,7 @@ export function ProfileView() {
     return (
       <div className="min-h-screen p-4 pb-24">
         <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10 min-h-[44px] min-w-[44px]">
             <ChevronRight className="h-5 w-5 rotate-180" />
           </Button>
           <h1 className="text-lg font-bold">Configurações</h1>
@@ -445,7 +445,7 @@ export function ProfileView() {
     return (
       <div className="min-h-screen p-4 pb-24">
         <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSection(null)} className="h-10 w-10 min-h-[44px] min-w-[44px]">
             <ChevronRight className="h-5 w-5 rotate-180" />
           </Button>
           <h1 className="text-lg font-bold flex items-center gap-2">

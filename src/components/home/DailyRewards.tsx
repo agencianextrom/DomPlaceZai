@@ -273,7 +273,7 @@ export function DailyRewards() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring' as const, stiffness: 200 }}
-        className="relative rounded-2xl overflow-hidden"
+        className="relative rounded-2xl overflow-hidden r62-card-lift"
         whileHover={{ y: -4, boxShadow: '0 12px 32px rgba(16, 185, 129, 0.15), 0 4px 12px rgba(16, 185, 129, 0.08)' }}
       >
         {/* Gradient background with pattern */}
@@ -325,7 +325,7 @@ export function DailyRewards() {
                   <Gift className="h-5 w-5 text-white" />
                 </motion.div>
                 <div>
-                  <h3 className="text-sm font-bold flex items-center gap-1.5">
+                  <h3 className="text-sm font-bold flex items-center gap-1.5 r62-heading-gradient">
                     Recompensas Diárias
                     {streakFire && (
                       <motion.span

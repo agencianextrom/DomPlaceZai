@@ -215,7 +215,7 @@ export function OrderCancelModal({
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setStep(1)}
-                  className="h-8 w-8 rounded-full hover:bg-secondary flex items-center justify-center"
+                  className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full hover:bg-secondary flex items-center justify-center"
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </motion.button>
@@ -227,7 +227,7 @@ export function OrderCancelModal({
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={onClose}
-              className="h-8 w-8 rounded-full hover:bg-secondary flex items-center justify-center"
+              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full hover:bg-secondary flex items-center justify-center"
             >
               <X className="h-4 w-4" />
             </motion.button>

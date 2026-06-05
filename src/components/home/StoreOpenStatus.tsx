@@ -168,7 +168,7 @@ export function StoreOpenStatus() {
   if (isLoading) return <StoreOpenStatusSkeleton />
 
   return (
-    <section className="relative overflow-hidden rounded-2xl">
+    <section className="relative overflow-hidden rounded-2xl r62-card-lift">
       {/* Animated gradient background */}
       <motion.div
         className="absolute inset-0 -z-10 rounded-2xl"
@@ -192,7 +192,7 @@ export function StoreOpenStatus() {
             >
               <Store className="h-5 w-5 text-primary" />
             </motion.div>
-            <h3 className="font-bold text-lg">Lojas Abertas Agora</h3>
+            <h3 className="font-bold text-lg r62-heading-gradient">Lojas Abertas Agora</h3>
             <Badge variant="secondary" className="text-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/30">
               {openCount} abertas
             </Badge>

@@ -934,7 +934,7 @@ export function CartView() {
                               whileTap={{ scale: 0.85 }}
                               whileHover={{ scale: 1.15 }}
                               onClick={() => removeFromCart(item.productId)}
-                              className="h-10 w-10 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors r38-cart-remove-btn active:scale-95 transition-transform"
+                              className="h-10 w-10 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors r38-cart-remove-btn active:scale-95 transition-transform"
                             >
                               <Trash2 className="h-4 w-4" />
                             </motion.button>

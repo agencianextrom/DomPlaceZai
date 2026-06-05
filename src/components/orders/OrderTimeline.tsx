@@ -402,7 +402,7 @@ export function OrderTimeline({
                     <div className="flex items-center gap-2 mt-2">
                       <Button
                         size="sm"
-                        className="h-7 text-[10px] gap-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className="h-7 min-h-[44px] text-[10px] gap-1 bg-emerald-600 hover:bg-emerald-700 text-white"
                         disabled={!realDriverName}
                       >
                         <Phone className="h-3 w-3" />
@@ -411,7 +411,7 @@ export function OrderTimeline({
                       <Button
                         size="sm"
                         variant="outline"
-                        className="h-7 text-[10px] gap-1 border-primary/30"
+                        className="h-7 min-h-[44px] text-[10px] gap-1 border-primary/30"
                         disabled={!realDriverName}
                       >
                         <MessageCircle className="h-3 w-3" />

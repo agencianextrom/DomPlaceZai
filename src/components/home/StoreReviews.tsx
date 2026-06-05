@@ -318,7 +318,7 @@ export function StoreReviews() {
   const displayReviews = reviews.slice(0, 6)
 
   return (
-    <section className="w-full">
+    <section className="w-full r62-card-lift">
       {/* Section header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
@@ -330,7 +330,7 @@ export function StoreReviews() {
             <Star className="h-4 w-4 text-white fill-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold">Avaliações de Lojas</h2>
+            <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">Avaliações de Lojas</h2>
             <p className="text-[11px] text-muted-foreground">O que os clientes dizem</p>
           </div>
         </div>
