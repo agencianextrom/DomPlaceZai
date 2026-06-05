@@ -406,7 +406,7 @@ export function NeighborhoodHub() {
   // ── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-4 r62-card-lift">
+    <div className="space-y-4 r62-card-lift r100-neighborhood-card">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">

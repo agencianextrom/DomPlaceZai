@@ -481,7 +481,7 @@ export function CheckoutView() {
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setDeliveryType('DELIVERY')}
-                    className={`r62-card-lift p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                    className={`r62-card-lift r100-checkout-step p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                       deliveryType === 'DELIVERY'
                         ? 'border-primary bg-primary/5 shadow-[0_2px_12px_rgba(16,185,129,0.12)]'
                         : 'border-border hover:border-primary/30 hover:shadow-sm'
@@ -506,7 +506,7 @@ export function CheckoutView() {
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setDeliveryType('PICKUP')}
-                    className={`r62-card-lift p-4 rounded-xl border-2 text-left transition-all duration-200 relative ${
+                    className={`r62-card-lift r100-checkout-step p-4 rounded-xl border-2 text-left transition-all duration-200 relative ${
                       deliveryType === 'PICKUP'
                         ? 'border-primary bg-primary/5 shadow-[0_2px_12px_rgba(16,185,129,0.12)]'
                         : 'border-border hover:border-primary/30 hover:shadow-sm'
@@ -769,7 +769,7 @@ export function CheckoutView() {
                     whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(16,185,129,0.2)' }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setPayment(method.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r42-payment-card-hover r42-payment-card-shimmer r39-payment-glow r58-checkout-payment-glow min-h-[56px] ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all duration-300 relative glass-border checkout-payment-card r40-payment-card-shimmer r42-payment-card-hover r42-payment-card-shimmer r39-payment-glow r58-checkout-payment-glow min-h-[56px] r62-card-lift r100-checkout-step ${
                       payment === method.id
                         ? 'border-primary bg-primary/5 r39-payment-glow-active'
                         : 'border-border hover:border-primary/30'

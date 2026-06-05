@@ -618,7 +618,7 @@ export function ProfileView() {
       ) : (
       <>
       {/* Profile header with animated gradient border effect */}
-      <div className="profile-card-animated-border r43-conic-gradient-border r46-profile-card-glow mb-5">
+      <div className="profile-card-animated-border r43-conic-gradient-border r46-profile-card-glow r62-card-lift r100-profile-card mb-5">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -582,7 +582,7 @@ function MatrixRow({
         isKeyDifference ? 'r49-key-row' : ''
       }`}
       style={{
-        gridTemplateColumns: `120px repeat(${products.length}, 1fr)`,
+        gridTemplateColumns: `minmax(80px, 120px) repeat(${products.length}, minmax(min(100%, 140px), 1fr))`,
       }}
     >
       {/* Label */}
@@ -1275,7 +1275,7 @@ export default function SmartComparisonMatrix() {
                 className="space-y-4"
               >
                 {/* 2 & 3. Auto-selected criteria label + Comparison Matrix */}
-                <div className="bg-muted/30 rounded-xl overflow-hidden">
+                <div className="bg-muted/30 rounded-xl overflow-hidden overflow-x-auto">
                   <div className="p-2.5 border-b border-border/30 flex items-center gap-2">
                     <Brain className="h-3.5 w-3.5 text-emerald-500" />
                     <span className="text-xs font-semibold">
@@ -1294,7 +1294,7 @@ export default function SmartComparisonMatrix() {
                   <div
                     className="grid items-center bg-secondary/50 border-b border-border/40"
                     style={{
-                      gridTemplateColumns: `120px repeat(${selectedProducts.length}, 1fr)`,
+                      gridTemplateColumns: `minmax(80px, 120px) repeat(${selectedProducts.length}, minmax(min(100%, 140px), 1fr))`,
                     }}
                   >
                     <div className="p-2.5 text-[10px] font-semibold text-muted-foreground">

@@ -784,7 +784,7 @@ export function CartView() {
               suggestedProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
-                  className="shrink-0 w-[150px] r62-card-lift"
+                  className="shrink-0 w-[150px] r62-card-lift r100-cart-item"
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.08, duration: 0.4 }}

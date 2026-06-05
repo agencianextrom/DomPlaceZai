@@ -48837,3 +48837,34 @@
   .r99-reward-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(168,85,247,0.1); }
   .r99-order-success-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,0.1); }
 }
+
+/* ==============================
+   R100 — CommunitySkillsExchange + polished components (Milestone Round)
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+  /* CommunitySkillsExchange themed */
+  .r100-class-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .r100-class-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(139,92,246,0.15); }
+  .r100-class-card:active { transform: scale(0.98); }
+  .r100-category-pill { transition: all 0.2s ease; }
+  .r100-category-pill:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.15); }
+  .r100-category-pill:active { transform: scale(0.96); }
+  .r100-instructor-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r100-instructor-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(139,92,246,0.12); }
+  .r100-path-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r100-path-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,92,246,0.1); }
+  .r100-path-card:active { transform: scale(0.97); }
+  .r100-live-session { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r100-live-session:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(239,68,68,0.12); }
+  .r100-stat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r100-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(139,92,246,0.1); }
+  .r100-review-card { transition: transform 0.2s ease; }
+  .r100-review-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(139,92,246,0.08); }
+
+  /* Polished component effects */
+  .r100-cart-item:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
+  .r100-store-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(16,185,129,0.12); }
+  .r100-checkout-step:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,158,11,0.08); }
+  .r100-profile-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,92,246,0.1); }
+  .r100-neighborhood-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,0.1); }
+}

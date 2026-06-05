@@ -111,7 +111,9 @@ export function ProductComparisonModal({ isOpen, onClose }: ProductComparisonMod
               <div
                 className="grid gap-4"
                 style={{
-                  gridTemplateColumns: `repeat(${Math.min(comparingProducts.length, 3)}, minmax(0, 1fr))`,
+                  gridTemplateColumns: comparingProducts.length > 1
+                    ? 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))'
+                    : '1fr',
                 }}
               >
                 {comparingProducts.map((product, i) => {
