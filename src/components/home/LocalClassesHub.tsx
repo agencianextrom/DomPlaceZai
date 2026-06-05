@@ -19,7 +19,7 @@ interface ClassItem {
   title: string
   instructor: string
   category: string
-  level: 'Iniciante' | 'Intermediário' | 'Avançado'
+  level: 'Iniciante' | 'Intermediário' | 'Avançado' | 'Todos os Níveis'
   rating: number
   students: number
   duration: string
