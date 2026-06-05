@@ -311,7 +311,7 @@ export function EcoImpactWidget({ className }: EcoImpactWidgetProps) {
             <Trophy className="h-4 w-4 text-amber-500" />
             Conquistas Ecológicas
           </h3>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 sm:gap-3">
             {ecoData.achievements.map((achievement, i) => (
               <motion.div
                 key={achievement.id}

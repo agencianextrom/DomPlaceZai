@@ -207,6 +207,9 @@ import { MobileOrderTracker } from '@/components/orders/MobileOrderTracker'
 import { QuickBillSplitter } from '@/components/home/QuickBillSplitter'
 import { WeeklyMealPlanner } from '@/components/home/WeeklyMealPlanner'
 import { FamilyGroupOrder } from '@/components/home/FamilyGroupOrder'
+import { FloatingDealAlert } from '@/components/home/FloatingDealAlert'
+import { NProgressLoader } from '@/components/navigation/NProgressLoader'
+import { SpendingInsights } from '@/components/home/SpendingInsights'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -786,6 +789,9 @@ export default function Home() {
   
   return (
     <div className="min-h-screen pb-20 md:pb-4">
+      {/* Page progress loader */}
+      <NProgressLoader />
+
       {/* Cart Recovery Banner - shows above main content */}
       <CartRecoveryBanner />
 
@@ -1077,6 +1083,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <CommunityRecipeHub />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Spending Insights — Personal analytics */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <SpendingInsights />
                         </section>
                       </ScrollReveal>
                     </LazySection>
@@ -2009,6 +2024,9 @@ export default function Home() {
 
       {/* Order Rating Prompt */}
       <OrderRatingPrompt />
+
+      {/* Floating Deal Alert — social proof notifications */}
+      <FloatingDealAlert />
 
       {/* Mobile Quick Actions FAB */}
       <MobileQuickActions

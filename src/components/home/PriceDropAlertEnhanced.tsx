@@ -177,7 +177,7 @@ function AlertStatistics({ products }: { products: TrackedProduct[] }) {
     { value: 'Tempo médio: 4 dias', icon: Clock, color: '#f59e0b' },
   ]
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
       {stats.map((st) => (
         <motion.div key={st.value} variants={fadeUpVariants}
           className="rounded-xl p-3 text-center"

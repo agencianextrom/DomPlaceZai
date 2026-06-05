@@ -414,7 +414,7 @@ function CommunityStatsBar({ recipes, favoriteCount }: { recipes: Recipe[]; favo
   ]
 
   return (
-    <div className="r69-stats-bar grid grid-cols-3 gap-2 sm:gap-3 mb-5">
+    <div className="r69-stats-bar grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-5">
       {stats.map((stat) => (
         <motion.div
           key={stat.label}

@@ -1541,7 +1541,7 @@ export function MealDealFinder() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="r55-quick-stats grid grid-cols-3 gap-2"
+        className="r55-quick-stats grid grid-cols-2 sm:grid-cols-3 gap-2"
       >
         {[
           { icon: Zap, label: 'Deals Today', value: MEAL_DEALS.length.toString(), color: 'text-amber-500' },

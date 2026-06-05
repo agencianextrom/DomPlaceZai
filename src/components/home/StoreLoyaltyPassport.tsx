@@ -190,7 +190,7 @@ function PassportCover({ onOpen, totalStamps }: { onOpen: () => void; totalStamp
         {/* Embossed title */}
         <div className="text-center">
           <h2
-            className="r58-passport-cover-title text-2xl sm:text-3xl font-black tracking-wider uppercase"
+            className="r58-passport-cover-title text-2xl sm:text-3xl font-black tracking-wider uppercase r62-heading-gradient"
             style={{
               color: '#f5d060',
               textShadow: '0 1px 0 rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3)',
@@ -466,7 +466,7 @@ export function StoreLoyaltyPassport() {
   // loadStamps() already handles SSR via typeof window check
 
   return (
-    <section className="r58-passport-section w-full max-w-md mx-auto px-4 pb-8">
+    <section className="r58-passport-section w-full max-w-md mx-auto px-4 pb-8 r62-card-lift">
       <AnimatePresence mode="wait">
         {!isOpen ? (
           /* ============= COVER VIEW ============= */

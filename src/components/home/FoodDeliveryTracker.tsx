@@ -733,7 +733,7 @@ function DeliveryInstructions() {
 
 function ProgressStats({ routeProgress, etaSeconds, isDelivered }: { routeProgress: number; etaSeconds: number; isDelivered: boolean }) {
   return (
-    <div className="r56-progress-stats grid grid-cols-3 gap-2">
+    <div className="r56-progress-stats grid grid-cols-2 sm:grid-cols-3 gap-2">
       {[
         {
           icon: <Navigation className="h-3.5 w-3.5" />,

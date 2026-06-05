@@ -813,7 +813,7 @@ export function InfluencerShopPage() {
   const colors = bannerColors[currentCreator.bannerGradient as keyof typeof bannerColors] || ['rgba(168,85,247,0.15)', 'rgba(236,72,153,0.15)', 'rgba(251,113,133,0.15)']
 
   return (
-    <section className="r40-influencer-shop w-full space-y-8">
+    <section className="r40-influencer-shop w-full space-y-8 r62-card-lift">
       {/* ============================================================ */}
       {/*  SECTION TITLE                                               */}
       {/* ============================================================ */}
@@ -823,7 +823,7 @@ export function InfluencerShopPage() {
             <Sparkles className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h2 className="r40-section-title text-lg sm:text-xl font-bold text-foreground">Loja do Creator</h2>
+            <h2 className="r40-section-title text-lg sm:text-xl font-bold text-foreground r62-heading-gradient">Loja do Creator</h2>
             <p className="r40-section-subtitle text-xs text-muted-foreground">Produtos selecionados pelos seus influencers favoritos</p>
           </div>
         </div>

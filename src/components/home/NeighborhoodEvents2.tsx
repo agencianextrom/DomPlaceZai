@@ -1083,7 +1083,7 @@ function PastEventsSection({ events }: { events: NeighborhoodEvent[] }) {
       </div>
 
       {/* Photo gallery grid */}
-      <div className="r44-past-gallery grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+      <div className="r44-past-gallery grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2">
         <AnimatePresence>
           {pastEvents.map((event, i) => (
             <motion.div

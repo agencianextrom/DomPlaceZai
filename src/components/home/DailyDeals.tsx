@@ -726,7 +726,7 @@ export function DailyDeals() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: 'easeOut' as const }}
-      className="space-y-4 r26-gradient-border rounded-2xl p-3 sm:p-0 sm:border-0"
+      className="space-y-4 r26-gradient-border rounded-2xl p-3 sm:p-0 sm:border-0 r62-card-lift"
     >
       {/* Section header */}
       <div className="flex items-center justify-between">
@@ -735,7 +735,7 @@ export function DailyDeals() {
             <Zap className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h2 className="text-base font-bold r26-shimmer-text r61-deals-shimmer">Ofertas do Dia</h2>
+            <h2 className="text-base font-bold r26-shimmer-text r61-deals-shimmer r62-heading-gradient">Ofertas do Dia</h2>
             <p className="text-[10px] text-muted-foreground">Preços exclusivos até às 23:59</p>
           </div>
         </div>

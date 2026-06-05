@@ -260,7 +260,7 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-4">
       {/* Summary skeleton */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="r64-price-stat rounded-xl p-3">
             <Skeleton className="h-4 w-16 mb-2" />
@@ -469,7 +469,7 @@ export function PriceDropAlertsWidget({ className = '' }: PriceDropAlertsWidgetP
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring' as const, stiffness: 280, damping: 24 }}
-          className="grid grid-cols-3 gap-3 mb-4"
+          className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4"
         >
           <div className="r64-price-stat rounded-xl p-3 text-center">
             <p className="text-[11px] text-muted-foreground font-medium">Com desconto</p>

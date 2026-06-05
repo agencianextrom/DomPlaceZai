@@ -251,7 +251,7 @@ function CartSummary({ group, onFinalize }: { group: FamilyGroup; onFinalize: ()
         animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.3, 0.15] }} transition={{ duration: 3, repeat: Infinity }} aria-hidden="true" />
       <div className="relative z-10">
         <h3 className="text-xs font-bold text-foreground mb-3 flex items-center gap-2"><ShoppingCart className="h-4 w-4 text-primary" />Resumo do pedido</h3>
-        <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
           {[{ v: mc, l: mc === 1 ? 'membro' : 'membros' }, { v: ti, l: ti === 1 ? 'item' : 'itens' }, { v: tv, l: 'total', fmt: true }].map((c) => (
             <div key={c.l} className="text-center p-2 rounded-lg bg-secondary/30">
               <p className={c.fmt ? 'text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums' : 'text-lg font-black text-foreground tabular-nums'}>

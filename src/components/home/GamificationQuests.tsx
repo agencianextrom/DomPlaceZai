@@ -614,7 +614,7 @@ export default function GamificationQuests() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}
-        className="rounded-2xl border border-border bg-card overflow-hidden"
+        className="rounded-2xl border border-border bg-card overflow-hidden r62-card-lift"
         style={{ boxShadow: '0 4px 24px rgba(0, 0, 0, 0.06)' }}
       >
         {/* ─── Header: XP Level System ─────────────────────────── */}
@@ -636,7 +636,7 @@ export default function GamificationQuests() {
                   <Trophy className="h-5 w-5 text-yellow-300" />
                 </motion.div>
                 <div>
-                  <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-1.5 r62-heading-gradient">
                     Missões e Conquistas
                     <StreakFire streak={progress.streak} />
                   </h3>

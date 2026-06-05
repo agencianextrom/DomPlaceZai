@@ -46023,3 +46023,162 @@
     transition: none;
   }
 }
+
+/* R70 — SPENDING INSIGHTS */
+@keyframes r70-bar-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes r70-counter-appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes r70-savings-shimmer {
+  0% { background-position: -200% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes r70-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.r70-summary-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r70-summary-card:hover {
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.r70-summary-bg {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.08) 100%);
+}
+
+.r70-comparison-card {
+  transition: transform 0.2s ease;
+}
+.r70-comparison-card:hover {
+  transform: translateY(-2px);
+}
+
+.r70-counter-value {
+  animation: r70-counter-appear 0.5s ease forwards;
+}
+
+.r70-period-tab {
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+.r70-period-tab:active {
+  transform: scale(0.96);
+}
+
+.r70-donut-chart {
+  transition: transform 0.2s ease;
+}
+
+.r70-legend-item {
+  transition: background-color 0.15s ease;
+}
+.r70-legend-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+}
+
+.r70-bar-chart {
+  transition: transform 0.2s ease;
+}
+
+.r70-purchase-item {
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.r70-purchase-item:active {
+  transform: scale(0.99);
+}
+
+.r70-purchase-rank {
+  font-variant-numeric: tabular-nums;
+}
+
+.r70-savings-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
+}
+
+.r70-savings-icon {
+  animation: r70-pulse-ring 2s ease-in-out infinite;
+}
+
+.r70-budget-track {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.r70-budget-fill {
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.r70-budget-fill-green {
+  background: linear-gradient(90deg, #059669, #10b981);
+}
+.r70-budget-fill-yellow {
+  background: linear-gradient(90deg, #d97706, #f59e0b);
+}
+.r70-budget-fill-red {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+.r70-tip-item {
+  transition: background-color 0.15s ease;
+}
+.r70-tip-item:hover {
+  background-color: rgba(245, 158, 11, 0.04);
+}
+
+.r70-tips-toggle {
+  transition: color 0.15s ease;
+}
+.r70-tips-toggle:active {
+  transform: scale(0.98);
+}
+
+.r70-tips-collapse {
+  transition: color 0.15s ease, background-color 0.15s ease;
+  border-radius: 12px;
+}
+.r70-tips-collapse:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.r70-header-icon {
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r70-summary-card:hover {
+    transform: none;
+  }
+  .r70-comparison-card:hover {
+    transform: none;
+  }
+  .r70-counter-value {
+    animation: none;
+  }
+  .r70-bar-grow {
+    animation: none;
+  }
+  .r70-counter-appear {
+    animation: none;
+  }
+  .r70-savings-icon {
+    animation: none;
+  }
+  .r70-budget-fill {
+    transition: none;
+  }
+  .r70-pulse-ring {
+    animation: none;
+  }
+  .r70-savings-shimmer {
+    animation: none;
+  }
+}

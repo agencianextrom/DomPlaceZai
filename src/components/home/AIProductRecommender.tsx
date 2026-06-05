@@ -1018,7 +1018,7 @@ export function AIProductRecommender() {
   }
 
   return (
-    <section className="r51-recommend-section mt-6 relative overflow-hidden">
+    <section className="r51-recommend-section mt-6 relative overflow-hidden r62-card-lift">
       {/* Background Effects */}
       <motion.div
         className="r51-recommend-bg-orb absolute top-0 left-[10%] w-40 h-40 rounded-full pointer-events-none"
@@ -1087,7 +1087,7 @@ export function AIProductRecommender() {
             <BrainCircuit className="h-5 w-5 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-bold flex items-center gap-2 r62-heading-gradient">
               <span>Para Você</span>
               <motion.div
                 className="r51-recommend-header-sparkle"

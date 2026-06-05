@@ -339,7 +339,7 @@ function FurnitureGrid({
   onSelect: (id: string) => void
 }) {
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
       {FURNITURE_ITEMS.map((item) => {
         const isActive = selected === item.id
         const discount = Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)

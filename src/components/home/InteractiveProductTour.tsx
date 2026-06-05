@@ -1366,7 +1366,7 @@ export function InteractiveProductTour() {
 
             {/* Tour Container */}
             <motion.div
-              className="r49-tour-container relative w-full max-w-lg max-h-[85vh] overflow-hidden rounded-3xl bg-card border border-border shadow-2xl flex flex-col"
+              className="r49-tour-container relative w-full max-w-lg max-h-[85vh] overflow-hidden rounded-3xl bg-card border border-border shadow-2xl flex flex-col r62-card-lift"
               initial={{ opacity: 0, scale: 0.9, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 30 }}
@@ -1472,7 +1472,7 @@ export function InteractiveProductTour() {
                       {/* Title & subtitle */}
                       <div className="r49-tour-step-titles mb-4">
                         <motion.h3
-                          className="r49-tour-step-title text-lg font-bold text-foreground"
+                          className="r49-tour-step-title text-lg font-bold text-foreground r62-heading-gradient"
                           initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.15 }}

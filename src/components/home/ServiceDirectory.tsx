@@ -327,7 +327,7 @@ export function ServiceDirectory() {
   if (!isLoaded) return <ServiceDirectorySkeleton />
 
   return (
-    <section className="glass-card rounded-2xl p-5 r27-service-directory relative overflow-hidden">
+    <section className="glass-card rounded-2xl p-5 r27-service-directory relative overflow-hidden r62-card-lift">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2.5">
@@ -339,7 +339,7 @@ export function ServiceDirectory() {
             <MessageCircle className="h-5 w-5 text-white" />
           </motion.div>
           <div>
-            <h2 className="text-base font-bold">Serviços Locais</h2>
+            <h2 className="text-base font-bold r62-heading-gradient">Serviços Locais</h2>
             <p className="text-[10px] text-muted-foreground">Profissionais da sua região</p>
           </div>
         </div>
