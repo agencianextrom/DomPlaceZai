@@ -703,8 +703,7 @@ export function PriceHistoryChart({ currentPrice, productName }: PriceHistoryCha
         transition={{ delay: 0.4, type: 'spring' as const, stiffness: 300, damping: 25 }}
         className="px-4 pb-4 pt-2"
       >
-        <div className="grid grid-cols-3 gap-2">
-          {/* Lowest price stat */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           <motion.div
             whileHover={{ y: -2 }}
             className="rounded-xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200/50 dark:border-emerald-800/30 px-3 py-2.5 text-center"

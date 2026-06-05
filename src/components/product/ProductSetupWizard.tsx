@@ -667,7 +667,7 @@ function StepTimer({ estimatedMinutes, stepKey }: { estimatedMinutes: number; st
               variant="ghost"
               size="icon"
               onClick={start}
-              className="r40-timer-start-btn h-7 w-7"
+              className="r40-timer-start-btn min-h-[44px] min-w-[44px] h-7 w-7"
             >
               <Play className="h-3.5 w-3.5" style={{ color: 'rgba(22, 163, 74, 0.8)' }} />
             </Button>
@@ -678,7 +678,7 @@ function StepTimer({ estimatedMinutes, stepKey }: { estimatedMinutes: number; st
               variant="ghost"
               size="icon"
               onClick={pause}
-              className="r40-timer-pause-btn h-7 w-7"
+              className="r40-timer-pause-btn min-h-[44px] min-w-[44px] h-7 w-7"
             >
               <Pause className="h-3.5 w-3.5" style={{ color: 'rgba(217, 119, 6, 0.8)' }} />
             </Button>
@@ -689,7 +689,7 @@ function StepTimer({ estimatedMinutes, stepKey }: { estimatedMinutes: number; st
             variant="ghost"
             size="icon"
             onClick={reset}
-            className="r40-timer-reset-btn h-7 w-7"
+            className="r40-timer-reset-btn min-h-[44px] min-w-[44px] h-7 w-7"
           >
             <RotateCcw className="h-3.5 w-3.5" style={{ color: 'rgba(100, 116, 139, 0.6)' }} />
           </Button>

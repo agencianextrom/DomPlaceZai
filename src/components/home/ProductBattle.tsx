@@ -789,7 +789,7 @@ export function ProductBattle() {
             <Crown className="h-4 w-4 text-amber-600 dark:text-amber-400" />
             <span className="text-xs font-bold text-amber-700 dark:text-amber-400">Suas Estatísticas de Duelo</span>
           </div>
-          <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-center">
             <div>
               <p className="text-lg font-bold text-primary">
                 <AnimatedNumber value={battleStats.totalVotes} />

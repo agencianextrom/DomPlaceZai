@@ -482,7 +482,7 @@ export function ProfileView() {
         </div>
 
         {/* Stats skeleton */}
-        <div className="grid grid-cols-3 gap-2.5 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-6">
           {[0, 1, 2].map(i => (
             <Card key={i} className="border-border">
               <CardContent className="p-3 text-center">
@@ -730,7 +730,7 @@ export function ProfileView() {
         
         {/* Stats row (overlapping the wave) */}
         <div className="relative z-20 px-4 -mt-3">
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             <motion.div
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}

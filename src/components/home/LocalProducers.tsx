@@ -99,7 +99,7 @@ export function LocalProducers() {
             Apoie o Local
           </h2>
           <p className="text-emerald-100 text-xs mb-3">Conheça os produtores da nossa região</p>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {stats.map((stat, i) => (
               <motion.div
                 key={stat.label}

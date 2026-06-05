@@ -1300,7 +1300,7 @@ export function DroneDeliveryTracker() {
       </Card>
 
       {/* ─── Gauges Row ─── */}
-      <div className="grid grid-cols-3 gap-3 r53-drone-gauges-row">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 r53-drone-gauges-row">
         <motion.div
           initial={{ opacity: 0, y: 16, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}

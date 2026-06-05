@@ -1136,7 +1136,7 @@ function ShareModal({
           </motion.div>
 
           {/* Social */}
-          <div className="r56-share-social grid grid-cols-3 gap-2">
+          <div className="r56-share-social grid grid-cols-2 sm:grid-cols-3 gap-2">
             {[
               { icon: Facebook, label: 'Facebook', color: '#1877f2' },
               { icon: Twitter, label: 'Twitter', color: '#1da1f2' },

@@ -268,7 +268,7 @@ export function SimilarProducts({
             onClick={() => scrollBy('left')}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="h-7 w-7 rounded-full border border-border flex items-center justify-center hover:bg-muted/50 transition-colors"
+            className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full border border-border flex items-center justify-center hover:bg-muted/50 transition-colors"
             aria-label="Rolar para esquerda"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -277,7 +277,7 @@ export function SimilarProducts({
             onClick={() => scrollBy('right')}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="h-7 w-7 rounded-full border border-border flex items-center justify-center hover:bg-muted/50 transition-colors"
+            className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full border border-border flex items-center justify-center hover:bg-muted/50 transition-colors"
             aria-label="Rolar para direita"
           >
             <ChevronRight className="h-4 w-4" />

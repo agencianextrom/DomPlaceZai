@@ -93,6 +93,7 @@ import { StoreRatingsOverview } from '@/components/home/StoreRatingsOverview'
 import { ProductLaunchCountdown } from '@/components/home/ProductLaunchCountdown'
 import { CompareProductsCTA } from '@/components/home/CompareProductsCTA'
 import { PriceDropAlerts } from '@/components/home/PriceDropAlerts'
+import { PriceDropAlertsWidget } from '@/components/home/PriceDropAlertsWidget'
 import { CommunityPoll } from '@/components/home/CommunityPoll'
 import { InteractiveGameZone } from '@/components/home/InteractiveGameZone'
 import { ServiceDirectory } from '@/components/home/ServiceDirectory'
@@ -102,7 +103,7 @@ import { LiveOrderMap } from '@/components/home/LiveOrderMap'
 import { ExpressDeliveryHub } from '@/components/home/ExpressDeliveryHub'
 import { NeighborhoodMarketplace } from '@/components/home/NeighborhoodMarketplace'
 import { LocalProducers } from '@/components/home/LocalProducers'
-import { EcoImpactTracker } from '@/components/home/EcoImpactTracker'
+
 import { StoreEvents } from '@/components/home/StoreEvents'
 import { CommunityChallenge } from '@/components/home/CommunityChallenge'
 import { ProductWishTracker } from '@/components/home/ProductWishTracker'
@@ -114,7 +115,7 @@ import { StoreEventCalendar } from '@/components/store/StoreEventCalendar'
 import { ReviewSentimentAI } from '@/components/home/ReviewSentimentAI'
 import { StoreMembershipTiers } from '@/components/store/StoreMembershipTiers'
 import { InfluencerShopPage } from '@/components/home/InfluencerShopPage'
-import { EcoImpactDashboard } from '@/components/home/EcoImpactDashboard'
+
 import { PriceComparisonBot } from '@/components/home/PriceComparisonBot'
 import { ProductScanSearch } from '@/components/product/ProductScanSearch'
 import { ARProductTryOn2 } from '@/components/product/ARProductTryOn2'
@@ -130,7 +131,7 @@ import LiveAuctionSystem from '@/components/home/LiveAuctionSystem'
 import SmartReceipt from '@/components/orders/SmartReceipt'
 import PersonalizedHomePage from '@/components/home/PersonalizedHomePage'
 import ProductBattleArena from '@/components/home/ProductBattleArena'
-import EcoImpactTracker2 from '@/components/home/EcoImpactTracker2'
+
 import CollaborativeShopping from '@/components/home/CollaborativeShopping'
 import ProductLaunchAlert from '@/components/home/ProductLaunchAlert'
 import SmartDeliveryHub from '@/components/home/SmartDeliveryHub'
@@ -847,6 +848,15 @@ export default function Home() {
                       </section>
                     </ScrollReveal>
 
+                    {/* Price Drop Alerts Widget — Quedas de Preço */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-4">
+                          <PriceDropAlertsWidget />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
                     {/* Deal of the Day — Oferta do Dia */}
                     <ScrollReveal>
                       <section className="mt-4">
@@ -1353,7 +1363,7 @@ export default function Home() {
                     <LazySection>
                       <ScrollReveal delay={0.15}>
                         <section className="mt-6">
-                          <EcoImpactTracker />
+                          <NeighborhoodFeed />
                         </section>
                       </ScrollReveal>
                     </LazySection>
@@ -1466,11 +1476,11 @@ export default function Home() {
                       </ScrollReveal>
                     </LazySection>
 
-                    {/* Eco Impact Dashboard */}
+                    {/* Community Highlights */}
                     <LazySection>
                       <ScrollReveal delay={0.15}>
                         <section className="mt-6">
-                          <EcoImpactDashboard />
+                          <NeighborhoodHub />
                         </section>
                       </ScrollReveal>
                     </LazySection>
@@ -1625,15 +1635,6 @@ export default function Home() {
                       <ScrollReveal delay={0.3}>
                         <section>
                           <ProductBattleArena />
-                        </section>
-                      </ScrollReveal>
-                    </LazySection>
-
-                    {/* Eco Impact Tracker 2 */}
-                    <LazySection>
-                      <ScrollReveal delay={0.3}>
-                        <section>
-                          <EcoImpactTracker2 />
                         </section>
                       </ScrollReveal>
                     </LazySection>

@@ -231,7 +231,7 @@ export function RecentlyViewed() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
+                className="min-h-[44px] min-w-[44px] h-7 w-7"
                 onClick={() => scrollByAmount(-1)}
                 aria-label="Rolar para esquerda"
               >
@@ -240,7 +240,7 @@ export function RecentlyViewed() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
+                className="min-h-[44px] min-w-[44px] h-7 w-7"
                 onClick={() => scrollByAmount(1)}
                 aria-label="Rolar para direita"
               >

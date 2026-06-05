@@ -798,8 +798,7 @@ function PersonalizedHomePage() {
         </div>
 
         <motion.div
-          className="grid grid-cols-3 gap-3"
-          variants={staggerContainer}
+          className="grid grid-cols-2 sm:grid-cols-3 gap-3"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}

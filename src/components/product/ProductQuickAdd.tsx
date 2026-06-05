@@ -136,7 +136,7 @@ function QuickAddContent({ product }: { product: ProductData }) {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={handleToggleFavorite}
-          className="h-8 w-8 rounded-full bg-secondary/50 flex items-center justify-center self-start shrink-0"
+          className="min-h-[44px] min-w-[44px] h-8 w-8 rounded-full bg-secondary/50 flex items-center justify-center self-start shrink-0"
         >
           <Sparkles className="h-4 w-4 text-muted-foreground" />
         </motion.button>

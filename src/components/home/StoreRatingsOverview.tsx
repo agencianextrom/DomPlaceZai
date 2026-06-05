@@ -529,7 +529,7 @@ function SummaryStatsBar({ stores }: { stores: StoreWithRating[] }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring' as const, stiffness: 260, damping: 22, delay: 0.1 }}
-      className="grid grid-cols-3 gap-3 mb-5"
+      className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5"
     >
       {[
         {

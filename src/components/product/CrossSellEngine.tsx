@@ -665,7 +665,7 @@ export function CrossSellEngine() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setViewMode('grid')}
-            className={`h-7 w-7 rounded-md flex items-center justify-center transition-colors ${
+            className={`min-h-[44px] min-w-[44px] h-7 w-7 rounded-md flex items-center justify-center transition-colors ${
               isGrid
                 ? 'bg-background text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
@@ -678,7 +678,7 @@ export function CrossSellEngine() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setViewMode('list')}
-            className={`h-7 w-7 rounded-md flex items-center justify-center transition-colors ${
+            className={`min-h-[44px] min-w-[44px] h-7 w-7 rounded-md flex items-center justify-center transition-colors ${
               !isGrid
                 ? 'bg-background text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'

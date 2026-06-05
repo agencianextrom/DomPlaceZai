@@ -451,7 +451,7 @@ function RecipeDetail({ recipe, onClose }: { recipe: Recipe; onClose: () => void
         <motion.button
           whileTap={{ scale: 0.88 }}
           onClick={onClose}
-          className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white z-10"
+          className="absolute top-3 right-3 min-h-[44px] min-w-[44px] h-8 w-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white z-10"
         >
           <X className="h-4 w-4" />
         </motion.button>

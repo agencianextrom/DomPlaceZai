@@ -194,7 +194,7 @@ export function ReviewPhotoGallery({ photos, onUpload, compact = false }: Review
                     const previewIdx = previewImages.findIndex(url => url === photo.url)
                     if (previewIdx >= 0) removePreview(previewIdx)
                   }}
-                  className="absolute top-1 right-1 h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm z-10"
+                  className="absolute top-1 right-1 min-h-[44px] min-w-[44px] h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm z-10"
                 >
                   <X className="h-3 w-3" />
                 </motion.button>

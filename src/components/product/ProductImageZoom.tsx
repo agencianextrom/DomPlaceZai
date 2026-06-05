@@ -181,7 +181,7 @@ export function ProductImageZoom({ product, isOpen, onClose, initialIndex = 0 }:
               <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1">
                 <button
                   onClick={zoomOut}
-                  className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
+                  className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
                 >
                   <ZoomOut className="h-3.5 w-3.5 text-white" />
                 </button>
@@ -190,7 +190,7 @@ export function ProductImageZoom({ product, isOpen, onClose, initialIndex = 0 }:
                 </span>
                 <button
                   onClick={zoomIn}
-                  className="h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
+                  className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
                 >
                   <ZoomIn className="h-3.5 w-3.5 text-white" />
                 </button>
@@ -201,7 +201,7 @@ export function ProductImageZoom({ product, isOpen, onClose, initialIndex = 0 }:
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   onClick={resetZoom}
-                  className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                  className="min-h-[44px] min-w-[44px] h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
                 >
                   <RotateCw className="h-3.5 w-3.5 text-white" />
                 </motion.button>
@@ -209,7 +209,7 @@ export function ProductImageZoom({ product, isOpen, onClose, initialIndex = 0 }:
 
               <button
                 onClick={onClose}
-                className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                className="min-h-[44px] min-w-[44px] h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
               >
                 <X className="h-4 w-4 text-white" />
               </button>

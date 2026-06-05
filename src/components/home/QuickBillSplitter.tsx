@@ -487,7 +487,7 @@ export function QuickBillSplitter({ className = '' }: QuickBillSplitterProps) {
         {/* ─── Tip Selection ─── */}
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-foreground">Gorjeta</label>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {TIP_OPTIONS.map(opt => (
               <motion.button
                 key={opt.value}

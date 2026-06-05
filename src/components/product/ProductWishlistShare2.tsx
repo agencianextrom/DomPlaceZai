@@ -1251,7 +1251,7 @@ export function ProductWishlistShare2() {
 
       {/* ===== STATS ROW ===== */}
       <motion.div
-        className="r43-stats-row grid grid-cols-3 gap-3 mb-4"
+        className="r43-stats-row grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ ...springTransition, delay: 0.1 }}

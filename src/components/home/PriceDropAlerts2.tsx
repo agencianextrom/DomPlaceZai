@@ -806,7 +806,7 @@ export function PriceDropAlerts2() {
       {!isLoading && alerts.length > 0 && (
         <motion.div
           variants={headerVariants}
-          className="grid grid-cols-3 gap-2"
+          className="grid grid-cols-2 sm:grid-cols-3 gap-2"
         >
           {[
             { label: 'Economia Total', value: formatBRL(totalSavings), color: '#16a34a', icon: Zap },

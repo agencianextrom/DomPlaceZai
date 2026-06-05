@@ -1053,7 +1053,7 @@ export function ProductOriginTracker2() {
               </motion.div>
 
               {/* ── Stats Row ── */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, type: 'spring' as const, stiffness: 280, damping: 22 }} className="grid grid-cols-3 gap-3">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, type: 'spring' as const, stiffness: 280, damping: 22 }} className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <SustainabilityRing score={selectedProduct.sustainabilityScore} isVisible={isVisible} />
                 <CarbonDisplay kg={selectedProduct.carbonFootprint} isVisible={isVisible} />
                 <FreshnessBar daysFresh={selectedProduct.daysFresh} totalDays={selectedProduct.totalFreshDays} isVisible={isVisible} />
@@ -1103,7 +1103,7 @@ export function ProductOriginTracker2() {
                       <Award className="h-3.5 w-3.5 text-amber-500" />
                       Certificações
                     </h4>
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {selectedProduct.certifications.map((badge, idx) => (
                         <CertificationBadge key={badge.id} badge={badge} isVisible={isVisible} delay={0.4 + idx * 0.12} />
                       ))}

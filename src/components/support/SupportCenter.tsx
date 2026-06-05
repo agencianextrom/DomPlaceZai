@@ -575,7 +575,7 @@ export function SupportCenter() {
           </h3>
 
           {/* Quick contact buttons with animated icons */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
             <motion.button
               whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(16,185,129,0.15)' }}
               whileTap={{ scale: 0.95 }}

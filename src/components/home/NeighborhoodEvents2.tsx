@@ -685,7 +685,7 @@ function EventDetailDialog({ event, onClose }: { event: NeighborhoodEvent | null
         {event.isOutdoor && event.weather && (
           <div className="r44-weather-detail flex items-center gap-3 p-3 rounded-lg bg-secondary/30">
             <span className="text-3xl">{event.weather.condition === 'sunny' ? '☀️' : event.weather.condition === 'cloudy' ? '⛅' : '🌧️'}</span>
-            <div className="flex-1 grid grid-cols-3 gap-2">
+            <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-2">
               <div className="text-center">
                 <Thermometer className="h-3 w-3 text-muted-foreground mx-auto" />
                 <p className="text-xs font-bold">{event.weather.temp}</p>
@@ -736,7 +736,7 @@ function EventDetailDialog({ event, onClose }: { event: NeighborhoodEvent | null
             <p className="text-xs font-semibold mb-2 flex items-center gap-1">
               <Camera className="h-3.5 w-3.5" /> Fotos
             </p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {event.pastPhotos.map((photo, i) => (
                 <motion.div
                   key={i}

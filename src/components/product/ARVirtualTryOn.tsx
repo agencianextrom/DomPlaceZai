@@ -627,7 +627,7 @@ function LightingTipsOverlay({ visible, onClose }: { visible: boolean; onClose: 
                 <h4 className="text-sm font-bold">Dicas de Iluminação</h4>
               </div>
               <motion.button
-                className="h-7 w-7 rounded-full flex items-center justify-center"
+                className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-full flex items-center justify-center"
                 style={{ background: 'rgba(0,0,0,0.06)' }}
                 onClick={onClose}
                 whileTap={{ scale: 0.9 }}
@@ -766,7 +766,7 @@ function SharePhotoModal({
             onClick={(e) => e.stopPropagation()}
           >
             <h4 className="text-sm font-bold mb-4 text-center">Compartilhar Foto</h4>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {shareOptions.map((opt) => (
                 <motion.button
                   key={opt.id}
@@ -1609,7 +1609,7 @@ export function ARVirtualTryOn() {
         <div className="flex items-center gap-1.5">
           {/* Share */}
           <motion.button
-            className="h-8 w-8 rounded-lg flex items-center justify-center"
+            className="min-h-[44px] min-w-[44px] h-8 w-8 rounded-lg flex items-center justify-center"
             style={{ background: 'rgba(0,0,0,0.04)' }}
             onClick={handleShareProduct}
             whileTap={{ scale: 0.92 }}
@@ -1618,7 +1618,7 @@ export function ARVirtualTryOn() {
           </motion.button>
           {/* Wishlist */}
           <motion.button
-            className="h-8 w-8 rounded-lg flex items-center justify-center"
+            className="min-h-[44px] min-w-[44px] h-8 w-8 rounded-lg flex items-center justify-center"
             style={{ background: savedToWishlist ? 'rgba(239,68,68,0.1)' : 'rgba(0,0,0,0.04)' }}
             onClick={handleWishlist}
             whileTap={{ scale: 0.92 }}
@@ -1645,7 +1645,7 @@ export function ARVirtualTryOn() {
       <div className="r50-artry-carousel-wrapper relative">
         {/* Scroll arrows */}
         <motion.button
-          className="r50-artry-carousel-arrow absolute left-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full flex items-center justify-center shadow-md"
+          className="r50-artry-carousel-arrow absolute left-1 top-1/2 -translate-y-1/2 z-10 min-h-[44px] min-w-[44px] h-8 w-8 rounded-full flex items-center justify-center shadow-md"
           style={{ background: 'rgba(255,255,255,0.9)' }}
           onClick={() => carouselScroll('left')}
           whileTap={{ scale: 0.85 }}
@@ -1668,7 +1668,7 @@ export function ARVirtualTryOn() {
         </div>
 
         <motion.button
-          className="r50-artry-carousel-arrow absolute right-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full flex items-center justify-center shadow-md"
+          className="r50-artry-carousel-arrow absolute right-1 top-1/2 -translate-y-1/2 z-10 min-h-[44px] min-w-[44px] h-8 w-8 rounded-full flex items-center justify-center shadow-md"
           style={{ background: 'rgba(255,255,255,0.9)' }}
           onClick={() => carouselScroll('right')}
           whileTap={{ scale: 0.85 }}

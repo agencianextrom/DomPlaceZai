@@ -251,11 +251,11 @@ export function ProductQuickView({ product, open, onClose }: ProductQuickViewPro
           {/* Quantity + Add to Cart */}
           <div className="flex items-center gap-3 pt-1">
             <div className="flex items-center gap-1 bg-muted rounded-xl p-0.5">
-              <motion.button whileTap={{ scale: 0.9 }} onClick={() => setQuantity(Math.max(1, quantity - 1))} className="h-8 w-8 rounded-lg flex items-center justify-center hover:bg-background transition-colors">
+              <motion.button whileTap={{ scale: 0.9 }} onClick={() => setQuantity(Math.max(1, quantity - 1))} className="min-h-[44px] min-w-[44px] h-8 w-8 rounded-lg flex items-center justify-center hover:bg-background transition-colors">
                 <Minus className="h-3.5 w-3.5" />
               </motion.button>
               <span className="w-8 text-center text-sm font-bold">{quantity}</span>
-              <motion.button whileTap={{ scale: 0.9 }} onClick={() => setQuantity(quantity + 1)} className="h-8 w-8 rounded-lg flex items-center justify-center hover:bg-background transition-colors">
+              <motion.button whileTap={{ scale: 0.9 }} onClick={() => setQuantity(quantity + 1)} className="min-h-[44px] min-w-[44px] h-8 w-8 rounded-lg flex items-center justify-center hover:bg-background transition-colors">
                 <Plus className="h-3.5 w-3.5" />
               </motion.button>
             </div>

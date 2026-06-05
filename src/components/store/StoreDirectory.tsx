@@ -192,7 +192,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] h-6 w-6 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
             >
               <X className="h-3 w-3 text-muted-foreground" />
             </motion.button>
@@ -310,7 +310,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
                         e.stopPropagation()
                         toggleFavoriteStore(store.id)
                       }}
-                      className="absolute top-2 right-2 h-8 w-8 rounded-full bg-card/80 backdrop-blur-sm border border-border/50 flex items-center justify-center hover:bg-card transition-colors z-10"
+                      className="absolute top-2 right-2 min-h-[44px] min-w-[44px] h-8 w-8 rounded-full bg-card/80 backdrop-blur-sm border border-border/50 flex items-center justify-center hover:bg-card transition-colors z-10"
                     >
                       <Heart
                         className={`h-4 w-4 transition-colors ${

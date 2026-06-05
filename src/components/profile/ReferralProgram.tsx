@@ -196,7 +196,7 @@ export function ReferralProgram() {
       </motion.div>
 
       {/* ── Stats Row ── */}
-      <div className="mt-4 grid grid-cols-3 gap-3">
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}

@@ -116,7 +116,7 @@ function CollectionCardSkeleton() {
         <CardContent className="p-3">
           <Skeleton className="h-5 w-32 mb-2" />
           <Skeleton className="h-3 w-48 mb-3" />
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="space-y-1.5">
                 <Skeleton className="aspect-square rounded-lg" />
@@ -250,7 +250,7 @@ function CollectionCard({ collection, index }: { collection: Collection; index: 
             </div>
 
             {/* Mini product grid */}
-            <div className="grid grid-cols-3 gap-2.5 mb-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-3">
               {collection.products.slice(0, 3).map((product) => (
                 <MiniProductTile key={product.id} product={product} />
               ))}
@@ -491,7 +491,7 @@ export function RelatedCollections({ category, price, tags }: {
             whileTap={{ scale: 0.9 }}
             onClick={() => scrollBy('left')}
             disabled={!canScrollLeft}
-            className={`h-8 w-8 rounded-full border flex items-center justify-center transition-all ${
+            className={`min-h-[44px] min-w-[44px] h-8 w-8 rounded-full border flex items-center justify-center transition-all ${
               canScrollLeft
                 ? 'border-primary/20 bg-card hover:bg-primary/5 text-primary'
                 : 'border-border bg-muted text-muted-foreground/30 cursor-not-allowed'
@@ -503,7 +503,7 @@ export function RelatedCollections({ category, price, tags }: {
             whileTap={{ scale: 0.9 }}
             onClick={() => scrollBy('right')}
             disabled={!canScrollRight}
-            className={`h-8 w-8 rounded-full border flex items-center justify-center transition-all ${
+            className={`min-h-[44px] min-w-[44px] h-8 w-8 rounded-full border flex items-center justify-center transition-all ${
               canScrollRight
                 ? 'border-primary/20 bg-card hover:bg-primary/5 text-primary'
                 : 'border-border bg-muted text-muted-foreground/30 cursor-not-allowed'

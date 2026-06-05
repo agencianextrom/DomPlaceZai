@@ -456,7 +456,7 @@ function MethodSplitPanel({
                     transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
                   >
                     <div
-                      className="r39-clear-btn flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-red-50 text-xs text-red-500 transition-colors hover:bg-red-100"
+                      className="r39-clear-btn flex min-h-[44px] min-w-[44px] h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-red-50 text-xs text-red-500 transition-colors hover:bg-red-100"
                       onClick={() => onUpdate(method.key, 0)}
                     >
                       ✕
@@ -623,7 +623,7 @@ function FriendSplitPanel({
                     transition={{ type: 'spring' as const, stiffness: 400, damping: 18 }}
                   >
                     <div
-                      className="r39-remove-friend flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-red-50 text-xs text-red-500 transition-colors hover:bg-red-100"
+                      className="r39-remove-friend flex min-h-[44px] min-w-[44px] h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-red-50 text-xs text-red-500 transition-colors hover:bg-red-100"
                       onClick={() => onRemoveFriend(friend.id)}
                     >
                       ✕
@@ -663,7 +663,7 @@ function FriendSplitPanel({
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="r39-whatsapp-btn flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 text-green-700 transition-colors hover:bg-green-200"
+                      className="r39-whatsapp-btn flex min-h-[44px] min-w-[44px] h-8 w-8 items-center justify-center rounded-lg bg-green-100 text-green-700 transition-colors hover:bg-green-200"
                       title="Enviar via WhatsApp"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

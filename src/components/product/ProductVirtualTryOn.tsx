@@ -410,7 +410,7 @@ export function ProductVirtualTryOn({ product }: ProductVirtualTryOnProps) {
 
           {/* Fullscreen hint */}
           <motion.button
-            className="absolute top-3 right-3 h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/40 transition-colors"
+            className="absolute top-3 right-3 min-h-[44px] min-w-[44px] h-8 w-8 rounded-full bg-black/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/40 transition-colors"
             whileTap={{ scale: 0.9 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

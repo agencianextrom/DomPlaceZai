@@ -428,7 +428,7 @@ export function CashbackTracker() {
       </motion.div>
 
       {/* ── Monthly Summary ─────────────────────── */}
-      <div className="grid grid-cols-3 gap-3 mt-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
         {[
           {
             label: 'Ganho este mes',

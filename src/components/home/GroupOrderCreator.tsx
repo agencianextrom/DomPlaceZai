@@ -957,7 +957,7 @@ function CreateGroupModal({
                 <Split className="h-3 w-3" />
                 Tipo de Divisão
               </label>
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                 {(['igual', 'por_item', 'porcentual'] as SplitType[]).map((type) => (
                   <motion.button
                     key={type}
@@ -1215,7 +1215,7 @@ export function GroupOrderCreator() {
 
           {/* ═══ BENEFITS CARDS ═══ */}
           <div className="px-4 pb-3">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {benefits.map((benefit) => (
                 <BenefitCard key={benefit.title} {...benefit} />
               ))}

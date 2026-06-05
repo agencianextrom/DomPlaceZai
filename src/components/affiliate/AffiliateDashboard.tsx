@@ -680,7 +680,7 @@ export function AffiliateDashboard() {
               </div>
               {dashboard.totalReferrals > 0 && dashboard.totalConversions > 0 && (
                 <div className="mt-4 p-3 bg-background rounded-xl border border-primary/20">
-                  <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-center">
                     <div>
                       <p className="text-sm font-bold text-primary">{dashboard.totalReferrals}</p>
                       <p className="text-[9px] text-muted-foreground">Indicacoes</p>
@@ -1053,7 +1053,7 @@ export function AffiliateDashboard() {
           )}
 
           {/* Summary stats cards */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
             <motion.div {...fadeUp} transition={{ delay: 0.22 }}>
               <Card className="border-border/50">
                 <CardContent className="p-3 text-center">

@@ -453,7 +453,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35 }}
-          className="mt-4 grid grid-cols-3 gap-2"
+          className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-2"
         >
           {trustBadges.map((badge, i) => (
             <motion.div

@@ -435,7 +435,7 @@ function RescheduleModal({
                 </div>
                 <h3 className="font-bold text-base">Reagendar entrega</h3>
               </div>
-              <button onClick={onClose} className="h-8 w-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80">
+              <button onClick={onClose} className="min-h-[44px] min-w-[44px] h-8 w-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80">
                 <X className="h-4 w-4" />
               </button>
             </div>

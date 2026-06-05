@@ -68,7 +68,7 @@ function LiveOrderMapSkeleton() {
         <Skeleton className="h-6 w-24" />
       </div>
       <Skeleton className="w-full h-72 rounded-2xl" />
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <Skeleton className="h-16 rounded-xl" />
         <Skeleton className="h-16 rounded-xl" />
         <Skeleton className="h-16 rounded-xl" />
@@ -181,7 +181,7 @@ export function LiveOrderMap() {
         <>
           {/* Stats Bar */}
           <div className="px-4 pb-3">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {[
                 { value: activeCount, label: 'entregas ativas', color: 'from-blue-500/10 to-cyan-500/10', textColor: 'text-blue-600 dark:text-blue-400', icon: Package },
                 { value: transitCount, label: 'a caminho', color: 'from-amber-500/10 to-orange-500/10', textColor: 'text-amber-600 dark:text-amber-400', icon: Truck },
@@ -391,7 +391,7 @@ export function LiveOrderMap() {
                       <X className="h-3 w-3" />
                     </motion.button>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-center">
                     {[
                       { icon: Package, label: 'Itens', value: selectedDelivery.itemCount.toString() },
                       { icon: Clock, label: 'ETA', value: selectedDelivery.eta },

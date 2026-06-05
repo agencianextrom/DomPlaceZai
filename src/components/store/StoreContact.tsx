@@ -116,7 +116,7 @@ export function StoreContact({ store }: StoreContactProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8"
+                    className="min-h-[44px] min-w-[44px] h-8 w-8"
                     onClick={() => setIsOpen(false)}
                   >
                     <X className="h-5 w-5" />

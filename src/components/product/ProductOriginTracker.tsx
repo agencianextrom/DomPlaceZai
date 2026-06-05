@@ -838,7 +838,7 @@ export function ProductOriginTracker() {
                   <Leaf className="h-3.5 w-3.5 text-emerald-500" />
                   Sustentabilidade
                 </h4>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {ecoBadges.map((badge, idx) => (
                     <EcoBadgeCard key={badge.id} badge={badge} isVisible={isVisible} delay={0.5 + idx * 0.12} />
                   ))}
@@ -868,7 +868,7 @@ export function ProductOriginTracker() {
                   <ShieldCheck className="h-3.5 w-3.5 text-amber-500" />
                   Certificações de Qualidade
                 </h4>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {certifications.map((cert, idx) => (
                     <CertificationStamp key={cert.id} cert={cert} isVisible={isVisible} delay={0.8 + idx * 0.15} />
                   ))}

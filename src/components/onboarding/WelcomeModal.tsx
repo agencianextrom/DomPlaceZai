@@ -433,7 +433,7 @@ export function WelcomeModal() {
               {/* Step 2: Extra icons grid with 3D perspective tilt */}
               {currentStep.extraIcons && (
                 <motion.div
-                  className="r44-wm-features-grid grid grid-cols-3 gap-3 mb-4"
+                  className="r44-wm-features-grid grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4"
                   variants={staggerContainer}
                   initial="initial"
                   animate="animate"

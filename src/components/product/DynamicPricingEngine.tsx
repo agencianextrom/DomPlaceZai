@@ -1230,7 +1230,7 @@ export function DynamicPricingEngine({
               />
 
               {/* ── Quick stats row ── */}
-              <div className="r49-price-stats grid grid-cols-3 gap-2">
+              <div className="r49-price-stats grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {[
                   { label: 'Variação 24h', value: `${priceChangePercent > 0 ? '+' : ''}${priceChangePercent.toFixed(1)}%`, color: priceChangePercent > 0 ? '#ef4444' : priceChangePercent < 0 ? '#10b981' : '#6b7280' },
                   { label: 'Potencial de queda', value: `${Math.round(((currentPrice - priceStats.lowest) / currentPrice) * 100)}%`, color: '#f59e0b' },

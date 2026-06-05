@@ -574,7 +574,7 @@ export default function NeighborhoodWishlist() {
       <section className="w-full">
         <div className="rounded-2xl p-5 bg-card border border-border animate-pulse">
           <div className="h-7 w-48 bg-muted rounded-lg mb-4" />
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
             <div className="h-20 bg-muted rounded-xl" />
             <div className="h-20 bg-muted rounded-xl" />
             <div className="h-20 bg-muted rounded-xl" />
@@ -615,7 +615,7 @@ export default function NeighborhoodWishlist() {
         </div>
 
         {/* ═══ 7. WISHLIST STATS — "23 itens", "5 listas", "3 amigos" ═══ */}
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-3 gap-2.5 mb-5">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-5">
           <StatCard icon={<Package className="h-4.5 w-4.5 text-rose-500" />} label="itens" value="23"
             gradient="from-rose-50 to-pink-50 dark:from-rose-950/20 dark:to-pink-950/20" delay={0} />
           <StatCard icon={<ListChecks className="h-4.5 w-4.5 text-violet-500" />} label="listas" value="5"

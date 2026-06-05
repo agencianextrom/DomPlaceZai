@@ -610,7 +610,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
               />
               <Button
                 size="icon"
-                className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/50 text-white hover:bg-black/70"
+                className="absolute top-2 right-2 min-h-[44px] min-w-[44px] h-8 w-8 rounded-full bg-black/50 text-white hover:bg-black/70"
                 onClick={() => setLightboxImage(null)}
               >
                 <X className="h-4 w-4" />

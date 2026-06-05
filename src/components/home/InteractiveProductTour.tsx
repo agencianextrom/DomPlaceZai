@@ -375,7 +375,7 @@ function BrowseDemo({ onDemoClick }: { onDemoClick: () => void }) {
       </motion.div>
 
       {/* Category grid */}
-      <div className="r49-tour-demo-categories grid grid-cols-3 gap-2">
+      <div className="r49-tour-demo-categories grid grid-cols-2 sm:grid-cols-3 gap-2">
         {categories.map((cat, i) => (
           <motion.div
             key={cat.name}

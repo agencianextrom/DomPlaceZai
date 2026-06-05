@@ -45229,3 +45229,121 @@
   @keyframes r63-result-glow { 0%, 100% { box-shadow: none; } }
   @keyframes r63-confetti-fall { 0%, 100% { transform: none; opacity: 0; } }
 }
+
+/* R64: PriceDropAlertsWidget styles */
+.r64-price-card {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.r64-price-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px -8px rgba(239, 68, 68, 0.12), 0 4px 12px -4px rgba(0, 0, 0, 0.06);
+}
+.r64-price-card:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.r64-price-badge {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: white;
+  font-weight: 700;
+  animation: r64-badge-pulse 2.5s ease-in-out infinite;
+}
+@keyframes r64-badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+}
+
+.r64-price-best {
+  position: relative;
+}
+.r64-price-best::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #ef4444);
+  background-size: 300% 300%;
+  animation: r64-best-border 4s ease infinite;
+  z-index: -1;
+}
+@keyframes r64-best-border {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.r64-price-old {
+  text-decoration: line-through;
+  text-decoration-color: #ef4444;
+  text-decoration-thickness: 2px;
+  color: #94a3b8;
+  transition: opacity 0.3s ease;
+}
+
+.r64-price-new {
+  color: #059669;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.r64-price-tab {
+  min-height: 44px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.r64-price-tab.active {
+  background: #6366f1;
+  color: white;
+  box-shadow: 0 4px 16px -4px rgba(99, 102, 241, 0.4);
+}
+
+.r64-price-alert-toggle {
+  width: 52px;
+  height: 28px;
+  border-radius: 14px;
+  transition: background 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+.r64-price-alert-toggle.on {
+  background: #22c55e;
+}
+.r64-price-alert-toggle.off {
+  background: #d1d5db;
+}
+.r64-price-alert-toggle .indicator {
+  position: absolute;
+  top: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.r64-price-alert-toggle.on .indicator {
+  left: 27px;
+}
+.r64-price-alert-toggle.off .indicator {
+  left: 3px;
+}
+
+.r64-price-stat {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.03), rgba(168, 85, 247, 0.03));
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r64-price-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -8px rgba(99, 102, 241, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r64-price-card { transition: none; }
+  .r64-badge-pulse { animation: none; }
+  .r64-price-best::before { animation: none; }
+  .r64-price-tab { transition: none; }
+  .r64-price-alert-toggle .indicator { transition: none; }
+  .r64-price-stat { transition: none; }
+  @keyframes r64-badge-pulse { 0%, 100% { box-shadow: none; } }
+  @keyframes r64-best-border { 0%, 100% { background-position: 0% 50%; } }
+}

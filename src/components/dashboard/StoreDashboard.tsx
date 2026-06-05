@@ -1546,7 +1546,7 @@ export function StoreDashboard() {
                     <motion.div variants={itemVariants} transition={{ delay: 0.22 }}>
                       <Card className="border-border/50">
                         <CardContent className="p-3">
-                          <div className="grid grid-cols-3 gap-2">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             {stats.pendingOrders > 0 && (
                               <div className="text-center cursor-pointer hover:bg-amber-50 dark:hover:bg-amber-900/10 rounded-lg p-2 transition-colors" onClick={() => { setOrderFilter('PENDING'); setActiveTab('orders') }}>
                                 <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{stats.pendingOrders}</p>

@@ -199,7 +199,7 @@ export function PWAInstallPrompt() {
 
             {/* Feature highlights with staggered entrance */}
             <motion.div
-              className="pwa-features mt-3 grid grid-cols-3 gap-1.5"
+              className="pwa-features mt-3 grid grid-cols-2 sm:grid-cols-3 gap-1.5"
               variants={featureStagger}
               initial="initial"
               animate="animate"

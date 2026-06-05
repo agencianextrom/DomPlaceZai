@@ -843,7 +843,7 @@ export function ARProductTryOn2() {
         <div className="flex items-center gap-1.5">
           {/* Share */}
           <motion.button
-            className="r42-toolbar-btn h-8 w-8 rounded-lg flex items-center justify-center"
+            className="r42-toolbar-btn min-h-[44px] min-w-[44px] h-8 w-8 rounded-lg flex items-center justify-center"
             style={{ background: 'rgba(0,0,0,0.04)' }}
             onClick={handleShare}
             whileHover={{ scale: 1.08 }}
@@ -854,7 +854,7 @@ export function ARProductTryOn2() {
           </motion.button>
           {/* Wishlist */}
           <motion.button
-            className="r42-toolbar-btn h-8 w-8 rounded-lg flex items-center justify-center"
+            className="r42-toolbar-btn min-h-[44px] min-w-[44px] h-8 w-8 rounded-lg flex items-center justify-center"
             style={{ background: savedToWishlist ? 'rgba(239,68,68,0.1)' : 'rgba(0,0,0,0.04)' }}
             onClick={handleWishlist}
             whileHover={{ scale: 1.08 }}
@@ -871,7 +871,7 @@ export function ARProductTryOn2() {
           </motion.button>
           {/* Compare */}
           <motion.button
-            className="r42-toolbar-btn h-8 w-8 rounded-lg flex items-center justify-center"
+            className="r42-toolbar-btn min-h-[44px] min-w-[44px] h-8 w-8 rounded-lg flex items-center justify-center"
             style={{ background: showComparison ? 'rgba(16,185,129,0.12)' : 'rgba(0,0,0,0.04)' }}
             onClick={() => setShowComparison((v) => !v)}
             whileHover={{ scale: 1.08 }}
@@ -971,7 +971,7 @@ export function ARProductTryOn2() {
                 {activeMode === 'vestir' ? 'ROUPA' : activeMode === 'decorar' ? 'MÓVEL' : 'BELEZA'}
               </motion.div>
               <motion.button
-                className="h-7 w-7 rounded-md flex items-center justify-center"
+                className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-md flex items-center justify-center"
                 style={{ background: 'rgba(255,255,255,0.1)' }}
                 onClick={() => setViewfinderActive((v) => !v)}
                 whileTap={{ scale: 0.9 }}
@@ -1138,7 +1138,7 @@ export function ARProductTryOn2() {
 
       {/* ═══ QUICK ACTIONS ═══ */}
       <div className="r42-actions px-4 py-3 border-b border-border">
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           <motion.button
             className="r42-action-btn flex flex-col items-center gap-1.5 py-2.5 rounded-xl transition-colors"
             style={{ background: 'rgba(0,0,0,0.02)' }}
