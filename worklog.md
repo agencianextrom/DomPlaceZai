@@ -1,4 +1,78 @@
 ---
+Task ID: R85-FamilyActivityFeed-7MobileGridFixes-7NonHomeCSSPolish-r85CSS
+Agent: Main Agent
+Task: FamilyActivityFeed feature, 7 mobile grid fixes, 7 non-home CSS polish, r85-* CSS
+
+Work Log:
+
+**QA Assessment:**
+- Production build passes cleanly
+- agent-browser QA: domplace.vercel.app loads successfully, screenshot captured
+- Clean working tree from R84 (719407a)
+
+**Build Status:**
+- Production build passes cleanly
+- CSS: 48,062 lines (R85, +119 from r84)
+- 16 files changed (1 new + 13 modified)
+
+**New Feature — FamilyActivityFeed (~484 lines):**
+- `src/components/home/FamilyActivityFeed.tsx` — Family activity feed with shared shopping events
+- "Atividade da Família" with blue→cyan→teal gradient header + Users icon
+- Family Members Bar: 4 members with emoji avatars, roles, online status, horizontal scroll filter (44px)
+- Activity Feed: 8 timeline activities (cart add, favorite, purchase R$89.90, comment, list create, 5★ review, coupon redeem, 5000pts milestone)
+- Quick Actions Bar: 4 buttons (44px) — Adicionar ao Carrinho, Criar Lista, Convidar Membro, Ver Estatísticas → toasts
+- Family Stats: 2×2 mobile / 4×1 desktop (23 compras, R$2.847,50, R$127,30 economia, 45 itens)
+- Shared Lists Preview: 2 lists with member/item counts, "Ver lista" buttons
+- Loading skeleton (1s), wired into page.tsx after NeighborhoodWatch
+
+**Mobile Grid Fixes — 7 grids across 7 files:**
+1. StoreEventCalendar.tsx: `grid-cols-3` → `grid-cols-2 sm:grid-cols-3`
+2. AddressManager.tsx (2 grids): `grid-cols-3` → `grid-cols-2 sm:grid-cols-3` (adjusted col-spans)
+3. ProductForm.tsx: `grid-cols-3` → `grid-cols-2 sm:grid-cols-3`
+4. NeighborhoodWatch.tsx: `grid-cols-3` → `grid-cols-2 sm:grid-cols-3`
+5. DriverDashboard.tsx: `grid-cols-4` → `grid-cols-2 sm:grid-cols-4`
+6. StoreLoyaltyPassport.tsx: `grid-cols-5` → `grid-cols-3 sm:grid-cols-5`
+
+**CSS Polish — r62-* Classes Applied to 7 Non-Home Components:**
+1. CartSuggestions: r62-card-lift + r62-heading-gradient
+2. CartRecoveryBanner: r62-card-lift
+3. CheckoutView: r62-heading-gradient ×5 (already had card-lift)
+4. ProductComparison: r62-card-lift + r62-heading-gradient
+5. ProductCard: r62-heading-gradient (already had card-lift)
+6. ProfileView: r62-heading-gradient ×6 (already had card-lift)
+
+**CSS — r85-* Classes (119 lines):**
+- r85-family-card / r85-activity-card / r85-milestone-card / r85-member-pill / r85-action-btn: FamilyActivityFeed themed
+- r85-stats-card / r85-list-card: stats and shared lists polish
+- r85-cart-suggest-card / r85-checkout-section / r85-compare-verdict / r85-product-name / r85-profile-section: polished component effects
+- All wrapped in prefers-reduced-motion guard
+
+Stage Summary:
+- 16 files changed, +635/-26 lines (including 1 new file: FamilyActivityFeed)
+- 1 new component (FamilyActivityFeed, ~484 lines)
+- 7 mobile grid fixes across 7 files (~117+ total mobile grids fixed)
+- 7 non-home CSS polish edits
+- 119 lines r85-* CSS added
+- Build: successful
+- Total CSS: 48,062 lines (R85)
+
+## Current Project Status Assessment
+- DomPlace marketplace: stable, feature-rich, 366+ components
+- Production build passes cleanly
+- 24 new components added across R61-R85: ScanToShop, EcoImpactWidget, QuickBillSplitter, PriceDropAlertsWidget, FlashDealAlert, NearbyStoresMap, CommunityRecipeHub, SpendingInsights, NutritionLens, DealComparator, PantryManager, LocalServicesHub, CommunityEventsBoard, PriceTracker, WeatherShopper, GiftFinder, QuickRecipes, SustainabilityDashboard, SmartListAssistant, BudgetTracker, LoyaltyGame, NeighborhoodWatch, FamilyActivityFeed + cached-fetch utility
+- Mobile responsiveness: ~487+ touch targets fixed, ~117+ mobile grids fixed
+- Visual polish: r62-r85 CSS classes applied to 145+ components (home + non-home)
+- 38+ unused components wired/deleted across R65-R85
+- All commits use agencianextrom@gmail.com
+
+## Unresolved Issues / Risks
+1. Vercel live site behind SSO (private project, TEAM_ACCESS_REQUIRED) — user must adjust settings
+2. .env not persisted across sessions
+3. SPA-style navigation (no deep linking)
+4. ~39K lines CSS lost from R47-R56 (recovering gradually)
+5. Dev server slow on 48K+ CSS (Turbopack parsing)
+6. Homepage has 136+ components (information overload, mitigated by LazySection)
+---
 Task ID: R84-NeighborhoodWatch-TouchTargetFixes18-11NonHomeCSSPolish-r84CSS
 Agent: Main Agent
 Task: NeighborhoodWatch feature, 18 touch target fixes (10 files), 11 non-home CSS polish, r84-* CSS
