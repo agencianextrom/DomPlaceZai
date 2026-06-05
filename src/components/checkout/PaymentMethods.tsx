@@ -294,7 +294,7 @@ export function PaymentMethods({ orderTotal = 150.0, onPaymentSelect }: PaymentM
               <div className="mb-3 flex flex-wrap gap-1.5">
                 {[50, 100, 150, 200, 300, 500].map((val) => (
                   <motion.button key={val} whileTap={{ scale: 0.95 }} onClick={() => setCashAmount(val.toString())}
-                    className="rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-xs font-medium text-zinc-600 transition-colors hover:border-amber-300 hover:bg-amber-50 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
+                    className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-zinc-600 transition-colors hover:border-amber-300 hover:bg-amber-50 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300 min-h-[44px]">
                     {formatCurrency(val)}
                   </motion.button>
                 ))}

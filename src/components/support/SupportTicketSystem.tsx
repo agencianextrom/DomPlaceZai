@@ -723,7 +723,7 @@ export function SupportTicketSystem() {
                           {/* Reply Input */}
                           <div className="p-3 border-t border-border/20 bg-gradient-to-t from-muted/20 to-transparent">
                             <div className="flex items-end gap-2">
-                              <button className="shrink-0 h-9 w-9 rounded-lg border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                              <button className="shrink-0 h-9 w-9 min-h-[44px] min-w-[44px] rounded-lg border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
                                 <Paperclip className="h-4 w-4" />
                               </button>
                               <div
@@ -743,7 +743,7 @@ export function SupportTicketSystem() {
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleSendReply}
                                 disabled={!replyText.trim() || sendingReply}
-                                className="shrink-0 h-9 w-9 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center disabled:opacity-40 transition-opacity"
+                                className="shrink-0 h-9 w-9 min-h-[44px] min-w-[44px] rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center disabled:opacity-40 transition-opacity"
                                 style={{ boxShadow: '0 2px 8px rgba(16,185,129,0.25)' }}
                               >
                                 {sendingReply ? (

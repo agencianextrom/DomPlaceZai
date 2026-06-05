@@ -273,7 +273,7 @@ export function ProductSizeGuide({ productId, category }: ProductSizeGuideProps)
       transition={{ duration: 0.3 }}
       className="mt-4"
     >
-      <Card className="border-primary/20 overflow-hidden relative">
+      <Card className="border-primary/20 overflow-hidden relative r62-card-lift r90-size-guide-card">
         {/* Floating particles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           {[0, 1, 2, 3, 4].map(i => (
@@ -295,7 +295,7 @@ export function ProductSizeGuide({ productId, category }: ProductSizeGuideProps)
               📏
             </motion.span>
             <div className="text-left">
-              <h3 className="font-bold text-sm flex items-center gap-2">
+              <h3 className="font-bold text-sm flex items-center gap-2 r62-heading-gradient">
                 Guia de Tamanhos
                 <motion.span
                   className="relative overflow-hidden rounded px-1.5 py-0.5 bg-primary/10 text-primary text-[10px] font-semibold"

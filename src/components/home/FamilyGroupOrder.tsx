@@ -338,10 +338,10 @@ function AddItemsModal({ open, onClose, onAdd }: { open: boolean; onClose: () =>
                   {q > 0 && (
                     <div className="flex items-center gap-1.5">
                       <motion.button whileTap={{ scale: 0.9 }} onClick={() => updQty(product.productId, -1)}
-                        className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg bg-secondary/80 text-xs font-bold active:scale-95 transition-transform">-</motion.button>
+                        className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg bg-secondary/80 text-xs font-bold active:scale-95 transition-transform">-</motion.button>
                       <span className="w-8 text-center text-xs font-bold tabular-nums">{q}</span>
                       <motion.button whileTap={{ scale: 0.9 }} onClick={() => updQty(product.productId, 1)}
-                        className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg bg-primary/10 text-xs font-bold active:scale-95 transition-transform">+</motion.button>
+                        className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg bg-primary/10 text-xs font-bold active:scale-95 transition-transform">+</motion.button>
                     </div>
                   )}
                 </motion.div>

@@ -302,7 +302,7 @@ export function ExpressDeliveryHub() {
             exit={{ opacity: 0, height: 0 }}
             className="mt-4"
           >
-            <Card className="border-primary/20 overflow-hidden">
+            <Card className="border-primary/20 overflow-hidden r62-card-lift r90-express-delivery">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <Navigation className="h-4 w-4 text-primary" />

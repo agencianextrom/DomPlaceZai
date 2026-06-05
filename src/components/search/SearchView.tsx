@@ -551,7 +551,7 @@ export function SearchView() {
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.08, y: -1 }}
             onClick={() => setActiveCategory(null)}
-            className={`shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium border transition-all overflow-hidden relative min-h-[36px] ${
+            className={`shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium border transition-all overflow-hidden relative min-h-[44px] ${
               !activeCategory
                 ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/25 search-filter-pill-active'
                 : 'bg-secondary/70 text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground hover:border-border/50'
@@ -578,7 +578,7 @@ export function SearchView() {
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.08, y: -1 }}
               onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
-              className={`shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium border transition-all overflow-hidden relative min-h-[36px] ${
+              className={`shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-medium border transition-all overflow-hidden relative min-h-[44px] ${
                 activeCategory === cat.id
                   ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/25 search-filter-pill-active'
                   : 'bg-secondary/70 text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground hover:border-border/50'

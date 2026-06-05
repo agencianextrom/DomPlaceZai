@@ -308,7 +308,7 @@ function LaunchCard({ product, index }: { product: LaunchProduct; index: number 
         animate={{ y: 0 }}
         transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
       >
-        <Card className="overflow-hidden h-full border-amber-200/40 dark:border-amber-800/30 bg-gradient-to-b from-white to-amber-50/30 dark:from-card dark:to-amber-950/10 group cursor-pointer hover:shadow-lg hover:shadow-amber-200/30 dark:hover:shadow-amber-900/20 hover:-translate-y-1 transition-all duration-300 relative">
+        <Card className="overflow-hidden h-full border-amber-200/40 dark:border-amber-800/30 bg-gradient-to-b from-white to-amber-50/30 dark:from-card dark:to-amber-950/10 group cursor-pointer hover:shadow-lg hover:shadow-amber-200/30 dark:hover:shadow-amber-900/20 hover:-translate-y-1 transition-all duration-300 relative r62-card-lift r90-countdown-card">
           <CardContent className="p-0 h-full flex flex-col">
             {/* Image area */}
             <div className={`relative aspect-[4/3] flex items-center justify-center bg-gradient-to-br ${product.gradient} overflow-hidden`}>

@@ -305,7 +305,7 @@ function ProductCard({
 }) {
   return (
     <motion.div variants={cardV} whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(139,92,246,0.12)' }} className="r88-marketplace-card">
-      <Card className="overflow-hidden border-border/40 hover:border-primary/20 transition-colors h-full">
+      <Card className="overflow-hidden border-border/40 hover:border-primary/20 transition-colors h-full r62-card-lift r90-marketplace-card">
         {/* Image placeholder */}
         <div className={`relative aspect-square bg-gradient-to-br ${product.gradient} flex items-center justify-center`}>
           <motion.span

@@ -513,7 +513,7 @@ export function QuantityStepperEnhanced({
               whileTap={{ scale: 0.94 }}
               onClick={() => handleChange(qty)}
               className={`
-                relative px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all overflow-hidden
+                relative px-2.5 py-2 rounded-lg text-[11px] font-semibold border transition-all overflow-hidden min-h-[44px]
                 ${isActive
                   ? `${tier?.bgColor || 'bg-secondary'} ${tier?.borderColor || 'border-border'} ${tier?.color || 'text-foreground'}`
                   : 'bg-card border-border text-muted-foreground hover:border-primary/30'

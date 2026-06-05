@@ -938,7 +938,7 @@ function PostCard({
               >
                 <motion.button
                   onClick={handleLike}
-                  className={`r54-like-btn flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium transition-colors ${
+                  className={`r54-like-btn flex items-center gap-1 px-2 py-2 rounded-full text-[11px] font-medium transition-colors min-h-[44px] ${
                     isLiked
                       ? 'text-red-500 bg-red-50 dark:bg-red-900/20'
                       : 'text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
@@ -954,7 +954,7 @@ function PostCard({
               {/* Bookmark */}
               <motion.button
                 onClick={onBookmark}
-                className={`r54-bookmark-btn flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium transition-colors ${
+                className={`r54-bookmark-btn flex items-center gap-1 px-2 py-2 rounded-full text-[11px] font-medium transition-colors min-h-[44px] ${
                   isBookmarked
                     ? 'text-amber-500 bg-amber-50 dark:bg-amber-900/20'
                     : 'text-muted-foreground hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20'
@@ -968,7 +968,7 @@ function PostCard({
 
               {/* Share */}
               <motion.button
-                className="r54-share-btn flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
+                className="r54-share-btn flex items-center gap-1 px-2 py-2 rounded-full text-[11px] font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors min-h-[44px]"
                 whileTap={{ scale: 0.85 }}
                 whileHover={{ scale: 1.05 }}
               >
@@ -979,7 +979,7 @@ function PostCard({
             {/* Expand / comments */}
             <motion.button
               onClick={onExpand}
-              className="r54-expand-btn flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
+              className="r54-expand-btn flex items-center gap-1 px-2 py-2 rounded-full text-[11px] font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors min-h-[44px]"
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
             >

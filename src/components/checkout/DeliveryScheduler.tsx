@@ -759,7 +759,7 @@ export function DeliveryScheduler() {
                   key={tag.id}
                   whileTap={{ scale: 0.92 }}
                   onClick={() => toggleQuickTag(tag.id)}
-                  className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium border transition-colors ${
+                  className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg text-[10px] font-medium border transition-colors min-h-[44px] ${
                     active
                       ? 'border-primary bg-primary/10 text-primary'
                       : 'border-border bg-muted/50 text-muted-foreground hover:border-primary/30'

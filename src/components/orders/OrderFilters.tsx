@@ -171,7 +171,7 @@ export function OrderFilters({ orders, onFilteredOrdersChange }: OrderFiltersPro
                       key={filter.value}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setActiveDate(filter.value)}
-                      className="relative px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors"
+                      className="relative px-2.5 py-2 rounded-full text-[11px] font-medium border transition-colors min-h-[44px]"
                     >
                       {activeDate === filter.value && (
                         <motion.div

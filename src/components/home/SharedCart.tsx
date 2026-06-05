@@ -259,7 +259,7 @@ export function SharedCart() {
 
   return (
     <Card
-      className="r89-shared-cart-root overflow-hidden rounded-2xl border-0"
+      className="r89-shared-cart-root overflow-hidden rounded-2xl border-0 r62-card-lift r90-shared-cart-root"
       style={{
         background: 'linear-gradient(135deg, #06b6d4, #0891b2, #0e7490)',
       }}

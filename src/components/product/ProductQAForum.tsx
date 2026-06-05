@@ -1275,7 +1275,7 @@ function AnswerItem({ answer, index, questionIndex, isHelpful, isBouncing, onHel
           >
             <motion.button
               onClick={onHelpful}
-              className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium transition-all r38-qa-helpful-btn"
+              className="flex items-center gap-1 px-2 py-2 rounded-md text-[11px] font-medium transition-all r38-qa-helpful-btn min-h-[44px]"
               style={{
                 background: isHelpful ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
                 color: isHelpful ? '#6366f1' : '#9ca3af',

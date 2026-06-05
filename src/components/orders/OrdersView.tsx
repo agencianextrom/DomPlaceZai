@@ -382,7 +382,7 @@ export function OrdersView() {
                         key={filter.value}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setActiveStatusFilter(filter.value)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        className={`px-3 py-2.5 rounded-full text-xs font-medium border transition-all min-h-[44px] ${
                           activeStatusFilter === filter.value
                             ? 'bg-primary text-primary-foreground border-primary shadow-sm r38-orders-pill-active'
                             : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
@@ -403,7 +403,7 @@ export function OrdersView() {
                         key={filter.value}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setActiveDateFilter(filter.value)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        className={`px-3 py-2.5 rounded-full text-xs font-medium border transition-all min-h-[44px] ${
                           activeDateFilter === filter.value
                             ? 'bg-primary text-primary-foreground border-primary shadow-sm r38-orders-pill-active'
                             : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'
@@ -424,7 +424,7 @@ export function OrdersView() {
                         key={opt.value}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setActiveSort(opt.value)}
-                        className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        className={`flex items-center gap-1 px-3 py-2.5 rounded-full text-xs font-medium border transition-all min-h-[44px] ${
                           activeSort === opt.value
                             ? 'bg-amber-500 text-white border-amber-500 shadow-sm r38-orders-pill-active'
                             : 'bg-card text-muted-foreground border-border hover:border-amber-300 hover:text-foreground'
