@@ -145,7 +145,7 @@ export function ProductComparison() {
           >
             <Package className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
           </motion.div>
-          <h2 className="text-lg font-bold mb-2">Nenhum produto selecionado</h2>
+          <h2 className="text-lg font-bold mb-2 r62-heading-gradient">Nenhum produto selecionado</h2>
           <p className="text-sm text-muted-foreground mb-6">Selecione até 4 produtos para comparar lado a lado</p>
           <Button onClick={() => navigate('home')} className="gap-2">
             Explorar produtos
@@ -588,7 +588,7 @@ export function ProductComparison() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  <Card className="bg-gradient-to-r from-primary/5 via-purple-500/5 to-emerald-500/5 border-primary/20 overflow-hidden">
+                  <Card className="bg-gradient-to-r from-primary/5 via-purple-500/5 to-emerald-500/5 border-primary/20 overflow-hidden r62-card-lift">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <motion.div

@@ -1112,7 +1112,7 @@ export function DriverDashboard() {
 
         {/* -- Tabs content -- */}
         <Tabs defaultValue="orders" className="w-full">
-          <TabsList className="w-full grid grid-cols-4 mb-4">
+          <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 mb-4">
             <TabsTrigger value="orders" className="text-xs gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Package className="h-3.5 w-3.5" />
               Pedidos

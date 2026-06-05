@@ -133,7 +133,7 @@ export function CartRecoveryBanner() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 30, opacity: 0 }}
           transition={{ type: 'spring' as const, damping: 25, stiffness: 300 }}
-          className="overflow-hidden"
+          className="overflow-hidden r62-card-lift"
         >
           {/* Animated gradient border wrapper */}
           <div className="cart-recovery-border-glow p-[2px] rounded-xl">

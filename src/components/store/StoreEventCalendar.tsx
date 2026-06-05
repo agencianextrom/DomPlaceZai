@@ -1168,7 +1168,7 @@ function StatsSection({ events, rsvpSet }: { events: StoreEvent[]; rsvpSet: Set<
   ]
 
   return (
-    <motion.div className="grid grid-cols-3 gap-3" variants={containerVariants} initial="hidden" animate="visible">
+    <motion.div className="grid grid-cols-2 sm:grid-cols-3 gap-3" variants={containerVariants} initial="hidden" animate="visible">
       {stats.map((stat) => (
         <motion.div
           key={stat.label}

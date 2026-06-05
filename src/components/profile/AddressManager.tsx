@@ -553,8 +553,8 @@ export function AddressManager() {
             </div>
 
             {/* Rua + Número */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="col-span-2 space-y-1.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="sm:col-span-2 col-span-1 space-y-1.5">
                 <Label htmlFor="addr-street" className="text-sm font-medium">
                   Rua <span className="text-destructive">*</span>
                 </Label>
@@ -600,8 +600,8 @@ export function AddressManager() {
             </div>
 
             {/* Cidade + Estado */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="col-span-2 space-y-1.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="sm:col-span-2 col-span-1 space-y-1.5">
                 <Label htmlFor="addr-city" className="text-sm font-medium">
                   Cidade <span className="text-destructive">*</span>
                 </Label>

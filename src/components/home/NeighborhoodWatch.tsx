@@ -376,7 +376,7 @@ function CommunityStats() {
             <ChevronRight className="h-4 w-4 text-amber-500" />
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Esta semana</p>
           </div>
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
             <div className="text-center">
               <p className="text-2xl font-black text-foreground">{total}</p>
               <p className="text-[10px] text-muted-foreground font-semibold">Relatos</p>

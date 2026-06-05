@@ -129,7 +129,7 @@ function ShimmerHeader() {
           variants={shimmerTextVariants}
           initial="initial"
           animate="animate"
-          className="r40-header-title text-sm font-bold"
+          className="r40-header-title text-sm font-bold r62-heading-gradient"
           style={{
             backgroundImage: 'linear-gradient(90deg, hsl(var(--foreground)) 0%, hsl(var(--primary)) 50%, hsl(var(--foreground)) 100%)',
             backgroundSize: '200% 100%',
@@ -474,7 +474,7 @@ export function CartSuggestions() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}
-      className="bg-card rounded-xl border border-border p-4"
+      className="bg-card rounded-xl border border-border p-4 r62-card-lift"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3">

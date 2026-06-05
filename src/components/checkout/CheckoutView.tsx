@@ -474,7 +474,7 @@ export function CheckoutView() {
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
-                  className="font-semibold mb-3 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                  className="font-semibold mb-3 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent r62-heading-gradient"
                 >Tipo de entrega</motion.h3>
                 <div className="grid grid-cols-2 gap-3">
                   <motion.button
@@ -536,7 +536,7 @@ export function CheckoutView() {
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
-                    className="font-semibold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                    className="font-semibold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent r62-heading-gradient"
                   >Endereço de entrega</motion.h3>
 
                   {/* Map placeholder with gradient card and pin icon */}
@@ -699,7 +699,7 @@ export function CheckoutView() {
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
-                    className="font-semibold mb-3 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                    className="font-semibold mb-3 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent r62-heading-gradient"
                   >
                     <Clock className="h-4 w-4 text-primary" />
                     Horário da entrega
@@ -757,7 +757,7 @@ export function CheckoutView() {
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
-                className="font-semibold mb-4 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                className="font-semibold mb-4 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent r62-heading-gradient"
               >
                 <CreditCard className="h-4 w-4 text-primary" />
                 Forma de pagamento
@@ -821,7 +821,7 @@ export function CheckoutView() {
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
-                  className="font-semibold mb-3 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent"
+                  className="font-semibold mb-3 flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent r62-heading-gradient"
                 >
                   <Tag className="h-4 w-4 text-primary" />
                   Cupom de desconto

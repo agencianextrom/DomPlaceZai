@@ -806,7 +806,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             </motion.button>
           </div>
 
-          <h3 className="text-xs font-semibold mt-0.5 line-clamp-2 leading-tight min-h-[2rem]">{product.name}</h3>
+          <h3 className="text-xs font-semibold mt-0.5 line-clamp-2 leading-tight min-h-[2rem] r62-heading-gradient">{product.name}</h3>
           
           {/* Price Drop Alert - inline badge */}
           <div className="mt-1">

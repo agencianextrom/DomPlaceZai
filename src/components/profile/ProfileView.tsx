@@ -326,7 +326,7 @@ export function ProfileView() {
         <Card className="bg-gradient-to-br from-primary to-emerald-600 border-0 mb-4">
           <CardContent className="p-6 text-center text-white">
             <Users className="h-12 w-12 mx-auto mb-3 opacity-80" />
-            <h2 className="text-xl font-bold">Ganhe R$10 por indicação!</h2>
+            <h2 className="text-xl font-bold r62-heading-gradient">Ganhe R$10 por indicação!</h2>
             <p className="text-sm text-white/80 mt-2">
               Compartilhe seu link e ganhe R$10 de desconto para cada amigo que se cadastrar e fizer uma compra.
             </p>
@@ -424,7 +424,7 @@ export function ProfileView() {
           {/* Spin Wheel Info */}
           <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 border-amber-200/50 dark:border-amber-800/30 mb-6">
             <CardContent className="p-4 text-center">
-              <h2 className="font-bold text-sm mb-1">Gire a roleta e ganhe!</h2>
+              <h2 className="font-bold text-sm mb-1 r62-heading-gradient">Gire a roleta e ganhe!</h2>
               <p className="text-xs text-muted-foreground">
                 Uma girada gratis por dia. Descontos exclusivos esperando por voce!
               </p>
@@ -566,7 +566,7 @@ export function ProfileView() {
                 className="absolute -inset-3 rounded-full border border-dashed border-primary/15"
               />
             </motion.div>
-            <h2 className="text-lg font-bold mt-5">Faça login para ver seu perfil</h2>
+            <h2 className="text-lg font-bold mt-5 r62-heading-gradient">Faça login para ver seu perfil</h2>
             <p className="text-sm text-muted-foreground mt-2 max-w-xs">
               Acesse sua conta para ver pedidos, favoritos, pontos de fidelidade e muito mais.
             </p>
@@ -870,7 +870,7 @@ export function ProfileView() {
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-sm r38-profile-section-title r46-section-shimmer">Pedidos recentes</h2>
+          <h2 className="font-semibold text-sm r38-profile-section-title r46-section-shimmer r62-heading-gradient">Pedidos recentes</h2>
           <button 
             onClick={() => navigate('orders')}
             className="text-xs text-primary hover:underline"
@@ -934,7 +934,7 @@ export function ProfileView() {
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-sm flex items-center gap-1.5 r38-profile-section-title">
+          <h2 className="font-semibold text-sm flex items-center gap-1.5 r38-profile-section-title r62-heading-gradient">
             <Ticket className="h-4 w-4" />
             Meus Cupons
           </h2>
@@ -972,7 +972,7 @@ export function ProfileView() {
         className="mb-6"
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-sm r38-profile-section-title">Lojas favoritas</h2>
+          <h2 className="font-semibold text-sm r38-profile-section-title r62-heading-gradient">Lojas favoritas</h2>
           <button 
             onClick={() => navigate('favorites')}
             className="text-xs text-primary hover:underline"
