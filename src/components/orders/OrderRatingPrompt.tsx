@@ -455,7 +455,7 @@ export function OrderRatingPrompt({
                             <button
                               type="button"
                               onClick={removePhoto}
-                              className="absolute top-1 right-1 h-6 w-6 rounded-full bg-red-500 flex items-center justify-center shadow-sm hover:bg-red-600 transition-colors"
+                              className="absolute top-1 right-1 h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-red-500 flex items-center justify-center shadow-sm hover:bg-red-600 transition-colors"
                               aria-label="Remover foto"
                             >
                               <X className="h-3.5 w-3.5 text-white" />

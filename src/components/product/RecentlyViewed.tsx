@@ -219,7 +219,7 @@ export function RecentlyViewed() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleClearHistory}
-              className="h-7 px-2 rounded-full flex items-center gap-1 text-[10px] font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+              className="h-7 px-2 min-h-[44px] rounded-full flex items-center gap-1 text-[10px] font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
             >
               <Trash2 className="h-3 w-3" />
               <span className="hidden sm:inline">Limpar</span>

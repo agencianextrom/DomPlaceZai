@@ -48567,3 +48567,31 @@
   .r90-shared-cart-root:hover { transform: none; box-shadow: none; }
   .r90-size-guide-card:hover { transform: none; box-shadow: none; }
 }
+
+/* ─── r91-* CSS: LocalRecipesHub + 5 CSS-polished components ─── */
+@media (prefers-reduced-motion: no-preference) {
+  .r91-recipes-card { transition: box-shadow 0.25s ease; }
+  .r91-recipes-card:hover { box-shadow: 0 4px 24px rgba(249,115,22,0.12); }
+
+  .r91-recipe-card { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease; }
+  .r91-recipe-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249,115,22,0.1); }
+
+  .r91-recipe-emoji { transition: transform 0.3s ease; }
+  .r91-recipe-card:hover .r91-recipe-emoji { transform: scale(1.1) rotate(-8deg); }
+
+  .r91-view-recipe-btn { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r91-view-recipe-btn:hover { box-shadow: 0 4px 16px rgba(249,115,22,0.3); }
+
+  .r91-featured-card { transition: transform 0.25s ease; }
+  .r91-featured-card:hover { transform: scale(1.01); }
+
+  .r91-funfacts { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r91-funfacts:hover { transform: scale(1.005); box-shadow: 0 2px 12px rgba(249,115,22,0.08); }
+
+  /* Polished component effects */
+  .r91-reviews-card:hover { transform: none; box-shadow: none; }
+  .r91-collection-card:hover { transform: none; box-shadow: none; }
+  .r91-invoice-heading:hover { transform: none; }
+  .r91-qa-card:hover { transform: none; box-shadow: none; }
+  .r91-payment-tracker:hover { transform: none; box-shadow: none; }
+}

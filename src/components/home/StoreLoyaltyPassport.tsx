@@ -532,7 +532,7 @@ export function StoreLoyaltyPassport() {
                   {STORE_DESTINATIONS.map((store, i) => (
                     <motion.button
                       key={store.id}
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-sm border transition-all"
+                      className="w-7 h-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-sm border transition-all"
                       style={{
                         borderColor: i === currentPage ? store.accentColor : 'rgba(0,0,0,0.1)',
                         background: i === currentPage ? `${store.accentColor}20` : 'transparent',

@@ -510,7 +510,7 @@ function TrackedProductCard({ product }: { product: TrackedProduct }) {
             </span>
           </div>
           <motion.button whileTap={{ scale: 0.9 }}
-            className="h-6 w-6 rounded-md flex items-center justify-center"
+            className="h-6 w-6 min-h-[44px] min-w-[44px] rounded-md flex items-center justify-center"
             style={{ background: 'rgba(0,0,0,0.04)' }} aria-label="Opções">
             <BarChart3 className="h-3 w-3 text-muted-foreground" />
           </motion.button>

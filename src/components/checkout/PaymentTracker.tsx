@@ -495,7 +495,7 @@ export function PaymentTracker({ amount, onStatusChange }: { amount: number; onS
       className="rounded-2xl overflow-hidden"
     >
       {/* Glassmorphism card */}
-      <Card className="glassmorphism-strong rounded-2xl overflow-hidden border-0">
+      <Card className="glassmorphism-strong rounded-2xl overflow-hidden border-0 r62-card-lift r91-payment-tracker">
         <CardContent className="p-5">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">

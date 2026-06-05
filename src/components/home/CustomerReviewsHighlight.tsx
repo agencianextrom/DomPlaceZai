@@ -568,14 +568,14 @@ export function CustomerReviewsHighlight() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={goPrev}
-            className="h-7 w-7 rounded-full border border-border/50 flex items-center justify-center hover:bg-muted/50 transition-colors"
+            className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full border border-border/50 flex items-center justify-center hover:bg-muted/50 transition-colors"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={goNext}
-            className="h-7 w-7 rounded-full border border-border/50 flex items-center justify-center hover:bg-muted/50 transition-colors"
+            className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full border border-border/50 flex items-center justify-center hover:bg-muted/50 transition-colors"
           >
             <ChevronRight className="h-3.5 w-3.5" />
           </motion.button>

@@ -232,6 +232,7 @@ import FamilyChallengeHub from '@/components/home/FamilyChallengeHub'
 import CommunityMarketplace from '@/components/home/CommunityMarketplace'
 import SharedCart from '@/components/home/SharedCart'
 import WeeklyFarmersMarket from '@/components/home/WeeklyFarmersMarket'
+import LocalRecipesHub from '@/components/home/LocalRecipesHub'
 import { MobilePullToRefresh } from '@/components/ui/MobilePullToRefresh'
 
 // Module-level BRL currency formatter
@@ -953,6 +954,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <WeeklyFarmersMarket />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Local Recipes Hub — Receitas da Região */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <LocalRecipesHub />
                         </section>
                       </ScrollReveal>
                     </LazySection>

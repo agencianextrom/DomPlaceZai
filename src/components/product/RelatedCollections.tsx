@@ -111,7 +111,7 @@ const collectionTemplates = [
 function CollectionCardSkeleton() {
   return (
     <div className="min-w-[280px] sm:min-w-[320px] snap-start">
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden r62-card-lift r91-collection-card">
         <Skeleton className="h-8 w-full" />
         <CardContent className="p-3">
           <Skeleton className="h-5 w-32 mb-2" />

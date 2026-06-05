@@ -449,7 +449,7 @@ function CartDemo({ onDemoClick }: { onDemoClick: () => void }) {
                   whileTap={{ scale: 0.9 }}
                 >
                   <button
-                    className="r49-tour-demo-cart-add-btn w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center"
+                    className="r49-tour-demo-cart-add-btn w-7 h-7 min-h-[44px] min-w-[44px] rounded-lg bg-primary/10 text-primary flex items-center justify-center"
                     onClick={handleAddItem}
                     aria-label={`Adicionar ${product.name}`}
                   >

@@ -1088,7 +1088,7 @@ export function InfluencerShopPage() {
           <div className="flex items-center gap-1">
             <motion.button
               onClick={scrollReelsLeft}
-              className="r40-reels-nav h-7 w-7 rounded-full bg-muted flex items-center justify-center"
+              className="r40-reels-nav h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center"
               whileHover={{ backgroundColor: 'rgba(200,200,200,0.5)' }}
               whileTap={{ scale: 0.9 }}
             >
@@ -1096,7 +1096,7 @@ export function InfluencerShopPage() {
             </motion.button>
             <motion.button
               onClick={scrollReelsRight}
-              className="r40-reels-nav h-7 w-7 rounded-full bg-muted flex items-center justify-center"
+              className="r40-reels-nav h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center"
               whileHover={{ backgroundColor: 'rgba(200,200,200,0.5)' }}
               whileTap={{ scale: 0.9 }}
             >

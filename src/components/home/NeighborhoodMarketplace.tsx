@@ -306,7 +306,7 @@ export function NeighborhoodMarketplace() {
                           <motion.button
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
-                            className="flex-1 h-7 rounded-lg bg-secondary/80 text-[10px] font-medium flex items-center justify-center gap-1 text-muted-foreground hover:text-foreground"
+                            className="flex-1 h-7 min-h-[44px] rounded-lg bg-secondary/80 text-[10px] font-medium flex items-center justify-center gap-1 text-muted-foreground hover:text-foreground"
                           >
                             <MessageCircle className="h-3 w-3" />
                             Mensagem
@@ -314,7 +314,7 @@ export function NeighborhoodMarketplace() {
                           <motion.button
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
-                            className="flex-1 h-7 rounded-lg bg-primary/90 text-[10px] font-medium flex items-center justify-center gap-1 text-primary-foreground"
+                            className="flex-1 h-7 min-h-[44px] rounded-lg bg-primary/90 text-[10px] font-medium flex items-center justify-center gap-1 text-primary-foreground"
                           >
                             <Eye className="h-3 w-3" />
                             Ver Produto

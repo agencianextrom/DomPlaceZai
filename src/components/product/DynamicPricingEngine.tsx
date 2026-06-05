@@ -598,7 +598,7 @@ function PriceAlertSetter({
               type="button"
               onClick={handleDisable}
               whileTap={{ scale: 0.95 }}
-              className="r49-price-alert-disable w-full h-7 rounded-md text-[10px] font-medium text-red-500 border transition-colors mt-1"
+              className="r49-price-alert-disable w-full h-7 min-h-[44px] rounded-md text-[10px] font-medium text-red-500 border transition-colors mt-1"
               style={{ borderColor: 'rgba(239,68,68,0.2)', background: 'rgba(239,68,68,0.04)' }}
             >
               Desativar alerta

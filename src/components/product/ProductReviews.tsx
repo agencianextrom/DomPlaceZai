@@ -167,7 +167,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
   return (
     <div className="space-y-6">
       {/* -- Reviews Summary -- */}
-      <Card className="border-border/50 overflow-hidden relative">
+      <Card className="border-border/50 overflow-hidden relative r62-card-lift r91-reviews-card">
         {/* Subtle gradient top accent */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary/40 via-primary to-accent/40" />
         <CardContent className="p-4 sm:p-6">

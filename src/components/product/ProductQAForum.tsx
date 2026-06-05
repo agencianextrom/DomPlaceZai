@@ -1306,7 +1306,7 @@ interface EmptyStateProps {
 
 function EmptyState({ searchQuery, onAskQuestion }: EmptyStateProps) {
   return (
-    <Card className="border-border/50 overflow-hidden">
+    <Card className="border-border/50 overflow-hidden r62-card-lift r91-qa-card">
       <CardContent className="p-8 text-center">
         {/* Illustration */}
         <motion.div

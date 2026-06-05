@@ -670,7 +670,7 @@ export function InvoiceGenerator({ invoice, className }: InvoiceGeneratorProps) 
                   )}
                 </motion.div>
                 <div>
-                  <h2 className="text-base font-bold leading-tight">{invoice.store.name}</h2>
+                  <h2 className="text-base font-bold leading-tight r62-heading-gradient r91-invoice-heading">{invoice.store.name}</h2>
                   <p className="text-xs text-muted-foreground mt-0.5 max-w-[240px]">
                     {invoice.store.address}
                   </p>
