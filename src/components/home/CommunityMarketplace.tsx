@@ -411,7 +411,7 @@ function TrustIndicators() {
 
   return (
     <motion.div variants={containerV} initial="hidden" animate="visible" className="r88-marketplace-trust">
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         {indicators.map((item) => (
           <motion.div
             key={item.label}

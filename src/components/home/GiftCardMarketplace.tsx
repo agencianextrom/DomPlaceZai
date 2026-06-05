@@ -1237,7 +1237,7 @@ function FilterBar({
                   <motion.div key={cat} whileTap={{ scale: 0.9 }}>
                     <Badge
                       variant={filters.category === cat ? 'default' : 'secondary'}
-                      className="cursor-pointer text-xs px-2.5 py-1 rounded-lg"
+                      className="cursor-pointer text-xs px-2.5 py-1 min-h-[44px] rounded-lg"
                       onClick={() => onFiltersChange({ ...filters, category: cat })}
                     >
                       {CATEGORY_ICONS[cat]} {CATEGORY_LABELS[cat]}
@@ -1254,7 +1254,7 @@ function FilterBar({
                   <motion.div key={range} whileTap={{ scale: 0.9 }}>
                     <Badge
                       variant={filters.valueRange === range ? 'default' : 'secondary'}
-                      className="cursor-pointer text-xs px-2.5 py-1 rounded-lg"
+                      className="cursor-pointer text-xs px-2.5 py-1 min-h-[44px] rounded-lg"
                       onClick={() => onFiltersChange({ ...filters, valueRange: range })}
                     >
                       {VALUE_RANGE_LABELS[range]}

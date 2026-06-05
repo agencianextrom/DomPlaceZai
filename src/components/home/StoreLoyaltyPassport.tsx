@@ -384,7 +384,7 @@ function StorePage({
                   {achieved && !claimed && (
                     <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
                       <div
-                        className="cursor-pointer px-2.5 py-1 rounded-md text-[10px] font-bold text-white"
+                        className="cursor-pointer px-2.5 py-1 min-h-[44px] rounded-md text-[10px] font-bold text-white"
                         style={{ background: milestone.color }}
                         onClick={() => onClaimReward(store.id, milestone.tier)}
                       >

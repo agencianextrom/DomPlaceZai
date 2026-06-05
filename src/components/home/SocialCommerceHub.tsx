@@ -1106,7 +1106,7 @@ export function SocialCommerceHub() {
   }, []);
 
   return (
-    <section className="r49-social-hub" aria-label="Social Commerce Hub">
+    <section className="r49-social-hub r62-card-lift" aria-label="Social Commerce Hub">
       {/* ============================================================ */}
       {/*  Section Header                                               */}
       {/* ============================================================ */}
@@ -1125,7 +1125,7 @@ export function SocialCommerceHub() {
             🛍️
           </motion.div>
           <div>
-            <h2 className="r49-social-title">Social Shopping</h2>
+            <h2 className="r49-social-title r62-heading-gradient">Social Shopping</h2>
             <p className="r49-social-subtitle">
               Veja o que seus amigos e influencers estao comprando
             </p>

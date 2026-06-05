@@ -48435,3 +48435,100 @@
   .r88-pricedrop-card:hover { transform: none; box-shadow: none; }
   .r88-cashback-card:hover { transform: none; box-shadow: none; }
 }
+
+/* ─── R89 — SharedCart + Touch Target Fixes + Component Polish ─── */
+
+.r89-shared-cart-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.r89-shared-cart-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.1);
+  border-color: rgba(6, 182, 212, 0.2);
+}
+
+.r89-cart-item {
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+.r89-cart-item:hover {
+  background-color: rgba(6, 182, 212, 0.03);
+}
+
+.r89-qty-btn {
+  transition: transform 0.15s ease;
+}
+.r89-qty-btn:active {
+  transform: scale(0.9);
+}
+
+.r89-member-pill {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r89-member-pill:hover {
+  transform: translateY(-1px);
+}
+
+.r89-summary-bar {
+  transition: box-shadow 0.25s ease;
+}
+.r89-summary-bar:hover {
+  box-shadow: 0 -4px 20px rgba(6, 182, 212, 0.08);
+}
+
+.r89-delivery-option {
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.r89-delivery-option:hover {
+  transform: translateX(2px);
+}
+
+.r89-suggestion-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r89-suggestion-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.08);
+}
+
+.r89-shared-cart-skeleton {
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+/* R89 — Polished component effects */
+.r89-social-hub {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r89-social-hub:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.08);
+}
+
+.r89-smart-delivery {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r89-smart-delivery:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
+}
+
+.r89-pricing-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r89-pricing-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(234, 179, 8, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r89-shared-cart-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r89-cart-item:hover { background-color: inherit; }
+  .r89-qty-btn:active { transform: none; }
+  .r89-member-pill:hover { transform: none; box-shadow: none; }
+  .r89-summary-bar:hover { box-shadow: none; }
+  .r89-delivery-option:hover { transform: none; border-color: inherit; }
+  .r89-suggestion-card:hover { transform: none; box-shadow: none; }
+  .r89-social-hub:hover { transform: none; box-shadow: none; }
+  .r89-smart-delivery:hover { transform: none; box-shadow: none; }
+  .r89-pricing-card:hover { transform: none; box-shadow: none; }
+}

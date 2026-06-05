@@ -765,7 +765,7 @@ export default function VoiceShoppingAssistant() {
                     <motion.div whileTap={{ scale: 0.92 }}>
                       <button
                         onClick={() => setSettingsOpen(!settingsOpen)}
-                        className={`r48-settings-toggle h-7 w-7 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+                        className={`r48-settings-toggle h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center transition-colors cursor-pointer ${
                           settingsOpen ? 'bg-white/30' : 'bg-white/20 hover:bg-white/30'
                         }`}
                       >
@@ -777,7 +777,7 @@ export default function VoiceShoppingAssistant() {
                     <motion.div whileTap={{ scale: 0.92 }}>
                       <button
                         onClick={() => setPanelOpen(false)}
-                        className="r48-close-btn h-7 w-7 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center cursor-pointer"
+                        className="r48-close-btn h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center cursor-pointer"
                       >
                         <X className="h-4 w-4 text-white" />
                       </button>
@@ -919,7 +919,7 @@ export default function VoiceShoppingAssistant() {
                               <motion.div key={speed} whileTap={{ scale: 0.95 }}>
                                 <button
                                   onClick={() => setResponseSpeed(speed)}
-                                  className={`r48-speed-btn text-[10px] px-2.5 py-1 rounded-full font-semibold transition-colors cursor-pointer ${
+                                  className={`r48-speed-btn text-[10px] px-2.5 py-1 min-h-[44px] rounded-full font-semibold transition-colors cursor-pointer ${
                                     responseSpeed === speed
                                       ? 'bg-violet-500 text-white'
                                       : 'bg-muted text-muted-foreground hover:bg-violet-500/10'
@@ -1000,7 +1000,7 @@ export default function VoiceShoppingAssistant() {
                           <button
                             onClick={() => simulateCommand(cmd.text)}
                             disabled={voiceState !== 'idle'}
-                            className={`r48-quick-cmd flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[10px] font-semibold transition-colors cursor-pointer ${
+                            className={`r48-quick-cmd flex items-center gap-1.5 px-2.5 py-1.5 min-h-[44px] rounded-full text-[10px] font-semibold transition-colors cursor-pointer ${
                               voiceState !== 'idle'
                                 ? 'bg-muted/50 text-muted-foreground/50 cursor-not-allowed'
                                 : 'bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/20 hover:bg-violet-500/20 hover:border-violet-500/30'

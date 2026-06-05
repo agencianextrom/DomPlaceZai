@@ -364,7 +364,7 @@ export default function SmartDeliveryHub() {
      Render
      ══════════════════════════════════════════════════════ */
   return (
-    <section className="r47-smart-delivery-hub space-y-5">
+    <section className="r47-smart-delivery-hub space-y-5 r62-card-lift">
       {/* ─── 1. Hero Header ─── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -391,7 +391,7 @@ export default function SmartDeliveryHub() {
             <Route className="h-6 w-6" />
           </motion.div>
           <div>
-            <h2 className="text-xl font-bold">Hub Inteligente de Entregas</h2>
+            <h2 className="text-xl font-bold r62-heading-gradient">Hub Inteligente de Entregas</h2>
             <p className="text-sm text-white/75 mt-0.5">
               Roteirização, preferências e acompanhamento em tempo real
             </p>

@@ -1061,7 +1061,7 @@ export function SubscriptionBoxBuilder() {
                                   exit="exit"
                                   layout
                                   onClick={() => toggleItem(item)}
-                                  className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium bg-card border border-border cursor-pointer hover:border-red-300 transition-colors r54-subbox-selected-chip"
+                                  className="flex items-center gap-1 px-2 py-1 min-h-[44px] rounded-full text-[10px] font-medium bg-card border border-border cursor-pointer hover:border-red-300 transition-colors r54-subbox-selected-chip"
                                 >
                                   {item.emoji} {item.name}
                                   <XCircle className="h-2.5 w-2.5 text-muted-foreground" />

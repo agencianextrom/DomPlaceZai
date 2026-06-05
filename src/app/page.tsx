@@ -230,6 +230,7 @@ import FamilyActivityFeed from '@/components/home/FamilyActivityFeed'
 import DeliveryTracker from '@/components/home/DeliveryTracker'
 import FamilyChallengeHub from '@/components/home/FamilyChallengeHub'
 import CommunityMarketplace from '@/components/home/CommunityMarketplace'
+import SharedCart from '@/components/home/SharedCart'
 import { MobilePullToRefresh } from '@/components/ui/MobilePullToRefresh'
 
 // Module-level BRL currency formatter
@@ -933,6 +934,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <CommunityMarketplace />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Shared Cart — Family collaborative shopping */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <SharedCart />
                         </section>
                       </ScrollReveal>
                     </LazySection>

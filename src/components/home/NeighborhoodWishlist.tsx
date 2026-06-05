@@ -410,7 +410,7 @@ function SharedWishlistCard({ list }: { list: SharedWishlist }) {
             {c.initial}
           </div>
         ))}
-        <motion.div whileTap={{ scale: 0.9 }} className="ml-1 h-7 w-7 rounded-full bg-muted flex items-center justify-center border border-border cursor-pointer hover:bg-muted/80 transition-colors">
+        <motion.div whileTap={{ scale: 0.9 }} className="ml-1 h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center border border-border cursor-pointer hover:bg-muted/80 transition-colors">
           <span className="text-[9px] font-bold text-muted-foreground">+</span>
         </motion.div>
       </div>

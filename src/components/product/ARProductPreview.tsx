@@ -476,7 +476,7 @@ export function ARProductPreview() {
               className="flex items-center gap-1.5 overflow-x-auto"
             >
               <RotateCcw
-                className="h-3.5 w-3.5 text-muted-foreground shrink-0 cursor-pointer"
+                className="h-3.5 w-3.5 text-muted-foreground shrink-0 cursor-pointer p-[15px] rounded-md hover:bg-muted/50 transition-colors"
                 onClick={() => { setAutoRotate(true); setRotation(0) }}
               />
               {ANGLE_VIEWS.map((av) => (

@@ -1072,7 +1072,7 @@ export function DynamicPricingAlerts() {
       initial={{ opacity: 0, y: 20 }}
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.6, ease: 'easeOut' as const }}
-      className="space-y-4 r38-price-section"
+      className="space-y-4 r38-price-section r62-card-lift"
     >
       {/* ─── Section Header ────────────────────────────────── */}
       <div className="flex items-center justify-between">
@@ -1094,7 +1094,7 @@ export function DynamicPricingAlerts() {
           </motion.div>
 
           <div>
-            <h2 className="text-base font-bold flex items-center gap-2 r38-price-title">
+            <h2 className="text-base font-bold flex items-center gap-2 r38-price-title r62-heading-gradient">
               Alertas de Preço
               {totalAlerts > 0 && (
                 <motion.span
