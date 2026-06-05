@@ -1268,7 +1268,7 @@ export function FoodDeliveryTracker() {
   const isDelivered = currentStatus === 'delivered'
 
   return (
-    <section className="r56-food-delivery-tracker space-y-4">
+    <section className="r56-food-delivery-tracker space-y-4 r62-card-lift r94-delivery-tracker-card">
       {/* ─── Hero Header ─── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -1298,7 +1298,7 @@ export function FoodDeliveryTracker() {
             <Truck className="h-6 w-6" />
           </motion.div>
           <div>
-            <h2 className="text-xl font-bold">Rastreador de Delivery</h2>
+            <h2 className="text-xl font-bold r62-heading-gradient">Rastreador de Delivery</h2>
             <p className="text-sm text-white/70 mt-0.5">Acompanhe seu pedido em tempo real</p>
           </div>
         </div>

@@ -1095,8 +1095,8 @@ function PromotionCreateDialog({
           </div>
         </div>
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={handleClose} className="h-9 text-xs">Cancelar</Button>
-          <Button onClick={handleSubmit} disabled={loading} className="h-9 text-xs gap-1 bg-primary text-primary-foreground">
+          <Button variant="outline" onClick={handleClose} className="min-h-[44px] h-9 text-xs">Cancelar</Button>
+          <Button onClick={handleSubmit} disabled={loading} className="min-h-[44px] h-9 text-xs gap-1 bg-primary text-primary-foreground">
             {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
             Criar Promoção
           </Button>

@@ -327,9 +327,9 @@ export function SocialCommerceFeed() {
   }, [likedState, toggleLike]);
 
   return (
-    <section className="r42-feed-section" aria-label="Feed de Comercio Social">
+    <section className="r42-feed-section r62-card-lift r94-social-feed-card" aria-label="Feed de Comercio Social">
       <div className="r42-feed-header">
-        <motion.h2 className="r42-feed-title" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}>
+        <motion.h2 className="r42-feed-title r62-heading-gradient" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}>
           <span className="r42-feed-title-icon">🔥</span> Trending Agora
         </motion.h2>
         <motion.p className="r42-feed-subtitle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.5 }}>

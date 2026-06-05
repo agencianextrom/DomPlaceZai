@@ -307,7 +307,7 @@ export function ShoppingLists() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8"
+                        className="min-h-[44px] min-w-[44px] h-8 w-8"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleShareList(list)
@@ -417,7 +417,7 @@ export function ShoppingLists() {
                             />
                             <Button
                               size="sm"
-                              className="h-9 gap-1 bg-primary text-primary-foreground px-3"
+                              className="min-h-[44px] h-9 gap-1 bg-primary text-primary-foreground px-3"
                               onClick={() => addItem(list.id)}
                             >
                               <Plus className="h-3.5 w-3.5" />

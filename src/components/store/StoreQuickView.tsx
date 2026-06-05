@@ -263,7 +263,7 @@ export function StoreQuickView() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 shrink-0"
+                className="min-h-[44px] min-w-[44px] h-8 w-8 shrink-0"
                 onClick={closeStoreQuickView}
               >
                 <X className="h-4 w-4" />

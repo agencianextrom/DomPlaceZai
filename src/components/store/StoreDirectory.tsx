@@ -258,7 +258,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
           <Button
             variant="outline"
             size="sm"
-            className="h-8 text-xs gap-1.5 border-primary/20"
+            className="min-h-[44px] h-8 text-xs gap-1.5 border-primary/20"
             onClick={() => {
               const idx = sortOptions.findIndex(o => o.value === sortBy)
               setSortBy(sortOptions[(idx + 1) % sortOptions.length].value)
@@ -426,7 +426,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-9 text-xs"
+                  className="min-h-[44px] h-9 text-xs"
                   onClick={() => setSearchQuery('')}
                 >
                   Limpar busca
@@ -438,7 +438,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-9 text-xs"
+                  className="min-h-[44px] h-9 text-xs"
                   onClick={() => setActiveCategory(null)}
                 >
                   Ver todas as categorias

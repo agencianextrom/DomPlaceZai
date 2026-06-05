@@ -351,7 +351,7 @@ export default function SmartReceipt() {
         initial={{ opacity: 0, y: 80 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring' as const, stiffness: 100, damping: 16 }}
-        className="r45-receipt-card max-w-md mx-auto text-foreground"
+        className="r45-receipt-card max-w-md mx-auto text-foreground r62-card-lift r94-smart-receipt-card"
       >
         <div
           className="relative bg-white dark:bg-card rounded-2xl overflow-hidden border border-border"
@@ -373,7 +373,7 @@ export default function SmartReceipt() {
                   {order.storeLogo}
                 </div>
                 <div>
-                  <h2 className="font-bold text-base leading-tight">{order.storeName}</h2>
+                  <h2 className="font-bold text-base leading-tight r62-heading-gradient">{order.storeName}</h2>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-[11px] text-muted-foreground">{formattedDate}</span>
                     <span className="text-[11px] text-muted-foreground">•</span>

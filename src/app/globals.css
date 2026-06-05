@@ -48639,3 +48639,49 @@
   .r93-pricedrop-card:hover { transform: none; }
   .r93-promo-banner-card:hover { transform: none; }
 }
+
+/* ─── r94-* CSS: PetCareHub + 5 CSS-polished components ─── */
+@media (prefers-reduced-motion: no-preference) {
+  .r94-pet-stat { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r94-pet-stat:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(245,158,11,0.12); }
+
+  .r94-product-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r94-product-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,0.1); }
+
+  .r94-product-emoji { transition: transform 0.3s ease; }
+  .r94-product-card:hover .r94-product-emoji { transform: scale(1.1); }
+
+  .r94-product-name { transition: color 0.2s ease; }
+  .r94-product-card:hover .r94-product-name { color: #b45309; }
+
+  .r94-add-cart-btn { transition: background-color 0.2s ease, transform 0.15s ease; }
+  .r94-add-cart-btn:active { transform: scale(0.97); }
+
+  .r94-tab-btn { transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease; }
+  .r94-tab-btn:active { transform: scale(0.97); }
+
+  .r94-category-pill { transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease; }
+  .r94-category-pill:active { transform: scale(0.97); }
+
+  .r94-vet-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r94-vet-card:hover { transform: translateX(2px); box-shadow: 0 4px 16px rgba(59,130,246,0.08); }
+
+  .r94-vet-book-btn { transition: background-color 0.2s ease, transform 0.15s ease; }
+  .r94-vet-book-btn:active { transform: scale(0.97); }
+
+  .r94-tip-card { transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease; }
+  .r94-tip-card:hover { box-shadow: 0 4px 12px rgba(245,158,11,0.06); }
+
+  .r94-service-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r94-service-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+
+  .r94-trust-badge { transition: transform 0.15s ease; }
+  .r94-trust-badge:hover { transform: translateY(-1px); }
+
+  /* Polished component effects */
+  .r94-support-center-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.08); }
+  .r94-delivery-tracker-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
+  .r94-smart-receipt-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(139,92,246,0.08); }
+  .r94-launch-alert-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(236,72,153,0.08); }
+  .r94-social-feed-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(239,68,68,0.08); }
+}

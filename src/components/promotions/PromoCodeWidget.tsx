@@ -460,7 +460,7 @@ export function PromoCodeWidget() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-8 text-[10px] shrink-0 gap-1 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                          className="min-h-[44px] h-8 text-[10px] shrink-0 gap-1 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
                           onClick={(e) => {
                             e.stopPropagation()
                             handleCopyCode(promo.code)

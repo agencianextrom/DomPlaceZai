@@ -480,7 +480,7 @@ export function SearchView() {
                     whileHover={{ scale: 1.15 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setSearchQuery('')}
-                    className="h-9 w-9 rounded-full bg-secondary hover:bg-destructive/10 hover:text-destructive flex items-center justify-center transition-colors"
+                    className="min-h-[44px] min-w-[44px] h-9 w-9 rounded-full bg-secondary hover:bg-destructive/10 hover:text-destructive flex items-center justify-center transition-colors"
                   >
                     <X className="h-3.5 w-3.5" />
                   </motion.button>

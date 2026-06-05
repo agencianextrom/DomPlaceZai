@@ -7594,3 +7594,31 @@ Stage Summary:
 5. ~39K lines CSS lost from R47-R56 (recovering gradually)
 6. Dev server slow on 45K+ CSS (Turbopack parsing)
 7. Homepage has 130+ components (information overload, mitigated with LazySection)
+
+---
+Task ID: R94-touch-target-fixes
+Agent: Main Agent
+Task: Fix 14 sub-44px touch targets across 8 files
+
+Work Log:
+
+**Touch Target Fixes — 14 elements across 8 files:**
+
+1. **StoreDashboard.tsx** (line 1098): `className="h-9 text-xs"` → `className="min-h-[44px] h-9 text-xs"` (Cancelar button)
+2. **StoreDashboard.tsx** (line 1099): `className="h-9 text-xs gap-1 bg-primary text-primary-foreground"` → `className="min-h-[44px] h-9 text-xs gap-1 bg-primary text-primary-foreground"` (Criar Promoção button)
+3. **ReviewsManagement.tsx** (line 561): `className="h-9 text-xs"` → `className="min-h-[44px] h-9 text-xs"` (Cancelar button)
+4. **ReviewsManagement.tsx** (line 564): `className="h-9 text-xs gap-1 bg-primary text-primary-foreground"` → `className="min-h-[44px] h-9 text-xs gap-1 bg-primary text-primary-foreground"` (Enviar Resposta button)
+5. **StoreQuickView.tsx** (line 266): `className="h-8 w-8 shrink-0"` → `className="min-h-[44px] min-w-[44px] h-8 w-8 shrink-0"` (close X icon button)
+6. **SearchView.tsx** (line 483): `className="h-9 w-9 rounded-full ..."` → `className="min-h-[44px] min-w-[44px] h-9 w-9 rounded-full ..."` (clear search motion.button)
+7. **StoreDirectory.tsx** (line 261): `className="h-8 text-xs gap-1.5 border-primary/20"` → `className="min-h-[44px] h-8 text-xs gap-1.5 border-primary/20"` (sort button)
+8. **StoreDirectory.tsx** (line 429): `className="h-9 text-xs"` → `className="min-h-[44px] h-9 text-xs"` (Limpar busca button)
+9. **StoreDirectory.tsx** (line 441): `className="h-9 text-xs"` → `className="min-h-[44px] h-9 text-xs"` (Ver todas as categorias button)
+10. **FavoritesView.tsx** (line 248): `className="h-8 text-xs gap-1.5 border-primary/30 hover:bg-primary/5"` → `className="min-h-[44px] h-8 text-xs gap-1.5 border-primary/30 hover:bg-primary/5"` (Compartilhar button)
+11. **FavoritesView.tsx** (line 277): `className="h-8 text-xs gap-1"` → `className="min-h-[44px] h-8 text-xs gap-1"` (sort dropdown button)
+12. **PromoCodeWidget.tsx** (line 463): `className="h-8 text-[10px] shrink-0 gap-1 hover:bg-primary/10 ..."` → `className="min-h-[44px] h-8 text-[10px] shrink-0 gap-1 hover:bg-primary/10 ..."` (Copiar button)
+13. **ShoppingLists.tsx** (line 310): `className="h-8 w-8"` → `className="min-h-[44px] min-w-[44px] h-8 w-8"` (share list icon button)
+14. **ShoppingLists.tsx** (line 420): `className="h-9 gap-1 bg-primary text-primary-foreground px-3"` → `className="min-h-[44px] h-9 gap-1 bg-primary text-primary-foreground px-3"` (add item Plus button)
+
+**Lint:** No new errors introduced. All 42 pre-existing errors are unrelated.
+
+**Summary:** 8 files changed, 14 touch targets fixed (~595+ total targets now fixed). Only className modifications, no logic or import changes.

@@ -1090,7 +1090,7 @@ export default function ProductLaunchAlert() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring' as const, stiffness: 200, damping: 25 }}
-      className="r47-launch-section"
+      className="r47-launch-section r62-card-lift r94-launch-alert-card"
     >
       {/* Section Header */}
       <div className="flex items-center gap-3 mb-6">
@@ -1106,7 +1106,7 @@ export default function ProductLaunchAlert() {
           <Rocket className="h-5 w-5 text-white" />
         </motion.div>
         <div>
-          <h2 className="font-extrabold text-xl sm:text-2xl flex items-center gap-2" style={{ color: '#1f2937' }}>
+          <h2 className="font-extrabold text-xl sm:text-2xl flex items-center gap-2 r62-heading-gradient" style={{ color: '#1f2937' }}>
             <span>Lançamentos & Drops</span>
             <motion.span
               animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}

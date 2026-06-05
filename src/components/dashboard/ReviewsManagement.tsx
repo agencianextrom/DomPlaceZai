@@ -558,10 +558,10 @@ export function ReviewsManagement({ storeId }: ReviewsManagementProps) {
             </div>
           )}
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" onClick={() => setReplyDialogOpen(false)} className="h-9 text-xs">
+            <Button variant="outline" onClick={() => setReplyDialogOpen(false)} className="min-h-[44px] h-9 text-xs">
               Cancelar
             </Button>
-            <Button onClick={handleReply} disabled={replying} className="h-9 text-xs gap-1 bg-primary text-primary-foreground">
+            <Button onClick={handleReply} disabled={replying} className="min-h-[44px] h-9 text-xs gap-1 bg-primary text-primary-foreground">
               {replying ? (
                 <Loader2 className="h-3 w-3 animate-spin" />
               ) : (

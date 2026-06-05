@@ -336,7 +336,7 @@ export function SupportCenter() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
           >
-            <div className="r40-help-card relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-lg">
+            <div className="r40-help-card r62-card-lift r94-support-center-card relative overflow-hidden rounded-2xl border border-white/30 dark:border-border/30 shadow-lg">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-emerald-50/50 dark:from-primary/10 dark:via-background dark:to-emerald-900/10 backdrop-blur-xl" />
               <div className="relative p-4 bg-white/40 dark:bg-card/40 backdrop-blur-sm">
                 <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
@@ -399,7 +399,7 @@ export function SupportCenter() {
 
         {/* FAQ Categories — Glassmorphism cards with animated chevron */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold flex items-center gap-1.5">
+          <h3 className="text-sm font-semibold flex items-center gap-1.5 r62-heading-gradient">
             <HelpCircle className="h-4 w-4 text-primary" />
             {searchQuery
               ? `Resultados para "${searchQuery}"`

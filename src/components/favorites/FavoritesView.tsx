@@ -245,7 +245,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 text-xs gap-1.5 border-primary/30 hover:bg-primary/5"
+                className="min-h-[44px] h-8 text-xs gap-1.5 border-primary/30 hover:bg-primary/5"
                 onClick={onShareClick}
               >
                 <Share2 className="h-3.5 w-3.5 text-primary" />
@@ -274,7 +274,7 @@ export function FavoritesView({ products, onShareClick }: FavoritesViewProps) {
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 text-xs gap-1"
+                className="min-h-[44px] h-8 text-xs gap-1"
                 onClick={() => setSortOpen(prev => !prev)}
               >
                 <ArrowUpDown className="h-3 w-3" />
