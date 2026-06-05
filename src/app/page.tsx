@@ -484,6 +484,11 @@ export default function Home() {
       ? `${baseTitle} (${cartItemCount} ${cartItemCount === 1 ? 'item' : 'itens'})`
       : baseTitle
   }, [cartItemCount])
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
   const [wishlistShareOpen, setWishlistShareOpen] = useQVState(false)
   const [notifTab, setNotifTab] = useState<'standard' | 'smart'>('standard')
   const [apiProducts, setApiProducts] = useState<ProductData[]>([])
@@ -544,11 +549,12 @@ export default function Home() {
       <NProgressLoader />
 
       {/* Cart Recovery Banner - shows above main content */}
-      <CartRecoveryBanner />
+      {mounted && <CartRecoveryBanner />}
 
       {/* Mobile Order Tracker - floating card for active deliveries */}
-      <MobileOrderTracker />
+      {mounted && <MobileOrderTracker />}
 
+      {!mounted && <HomeSkeleton />}
       <AnimatePresence mode="wait">
         {isSearchOpen ? (
           <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -1918,22 +1924,22 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Auth Modal - always rendered */}
-      <AuthModal />
+      {mounted && <AuthModal />}
 
       {/* Welcome Modal - shows on first visit */}
-      <WelcomeModal />
+      {mounted && <WelcomeModal />}
 
       {/* AI Chat Bot - always mounted, floating */}
-      <AIChatBot />
+      {mounted && <AIChatBot />}
 
       {/* Cookie Consent Banner - shows on first visit */}
-      <CookieConsent />
+      {mounted && <CookieConsent />}
 
       {/* Floating Compare Button */}
-      <CompareFloatingButton />
+      {mounted && <CompareFloatingButton />}
 
       {/* Product Quick View Modal */}
-      <ZustandQuickView />
+      {mounted && <ZustandQuickView />}
 
       {/* Product Quick Add Bottom Sheet */}
       <ProductQuickAdd />
@@ -1945,23 +1951,25 @@ export default function Home() {
       <NeighborhoodSelector />
 
       {/* Wishlist Share Modal */}
-      <WishlistShare
-        items={featuredProducts.map(p => ({
-          id: p.id,
-          name: p.name,
-          price: p.price,
-          storeName: p.storeName || 'Loja',
-          category: p.category,
-        }))}
-        open={wishlistShareOpen}
-        onOpenChange={setWishlistShareOpen}
-      />
+      {mounted && (
+        <WishlistShare
+          items={featuredProducts.map(p => ({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            storeName: p.storeName || 'Loja',
+            category: p.category,
+          }))}
+          open={wishlistShareOpen}
+          onOpenChange={setWishlistShareOpen}
+        />
+      )}
 
       {/* PWA Install Prompt */}
       <PWAInstallPrompt />
 
       {/* Smart Shopping Assistant */}
-      <SmartShoppingAssistant />
+      {mounted && <SmartShoppingAssistant />}
 
       {/* Order Rating Prompt */}
       <OrderRatingPrompt />

@@ -132,7 +132,7 @@ export function CartRecoveryBanner() {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 30, opacity: 0 }}
-          transition={{ type: 'spring' as const, damping: 25, stiffness: 300 }}
+          transition={{ type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="overflow-hidden r62-card-lift"
         >
           {/* Animated gradient border wrapper */}
@@ -176,7 +176,7 @@ export function CartRecoveryBanner() {
                     <motion.div
                       initial={{ scale: 0, rotate: -20 }}
                       animate={{ scale: 1, rotate: 0 }}
-                      transition={{ type: 'spring' as const, stiffness: 500, damping: 20, delay: 0.15 }}
+                      transition={{ type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.15 }}
                       className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0"
                     >
                       <ShoppingBag className="h-4.5 w-4.5" />

@@ -126,7 +126,7 @@ const staggerItem = {
     y: 0,
     scale: 1,
     rotateX: 0,
-    transition: { type: 'spring' as const, stiffness: 300, damping: 22 },
+    transition: { type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] },
   },
 }
 
@@ -142,10 +142,9 @@ const modalContainerVariants = {
     scale: 1,
     y: 0,
     transition: {
-      type: 'spring' as const,
-      stiffness: 260,
-      damping: 24,
-      mass: 0.8,
+      type: 'tween' as const,
+      duration: 0.35,
+      ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
   exit: {
@@ -153,9 +152,9 @@ const modalContainerVariants = {
     scale: 0.92,
     y: 30,
     transition: {
-      type: 'spring' as const,
-      stiffness: 300,
-      damping: 28,
+      type: 'tween' as const,
+      duration: 0.25,
+      ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
 }
@@ -194,10 +193,9 @@ function ConfettiParticle({ color, index, total }: { color: string; index: numbe
         rotate: angle * 2,
       }}
       transition={{
-        type: 'spring' as const,
-        stiffness: 120,
-        damping: 10,
+        type: 'tween' as const,
         duration: 1.2,
+        ease: [0.25, 0.46, 0.45, 0.94],
       }}
     />
   )
@@ -393,7 +391,7 @@ export function WelcomeModal() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+              transition={{ type: 'tween' as const, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="absolute inset-0 flex items-center justify-center"
               style={{ perspective: 600 }}
             >
@@ -419,7 +417,7 @@ export function WelcomeModal() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+              transition={{ type: 'tween' as const, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
               style={{ perspective: 800 }}
             >
               {/* Shimmer text effect on modal title */}
@@ -451,7 +449,7 @@ export function WelcomeModal() {
                         rotateY: 8,
                         rotateX: -5,
                         scale: 1.05,
-                        transition: { type: 'spring' as const, stiffness: 400, damping: 20 },
+                        transition: { type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] },
                       }}
                     >
                       <div
@@ -548,7 +546,7 @@ export function WelcomeModal() {
                       className="absolute inset-0 rounded-full"
                       style={{ background: i <= step ? 'rgba(16, 185, 129, 0.4)' : 'rgba(0, 0, 0, 0.08)' }}
                       animate={i <= step ? { scaleX: [0, 1] } : { scaleX: 1 }}
-                      transition={{ type: 'spring' as const, stiffness: 300, damping: 25, delay: i <= step ? 0.1 : 0 }}
+                      transition={{ type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94], delay: i <= step ? 0.1 : 0 }}
                       initial={{ originX: 0 }}
                     />
                   </div>

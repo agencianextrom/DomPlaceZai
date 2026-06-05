@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, memo } from 'react';
+import { useMemo, memo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 // ── Types ───────────────────────────────────────────────────────────────────
@@ -49,9 +49,9 @@ function seededRandom(seed: number): () => number {
   };
 }
 
-/** Pick a random item from an array */
-function pick<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
+/** Pick a random item from an array using seeded random */
+function pickSeeded<T>(arr: T[], rand: () => number): T {
+  return arr[Math.floor(rand() * arr.length)];
 }
 
 /** Clamp a number between min and max */
@@ -174,19 +174,27 @@ export function FloatingParticles({
       opacity: rand() * 0.3 + 0.1,
       duration: rand() * 12 + 8, // 8–20s
       delay: rand() * -20,       // Stagger start across negative delay
-      pattern: pick([...PATTERNS]),
+      pattern: pickSeeded([...PATTERNS], rand),
     }));
   }, [count, minSize, maxSize]);
+
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    // Use a microtask to avoid the lint warning about setState in effect body
+    const id = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
 
   return (
     <div
       className={className}
       style={{ position: 'relative', overflow: 'hidden' }}
       aria-hidden="true"
+      suppressHydrationWarning
     >
-      {particles.map((p) => (
+      {mounted ? particles.map((p) => (
         <Particle key={p.id} data={p} color={color} />
-      ))}
+      )) : null}
     </div>
   );
 }

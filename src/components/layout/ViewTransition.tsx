@@ -37,10 +37,9 @@ const slideVariants = {
 }
 
 const springTransition = {
-  type: 'spring' as const,
-  stiffness: 300,
-  damping: 30,
-  mass: 0.8,
+  type: 'tween' as const,
+  duration: 0.3,
+  ease: [0.25, 0.46, 0.45, 0.94] as const,
 }
 
 // Skeleton micro-variants (no custom prop needed)
@@ -70,7 +69,7 @@ const staggerItem = {
   animate: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring' as const, stiffness: 300, damping: 25 },
+    transition: { type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] },
   },
 }
 
