@@ -437,7 +437,7 @@ export function PriceDropAlertsWidget({ className = '' }: PriceDropAlertsWidgetP
   const activeSortLabel = SORT_OPTIONS.find((o) => o.key === sortBy)?.label ?? 'Ordenar'
 
   return (
-    <section className={`w-full ${className}`} aria-label="Quedas de preço">
+    <section className={`w-full ${className} r62-card-lift`} aria-label="Quedas de preço">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">

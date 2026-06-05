@@ -348,7 +348,7 @@ export function QuickBillSplitter({ className = '' }: QuickBillSplitterProps) {
   const hasResult = totalValue > 0 && peopleCount > 0
 
   return (
-    <Card className={`r63-bill-card rounded-2xl overflow-hidden ${className}`}>
+    <Card className={`r63-bill-card rounded-2xl overflow-hidden ${className} r62-card-lift`}>
       {/* ─── Header ─── */}
       <CardHeader className="pb-3 pt-5 px-5 sm:px-6">
         <div className="flex items-center justify-between">
@@ -360,7 +360,7 @@ export function QuickBillSplitter({ className = '' }: QuickBillSplitterProps) {
               <Receipt className="h-5 w-5 text-indigo-500" />
             </motion.div>
             <div>
-              <h3 className="text-base font-bold r63-bill-header">Divisor de Conta</h3>
+              <h3 className="text-base font-bold r63-bill-header r62-heading-gradient">Divisor de Conta</h3>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Divida a conta com seus amigos
               </p>

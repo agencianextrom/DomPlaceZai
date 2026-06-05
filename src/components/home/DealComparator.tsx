@@ -980,7 +980,7 @@ export default function DealComparator() {
   }, [])
 
   return (
-    <section className="w-full max-w-5xl mx-auto px-4 py-6" aria-label="Comparador de Ofertas">
+    <section className="w-full max-w-5xl mx-auto px-4 py-6 r62-card-lift" aria-label="Comparador de Ofertas">
       {/* ── Header ───────────────────────────────────────── */}
       <motion.div
         initial={prefersReduced ? false : { opacity: 0, y: -16 }}
@@ -989,7 +989,7 @@ export default function DealComparator() {
         style={{ transformOrigin: 'top center' }}
         className="text-center mb-6"
       >
-        <h2 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 bg-clip-text text-transparent">
+        <h2 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 bg-clip-text text-transparent r62-heading-gradient">
           Comparador de Ofertas
         </h2>
         <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">

@@ -205,7 +205,7 @@ export function EcoImpactWidget({ className }: EcoImpactWidgetProps) {
   const weekLabels = ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4']
 
   return (
-    <section className={`px-3 sm:px-4 py-6 ${className ?? ''}`} aria-label="Impacto ecológico">
+    <section className={`px-3 sm:px-4 py-6 ${className ?? ''} r62-card-lift`} aria-label="Impacto ecológico">
       <div className="max-w-4xl mx-auto space-y-6">
 
         {/* ── Section Header ─────────────────────────────────────────────── */}
@@ -219,7 +219,7 @@ export function EcoImpactWidget({ className }: EcoImpactWidgetProps) {
             <Leaf className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-foreground">Impacto Ecológico</h2>
+            <h2 className="text-lg font-bold text-foreground r62-heading-gradient">Impacto Ecológico</h2>
             <p className="text-xs text-muted-foreground">Suas ações verdes no DomPlace</p>
           </div>
         </motion.div>

@@ -192,14 +192,14 @@ export function ScanToShop({ className = '' }: ScanToShopProps) {
 
   return (
     <div className={`w-full ${className}`}>
-      <section className="w-full bg-gradient-to-br from-emerald-50/50 via-background to-teal-50/30 rounded-2xl p-4 sm:p-5 border border-border/50">
+      <section className="w-full bg-gradient-to-br from-emerald-50/50 via-background to-teal-50/30 rounded-2xl p-4 sm:p-5 border border-border/50 r62-card-lift">
         {/* Header */}
         <div className="flex items-center gap-3 mb-4">
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg">
             <QrCode className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-foreground">Escanear Produto</h2>
+            <h2 className="text-base font-bold text-foreground r62-heading-gradient">Escanear Produto</h2>
             <p className="text-xs text-muted-foreground">Escaneie o codigo de barras para encontrar produtos</p>
           </div>
         </div>

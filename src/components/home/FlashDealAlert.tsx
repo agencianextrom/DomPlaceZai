@@ -265,7 +265,7 @@ export function FlashDealAlert({ className = '' }: FlashDealAlertProps) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
                       <Zap className="w-3.5 h-3.5 text-amber-300 shrink-0" aria-hidden="true" />
-                      <span className="text-[10px] font-bold text-white/80 uppercase tracking-wider">
+                      <span className="text-[10px] font-bold text-white/80 uppercase tracking-wider r62-heading-gradient">
                         Oferta relâmpago
                       </span>
                       <span className="text-[10px] font-extrabold bg-amber-400/90 text-red-700 px-1.5 py-0.5 rounded-full">

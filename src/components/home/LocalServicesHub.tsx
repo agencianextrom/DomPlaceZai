@@ -746,7 +746,7 @@ export default function LocalServicesHub() {
   /* -- Render ------------------------------------------------------ */
   return (
     <section
-      className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 pb-12"
+      className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 pb-12 r62-card-lift"
       aria-label="Serviços Locais - Diretório de profissionais em Dom Eliseu"
     >
       {/* ---- Header ---- */}
@@ -756,7 +756,7 @@ export default function LocalServicesHub() {
         transition={{ type: 'spring' as const, stiffness: 260, damping: 24 }}
         className="mb-6 mt-2"
       >
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight r62-heading-gradient">
           <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
             Serviços Locais
           </span>

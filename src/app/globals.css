@@ -47653,3 +47653,147 @@
   .r82-price-track-card:hover { box-shadow: none; border-color: inherit; }
   .r82-recipe-card:hover { transform: none; box-shadow: none; }
 }
+
+/* ─── R83 — LoyaltyGame + Dead Code Cleanup + Polish ─── */
+
+.r83-loyalty-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.r83-loyalty-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.r83-xp-bar {
+  transition: filter 0.3s ease;
+}
+.r83-xp-bar:hover {
+  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
+}
+
+.r83-challenge-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r83-challenge-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.1);
+}
+
+.r83-badge-earned {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r83-badge-earned:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.3);
+}
+
+.r83-badge-locked {
+  transition: transform 0.2s ease;
+  filter: grayscale(1) opacity(0.5);
+}
+.r83-badge-locked:hover {
+  transform: scale(1.05);
+  filter: grayscale(0.7) opacity(0.7);
+}
+
+.r83-leaderboard-row {
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+.r83-leaderboard-row:hover {
+  transform: translateX(3px);
+  background-color: rgba(139, 92, 246, 0.05);
+}
+.r83-leaderboard-row.current-user {
+  background-color: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.r83-reward-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r83-reward-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.12);
+}
+
+.r83-checkin-btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r83-checkin-btn:hover:not(:disabled) {
+  transform: scale(1.03);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
+}
+
+.r83-scan-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r83-scan-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.1);
+}
+
+.r83-eco-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r83-eco-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.08);
+}
+
+.r83-bill-card {
+  transition: box-shadow 0.25s ease;
+}
+.r83-bill-card:hover {
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.08);
+}
+
+.r83-price-drop-card {
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.r83-price-drop-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(234, 179, 8, 0.25);
+}
+
+.r83-deal-compare-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r83-deal-compare-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.08);
+}
+
+.r83-local-service-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r83-local-service-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.08);
+}
+
+.r83-flash-deal-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r83-flash-deal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r83-loyalty-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r83-xp-bar:hover { filter: none; }
+  .r83-challenge-card:hover { transform: none; box-shadow: none; }
+  .r83-badge-earned:hover { transform: none; box-shadow: none; }
+  .r83-badge-locked:hover { transform: none; }
+  .r83-leaderboard-row:hover { transform: none; background-color: inherit; }
+  .r83-reward-card:hover { transform: none; box-shadow: none; }
+  .r83-checkin-btn:hover { transform: none; box-shadow: none; }
+  .r83-scan-card:hover { transform: none; box-shadow: none; }
+  .r83-eco-card:hover { transform: none; box-shadow: none; }
+  .r83-bill-card:hover { box-shadow: none; }
+  .r83-price-drop-card:hover { transform: none; border-color: inherit; }
+  .r83-deal-compare-card:hover { transform: none; box-shadow: none; }
+  .r83-local-service-card:hover { transform: none; box-shadow: none; }
+  .r83-flash-deal-card:hover { transform: none; box-shadow: none; }
+}
