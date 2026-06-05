@@ -194,7 +194,7 @@ function ProviderCard({ provider, index }: { provider: ServiceProvider; index: n
           {provider.distance}
         </span>
         <motion.div whileTap={{ scale: 0.95 }}>
-          <Button size="sm" className="h-7 text-[10px] px-2.5 bg-primary hover:bg-primary/90 text-primary-foreground btn-glow gap-1">
+          <Button size="sm" className="h-7 min-h-[44px] min-w-[44px] text-[10px] px-2.5 bg-primary hover:bg-primary/90 text-primary-foreground btn-glow gap-1">
             Contratar
           </Button>
         </motion.div>

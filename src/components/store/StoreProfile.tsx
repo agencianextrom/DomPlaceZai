@@ -758,19 +758,19 @@ export function StoreProfile({ store }: StoreProfileProps) {
                     )}
                     {/* Social media */}
                     <div className="flex gap-2 pt-2">
-                      <Button variant="outline" size="sm" className="h-9 gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                      <Button variant="outline" size="sm" className="h-9 min-h-[44px] gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
                         onClick={() => window.open('https://instagram.com/' + store.name.toLowerCase().replace(/\s+/g, ''), '_blank')}
                       >
                         <Instagram className="h-4 w-4" />
                         Instagram
                       </Button>
-                      <Button variant="outline" size="sm" className="h-9 gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                      <Button variant="outline" size="sm" className="h-9 min-h-[44px] gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
                         onClick={() => window.open('https://facebook.com/' + store.name.toLowerCase().replace(/\s+/g, ''), '_blank')}
                       >
                         <Facebook className="h-4 w-4" />
                         Facebook
                       </Button>
-                      <Button variant="outline" size="sm" className="h-9 gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                      <Button variant="outline" size="sm" className="h-9 min-h-[44px] gap-1.5 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
                         onClick={() => window.open('https://wa.me/5591999999999', '_blank')}
                       >
                         <Globe className="h-4 w-4" />

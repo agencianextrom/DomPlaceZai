@@ -45585,3 +45585,124 @@
   @keyframes r66-status-ping { 0%, 100% { transform: none; opacity: 1; } }
   @keyframes r66-dot-bounce { 0%, 100% { transform: none; } }
 }
+
+/* ==============================
+   R67 — WEEKLY MEAL PLANNER
+   ============================== */
+@keyframes r67-tab-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
+  50% { box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15); }
+}
+@keyframes r67-card-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes r67-empty-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes r67-calorie-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.r67-meal-tab {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+}
+.r67-meal-tab:active {
+  transform: scale(0.92);
+}
+.r67-meal-tab.active {
+  box-shadow: 0 2px 12px rgba(5, 150, 105, 0.25), 0 0 0 1px rgba(5, 150, 105, 0.1);
+}
+
+.r67-meal-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r67-meal-card:active {
+  transform: scale(0.98);
+}
+.r67-meal-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+.dark .r67-meal-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+.r67-meal-card.dragging {
+  opacity: 0.85;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.r67-summary-bar {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.04), rgba(20, 184, 166, 0.03));
+  transition: box-shadow 0.3s ease;
+}
+.r67-summary-bar:hover {
+  box-shadow: 0 2px 12px rgba(5, 150, 105, 0.08);
+}
+.dark .r67-summary-bar {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.08), rgba(20, 184, 166, 0.06));
+}
+.dark .r67-summary-bar:hover {
+  box-shadow: 0 2px 12px rgba(5, 150, 105, 0.15);
+}
+
+.r67-empty-state {
+  animation: r67-empty-float 3s ease-in-out infinite;
+}
+
+/* R67 — ERROR BOUNDARY */
+.r67-auth-error {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.02), rgba(99, 102, 241, 0.02));
+}
+
+/* R67 — AUTH FALLBACK TOAST */
+.r67-auth-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(30, 41, 59, 0.92);
+  color: white;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  opacity: 0;
+  animation: r67-toast-in 0.3s ease forwards;
+}
+@keyframes r67-toast-in {
+  0% { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes r67-toast-out {
+  0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r67-meal-tab, .r67-meal-card {
+    transition: none !important;
+    animation: none !important;
+  }
+  .r67-empty-state {
+    animation: none !important;
+  }
+  .r67-auth-toast {
+    animation: none !important;
+    opacity: 1;
+  }
+}

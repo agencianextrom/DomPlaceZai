@@ -220,7 +220,7 @@ function CrossSellSection({ cartItems }: { cartItems: CartItemData[] }) {
                 <motion.button
                   whileTap={{ scale: 0.85 }}
                   onClick={() => handleQuickAdd(product)}
-                  className={`h-7 w-7 rounded-lg flex items-center justify-center transition-colors ${
+                  className={`h-7 w-7 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center transition-colors ${
                     isAdded
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-primary/10 text-primary hover:bg-primary/20'
@@ -687,7 +687,7 @@ export function CartView() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-primary"
+                className="h-8 w-8 min-h-[44px] min-w-[44px] text-muted-foreground hover:text-primary active:scale-95 transition-transform"
                 onClick={handleShareCart}
               >
                 <Share2 className="h-4 w-4" />

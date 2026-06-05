@@ -1129,7 +1129,7 @@ function ExpandedPost({
               maxLength={200}
             />
             <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }}>
-              <Button size="sm" className="h-8 w-8 p-0" disabled={!newComment.trim()}>
+              <Button size="sm" className="h-8 w-8 min-h-[44px] min-w-[44px] p-0" disabled={!newComment.trim()}>
                 <Send className="h-3.5 w-3.5" />
               </Button>
             </motion.div>

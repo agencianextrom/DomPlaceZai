@@ -440,7 +440,7 @@ function RSVPButton({ eventId }: { eventId: string }) {
             exit={{ scale: 0.8, opacity: 0 }}
             transition={springTransition}
           >
-            <Button size="sm" variant="outline" className="h-8 text-xs gap-1.5 border-emerald-500/30 text-emerald-600 bg-emerald-500/5" onClick={handleRSVP}>
+            <Button size="sm" variant="outline" className="h-8 min-h-[44px] text-xs gap-1.5 border-emerald-500/30 text-emerald-600 bg-emerald-500/5" onClick={handleRSVP}>
               <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
               Confirmado
             </Button>
@@ -453,7 +453,7 @@ function RSVPButton({ eventId }: { eventId: string }) {
             exit={{ scale: 0.9, opacity: 0 }}
             transition={springTransition}
           >
-            <Button size="sm" className="h-8 text-xs gap-1.5 bg-primary text-primary-foreground" disabled>
+            <Button size="sm" className="h-8 min-h-[44px] text-xs gap-1.5 bg-primary text-primary-foreground" disabled>
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
@@ -465,7 +465,7 @@ function RSVPButton({ eventId }: { eventId: string }) {
           </motion.div>
         ) : (
           <motion.div key="rsvp" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} transition={springTransition}>
-            <Button size="sm" className="h-8 text-xs gap-1.5 bg-primary text-primary-foreground btn-glow" onClick={handleRSVP}>
+            <Button size="sm" className="h-8 min-h-[44px] text-xs gap-1.5 bg-primary text-primary-foreground btn-glow" onClick={handleRSVP}>
               <HandMetal className="h-3.5 w-3.5" />
               Confirmar presença
             </Button>

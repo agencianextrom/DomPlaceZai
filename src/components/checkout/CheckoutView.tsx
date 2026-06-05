@@ -961,7 +961,7 @@ export function CheckoutView() {
                             </p>
                           </div>
                         </div>
-                        <Button variant="ghost" size="sm" className="h-8 text-xs text-destructive" onClick={handleRemoveCoupon}>
+                        <Button variant="ghost" size="sm" className="h-8 min-h-[44px] min-w-[44px] text-xs text-destructive active:scale-95 transition-transform" onClick={handleRemoveCoupon}>
                           <X className="h-3 w-3" />
                         </Button>
                       </CardContent>

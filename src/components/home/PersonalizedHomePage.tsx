@@ -619,7 +619,7 @@ function PersonalizedHomePage() {
                 </div>
                 <div className="px-3 pb-3">
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button size="sm" className="r46-quick-cart-btn w-full text-[11px] h-7 gap-1">
+                    <Button size="sm" className="r46-quick-cart-btn w-full text-[11px] h-7 min-h-[44px] min-w-[44px] gap-1">
                       <ShoppingCart className="h-3 w-3" />
                       Adicionar rápido
                     </Button>
@@ -868,7 +868,7 @@ function PersonalizedHomePage() {
                 <p className="text-[10px] text-muted-foreground">Claro, escuro ou automático</p>
               </div>
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-                <Button variant="ghost" size="sm" className="r46-theme-btn text-[10px] gap-1 h-7">
+                <Button variant="ghost" size="sm" className="r46-theme-btn text-[10px] gap-1 h-7 min-h-[44px] min-w-[44px]">
                   <Palette className="h-3 w-3" />
                   Ajustar
                 </Button>
@@ -887,7 +887,7 @@ function PersonalizedHomePage() {
                 <p className="text-[10px] text-muted-foreground">Alertas de preço e novidades</p>
               </div>
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-                <Button variant="ghost" size="sm" className="r46-notif-btn text-[10px] gap-1 h-7">
+                <Button variant="ghost" size="sm" className="r46-notif-btn text-[10px] gap-1 h-7 min-h-[44px] min-w-[44px]">
                   <Bell className="h-3 w-3" />
                   Configurar
                 </Button>

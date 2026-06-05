@@ -668,7 +668,7 @@ function ProductCard({
 
           {/* Add to Cart */}
           <motion.div whileTap={{ scale: 0.95 }} className="w-full">
-            <Button className="r40-add-cart-btn w-full h-8 text-xs font-semibold rounded-lg gap-1.5">
+            <Button className="r40-add-cart-btn w-full h-8 min-h-[44px] text-xs font-semibold rounded-lg gap-1.5">
               <ShoppingCart className="h-3 w-3" />
               Adicionar
             </Button>
@@ -1198,7 +1198,7 @@ export function InfluencerShopPage() {
                           </span>
                         </div>
                         <motion.div whileTap={{ scale: 0.9 }}>
-                          <Button variant="ghost" size="sm" className="r40-copy-coupon h-6 px-2 text-[10px] font-semibold gap-1 text-amber-600 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-md">
+                          <Button variant="ghost" size="sm" className="r40-copy-coupon h-6 min-h-[44px] min-w-[44px] px-2 text-[10px] font-semibold gap-1 text-amber-600 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-md active:scale-95 transition-transform">
                             <Copy className="h-3 w-3" />
                             Copiar
                           </Button>

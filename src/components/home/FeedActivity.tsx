@@ -631,7 +631,7 @@ export function FeedActivity() {
                       </div>
                       {/* Hover action with subtle glow */}
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-primary r18-ver-mais-pulse">
+                        <Button variant="ghost" size="sm" className="h-7 min-h-[44px] px-2 text-xs text-primary r18-ver-mais-pulse">
                           Ver
                         </Button>
                       </div>

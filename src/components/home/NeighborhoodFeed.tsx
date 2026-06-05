@@ -375,7 +375,7 @@ export function NeighborhoodFeed() {
 
                       {/* Hover action */}
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-primary">
+                        <Button variant="ghost" size="sm" className="h-7 min-h-[44px] min-w-[44px] px-2 text-xs text-primary">
                           <Eye className="h-3 w-3" />
                         </Button>
                       </div>

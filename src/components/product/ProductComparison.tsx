@@ -210,7 +210,7 @@ export function ProductComparison() {
               >
                 <Button
                   size="sm"
-                  className="h-8 text-xs bg-red-500 hover:bg-red-600 text-white gap-1"
+                  className="h-8 min-h-[44px] text-xs bg-red-500 hover:bg-red-600 text-white gap-1"
                   onClick={handleClearAll}
                 >
                   <Trash2 className="h-3 w-3" />
@@ -219,7 +219,7 @@ export function ProductComparison() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 text-xs"
+                  className="h-8 min-h-[44px] text-xs"
                   onClick={() => setShowClearConfirm(false)}
                 >
                   Cancelar
@@ -235,7 +235,7 @@ export function ProductComparison() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-destructive h-8 text-xs gap-1"
+                  className="text-destructive h-8 min-h-[44px] min-w-[44px] text-xs gap-1"
                   onClick={() => setShowClearConfirm(true)}
                 >
                   <X className="h-3 w-3" />

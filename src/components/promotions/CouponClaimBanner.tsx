@@ -197,7 +197,7 @@ export function CouponClaimBanner() {
             {/* Close button */}
             <button
               onClick={handleClose}
-              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 flex items-center justify-center active:scale-90 transition-transform z-20"
+              className="absolute top-2 right-2 w-7 h-7 min-h-[44px] min-w-[44px] rounded-full bg-white/20 flex items-center justify-center active:scale-90 transition-transform z-20"
               aria-label="Fechar cupom"
             >
               <X className="h-3.5 w-3.5 text-white" />

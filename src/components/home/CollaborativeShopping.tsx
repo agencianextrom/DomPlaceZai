@@ -420,7 +420,7 @@ function InviteLink({ groupId }: { groupId: string }) {
         <Link2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
         <span className="text-[10px] text-muted-foreground truncate flex-1 font-mono">{link}</span>
         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-          <Button size="sm" variant="ghost" className="h-7 px-2 text-[10px] font-semibold" onClick={handleCopy}>
+          <Button size="sm" variant="ghost" className="h-7 min-h-[44px] min-w-[44px] px-2 text-[10px] font-semibold" onClick={handleCopy}>
             {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
             {copied ? 'Copiado!' : 'Copiar'}
           </Button>

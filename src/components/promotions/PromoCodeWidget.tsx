@@ -356,7 +356,7 @@ export function PromoCodeWidget() {
                         <motion.button
                           whileTap={{ scale: 0.85 }}
                           onClick={() => handleRemovePromo(promo.code)}
-                          className="h-7 w-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                          className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors active:scale-95"
                           aria-label={`Remover cupom ${promo.code}`}
                         >
                           <X className="h-3.5 w-3.5 text-white" />

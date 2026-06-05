@@ -943,12 +943,12 @@ export default function SmartDeliveryHub() {
             className="flex-1 h-9 rounded-lg border border-border/60 bg-background px-3 text-xs focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-400 transition-all"
           />
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button size="sm" className="h-9 w-9 p-0 bg-teal-600 hover:bg-teal-700 rounded-lg">
+            <Button size="sm" className="h-9 w-9 min-h-[44px] min-w-[44px] p-0 bg-teal-600 hover:bg-teal-700 rounded-lg">
               <Send className="h-3.5 w-3.5 text-white" />
             </Button>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button size="sm" variant="outline" className="h-9 w-9 p-0 rounded-lg">
+            <Button size="sm" variant="outline" className="h-9 w-9 min-h-[44px] min-w-[44px] p-0 rounded-lg">
               <Phone className="h-3.5 w-3.5" />
             </Button>
           </motion.div>
@@ -1260,7 +1260,7 @@ export default function SmartDeliveryHub() {
             <p className="text-[10px] text-muted-foreground">Receba alertas em tempo real sobre suas entregas</p>
           </div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button size="sm" className="h-8 text-[10px] bg-teal-600 hover:bg-teal-700 text-white rounded-lg px-3">
+            <Button size="sm" className="h-8 min-h-[44px] text-[10px] bg-teal-600 hover:bg-teal-700 text-white rounded-lg px-3">
               Ativar
             </Button>
           </motion.div>

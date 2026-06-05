@@ -1153,13 +1153,13 @@ function EmergencyButton() {
               </p>
               <div className="flex gap-2">
                 <motion.div whileTap={{ scale: 0.95 }}>
-                  <Button size="sm" className="r43-emergency-call h-8 text-[11px] gap-1 bg-red-500 hover:bg-red-600 text-white">
+                  <Button size="sm" className="r43-emergency-call h-8 min-h-[44px] text-[11px] gap-1 bg-red-500 hover:bg-red-600 text-white">
                     <Phone className="h-3 w-3" />
                     Ligar 0800
                   </Button>
                 </motion.div>
                 <motion.div whileTap={{ scale: 0.95 }}>
-                  <Button size="sm" variant="outline" className="r43-emergency-chat h-8 text-[11px] gap-1 border-red-500/20 text-red-500">
+                  <Button size="sm" variant="outline" className="r43-emergency-chat h-8 min-h-[44px] text-[11px] gap-1 border-red-500/20 text-red-500">
                     <MessageCircle className="h-3 w-3" />
                     Chat Suporte
                   </Button>

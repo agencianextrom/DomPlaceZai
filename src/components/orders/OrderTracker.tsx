@@ -174,10 +174,10 @@ export function OrderTracker({ orderNumber = 'DP000003', storeName = 'Mercado do
                   </p>
                 </div>
                 <div className="flex gap-1.5">
-                  <Button size="icon" className="h-9 w-9 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full shrink-0">
+                  <Button size="icon" className="h-9 w-9 min-h-[44px] min-w-[44px] bg-primary text-primary-foreground hover:bg-primary/90 rounded-full shrink-0 active:scale-95 transition-transform">
                     <Phone className="h-4 w-4" />
                   </Button>
-                  <Button size="icon" variant="outline" className="h-9 w-9 border-primary/30 text-primary hover:bg-primary/5 rounded-full shrink-0">
+                  <Button size="icon" variant="outline" className="h-9 w-9 min-h-[44px] min-w-[44px] border-primary/30 text-primary hover:bg-primary/5 rounded-full shrink-0 active:scale-95 transition-transform">
                     <MessageCircle className="h-4 w-4" />
                   </Button>
                 </div>
@@ -302,11 +302,11 @@ export function OrderTracker({ orderNumber = 'DP000003', storeName = 'Mercado do
                         {/* Action buttons for current delivering step */}
                         {isCurrent && step.id === 'delivering' && (
                           <div className="flex gap-2 mt-3">
-                            <Button size="sm" className="h-8 text-xs bg-primary text-primary-foreground gap-1 flex-1">
+                            <Button size="sm" className="h-8 min-h-[44px] text-xs bg-primary text-primary-foreground gap-1 flex-1">
                               <Phone className="h-3 w-3" />
                               Ligar
                             </Button>
-                            <Button size="sm" variant="outline" className="h-8 text-xs border-primary/30 text-primary gap-1 flex-1">
+                            <Button size="sm" variant="outline" className="h-8 min-h-[44px] text-xs border-primary/30 text-primary gap-1 flex-1">
                               <MessageCircle className="h-3 w-3" />
                               Chat
                             </Button>

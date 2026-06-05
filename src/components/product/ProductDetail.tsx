@@ -1026,7 +1026,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                           exit={{ opacity: 0, y: -5 }}
                         >
                           {bundleAdded ? (
-                            <Button size="sm" className="w-full mt-2 h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg gap-1">
+                            <Button size="sm" className="w-full mt-2 h-8 min-h-[44px] text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg gap-1">
                               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
                                 <Check className="h-3.5 w-3.5" />
                               </motion.div>

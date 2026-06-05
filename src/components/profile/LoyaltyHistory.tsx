@@ -313,7 +313,7 @@ export function LoyaltyHistory() {
               <div className="p-5">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-lg">Trocar Pontos</h3>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setRedeemModal(false)}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 min-h-[44px] min-w-[44px] active:scale-95 transition-transform" onClick={() => setRedeemModal(false)}>
                     ×
                   </Button>
                 </div>

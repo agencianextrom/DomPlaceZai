@@ -276,7 +276,7 @@ function MiniCartPopup({ product, onClose }: { product: ProductData; onClose: ()
             <Button
               variant="outline"
               size="sm"
-              className="w-full h-8 mt-2 text-xs border-primary/30 hover:bg-primary/5"
+              className="w-full h-8 min-h-[44px] mt-2 text-xs border-primary/30 hover:bg-primary/5"
               onClick={handleGoToCart}
             >
               Ver Carrinho ({qty})
@@ -462,7 +462,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                       exit={{ opacity: 0, x: 12, scale: 0.8 }}
                       transition={{ type: 'spring' as const, stiffness: 400, damping: 25, delay: 0 }}
                       onClick={handleFavoriteClick}
-                      className="h-8 w-8 rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg border border-white/50 hover:bg-white dark:hover:bg-black/80 transition-colors"
+                      className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg border border-white/50 hover:bg-white dark:hover:bg-black/80 active:scale-95 transition-colors transition-transform"
                       aria-label={isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
                     >
                       <Heart className={`h-4 w-4 ${isFav ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
@@ -473,7 +473,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                       exit={{ opacity: 0, x: 12, scale: 0.8 }}
                       transition={{ type: 'spring' as const, stiffness: 400, damping: 25, delay: 0.1 }}
                       onClick={handleAddToCart}
-                      className="h-8 w-8 rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg border border-white/50 hover:bg-white dark:hover:bg-black/80 transition-colors"
+                      className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg border border-white/50 hover:bg-white dark:hover:bg-black/80 active:scale-95 transition-colors transition-transform"
                       aria-label="Adicionar ao carrinho"
                     >
                       <ShoppingCart className="h-4 w-4 text-gray-600" />

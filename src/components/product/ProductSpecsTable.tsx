@@ -234,7 +234,7 @@ export function ProductSpecsTable({ category, specs: propSpecs, productName }: P
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="w-full h-8 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg gap-1"
+                  className="w-full h-8 min-h-[44px] text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg gap-1"
                 >
                   {isExpanded ? (
                     <>

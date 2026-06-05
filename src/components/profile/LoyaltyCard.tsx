@@ -171,7 +171,7 @@ export function LoyaltyCard({ points, nextReward, nextRewardName }: LoyaltyCardP
                       <p className="text-xs font-semibold">{reward.label}</p>
                       <p className="text-[10px] text-muted-foreground">{reward.pts} pontos</p>
                     </div>
-                    <Button size="sm" className="h-6 text-[10px] bg-primary text-primary-foreground hover:bg-primary/90 px-2.5">
+                    <Button size="sm" className="h-6 min-h-[44px] text-[10px] bg-primary text-primary-foreground hover:bg-primary/90 px-2.5">
                       Resgatar
                     </Button>
                   </motion.div>

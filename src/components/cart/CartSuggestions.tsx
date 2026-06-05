@@ -241,7 +241,7 @@ function SuggestionCard({
           >
             <button
               onClick={onAdd}
-              className={`r40-add-btn h-7 w-7 rounded-lg flex items-center justify-center transition-all duration-300 ${
+              className={`r40-add-btn h-7 w-7 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center transition-all duration-300 ${
                 isAdded
                   ? 'bg-emerald-500 text-white'
                   : 'bg-primary/10 text-primary hover:bg-primary/20'
@@ -486,7 +486,7 @@ export function CartSuggestions() {
             whileTap={{ scale: 0.88 }}
             onClick={() => handleScroll('left')}
             disabled={!canScrollLeft}
-            className={`h-7 w-7 rounded-lg flex items-center justify-center transition-all ${
+            className={`h-7 w-7 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center transition-all ${
               canScrollLeft
                 ? 'bg-secondary text-foreground hover:bg-secondary/80'
                 : 'bg-muted text-muted-foreground/30'
@@ -498,7 +498,7 @@ export function CartSuggestions() {
             whileTap={{ scale: 0.88 }}
             onClick={() => handleScroll('right')}
             disabled={!canScrollRight}
-            className={`h-7 w-7 rounded-lg flex items-center justify-center transition-all ${
+            className={`h-7 w-7 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center transition-all ${
               canScrollRight
                 ? 'bg-secondary text-foreground hover:bg-secondary/80'
                 : 'bg-muted text-muted-foreground/30'

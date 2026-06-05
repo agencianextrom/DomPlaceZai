@@ -204,6 +204,7 @@ import { InteractiveProductTour } from '@/components/home/InteractiveProductTour
 import { MobileQuickActions } from '@/components/home/MobileQuickActions'
 import { MobileOrderTracker } from '@/components/orders/MobileOrderTracker'
 import { QuickBillSplitter } from '@/components/home/QuickBillSplitter'
+import { WeeklyMealPlanner } from '@/components/home/WeeklyMealPlanner'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -1856,6 +1857,7 @@ export default function Home() {
               <ScanToShop />
               <LazySection><ScrollReveal><EcoImpactWidget /></ScrollReveal></LazySection>
               <LazySection><ScrollReveal><QuickBillSplitter /></ScrollReveal></LazySection>
+              <LazySection><ScrollReveal><WeeklyMealPlanner /></ScrollReveal></LazySection>
             </div>
           </motion.div>
         ) : currentView === 'product' ? (

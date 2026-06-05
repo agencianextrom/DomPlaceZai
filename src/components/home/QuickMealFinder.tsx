@@ -581,7 +581,7 @@ export function QuickMealFinder() {
           </div>
         </div>
         <motion.div whileTap={{ scale: 0.95 }}>
-          <Button variant="ghost" size="sm" className="text-[10px] font-semibold text-muted-foreground gap-0.5 h-7 px-2">
+          <Button variant="ghost" size="sm" className="text-[10px] font-semibold text-muted-foreground gap-0.5 h-7 min-h-[44px] px-2">
             Ver tudo
             <ChevronRight className="h-3 w-3" />
           </Button>

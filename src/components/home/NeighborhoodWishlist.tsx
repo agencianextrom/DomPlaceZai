@@ -368,7 +368,7 @@ function PriceDropCard({ item, isWished, onToggleWish }: { item: PriceDropWishIt
       </div>
       {/* Button wrapped in motion.div — no whileHover on shadcn Button */}
       <motion.div whileTap={{ scale: 0.97 }} className="mt-3">
-        <Button className="w-full h-8 bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold gap-1.5 rounded-lg">
+        <Button className="w-full h-8 min-h-[44px] bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold gap-1.5 rounded-lg">
           <ShoppingBag className="h-3.5 w-3.5" />Comprar agora
         </Button>
       </motion.div>
