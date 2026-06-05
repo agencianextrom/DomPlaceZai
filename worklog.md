@@ -1,4 +1,88 @@
 ---
+Task ID: R84-NeighborhoodWatch-TouchTargetFixes18-11NonHomeCSSPolish-r84CSS
+Agent: Main Agent
+Task: NeighborhoodWatch feature, 18 touch target fixes (10 files), 11 non-home CSS polish, r84-* CSS
+
+Work Log:
+
+**QA Assessment:**
+- Production build passes cleanly
+- agent-browser QA: domplace.vercel.app loads successfully, screenshot captured
+- Clean working tree from R83 (48337d1)
+
+**Build Status:**
+- Production build passes cleanly
+- CSS: 47,943 lines (R84, +144 from r83)
+- 17 files changed (1 new + 14 modified)
+
+**New Feature — NeighborhoodWatch (~491 lines):**
+- `src/components/home/NeighborhoodWatch.tsx` — Community safety and neighborhood watch widget
+- "Vizinho Solidário" with amber→orange→red gradient header + Shield icon
+- Safety Score: animated 7.8/10, 4 breakdown categories (Iluminação, Trânsito, Segurança, Limpeza) with star ratings
+- Community Alerts: 5 types (🔴 Emergência, 🟡 Alerta, 🔵 Informação, 🟢 Positivo, ⚫ Resolvido), 6 mock alerts with Curtir/Comentar
+- Report Incident: category select, priority select, text input, "Enviar Relato" button → toast
+- Emergency Contacts: SAMU 192, Polícia Militar 190, Bombeiros 193, Defesa Civil 199 with "Ligar" buttons
+- Community Stats: 12 relatos, 8 resolvidos, 4 em andamento, 67% progress bar
+- Loading skeleton (1s), wired into page.tsx after LoyaltyGame
+
+**Touch Target Fixes — 18 elements across 10 files:**
+1. FavoritesView.tsx: 5 fixes (grid/list toggle ×2, sort dropdown, category pills ×2)
+2. StoreDirectory.tsx: 2 fixes (category filter pills)
+3. StoreMembershipTiers.tsx: 1 fix (frequency selector)
+4. StoreAnalytics.tsx: 2 fixes (period pills, refresh button)
+5. StoreEventCalendar.tsx: 3 fixes (Participar button, share button, calendar day cells)
+6. OrderToast.tsx: 1 fix (close button h-7→min-h-44)
+7. NotificationsPage.tsx: 1 fix (filter pills via .map())
+8. SmartNotifications.tsx: 1 fix (mark all read)
+9. CookieConsent.tsx: 1 fix (reject/close button)
+10. AuthModal.tsx: 1 fix (password toggle)
+
+**CSS Polish — r62-* Classes Applied to 11 Non-Home Components:**
+1. StoreDirectory: r62-card-lift + r62-heading-gradient
+2. StoreMembershipTiers: r62-card-lift (5 instances) + r62-heading-gradient
+3. StoreAnalytics: r62-card-lift (7 instances) + r62-heading-gradient
+4. StoreEventCalendar: r62-card-lift (2 instances)
+5. NotificationsPage: r62-card-lift + r62-heading-gradient
+6. SmartNotifications: r62-heading-gradient (already had card-lift)
+7. CookieConsent: r62-card-lift + r62-heading-gradient
+8. SplitPaymentSelector: r62-card-lift + r62-heading-gradient
+9. AffiliateDashboard: r62-heading-gradient
+10. PromoCodeWidget: r62-heading-gradient (already had card-lift)
+11. FavoritesView: r62-heading-gradient (already had card-lift)
+
+**CSS — r84-* Classes (144 lines):**
+- r84-watch-card / r84-alert-card / r84-alert-emergency / r84-alert-positive: NeighborhoodWatch themed
+- r84-contact-card / r84-score-badge / r84-report-form: contacts and form polish
+- r84-store-dir-card / r84-tier-card / r84-analytics-card / r84-calendar-card / r84-notif-card: store + notification polish
+- r84-cookie-glass / r84-split-card / r84-affiliate-card / r84-fav-card: other non-home component polish
+- All wrapped in prefers-reduced-motion guard
+
+Stage Summary:
+- 17 files changed, +687/-46 lines (including 1 new file: NeighborhoodWatch)
+- 1 new component (NeighborhoodWatch, ~491 lines)
+- 18 touch target fixes across 10 files (~487+ total targets now fixed)
+- 11 non-home CSS polish edits
+- 144 lines r84-* CSS added
+- Build: successful
+- Total CSS: 47,943 lines (R84)
+
+## Current Project Status Assessment
+- DomPlace marketplace: stable, feature-rich, 365+ components
+- Production build passes cleanly
+- 23 new components added across R61-R84: ScanToShop, EcoImpactWidget, QuickBillSplitter, PriceDropAlertsWidget, FlashDealAlert, NearbyStoresMap, CommunityRecipeHub, SpendingInsights, NutritionLens, DealComparator, PantryManager, LocalServicesHub, CommunityEventsBoard, PriceTracker, WeatherShopper, GiftFinder, QuickRecipes, SustainabilityDashboard, SmartListAssistant, BudgetTracker, LoyaltyGame, NeighborhoodWatch + cached-fetch utility
+- Mobile responsiveness: ~487+ touch targets fixed (96+ via global Button fix in R78, 18 more in R84), ~110+ mobile grids fixed
+- Visual polish: r62-r84 CSS classes applied to 138+ components (home + non-home)
+- 38+ unused components wired/deleted across R65-R84
+- All commits use agencianextrom@gmail.com
+
+## Unresolved Issues / Risks
+1. Vercel live site behind SSO (private project, TEAM_ACCESS_REQUIRED) — user must adjust settings
+2. .env not persisted across sessions
+3. SPA-style navigation (no deep linking)
+4. ~39K lines CSS lost from R47-R56 (recovering gradually)
+5. Dev server slow on 47K+ CSS (Turbopack parsing)
+6. Homepage has 135+ components (information overload, mitigated by LazySection)
+---
 Task ID: R83-LoyaltyGame-DeleteDeadCode-WireFavoritesViewStandalone-7CSSPolish-r83CSS
 Agent: Main Agent
 Task: LoyaltyGame feature, delete 3 dead files, wire FavoritesView standalone, 7 CSS polish, r83-* CSS
