@@ -451,7 +451,7 @@ function PriceDropCard({ item, onBuy }: { item: WishItem; onBuy: () => void }) {
         whileTap={{ scale: 0.96 }}
         whileHover={{ scale: 1.02 }}
         onClick={onBuy}
-        className="w-full mt-3 h-8 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 relative overflow-hidden transition-colors"
+        className="w-full mt-3 h-8 min-h-[44px] rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 relative overflow-hidden transition-colors"
       >
         <motion.span
           className="absolute inset-0 pointer-events-none"
@@ -811,7 +811,7 @@ export function ProductWishTracker() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-2xl glassmorphism-strong overflow-hidden r62-card-lift"
+      className="rounded-2xl glassmorphism-strong overflow-hidden r62-card-lift r92-wish-tracker-card"
     >
       <div className="relative z-10">
         {/* ═══ HEADER ═══ */}

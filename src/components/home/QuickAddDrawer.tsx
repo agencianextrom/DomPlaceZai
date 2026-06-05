@@ -553,7 +553,7 @@ export function QuickAddDrawer() {
               <motion.button
                 whileTap={{ scale: 0.88 }}
                 onClick={handleClose}
-                className="h-8 w-8 rounded-full bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors"
+                className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors"
               >
                 <X className="h-4 w-4" />
               </motion.button>

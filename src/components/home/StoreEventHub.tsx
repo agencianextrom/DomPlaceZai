@@ -1082,7 +1082,7 @@ function EventDetailModal({
                   <motion.button
                     whileTap={{ scale: 0.85 }}
                     onClick={onClose}
-                    className="h-8 w-8 rounded-full bg-black/30 flex items-center justify-center text-white hover:bg-black/50 transition-colors"
+                    className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-black/30 flex items-center justify-center text-white hover:bg-black/50 transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </motion.button>
@@ -1477,7 +1477,7 @@ export function StoreEventHub() {
   if (isLoading) return <StoreEventHubSkeleton />
 
   return (
-    <section className="mt-6 relative r62-card-lift" aria-label="Store Event Hub">
+    <section className="mt-6 relative r62-card-lift r92-event-hub-card" aria-label="Store Event Hub">
       <ConfettiBurst active={welcomeConfetti} particleCount={25} spread={300} duration={1500} />
 
       {/* ── Section Header ── */}

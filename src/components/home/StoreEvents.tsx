@@ -686,7 +686,7 @@ function CalendarView({
         <motion.button
           whileTap={{ scale: 0.85 }}
           onClick={handlePrev}
-          className="h-8 w-8 rounded-lg bg-background border hover:bg-accent flex items-center justify-center transition-colors"
+          className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-background border hover:bg-accent flex items-center justify-center transition-colors"
           aria-label="Mês anterior"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -705,7 +705,7 @@ function CalendarView({
         <motion.button
           whileTap={{ scale: 0.85 }}
           onClick={handleNext}
-          className="h-8 w-8 rounded-lg bg-background border hover:bg-accent flex items-center justify-center transition-colors"
+          className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-background border hover:bg-accent flex items-center justify-center transition-colors"
           aria-label="Próximo mês"
         >
           <ChevronRight className="h-4 w-4" />
@@ -945,7 +945,7 @@ export function StoreEvents() {
   if (isLoading) return <StoreEventsSkeleton />
 
   return (
-    <section className="mt-6 relative r62-card-lift" aria-label="Eventos e Promoções das Lojas">
+    <section className="mt-6 relative r62-card-lift r92-store-event-card" aria-label="Eventos e Promoções das Lojas">
       {/* Welcome confetti */}
       <ConfettiBurst active={welcomeConfetti} particleCount={25} spread={300} duration={1500} />
 

@@ -632,7 +632,7 @@ function ComboDealCard({ combo }: { combo: typeof comboDeals[number] }) {
             whileTap={{ scale: 0.92 }}
             whileHover={{ scale: 1.04 }}
             onClick={handleAdd}
-            className="h-8 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-semibold flex items-center gap-1.5 transition-colors shadow-md r26-shimmer-sweep relative overflow-hidden"
+            className="h-8 px-3 min-h-[44px] rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-semibold flex items-center gap-1.5 transition-colors shadow-md r26-shimmer-sweep relative overflow-hidden"
           >
             <AnimatePresence mode="wait">
               {added ? (
@@ -726,7 +726,7 @@ export function DailyDeals() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: 'easeOut' as const }}
-      className="space-y-4 r26-gradient-border rounded-2xl p-3 sm:p-0 sm:border-0 r62-card-lift"
+      className="space-y-4 r26-gradient-border rounded-2xl p-3 sm:p-0 sm:border-0 r62-card-lift r92-daily-deal-card"
     >
       {/* Section header */}
       <div className="flex items-center justify-between">

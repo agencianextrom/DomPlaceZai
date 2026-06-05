@@ -379,7 +379,7 @@ function CookingTimer({ totalMinutes, recipeId, stepIndex }: { totalMinutes: num
         <motion.button
           whileTap={{ scale: 0.88 }}
           onClick={reset}
-          className="h-8 w-8 rounded-full flex items-center justify-center bg-muted"
+          className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center bg-muted"
         >
           <RotateCcw className="h-3.5 w-3.5" />
         </motion.button>
@@ -443,7 +443,7 @@ function RecipeDetail({ recipe, onClose }: { recipe: Recipe; onClose: () => void
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 40 }}
       transition={{ type: 'spring' as const, stiffness: 220, damping: 24 }}
-      className="rounded-2xl border border-border/60 bg-card overflow-hidden"
+      className="rounded-2xl border border-border/60 bg-card overflow-hidden r62-card-lift r92-recipes-card"
       style={{ boxShadow: '0 8px 32px -4px rgba(0,0,0,0.12)' }}
     >
       {/* Header */}

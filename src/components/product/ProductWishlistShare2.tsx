@@ -877,7 +877,7 @@ function WishlistItemCard({
             <Tooltip>
               <TooltipTrigger asChild>
                 <motion.button
-                  className="r43-fulfill-btn w-7 h-7 rounded-lg flex items-center justify-center border"
+                  className="r43-fulfill-btn w-7 h-7 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center border"
                   style={{
                     backgroundColor: item.fulfilled ? 'rgba(16, 185, 129, 0.12)' : 'rgba(0,0,0,0.03)',
                     borderColor: item.fulfilled ? 'rgba(16, 185, 129, 0.3)' : 'rgba(0,0,0,0.06)',
@@ -898,7 +898,7 @@ function WishlistItemCard({
             <Tooltip>
               <TooltipTrigger asChild>
                 <motion.button
-                  className="r43-remove-btn w-7 h-7 rounded-lg flex items-center justify-center border"
+                  className="r43-remove-btn w-7 h-7 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center border"
                   style={{ backgroundColor: 'rgba(239, 68, 68, 0.06)', borderColor: 'rgba(239, 68, 68, 0.15)' }}
                   onClick={() => onRemove(item.id)}
                   whileHover={{ scale: 1.1 }}

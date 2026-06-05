@@ -271,7 +271,7 @@ function ImagePreviewOverlay({ imageUrl, onClose }: { imageUrl: string; onClose:
         onClick={(e) => e.stopPropagation()}
       >
         <motion.button
-          className="r51-chat-image-close absolute top-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
+          className="r51-chat-image-close absolute top-3 right-3 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center"
           style={{ background: 'rgba(255,255,255,0.15)' }}
           onClick={onClose}
           whileHover={{ scale: 1.1 }}

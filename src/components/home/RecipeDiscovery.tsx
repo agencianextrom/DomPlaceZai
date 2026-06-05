@@ -1157,7 +1157,7 @@ function RecipeDetailModal({
             } p-6 relative`}>
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 h-8 w-8 rounded-full bg-black/20 flex items-center justify-center hover:bg-black/40 transition-colors"
+                className="absolute top-4 right-4 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full bg-black/20 flex items-center justify-center hover:bg-black/40 transition-colors"
               >
                 <X className="h-4 w-4 text-white" />
               </button>

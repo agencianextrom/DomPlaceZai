@@ -753,7 +753,7 @@ export function SmartShoppingAssistant() {
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleExport}
-                  className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-accent transition-colors"
+                  className="w-8 h-8 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center hover:bg-accent transition-colors"
                   aria-label="Exportar conversa"
                   title="Exportar conversa"
                 >
@@ -763,7 +763,7 @@ export function SmartShoppingAssistant() {
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleClear}
-                  className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors"
+                  className="w-8 h-8 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors"
                   aria-label="Limpar conversa"
                   title="Limpar conversa"
                 >
