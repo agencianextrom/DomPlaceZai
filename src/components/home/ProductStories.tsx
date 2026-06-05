@@ -831,7 +831,7 @@ function AnimatedCloseButton({ onClose }: { onClose: () => void }) {
     <motion.button
       whileTap={{ scale: 0.85 }}
       onClick={onClose}
-      className="h-8 w-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center transition-colors r52-stories-close-btn"
+      className="min-h-[44px] min-w-[44px] h-8 w-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center transition-colors active:scale-95 transition-transform r52-stories-close-btn"
       aria-label="Fechar story"
     >
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-white">

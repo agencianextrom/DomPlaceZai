@@ -654,7 +654,7 @@ export function ProductComparison() {
                   <p className="text-sm text-muted-foreground">
                     Você pode comparar até <span className="font-semibold text-primary">4 produtos</span>
                   </p>
-                  <Button variant="outline" size="sm" className="mt-2 h-8 text-xs" onClick={() => navigate('search')}>
+                  <Button variant="outline" size="sm" className="min-h-[44px] min-w-[44px] mt-2 h-8 text-xs active:scale-95 transition-transform" onClick={() => navigate('search')}>
                     <Check className="h-3 w-3 mr-1" />
                     Adicionar mais
                   </Button>

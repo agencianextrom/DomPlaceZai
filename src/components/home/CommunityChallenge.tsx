@@ -1330,7 +1330,7 @@ export function CommunityChallenge() {
 
         <div className="flex-1 min-w-0">
           <motion.h2
-            className="text-base sm:text-lg font-black"
+            className="text-base sm:text-lg font-black r62-heading-gradient"
             variants={shimmerVariants}
             initial="initial"
             animate="animate"

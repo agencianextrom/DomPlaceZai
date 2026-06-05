@@ -706,7 +706,7 @@ function DealCard({
               e.stopPropagation()
               onToggleFavorite(deal.id)
             }}
-            className={`h-7 w-7 rounded-full flex items-center justify-center backdrop-blur-sm transition-colors ${
+            className={`h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center backdrop-blur-sm transition-colors ${
               isFavorite
                 ? 'bg-red-500/90 text-white'
                 : 'bg-white/70 dark:bg-black/50 text-white hover:bg-red-500/90'
@@ -771,7 +771,7 @@ function DealCard({
             <Button
               size="sm"
               variant="default"
-              className="h-7 px-2.5 text-[10px] font-semibold flex items-center gap-1"
+              className="h-7 min-h-[44px] px-2.5 text-[10px] font-semibold flex items-center gap-1"
               onClick={(e) => {
                 e.stopPropagation()
                 onAddToCombo(deal)
@@ -785,7 +785,7 @@ function DealCard({
             <Button
               size="sm"
               variant="outline"
-              className="h-7 px-2.5 text-[10px] font-semibold flex items-center gap-1"
+              className="h-7 min-h-[44px] px-2.5 text-[10px] font-semibold flex items-center gap-1"
               onClick={(e) => {
                 e.stopPropagation()
                 onShowNutrition(deal)
@@ -858,7 +858,7 @@ function TopPickCarouselCard({
 
         {/* Favorite */}
         <motion.button
-          className="absolute top-3 right-3 h-7 w-7 rounded-full flex items-center justify-center bg-white/80 dark:bg-black/50 backdrop-blur-sm"
+          className="absolute top-3 right-3 h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center bg-white/80 dark:bg-black/50 backdrop-blur-sm"
           whileTap={{ scale: 0.85 }}
           onClick={() => onToggleFavorite(item.id)}
         >
@@ -933,7 +933,7 @@ function ComboBuilderPanel({
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={onClearCombo}
-            className="h-7 px-2 rounded-md bg-white/20 text-white text-[10px] font-semibold flex items-center gap-1 hover:bg-white/30 transition-colors"
+            className="h-7 min-h-[44px] px-2 rounded-md bg-white/20 text-white text-[10px] font-semibold flex items-center gap-1 hover:bg-white/30 transition-colors"
           >
             <Trash2 className="h-2.5 w-2.5" />
             Clear
@@ -963,7 +963,7 @@ function ComboBuilderPanel({
             <motion.button
               whileTap={{ scale: 0.85 }}
               onClick={() => onRemoveItem(item.id)}
-              className="h-6 w-6 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 hover:bg-red-500/20 transition-colors"
+              className="h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-red-500/10 flex items-center justify-center text-red-500 hover:bg-red-500/20 transition-colors"
             >
               <X className="h-3 w-3" />
             </motion.button>

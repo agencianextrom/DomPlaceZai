@@ -645,7 +645,7 @@ export function FamilyAccountManager() {
                   Restam {formatBRL(Math.max(0, member.spendingLimit - member.spendingThisMonth))}
                 </p>
                 <motion.div whileTap={{ scale: 0.95 }}>
-                  <Button variant="ghost" size="sm" className="text-[10px] h-7 px-2">
+                  <Button variant="ghost" size="sm" className="min-h-[44px] min-w-[44px] text-[10px] h-7 px-2 active:scale-95 transition-transform">
                     <Settings className="h-3 w-3 mr-1" />
                     Ajustar
                   </Button>
@@ -760,7 +760,7 @@ export function FamilyAccountManager() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-7 w-7 p-0 text-muted-foreground hover:text-red-500"
+                        className="min-h-[44px] min-w-[44px] h-7 w-7 p-0 text-muted-foreground hover:text-red-500 active:scale-95 transition-transform"
                         onClick={() => handleRemoveFromCart(item.id)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />

@@ -266,7 +266,7 @@ function ExpandedDealCard({ deal, index }: { deal: DealItem; index: number }) {
         <motion.div
           whileTap={{ scale: 0.92 }}
         >
-          <Button size="sm" className="h-7 text-[10px] gap-1 rounded-lg" style={{ backgroundColor: discountColor(deal.discount), color: '#ffffff', border: 'none' }}>
+          <Button size="sm" className="min-h-[44px] min-w-[44px] h-7 text-[10px] gap-1 rounded-lg active:scale-95 transition-transform" style={{ backgroundColor: discountColor(deal.discount), color: '#ffffff', border: 'none' }}>
             <ShoppingBag className="h-3 w-3" />
             Comprar
           </Button>
@@ -334,7 +334,7 @@ export function RealTimeDealsTicker() {
           <motion.button
             whileTap={{ scale: 0.85 }}
             onClick={() => setIsMuted((p) => !p)}
-            className="r34-sound-toggle h-7 w-7 rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
+            className="r34-sound-toggle min-h-[44px] min-w-[44px] h-7 w-7 rounded-lg flex items-center justify-center hover:bg-muted transition-colors active:scale-95 transition-transform"
             aria-label={isMuted ? 'Ativar som' : 'Silenciar'}
           >
             <AnimatePresence mode="wait">
@@ -358,7 +358,7 @@ export function RealTimeDealsTicker() {
           <motion.button
             whileTap={{ scale: 0.85 }}
             onClick={() => setIsExpanded((p) => !p)}
-            className="r34-expand-btn h-7 px-2 rounded-lg flex items-center gap-1 text-[10px] font-medium hover:bg-muted transition-colors"
+            className="r34-expand-btn min-h-[44px] min-w-[44px] h-7 px-2 rounded-lg flex items-center gap-1 text-[10px] font-medium hover:bg-muted transition-colors active:scale-95 transition-transform"
           >
             <Tag className="h-3 w-3" />
             <span className="hidden sm:inline">Ver todas as ofertas</span>

@@ -544,7 +544,7 @@ export function NearbyStoresMap({ className }: NearbyStoresMapProps) {
         <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
           <Store className="h-4 w-4 text-primary" />
         </div>
-        <h2 className="text-lg font-bold">Lojas próximas</h2>
+        <h2 className="text-lg font-bold r62-heading-gradient">Lojas próximas</h2>
         <Badge variant="secondary" className="text-[10px] font-bold bg-primary/10 text-primary border-primary/20">
           {filteredStores.length}
         </Badge>

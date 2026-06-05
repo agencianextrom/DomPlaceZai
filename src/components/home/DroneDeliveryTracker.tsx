@@ -727,7 +727,7 @@ function PackageDetailsCard({ pkg }: { pkg: PackageDetails }) {
           <motion.div
             whileTap={{ scale: 0.92 }}
             onClick={() => setExpanded(!expanded)}
-            className="h-7 w-7 rounded-lg flex items-center justify-center cursor-pointer"
+            className="min-h-[44px] min-w-[44px] h-7 w-7 rounded-lg flex items-center justify-center cursor-pointer active:scale-95 transition-transform"
             style={{ backgroundColor: 'rgba(139,92,246,0.08)' }}
           >
             <motion.div animate={{ rotate: expanded ? 90 : 0 }} transition={{ duration: 0.2 }}>

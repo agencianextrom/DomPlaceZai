@@ -279,7 +279,7 @@ function TrendingWishCard({ item, isWished, onToggleWish }: { item: TrendingWish
     <motion.div variants={itemVariants}
       whileHover={{ scale: 1.03, boxShadow: '0 12px 32px -8px rgba(244,63,94,0.18), 0 4px 12px -4px rgba(0,0,0,0.08)' }}
       transition={{ type: 'spring' as const, stiffness: 280, damping: 22 }}
-      className="relative bg-card rounded-xl border border-border overflow-hidden group r49-trending-card">
+      className="relative bg-card rounded-xl border border-border overflow-hidden group r49-trending-card r62-card-lift">
       <div className="relative h-28 bg-gradient-to-br from-rose-50/60 to-pink-50/60 dark:from-rose-950/20 dark:to-pink-950/20 flex items-center justify-center">
         <span className="text-4xl group-hover:scale-110 transition-transform duration-300">{item.emoji}</span>
         <motion.div initial={{ scale: 0, x: 10 }} animate={{ scale: 1, x: 0 }}
@@ -306,7 +306,7 @@ function FriendWishlistCard({ friend }: { friend: FriendWishlist }) {
     <motion.div variants={itemVariants}
       whileHover={{ scale: 1.02, boxShadow: '0 8px 24px -6px rgba(99,102,241,0.15), 0 4px 12px -4px rgba(0,0,0,0.06)' }}
       transition={{ type: 'spring' as const, stiffness: 280, damping: 22 }}
-      className="bg-card rounded-xl border border-border p-3 r49-friend-card">
+      className="bg-card rounded-xl border border-border p-3 r49-friend-card r62-card-lift">
       <div className="flex items-center gap-2.5 mb-3">
         <div className={`h-9 w-9 rounded-full bg-gradient-to-br ${friend.avatarColor} flex items-center justify-center text-white text-sm font-bold shadow-md`}>
           {friend.avatarInitial}
@@ -343,7 +343,7 @@ function PriceDropCard({ item, isWished, onToggleWish }: { item: PriceDropWishIt
     <motion.div variants={itemVariants}
       whileHover={{ scale: 1.02, boxShadow: '0 8px 24px -6px rgba(34,197,94,0.15), 0 4px 12px -4px rgba(0,0,0,0.06)' }}
       transition={{ type: 'spring' as const, stiffness: 280, damping: 22 }}
-      className="relative bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200/60 dark:border-emerald-800/40 p-3 r49-price-drop-card">
+      className="relative bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200/60 dark:border-emerald-800/40 p-3 r49-price-drop-card r62-card-lift">
       <div className="flex items-start gap-3">
         <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 flex items-center justify-center text-2xl shrink-0">
           {item.emoji}
@@ -384,7 +384,7 @@ function SharedWishlistCard({ list }: { list: SharedWishlist }) {
     <motion.div variants={itemVariants}
       whileHover={{ scale: 1.02, boxShadow: '0 8px 24px -6px rgba(139,92,246,0.15), 0 4px 12px -4px rgba(0,0,0,0.06)' }}
       transition={{ type: 'spring' as const, stiffness: 280, damping: 22 }}
-      className="bg-card rounded-xl border border-border p-4 r49-shared-card">
+      className="bg-card rounded-xl border border-border p-4 r49-shared-card r62-card-lift">
       <div className="flex items-center gap-3 mb-3">
         <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 flex items-center justify-center text-2xl">
           {list.emoji}
@@ -600,7 +600,7 @@ export default function NeighborhoodWishlist() {
               <Heart className="h-5 w-5 text-white fill-white" />
             </motion.div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold r49-gradient-text">Desejos do Bairro</h2>
+              <h2 className="text-lg sm:text-xl font-bold r49-gradient-text r62-heading-gradient">Desejos do Bairro</h2>
               <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                 <Users className="h-3 w-3" />O que seus vizinhos estão querendo comprar
               </p>

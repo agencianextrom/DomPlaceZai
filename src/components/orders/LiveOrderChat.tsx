@@ -716,7 +716,7 @@ export function LiveOrderChat() {
                 <div className="r51-chat-top-bar">
                   <motion.div className="r51-chat-back sm:hidden px-2 py-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <motion.div whileTap={{ scale: 0.9 }}>
-                      <Button variant="ghost" size="sm" className="r51-chat-back-btn h-8 gap-1 text-muted-foreground" onClick={handleBackToList}>
+                      <Button variant="ghost" size="sm" className="min-h-[44px] min-w-[44px] r51-chat-back-btn h-8 gap-1 text-muted-foreground active:scale-95 transition-transform" onClick={handleBackToList}>
                         <ArrowLeft className="h-4 w-4" />Voltar
                       </Button>
                     </motion.div>

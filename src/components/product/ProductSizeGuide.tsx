@@ -381,7 +381,7 @@ export function ProductSizeGuide({ productId, category }: ProductSizeGuideProps)
                         onChange={(e) => setWeightInput(e.target.value)}
                         className="flex-1 h-8 px-2 text-xs rounded-lg border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
                       />
-                      <Button size="sm" onClick={handleRecommend} className="h-8 text-xs px-3">
+                      <Button size="sm" onClick={handleRecommend} className="min-h-[44px] min-w-[44px] h-8 text-xs px-3 active:scale-95 transition-transform">
                         Calcular
                       </Button>
                     </div>

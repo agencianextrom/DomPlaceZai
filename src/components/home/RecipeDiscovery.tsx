@@ -917,7 +917,7 @@ function RecipeCard({
       custom={index}
       initial="hidden"
       animate="visible"
-      className="r55-recipe-card group relative rounded-2xl border border-border/50 bg-card overflow-hidden transition-shadow hover:shadow-lg"
+      className="r55-recipe-card group relative rounded-2xl border border-border/50 bg-card overflow-hidden transition-shadow hover:shadow-lg r62-card-lift"
       style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
     >
       {/* Image placeholder */}
@@ -1759,7 +1759,7 @@ export function RecipeDiscovery() {
       >
         <div className="flex items-center justify-center gap-2 mb-2">
           <ChefHat className="h-5 w-5 text-primary" />
-          <h2 className="text-2xl font-bold">Recipe Discovery</h2>
+          <h2 className="text-2xl font-bold r62-heading-gradient">Recipe Discovery</h2>
           <Sparkles className="h-5 w-5 text-amber-500" />
         </div>
         <p className="text-sm text-muted-foreground max-w-lg mx-auto">

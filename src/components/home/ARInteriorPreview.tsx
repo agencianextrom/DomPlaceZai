@@ -638,7 +638,7 @@ function FurnitureColorSwatches({
         {colors.map((c) => (
           <motion.button
             key={c.id}
-            className="r48-color-swatch relative h-7 w-7 rounded-full flex-shrink-0"
+            className="r48-color-swatch relative h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex-shrink-0"
             style={{
               backgroundColor: c.hex,
               boxShadow: selected.id === c.id
@@ -1124,7 +1124,7 @@ function TipsCarousel() {
       {/* Navigation */}
       <div className="flex items-center justify-center gap-2">
         <motion.button
-          className="h-7 w-7 rounded-full flex items-center justify-center"
+          className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center"
           style={{ background: 'rgba(0,0,0,0.04)' }}
           onClick={() => setActiveTip((prev) => (prev - 1 + DECORATION_TIPS.length) % DECORATION_TIPS.length)}
           whileTap={{ scale: 0.9 }}
@@ -1135,7 +1135,7 @@ function TipsCarousel() {
           {activeTip + 1} / {DECORATION_TIPS.length}
         </span>
         <motion.button
-          className="h-7 w-7 rounded-full flex items-center justify-center"
+          className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center"
           style={{ background: 'rgba(0,0,0,0.04)' }}
           onClick={() => setActiveTip((prev) => (prev + 1) % DECORATION_TIPS.length)}
           whileTap={{ scale: 0.9 }}

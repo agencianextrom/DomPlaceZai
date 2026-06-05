@@ -1597,7 +1597,7 @@ export function StoreDashboard() {
                               <FileText className="h-4 w-4 text-primary" />
                               Pedidos Recentes
                             </CardTitle>
-                            <Button variant="ghost" size="sm" className="text-xs text-primary h-7" onClick={() => setActiveTab('orders')}>
+                            <Button variant="ghost" size="sm" className="text-xs text-primary min-h-[44px] min-w-[44px] h-7" onClick={() => setActiveTab('orders')}>
                               Ver todos <ChevronRight className="h-3 w-3" />
                             </Button>
                           </div>
@@ -1647,7 +1647,7 @@ export function StoreDashboard() {
                               <TrendingUp className="h-4 w-4 text-primary" />
                               Top Produtos
                             </CardTitle>
-                            <Button variant="ghost" size="sm" className="text-xs text-primary h-7" onClick={() => setActiveTab('products')}>
+                            <Button variant="ghost" size="sm" className="text-xs text-primary min-h-[44px] min-w-[44px] h-7" onClick={() => setActiveTab('products')}>
                               Ver todos <ChevronRight className="h-3 w-3" />
                             </Button>
                           </div>
@@ -1747,14 +1747,14 @@ export function StoreDashboard() {
                                 <TableCell className="text-[10px] text-muted-foreground">{timeAgo(order.createdAt)}</TableCell>
                                 <TableCell className="text-right">
                                   <div className="flex items-center justify-end gap-1">
-                                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => openOrderDetail(order)}>
+                                    <Button variant="ghost" size="sm" className="min-h-[44px] min-w-[44px] h-7 text-xs" onClick={() => openOrderDetail(order)}>
                                       <Eye className="h-3 w-3" />
                                     </Button>
                                     {actionCfg && (
                                       <Button
                                         size="sm"
                                         variant={actionCfg.variant}
-                                        className="h-7 text-xs gap-1"
+                                        className="min-h-[44px] min-w-[44px] h-7 text-xs gap-1"
                                         disabled={actionLoading === order.id}
                                         onClick={() => handleOrderAction(order.id, actionCfg.action)}
                                       >
@@ -1799,11 +1799,11 @@ export function StoreDashboard() {
                                     <span className="text-xs font-semibold text-primary">{formatBRL(order.total)}</span>
                                   </div>
                                   <div className="flex items-center gap-1.5">
-                                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => openOrderDetail(order)}>
+                                    <Button variant="ghost" size="sm" className="min-h-[44px] min-w-[44px] h-7 text-xs" onClick={() => openOrderDetail(order)}>
                                       <Eye className="h-3 w-3" />
                                     </Button>
                                     {actionCfg && (
-                                      <Button size="sm" variant={actionCfg.variant} className="h-7 text-xs gap-1" disabled={actionLoading === order.id} onClick={() => handleOrderAction(order.id, actionCfg.action)}>
+                                      <Button size="sm" variant={actionCfg.variant} className="min-h-[44px] min-w-[44px] h-7 text-xs gap-1" disabled={actionLoading === order.id} onClick={() => handleOrderAction(order.id, actionCfg.action)}>
                                         {actionLoading === order.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <actionCfg.icon className="h-3 w-3" />}
                                         {actionCfg.label}
                                       </Button>
@@ -1827,7 +1827,7 @@ export function StoreDashboard() {
                 <motion.div key="products" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="font-semibold text-sm">Meus Produtos</h2>
-                    <Button size="sm" className="bg-primary text-primary-foreground gap-1 h-8 text-xs" onClick={() => setActiveTab('new-product')}>
+                    <Button size="sm" className="bg-primary text-primary-foreground gap-1 min-h-[44px] min-w-[44px] h-8 text-xs" onClick={() => setActiveTab('new-product')}>
                       <Plus className="h-3.5 w-3.5" /> Adicionar Produto
                     </Button>
                   </div>
@@ -1895,7 +1895,7 @@ export function StoreDashboard() {
                 <motion.div key="promotions" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="font-semibold text-sm">Minhas Promoções</h2>
-                    <Button size="sm" className="bg-primary text-primary-foreground gap-1 h-8 text-xs" onClick={() => setPromoDialogOpen(true)}>
+                    <Button size="sm" className="bg-primary text-primary-foreground gap-1 min-h-[44px] min-w-[44px] h-8 text-xs" onClick={() => setPromoDialogOpen(true)}>
                       <Plus className="h-3.5 w-3.5" /> Criar Promoção
                     </Button>
                   </div>

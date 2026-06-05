@@ -425,7 +425,7 @@ export function ProductForm() {
             />
             <span className="text-[10px] text-muted-foreground">Auto-save</span>
           </div>
-          <Button variant="outline" size="sm" className="text-xs gap-1 h-7 sm:hidden" onClick={() => setShowPreview(!showPreview)}>
+          <Button variant="outline" size="sm" className="text-xs gap-1 min-h-[44px] min-w-[44px] h-7 sm:hidden" onClick={() => setShowPreview(!showPreview)}>
             <Eye className="h-3 w-3" />
             {showPreview ? 'Ocultar' : 'Mostrar'}
           </Button>

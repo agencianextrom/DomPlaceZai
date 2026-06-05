@@ -770,7 +770,7 @@ export default function GamificationQuests() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7"
+                    className="min-h-[44px] min-w-[44px] h-7 w-7 active:scale-95 transition-transform"
                     onClick={handleRefresh}
                   >
                     <RefreshIcon spinning={isRefreshing} />
@@ -974,7 +974,7 @@ export default function GamificationQuests() {
               <h4 className="text-xs font-bold">Ranking Semanal</h4>
             </div>
             <motion.div whileTap={{ scale: 0.95 }}>
-              <Button variant="ghost" size="sm" className="h-7 text-[10px] text-primary gap-1 px-2">
+              <Button variant="ghost" size="sm" className="min-h-[44px] min-w-[44px] h-7 text-[10px] text-primary gap-1 px-2 active:scale-95 transition-transform">
                 Ver tudo
                 <ChevronRight className="h-3 w-3" />
               </Button>

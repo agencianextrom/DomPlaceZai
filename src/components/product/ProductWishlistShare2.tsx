@@ -1202,7 +1202,7 @@ export function ProductWishlistShare2() {
             <Button
               variant="outline"
               size="sm"
-              className="r43-copy-link-btn text-[11px] h-7 gap-1 shrink-0"
+              className="r43-copy-link-btn min-h-[44px] min-w-[44px] text-[11px] h-7 gap-1 shrink-0 active:scale-95 transition-transform"
               onClick={async () => {
                 try {
                   await navigator.clipboard.writeText(wishlist.shareLink)

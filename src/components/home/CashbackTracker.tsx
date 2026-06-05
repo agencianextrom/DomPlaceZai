@@ -322,7 +322,7 @@ export function CashbackTracker() {
       >
         <div className="flex items-center gap-2">
           <span className="text-2xl">💰</span>
-          <h2 className="r39-title">Cashback Tracker</h2>
+          <h2 className="r39-title r62-heading-gradient">Cashback Tracker</h2>
         </div>
         <p className="r39-subtitle">Ganhe dinheiro de volta em cada compra</p>
       </motion.div>
@@ -451,7 +451,7 @@ export function CashbackTracker() {
         ].map((stat, index) => (
           <motion.div
             key={stat.label}
-            className={`r39-stat-card ${stat.color} rounded-xl p-3 text-center`}
+            className={`r39-stat-card ${stat.color} rounded-xl p-3 text-center r62-card-lift`}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{

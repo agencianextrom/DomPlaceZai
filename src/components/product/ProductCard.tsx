@@ -755,7 +755,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   e.stopPropagation()
                   toggleCompareProduct(product.id)
                 }}
-                className={`absolute top-2 left-2 z-10 h-6 w-6 rounded-md flex items-center justify-center transition-colors ${
+                className={`absolute top-2 left-2 z-10 h-6 w-6 min-h-[44px] min-w-[44px] rounded-md flex items-center justify-center transition-colors ${
                   discount === 0 && !product.isOffer && !product.isNew
                     ? 'left-auto right-12'
                     : 'bottom-14 left-2 top-auto'
@@ -799,7 +799,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: showCartBtn ? 1 : 0 }}
               onClick={handleQuickAdd}
-              className="h-5 w-5 rounded flex items-center justify-center bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0"
+              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded flex items-center justify-center bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0 active:scale-95"
               aria-label="Adicionar rapidamente"
             >
               <Zap className="h-2.5 w-2.5" />

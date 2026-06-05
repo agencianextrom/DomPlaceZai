@@ -638,12 +638,12 @@ function StoresTab() {
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           {store.status !== 'ACTIVE' && (
-                            <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'approve', storeName: store.name })}>
+                            <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'approve', storeName: store.name })}>
                               {actionLoading === store.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle className="h-3 w-3 mr-1" /> Aprovar</>}
                             </Button>
                           )}
                           {store.status !== 'SUSPENDED' && (
-                            <Button size="sm" variant="ghost" className="h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'suspend', storeName: store.name })}>
+                            <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'suspend', storeName: store.name })}>
                               <XCircle className="h-3 w-3 mr-1" /> Suspender
                             </Button>
                           )}
@@ -682,12 +682,12 @@ function StoresTab() {
                       </div>
                       <div className="flex gap-1">
                         {store.status !== 'ACTIVE' && (
-                          <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-emerald-600" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'approve', storeName: store.name })}>
+                          <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-[11px] px-2 text-emerald-600" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'approve', storeName: store.name })}>
                             Aprovar
                           </Button>
                         )}
                         {store.status !== 'SUSPENDED' && (
-                          <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-red-600" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'suspend', storeName: store.name })}>
+                          <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-[11px] px-2 text-red-600" disabled={actionLoading === store.id} onClick={() => setConfirmDialog({ storeId: store.id, action: 'suspend', storeName: store.name })}>
                             Suspender
                           </Button>
                         )}
@@ -857,16 +857,16 @@ function UsersTab() {
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           {user.status !== 'ACTIVE' && (
-                            <Button size="sm" variant="ghost" className="h-7 text-xs text-emerald-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'activate', userName: user.name })}>
+                            <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-xs text-emerald-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'activate', userName: user.name })}>
                               <CheckCircle className="h-3 w-3 mr-1" /> Ativar
                             </Button>
                           )}
                           {user.status === 'ACTIVE' && user.role !== 'ADMIN' && (
-                            <Button size="sm" variant="ghost" className="h-7 text-xs text-red-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'suspend', userName: user.name })}>
+                            <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-xs text-red-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'suspend', userName: user.name })}>
                               <Ban className="h-3 w-3 mr-1" /> Suspender
                             </Button>
                           )}
-                          <Button size="sm" variant="ghost" className="h-7 text-xs" disabled={actionLoading === user.id} onClick={() => { setNewRole(user.role); setRoleDialog({ userId: user.id, userName: user.name }) }}>
+                          <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-xs" disabled={actionLoading === user.id} onClick={() => { setNewRole(user.role); setRoleDialog({ userId: user.id, userName: user.name }) }}>
                             <UserCog className="h-3 w-3 mr-1" /> Role
                           </Button>
                         </div>
@@ -901,12 +901,12 @@ function UsersTab() {
                     </div>
                     <div className="flex gap-1 mt-2">
                       {user.status !== 'ACTIVE' && (
-                        <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-emerald-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'activate', userName: user.name })}>Ativar</Button>
+                        <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-[11px] px-2 text-emerald-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'activate', userName: user.name })}>Ativar</Button>
                       )}
                       {user.status === 'ACTIVE' && user.role !== 'ADMIN' && (
-                        <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2 text-red-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'suspend', userName: user.name })}>Suspender</Button>
+                        <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-[11px] px-2 text-red-600" disabled={actionLoading === user.id} onClick={() => setConfirmDialog({ userId: user.id, action: 'suspend', userName: user.name })}>Suspender</Button>
                       )}
-                      <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2" disabled={actionLoading === user.id} onClick={() => { setNewRole(user.role); setRoleDialog({ userId: user.id, userName: user.name }) }}>Role</Button>
+                      <Button size="sm" variant="ghost" className="min-h-[44px] min-w-[44px] h-7 text-[11px] px-2" disabled={actionLoading === user.id} onClick={() => { setNewRole(user.role); setRoleDialog({ userId: user.id, userName: user.name }) }}>Role</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -1236,10 +1236,10 @@ function ModerationTab() {
                     </div>
                   </div>
                   <div className="flex gap-2 mt-3 justify-end">
-                    <Button size="sm" variant="outline" className="h-8 text-xs text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:border-emerald-800 dark:hover:bg-emerald-900/20" disabled={actionLoading === review.id} onClick={() => setReplyDialog({ reviewId: review.id, reviewName: review.reviewerName })}>
+                    <Button size="sm" variant="outline" className="min-h-[44px] min-w-[44px] h-8 text-xs text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:border-emerald-800 dark:hover:bg-emerald-900/20" disabled={actionLoading === review.id} onClick={() => setReplyDialog({ reviewId: review.id, reviewName: review.reviewerName })}>
                       <MessageSquare className="h-3 w-3 mr-1" /> Responder
                     </Button>
-                    <Button size="sm" variant="outline" className="h-8 text-xs text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-900/20" disabled={actionLoading === review.id} onClick={() => setConfirmDelete({ reviewId: review.id, reviewName: review.reviewerName })}>
+                    <Button size="sm" variant="outline" className="min-h-[44px] min-w-[44px] h-8 text-xs text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-900/20" disabled={actionLoading === review.id} onClick={() => setConfirmDelete({ reviewId: review.id, reviewName: review.reviewerName })}>
                       <Trash2 className="h-3 w-3 mr-1" /> Remover
                     </Button>
                   </div>
@@ -1411,10 +1411,10 @@ function FinanceTab() {
                     </div>
                   </div>
                   <div className="flex gap-2 mt-3 justify-end">
-                    <Button size="sm" variant="outline" className="h-8 text-xs text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:border-emerald-800 dark:hover:bg-emerald-900/20" disabled={actionLoading === aff.id} onClick={() => setConfirmDialog({ affiliateId: aff.id, action: 'approve', name: aff.name, amount: aff.pendingEarnings })}>
+                    <Button size="sm" variant="outline" className="min-h-[44px] min-w-[44px] h-8 text-xs text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:border-emerald-800 dark:hover:bg-emerald-900/20" disabled={actionLoading === aff.id} onClick={() => setConfirmDialog({ affiliateId: aff.id, action: 'approve', name: aff.name, amount: aff.pendingEarnings })}>
                       {actionLoading === aff.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle className="h-3 w-3 mr-1" /> Pagar</>}
                     </Button>
-                    <Button size="sm" variant="outline" className="h-8 text-xs text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-900/20" disabled={actionLoading === aff.id} onClick={() => setConfirmDialog({ affiliateId: aff.id, action: 'reject', name: aff.name, amount: aff.pendingEarnings })}>
+                    <Button size="sm" variant="outline" className="min-h-[44px] min-w-[44px] h-8 text-xs text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-900/20" disabled={actionLoading === aff.id} onClick={() => setConfirmDialog({ affiliateId: aff.id, action: 'reject', name: aff.name, amount: aff.pendingEarnings })}>
                       <XCircle className="h-3 w-3 mr-1" /> Rejeitar
                     </Button>
                   </div>

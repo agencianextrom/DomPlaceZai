@@ -361,7 +361,7 @@ export function SmartShoppingList() {
                 <ShoppingCart className="h-4.5 w-4.5 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-bold shimmer-text">Lista Inteligente</h3>
+                <h3 className="text-sm font-bold shimmer-text r62-heading-gradient">Lista Inteligente</h3>
                 <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                   <Sparkles className="h-3 w-3" />
                   Sugestões baseadas no seu perfil
@@ -448,7 +448,7 @@ export function SmartShoppingList() {
                       stiffness: 300,
                       damping: 28,
                     }}
-                    className={`rounded-xl p-3 border-l-4 ${cat.borderColor} r39-category-card glass-card-hover`}
+                    className={`rounded-xl p-3 border-l-4 ${cat.borderColor} r39-category-card glass-card-hover r62-card-lift`}
                   >
                     {/* category header */}
                     <div className="flex items-center gap-2 mb-2.5">

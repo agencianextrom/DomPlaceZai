@@ -6,6 +6,7 @@ import { CategoryBar } from '@/components/home/CategoryBar'
 import { ProductCarousel } from '@/components/home/ProductCarousel'
 import { StoreCarousel } from '@/components/home/StoreCarousel'
 import { NearbyStoresMap } from '@/components/home/NearbyStoresMap'
+import { CommunityRecipeHub } from '@/components/home/CommunityRecipeHub'
 import { PartnersBanner } from '@/components/home/PartnersBanner'
 import { ProductDetail } from '@/components/product/ProductDetail'
 import { StoreProfile } from '@/components/store/StoreProfile'
@@ -1067,6 +1068,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <SmartShoppingList />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Community Recipe Hub — Recipe discovery */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <CommunityRecipeHub />
                         </section>
                       </ScrollReveal>
                     </LazySection>

@@ -243,7 +243,7 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
                 <Crown className="h-5 w-5 text-white" />
               </motion.div>
               <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-white flex items-center gap-1.5 r62-heading-gradient">
                   Programa de Fidelidade
                   {/* Enhanced tier badge with rotating gradient border + sparkle particles */}
                   <motion.span
@@ -504,7 +504,7 @@ export function LoyaltyWidget({ className = '' }: LoyaltyWidgetProps) {
             ].map((stat, idx) => (
               <motion.div
                 key={stat.label}
-                className="text-center bg-secondary/30 rounded-lg p-2 r41-stat-card"
+                className="text-center bg-secondary/30 rounded-lg p-2 r41-stat-card r62-card-lift"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + idx * 0.1, type: 'spring' as const, stiffness: 280, damping: 24 }}
