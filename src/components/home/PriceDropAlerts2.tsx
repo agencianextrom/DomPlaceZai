@@ -279,7 +279,7 @@ function TrackButton({ productId, isTracked, onTrack }: {
     <motion.div whileTap={{ scale: 0.92 }}>
       <button
         onClick={handleClick}
-        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-colors relative overflow-hidden"
+        className="flex items-center gap-1 px-2.5 py-1 min-h-[44px] rounded-lg text-[10px] font-semibold transition-colors relative overflow-hidden"
         style={{
           backgroundColor: isTracked || added
             ? 'rgba(22,163,74,0.12)'
@@ -418,7 +418,7 @@ function PriceDropCard({ alert, isTracked, onTrack }: {
                     e.stopPropagation()
                     toggleFavoriteProduct(product.id)
                   }}
-                  className="h-7 flex-1 rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors"
+                  className="h-7 flex-1 min-h-[44px] rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors"
                   style={{
                     backgroundColor: isFav ? 'rgba(239,68,68,0.1)' : 'rgba(0,0,0,0.04)',
                     color: isFav ? '#ef4444' : '#6b7280',
@@ -435,7 +435,7 @@ function PriceDropCard({ alert, isTracked, onTrack }: {
                     e.stopPropagation()
                     addToCart(product, product.storeName || 'Loja')
                   }}
-                  className="h-7 flex-1 rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors"
+                  className="h-7 flex-1 min-h-[44px] rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors"
                   style={{
                     backgroundColor: 'rgba(22,163,74,0.08)',
                     color: '#16a34a',
@@ -521,7 +521,7 @@ function SortDropdown({ active, onChange }: { active: SortOption; onChange: (o: 
       <motion.div whileTap={{ scale: 0.95 }}>
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 min-h-[44px] rounded-lg text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
           style={{ border: '1px solid rgba(0,0,0,0.08)' }}
         >
           <ArrowUpDown className="h-3 w-3" />
@@ -747,7 +747,7 @@ export function PriceDropAlerts2() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: 'easeOut' as const }}
-      className="space-y-4 r59-price-alert-container"
+      className="space-y-4 r59-price-alert-container r62-card-lift"
     >
       {/* ═══ Header ═══ */}
       <motion.div variants={headerVariants} className="flex items-center justify-between">
@@ -764,7 +764,7 @@ export function PriceDropAlerts2() {
             <TrendingDown className="h-4.5 w-4.5" style={{ color: '#ef4444' }} />
           </motion.div>
           <div>
-            <h2 className="text-sm font-bold flex items-center gap-1.5">
+            <h2 className="text-sm font-bold flex items-center gap-1.5 r62-heading-gradient">
               Alertas de Preço
               {alerts.length > 0 && (
                 <motion.span

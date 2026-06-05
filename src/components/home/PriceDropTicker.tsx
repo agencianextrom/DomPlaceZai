@@ -154,7 +154,7 @@ export function PriceDropTicker() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.4 }}
-          className="relative overflow-hidden rounded-xl"
+          className="relative overflow-hidden rounded-xl r62-card-lift"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -305,7 +305,7 @@ export function PriceDropTicker() {
                       }}
                     >
                       <button
-                        className={`h-7 w-7 rounded-full flex items-center justify-center transition-all ${
+                        className={`h-7 w-7 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center transition-all ${
                           quickAdding === item.product.id
                             ? 'bg-emerald-400 text-white'
                             : 'bg-white/20 hover:bg-white/35 text-white'

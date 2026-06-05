@@ -214,6 +214,7 @@ import { NutritionLens } from '@/components/home/NutritionLens'
 import DealComparator from '@/components/home/DealComparator'
 import PantryManager from '@/components/home/PantryManager'
 import LocalServicesHub from '@/components/home/LocalServicesHub'
+import CommunityEventsBoard from '@/components/home/CommunityEventsBoard'
 
 // Module-level BRL currency formatter
 const formatBRL = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
@@ -1124,6 +1125,11 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <LocalServicesHub />
+                        </section>
+                      </ScrollReveal>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <CommunityEventsBoard />
                         </section>
                       </ScrollReveal>
                     </LazySection>

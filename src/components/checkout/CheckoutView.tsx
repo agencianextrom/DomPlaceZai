@@ -17,6 +17,9 @@ import { PaymentTracker } from './PaymentTracker'
 import { TaxBreakdown } from './TaxBreakdown'
 import { SplitPaymentSelector } from './SplitPaymentSelector'
 import { DeliveryScheduler } from './DeliveryScheduler'
+import { PaymentMethods } from './PaymentMethods'
+import { DeliverySlotPicker } from './DeliverySlotPicker'
+import { TipSelector } from './TipSelector'
 
 const paymentMethods = [
   { id: 'PIX', label: 'Pix', icon: QrCode, desc: 'Pagamento instantâneo', color: 'bg-teal-50 dark:bg-teal-900/10 border-teal-200 dark:border-teal-800/30' },
@@ -101,6 +104,7 @@ export function CheckoutView() {
   const [payment, setPayment] = useState('PIX')
   const [deliveryType, setDeliveryType] = useState<'DELIVERY' | 'PICKUP'>('DELIVERY')
   const [deliveryTime, setDeliveryTime] = useState('today-30')
+  const [selectedDeliverySlot, setSelectedDeliverySlot] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [couponCode, setCouponCode] = useState('')
@@ -875,6 +879,18 @@ export function CheckoutView() {
                 </div>
               )}
 
+              {/* Delivery Slot Picker — detailed time slots with capacity and weather */}
+              {deliveryType === 'DELIVERY' && (
+                <div className="mb-6">
+                  <DeliverySlotPicker
+                    selectedSlot={selectedDeliverySlot}
+                    onSlotSelect={setSelectedDeliverySlot}
+                    storeName={groups[0]?.storeName || 'DomPlace'}
+                    storeDeliveryFee={5.0}
+                  />
+                </div>
+              )}
+
               <motion.h3
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -916,6 +932,11 @@ export function CheckoutView() {
                     )}
                   </motion.button>
                 ))}
+              </div>
+
+              {/* Detailed Payment Methods — card fields, Pix code, cash change, boleto */}
+              <div className="mt-4">
+                <PaymentMethods orderTotal={total} onPaymentSelect={(method) => setPayment(method)} />
               </div>
 
               {/* Payment Tracker — PIX status / Card / Cash */}
@@ -1081,6 +1102,11 @@ export function CheckoutView() {
                   ))}
                 </CardContent>
               </Card>
+
+              {/* Tip Selector — driver tip with preset and custom amounts */}
+              <div className="mt-6">
+                <TipSelector />
+              </div>
 
               {/* Confidence badges — enhanced with hover and pulse */}
               <div className="flex items-center justify-center gap-4 mt-4 py-2">

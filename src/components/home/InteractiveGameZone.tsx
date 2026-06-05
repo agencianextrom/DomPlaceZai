@@ -681,7 +681,7 @@ function DragSortGameUI({ items, sortMode, isComplete, dragIndex, dragItemRef, o
           <Button
             size="sm"
             variant={sortMode === 'price' ? 'default' : 'outline'}
-            className="h-7 text-[10px] px-2"
+            className="h-7 min-h-[44px] text-[10px] px-2"
             onClick={() => onInitGame('price')}
           >
             💰 Preço
@@ -689,7 +689,7 @@ function DragSortGameUI({ items, sortMode, isComplete, dragIndex, dragItemRef, o
           <Button
             size="sm"
             variant={sortMode === 'rating' ? 'default' : 'outline'}
-            className="h-7 text-[10px] px-2"
+            className="h-7 min-h-[44px] text-[10px] px-2"
             onClick={() => onInitGame('rating')}
           >
             ⭐ Avaliação
@@ -804,7 +804,7 @@ export function InteractiveGameZone() {
   if (!isLoaded) return <GameZoneSkeleton />
 
   return (
-    <section className="glass-card rounded-2xl p-5 r27-game-zone relative overflow-hidden">
+    <section className="glass-card rounded-2xl p-5 r27-game-zone r62-card-lift relative overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">

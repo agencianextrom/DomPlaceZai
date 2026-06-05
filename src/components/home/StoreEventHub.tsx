@@ -696,7 +696,7 @@ function ReminderToggle({ eventId }: { eventId: string }) {
       whileTap={{ scale: 0.9 }}
       whileHover={{ scale: 1.05 }}
       onClick={handleToggle}
-      className={`r56-reminder-btn relative inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold transition-colors ${
+      className={`r56-reminder-btn relative inline-flex items-center gap-1.5 px-2.5 py-1 min-h-[44px] rounded-full text-[10px] font-semibold transition-colors ${
         isSet
           ? 'bg-primary text-primary-foreground shadow-sm'
           : 'bg-muted/60 text-muted-foreground hover:bg-muted'
@@ -762,7 +762,7 @@ function RsvpButton({ eventId, attendeeCount }: { eventId: string; attendeeCount
         <button
           ref={buttonRef}
           onClick={handleRsvp}
-          className={`r56-rsvp-btn flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all ${
+          className={`r56-rsvp-btn flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-full text-xs font-bold transition-all ${
             isRsvpd
               ? 'bg-primary text-primary-foreground shadow-lg'
               : 'bg-white/15 text-white hover:bg-white/25 border border-white/20'
@@ -831,7 +831,7 @@ function ShareEventButton({ eventTitle }: { eventTitle: string }) {
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.1 }}
         onClick={() => setIsOpen(prev => !prev)}
-        className="r56-share-btn p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+        className="r56-share-btn p-1.5 min-h-[44px] min-w-[44px] rounded-full bg-white/10 hover:bg-white/20 transition-colors"
       >
         <Share2 className="h-3.5 w-3.5 text-white/80" />
       </motion.button>
@@ -972,7 +972,7 @@ function CalendarView({
     >
       <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/30">
         <motion.button whileTap={{ scale: 0.85 }} onClick={handlePrev}
-          className="r56-cal-nav h-8 w-8 rounded-lg bg-background border hover:bg-accent flex items-center justify-center transition-colors"
+          className="r56-cal-nav h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-background border hover:bg-accent flex items-center justify-center transition-colors"
           aria-label="Mês anterior">
           <ChevronLeft className="h-4 w-4" />
         </motion.button>
@@ -986,7 +986,7 @@ function CalendarView({
           {MONTHS_LONG[currentMonth]} {currentYear}
         </motion.h4>
         <motion.button whileTap={{ scale: 0.85 }} onClick={handleNext}
-          className="r56-cal-nav h-8 w-8 rounded-lg bg-background border hover:bg-accent flex items-center justify-center transition-colors"
+          className="r56-cal-nav h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-background border hover:bg-accent flex items-center justify-center transition-colors"
           aria-label="Próximo mês">
           <ChevronRight className="h-4 w-4" />
         </motion.button>
@@ -1477,7 +1477,7 @@ export function StoreEventHub() {
   if (isLoading) return <StoreEventHubSkeleton />
 
   return (
-    <section className="mt-6 relative" aria-label="Store Event Hub">
+    <section className="mt-6 relative r62-card-lift" aria-label="Store Event Hub">
       <ConfettiBurst active={welcomeConfetti} particleCount={25} spread={300} duration={1500} />
 
       {/* ── Section Header ── */}
@@ -1491,7 +1491,7 @@ export function StoreEventHub() {
           <CalendarDays className="h-5 w-5 text-white" />
         </motion.div>
         <div className="flex-1">
-          <h2 className="text-base sm:text-lg font-bold text-foreground">Event Hub</h2>
+          <h2 className="text-base sm:text-lg font-bold text-foreground r62-heading-gradient">Event Hub</h2>
           <p className="text-[11px] text-muted-foreground hidden sm:block">
             Promoções, flash sales, lives e eventos das lojas locais
           </p>

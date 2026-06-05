@@ -1,4 +1,101 @@
 ---
+Task ID: R75-CommunityEventsBoard-WireCheckoutComponents-23TouchTargets-8CSSPolish-r75CSS
+Agent: Main Agent
+Task: CommunityEventsBoard feature, wire 3 checkout components, 23 touch targets, 8 CSS polish, r75-* CSS, fix PriceDropTicker build error
+
+Work Log:
+
+**QA Assessment:**
+- Production build passes cleanly after fixing 2 build errors (PriceDropTicker JSX, CommunityEventsBoard duplicate variable)
+- Clean working tree from R74 (f01e0ef)
+
+**Build Status:**
+- Production build passes cleanly
+- CSS: 46,877 lines (R75, +59 from r74)
+- 13 files changed (1 new + 12 modified)
+
+**New Feature — CommunityEventsBoard (~927 lines):**
+- `src/components/home/CommunityEventsBoard.tsx` — Community events calendar for Dom Eliseu, PA
+- "Agenda Comunitária" with rose→pink→fuchsia gradient header
+- 3 view mode tabs: "Próximos", "Destaque", "Meus Eventos" (44px)
+- 8 category filters (horizontal scroll, 44px): Todos, Feira, Cultural, Esportivo, Gastronômico, Religioso, Educativo, Saúde
+- Mini calendar strip (7-day horizontal scroll, 44px day cells, event dots)
+- Featured event spotlight: Festival da Mangaba, with countdown, attendee avatars, "Confirmar presença" CTA
+- 10 community events: Feira do Agricultor, Festival da Mangaba, Corrida Rústica 10K, Festival de Culária Paraense, Novena, Workshop Reciclagem, Mutirão de Saúde, Torneio Futebol, Feira Artesanato, Aula de Dança
+- Event cards: date badge, image placeholder, title, description, location, time, category tag, "Interesse" bookmark + "Compartilhar" buttons (44px), attendee count, free/paid badge
+- "Acontecendo agora!" animated badge for today's events
+- My Events: bookmarked events from localStorage `r75-my-events`
+- Fix: duplicate `todayISO` variable removed (build error)
+
+**Build Error Fixes:**
+1. PriceDropTicker.tsx line 312: missing `>` on button className template literal → added closing backtick-`}`
+2. CommunityEventsBoard.tsx line 364: duplicate `const todayISO` → removed duplicate
+
+**Wired Unused Components (3 into CheckoutView):**
+1. PaymentMethods → CheckoutView (orderTotal wired, onPaymentSelect wired to setPayment)
+2. DeliverySlotPicker → CheckoutView (selectedSlot state, shown for DELIVERY type)
+3. TipSelector → CheckoutView (self-contained, rendered after order summary)
+4. TaxBreakdown → CheckoutView (already wired)
+
+**P0 — Touch Target Fixes (23 elements across 9 files):**
+1. PriceDropTicker: quick-add cart button (h-7 w-7 → min-h/w-44)
+2. StoreEventHub: share button (p-1.5), reminder toggle (py-1), RSVP (py-2), calendar prev/next (h-8 w-8 ×2)
+3. InteractiveGameZone: 2 sort buttons (h-7)
+4. LiveStreamingWidget: 2 reminder buttons (h-7)
+5. ProductWishTracker: sort menu (h-7), share/clear-all (h-7 w-7), remove-heart (h-6 w-6)
+6. FamilyPurchasePlanner: share (h-8), section tabs (py-1.5), remove-meal (h-7 w-7)
+7. ProductLaunchCountdown: scroll arrows (h-7 w-7 ×2)
+8. PriceDropAlerts2: favorite/cart buttons (h-7), sort dropdown (py-1.5), track button (py-1)
+9. NeighborhoodEvents2: reaction buttons (py-1)
+
+**CSS Polish — r62-* Classes Applied to 8 Components:**
+1. PriceDropTicker: r62-card-lift
+2. StoreEventHub: r62-heading-gradient + r62-card-lift
+3. InteractiveGameZone: r62-card-lift (heading already had gradient)
+4. LiveStreamingWidget: r62-heading-gradient + r62-card-lift
+5. ProductWishTracker: r62-heading-gradient + r62-card-lift
+6. FamilyPurchasePlanner: r62-heading-gradient + r62-card-lift
+7. PriceDropAlerts2: r62-heading-gradient + r62-card-lift
+8. NeighborhoodEvents2: r62-heading-gradient + r62-card-lift
+
+**CSS — r75-* Classes (59 lines):**
+- r75-event-card / r75-featured-card: hover lift + gradient background
+- r75-date-badge / r75-category-tag / r75-price-badge: hover scale/translate
+- r75-action-btn: press feedback
+- r75-day-cell / r75-calendar-strip: day cell hover/selected, hidden scrollbar
+- r75-attendee-stack / r75-attendee-count: hover translate/color change
+- r75-happening-badge: pulse animation for live events
+- All wrapped in prefers-reduced-motion guard
+
+Stage Summary:
+- 13 files changed, +1,056/-38 lines (including 1 new file: CommunityEventsBoard)
+- 1 new component (CommunityEventsBoard, ~927 lines)
+- 3 unused checkout components wired (PaymentMethods, DeliverySlotPicker, TipSelector)
+- 23 touch target fixes across 9 files
+- 2 build errors fixed (PriceDropTicker JSX, CommunityEventsBoard duplicate var)
+- 8 CSS polish edits across 8 components
+- 59 lines r75-* CSS added
+- Build: successful
+- Total CSS: 46,877 lines (R75)
+
+## Current Project Status Assessment
+- DomPlace marketplace: stable, feature-rich, 356+ components
+- Production build passes cleanly
+- 13 new components added across R61-R75: ScanToShop, EcoImpactWidget, QuickBillSplitter, PriceDropAlertsWidget, FlashDealAlert, NearbyStoresMap, CommunityRecipeHub, SpendingInsights, NutritionLens, DealComparator, PantryManager, LocalServicesHub, CommunityEventsBoard
+- Mobile responsiveness: ~309+ touch targets fixed, ~107+ mobile grids fixed
+- Visual polish: r62-r75 CSS classes applied to 77+ visible components
+- 20+ unused components wired into views across R65-R75
+- Eco consolidated (4→1, R67), orphaned eco components deleted
+- All commits use agencianextrom@gmail.com
+
+## Unresolved Issues / Risks
+1. Vercel live site behind SSO (private project, TEAM_ACCESS_REQUIRED) — user must adjust settings
+2. .env not persisted across sessions
+3. SPA-style navigation (no deep linking)
+4. ~39K lines CSS lost from R47-R56 (recovering gradually)
+5. Dev server slow on 46K+ CSS (Turbopack parsing)
+6. Homepage has 130+ components (information overload, mitigated by LazySection)
+---
 Task ID: R74-LocalServicesHub-WireStoreComponents-22TouchTargets-8CSSPolish-r74CSS
 Agent: Main Agent
 Task: LocalServicesHub feature, wire 3 store/product components, 22 touch target fixes, 8 CSS polish, r74-* CSS

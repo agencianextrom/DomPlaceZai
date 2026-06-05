@@ -464,7 +464,7 @@ function UpcomingStreamCard({ stream, index }: { stream: StreamData; index: numb
               e.stopPropagation()
               reminder.toggle()
             }}
-            className={`w-full h-7 text-[10px] gap-1 ${reminder.isSet ? 'text-primary' : 'text-muted-foreground'}`}
+            className={`w-full h-7 min-h-[44px] text-[10px] gap-1 ${reminder.isSet ? 'text-primary' : 'text-muted-foreground'}`}
           >
             {reminder.isSet ? <BellOff className="h-3 w-3" /> : <Bell className="h-3 w-3" />}
             {reminder.isSet ? 'Lembrete definido' : 'Lembrete'}
@@ -541,7 +541,7 @@ function ScheduleSlotCard({ slot, onReminder, isSet }: { slot: ScheduleSlot; onR
             variant="ghost"
             size="sm"
             onClick={onReminder}
-            className={`h-7 px-2.5 text-[10px] gap-1 ${isSet ? 'text-primary' : 'text-muted-foreground'}`}
+            className={`h-7 min-h-[44px] px-2.5 text-[10px] gap-1 ${isSet ? 'text-primary' : 'text-muted-foreground'}`}
           >
             {isSet ? <BellOff className="h-3 w-3" /> : <Bell className="h-3 w-3" />}
             {isSet ? 'Lembrete definido' : 'Lembrete'}
@@ -641,7 +641,7 @@ export function LiveStreamingWidget() {
       transition={{ delay: 0.1 }}
       className="relative overflow-hidden"
     >
-      <div className="relative rounded-2xl border border-red-200/40 dark:border-red-800/30 overflow-hidden glassmorphism-strong">
+      <div className="relative rounded-2xl border border-red-200/40 dark:border-red-800/30 overflow-hidden glassmorphism-strong r62-card-lift">
         {/* ───────────────────────────────────────────────────────────
             1. HEADER
             ─────────────────────────────────────────────────────────── */}
@@ -656,7 +656,7 @@ export function LiveStreamingWidget() {
             </motion.div>
             <div className="flex flex-col gap-0.5">
               <div className="flex items-center gap-2">
-                <h2 className="font-bold text-base sm:text-lg">Ao Vivo</h2>
+                <h2 className="font-bold text-base sm:text-lg r62-heading-gradient">Ao Vivo</h2>
                 <LiveBadge />
               </div>
               <p className="text-[10px] sm:text-xs text-muted-foreground">

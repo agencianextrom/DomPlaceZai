@@ -394,7 +394,7 @@ function ReactionButtons({ event }: { event: NeighborhoodEvent }) {
           <motion.button
             key={type}
             onClick={() => handleReaction(type)}
-            className={`r44-reaction-btn flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium border transition-colors ${
+            className={`r44-reaction-btn flex items-center gap-1 px-2 py-1 min-h-[44px] rounded-full text-[10px] font-medium border transition-colors ${
               isActive ? 'border-current' : 'border-border/50 bg-secondary/50 text-muted-foreground hover:border-border'
             }`}
             style={isActive ? { color, backgroundColor: `${color}18`, borderColor: `${color}40` } : undefined}
@@ -1170,7 +1170,7 @@ export function NeighborhoodEvents2() {
   const featuredEvents = useMemo(() => mockEvents.filter(e => e.featured && !formatDateParts(e.date).isPast), [])
 
   return (
-    <section className="r44-container mt-6 relative overflow-hidden">
+    <section className="r44-container mt-6 relative overflow-hidden r62-card-lift">
       {/* Section header */}
       <div className="r44-header flex items-center gap-2 mb-4">
         <motion.div
@@ -1182,7 +1182,7 @@ export function NeighborhoodEvents2() {
           <CalendarDays className="h-4 w-4 text-white" />
         </motion.div>
         <div className="flex-1">
-          <h2 className="text-base sm:text-lg font-bold">Eventos do Bairro</h2>
+          <h2 className="text-base sm:text-lg font-bold r62-heading-gradient">Eventos do Bairro</h2>
           <p className="text-[11px] text-muted-foreground hidden sm:block">
             Descubra o que acontece na sua comunidade
           </p>

@@ -647,7 +647,7 @@ export default function FamilyPurchasePlanner() {
   /* ── Render ── */
   return (
     <div className="r49-family-planner">
-      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative">
+      <div className="rounded-2xl overflow-hidden glassmorphism-strong relative r62-card-lift">
         {/* Background decoration */}
         <div className="absolute inset-0 gradient-mesh opacity-10 pointer-events-none" />
 
@@ -664,7 +664,7 @@ export default function FamilyPurchasePlanner() {
                 <UtensilsCrossed className="h-4.5 w-4.5 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-bold">Planejador de Refeições</h3>
+                <h3 className="text-sm font-bold r62-heading-gradient">Planejador de Refeições</h3>
                 <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                   <Users className="h-3 w-3" />
                   Planejamento familiar semanal
@@ -675,7 +675,7 @@ export default function FamilyPurchasePlanner() {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-[10px] gap-1 rounded-lg h-8 px-2.5"
+                className="text-[10px] gap-1 rounded-lg h-8 px-2.5 min-h-[44px]"
                 onClick={handleSharePlan}
               >
                 <Share2 className="h-3 w-3" />
@@ -801,7 +801,7 @@ export default function FamilyPurchasePlanner() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setActiveSection(tab.key)}
-                  className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-semibold transition-all ${
+                  className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 min-h-[44px] rounded-md text-[10px] font-semibold transition-all ${
                     activeSection === tab.key
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground'
@@ -937,7 +937,7 @@ export default function FamilyPurchasePlanner() {
                                 <motion.button
                                   whileTap={{ scale: 0.85 }}
                                   onClick={() => handleSelectMeal(selectedDay, mealType, null)}
-                                  className="h-7 w-7 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500 hover:bg-red-500/20 transition-colors"
+                                  className="h-7 w-7 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500 hover:bg-red-500/20 transition-colors min-h-[44px] min-w-[44px]"
                                 >
                                   <X className="h-3 w-3" />
                                 </motion.button>

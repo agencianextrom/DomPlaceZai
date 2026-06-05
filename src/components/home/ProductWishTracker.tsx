@@ -527,7 +527,7 @@ function RecentlySavedCard({
             e.stopPropagation()
             handleRemove()
           }}
-          className={`absolute bottom-1.5 right-1.5 h-6 w-6 rounded-full bg-white/90 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-red-50 dark:hover:bg-red-900/30 ${
+          className={`absolute bottom-1.5 right-1.5 h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-white/90 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-red-50 dark:hover:bg-red-900/30 ${
             removing ? 'r36-heart-break' : ''
           }`}
         >
@@ -811,7 +811,7 @@ export function ProductWishTracker() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-2xl glassmorphism-strong overflow-hidden"
+      className="rounded-2xl glassmorphism-strong overflow-hidden r62-card-lift"
     >
       <div className="relative z-10">
         {/* ═══ HEADER ═══ */}
@@ -826,7 +826,7 @@ export function ProductWishTracker() {
               <Heart className="h-4.5 w-4.5 text-white fill-white" />
             </motion.div>
             <div>
-              <h2 className="text-base font-bold flex items-center gap-2">
+              <h2 className="text-base font-bold flex items-center gap-2 r62-heading-gradient">
                 Itens Salvos
                 <motion.span
                   key={state.items.length}
@@ -850,7 +850,7 @@ export function ProductWishTracker() {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowSortMenu((prev) => !prev)}
-                className="h-7 px-2 rounded-lg text-[10px] font-semibold bg-card border border-border/60 hover:border-primary/30 flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+                className="h-7 px-2 rounded-lg text-[10px] font-semibold bg-card border border-border/60 hover:border-primary/30 flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors min-h-[44px]"
               >
                 <BarChart3 className="h-3 w-3" />
                 {sortLabels[state.sortBy]}
@@ -890,7 +890,7 @@ export function ProductWishTracker() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={shareWishlist}
-              className="h-7 w-7 rounded-lg bg-card border border-border/60 hover:border-primary/30 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+              className="h-7 w-7 rounded-lg bg-card border border-border/60 hover:border-primary/30 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors min-h-[44px] min-w-[44px]"
             >
               <Share2 className="h-3 w-3" />
             </motion.button>
@@ -899,7 +899,7 @@ export function ProductWishTracker() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={clearAll}
-              className="h-7 w-7 rounded-lg bg-card border border-border/60 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center text-muted-foreground hover:text-red-500 transition-colors"
+              className="h-7 w-7 rounded-lg bg-card border border-border/60 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center text-muted-foreground hover:text-red-500 transition-colors min-h-[44px] min-w-[44px]"
             >
               <Trash2 className="h-3 w-3" />
             </motion.button>

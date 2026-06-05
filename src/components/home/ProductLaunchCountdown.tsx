@@ -475,13 +475,13 @@ export function ProductLaunchCountdown() {
           <div className="flex items-center gap-1">
             <button
               onClick={() => scroll('left')}
-              className="h-7 w-7 rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors hidden sm:flex"
+              className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors hidden sm:flex"
             >
               <ChevronRight className="h-4 w-4 rotate-180" />
             </button>
             <button
               onClick={() => scroll('right')}
-              className="h-7 w-7 rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors hidden sm:flex"
+              className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full bg-white/90 dark:bg-card/90 shadow-md border border-border/50 flex items-center justify-center hover:bg-white transition-colors hidden sm:flex"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
