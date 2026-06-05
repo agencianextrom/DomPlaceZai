@@ -510,7 +510,7 @@ function OrderInfoHeader({ order }: { order: OrderInfo }) {
               <p className="text-[10px] text-muted-foreground">Entregador</p>
             </div>
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-              <Button size="icon" variant="ghost" className="r51-chat-driver-phone h-7 w-7 text-orange-500">
+              <Button size="icon" variant="ghost" className="r51-chat-driver-phone h-7 w-7 min-h-[44px] min-w-[44px] active:scale-95 transition-transform text-orange-500">
                 <Phone className="h-3.5 w-3.5" />
               </Button>
             </motion.div>
@@ -772,7 +772,7 @@ export function LiveOrderChat() {
                   <div className="r51-chat-actions flex items-center gap-1 mb-2">
                     <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}>
                       <Button variant="ghost" size="sm"
-                        className="r51-chat-location-btn h-7 w-7 p-0 text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                        className="r51-chat-location-btn h-7 w-7 p-0 min-h-[44px] min-w-[44px] active:scale-95 transition-transform text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                         onClick={sendLocation} title="Enviar localização"
                       >
                         <motion.div animate={{ y: [0, -2, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}>
@@ -782,7 +782,7 @@ export function LiveOrderChat() {
                     </motion.div>
                     <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}>
                       <Button variant="ghost" size="sm"
-                        className="r51-chat-image-btn h-7 w-7 p-0 text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                        className="r51-chat-image-btn h-7 w-7 p-0 min-h-[44px] min-w-[44px] active:scale-95 transition-transform text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
                         onClick={sendImage} title="Enviar imagem"
                       >
                         <ImagePlus className="h-4 w-4" />
@@ -790,7 +790,7 @@ export function LiveOrderChat() {
                     </motion.div>
                     <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}>
                       <Button variant="ghost" size="sm"
-                        className="r51-chat-emoji-btn h-7 w-7 p-0 text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                        className="r51-chat-emoji-btn h-7 w-7 p-0 min-h-[44px] min-w-[44px] active:scale-95 transition-transform text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
                         title="Emoji"
                       >
                         <Smile className="h-4 w-4" />

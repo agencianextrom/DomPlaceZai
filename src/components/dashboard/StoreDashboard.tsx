@@ -1863,7 +1863,7 @@ export function StoreDashboard() {
                                 </div>
                                 <AlertDialog>
                                   <AlertDialogTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" disabled={deletingProduct === product.id}>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive min-h-[44px] min-w-[44px]" disabled={deletingProduct === product.id}>
                                       {deletingProduct === product.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                                     </Button>
                                   </AlertDialogTrigger>

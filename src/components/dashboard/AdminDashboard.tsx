@@ -284,7 +284,7 @@ function OverviewTab() {
                   <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-sm`}>
                     <stat.icon className="h-5 w-5 text-white" />
                   </div>
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={fetchStats}>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 min-h-[44px] min-w-[44px]" onClick={fetchStats}>
                     <RefreshCw className="h-3 w-3" />
                   </Button>
                 </div>
@@ -1021,7 +1021,7 @@ function OrdersTab() {
           </button>
         ))}
         <div className="flex-1" />
-        <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" onClick={fetchOrders}>
+        <Button variant="outline" size="icon" className="h-8 w-8 shrink-0 min-h-[44px] min-w-[44px]" onClick={fetchOrders}>
           <RefreshCw className="h-3.5 w-3.5" />
         </Button>
       </div>

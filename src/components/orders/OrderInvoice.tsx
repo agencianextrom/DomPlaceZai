@@ -514,7 +514,7 @@ export function OrderInvoiceModal({
                 <FileText className="h-4 w-4 text-primary" />
                 Nota Fiscal
               </h2>
-              <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+              <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 min-h-[44px] min-w-[44px]">
                 <X className="h-4 w-4" />
               </Button>
             </div>

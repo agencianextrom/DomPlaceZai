@@ -518,12 +518,12 @@ function ShareButtons({ event }: { event: NeighborhoodEvent }) {
   return (
     <div className="r44-share-btns flex items-center gap-1">
       <motion.div whileTap={{ scale: 0.92 }}>
-        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-muted-foreground hover:text-primary" onClick={handleShare}>
+        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 min-h-[44px] min-w-[44px] active:scale-95 transition-transform text-muted-foreground hover:text-primary" onClick={handleShare}>
           <Share2 className="h-3.5 w-3.5" />
         </Button>
       </motion.div>
       <motion.div whileTap={{ scale: 0.92 }}>
-        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-muted-foreground hover:text-primary" onClick={generateICS}>
+        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 min-h-[44px] min-w-[44px] active:scale-95 transition-transform text-muted-foreground hover:text-primary" onClick={generateICS}>
           <CalendarPlus className="h-3.5 w-3.5" />
         </Button>
       </motion.div>

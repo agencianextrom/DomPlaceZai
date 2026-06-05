@@ -45347,3 +45347,115 @@
   @keyframes r64-badge-pulse { 0%, 100% { box-shadow: none; } }
   @keyframes r64-best-border { 0%, 100% { background-position: 0% 50%; } }
 }
+
+/* R65: FlashDealAlert styles */
+.r65-flash-banner {
+  background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #dc2626 100%);
+  background-size: 200% 200%;
+  animation: r65-flash-gradient 6s ease infinite;
+}
+@keyframes r65-flash-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.r65-flash-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.r65-flash-card:hover {
+  transform: scale(1.02);
+}
+
+.r65-flash-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+.r65-flash-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
+  background-size: 200% 100%;
+  animation: r65-progress-shimmer 2s linear infinite;
+  transition: width 1s linear;
+}
+@keyframes r65-progress-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.r65-flash-cta {
+  background: white;
+  color: #dc2626;
+  font-weight: 700;
+  min-height: 44px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r65-flash-cta:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+.r65-flash-cta:active {
+  transform: scale(0.95);
+}
+
+.r65-flash-price-old {
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.6);
+}
+.r65-flash-price-new {
+  color: #fbbf24;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.r65-flash-dismiss {
+  min-width: 44px;
+  min-height: 44px;
+  color: rgba(255, 255, 255, 0.8);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+.r65-flash-dismiss:hover {
+  color: white;
+}
+.r65-flash-dismiss:active {
+  transform: scale(0.85);
+}
+
+.r65-flash-nav {
+  min-width: 44px;
+  min-height: 44px;
+  color: rgba(255, 255, 255, 0.9);
+  transition: transform 0.15s ease;
+}
+.r65-flash-nav:active {
+  transform: scale(0.85);
+}
+
+.r65-flash-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+.r65-flash-dot.active {
+  background: #fbbf24;
+  width: 24px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r65-flash-banner { animation: none; }
+  .r65-flash-card { transition: none; }
+  .r65-flash-progress-bar { animation: none; transition: none; }
+  .r65-flash-cta { transition: none; }
+  .r65-flash-dismiss { transition: none; }
+  .r65-flash-nav { transition: none; }
+  .r65-flash-dot { transition: none; }
+  @keyframes r65-flash-gradient { 0%, 100% { background-position: 0% 50%; } }
+  @keyframes r65-progress-shimmer { 0%, 100% { background-position: 0% 0; } }
+}

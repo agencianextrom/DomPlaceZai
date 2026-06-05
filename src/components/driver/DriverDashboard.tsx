@@ -1536,7 +1536,7 @@ export function DriverDashboard() {
                   <Trophy className="h-4 w-4 text-amber-500" />
                   Resumo Geral
                 </h3>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   <div className="text-center">
                     <p className="text-lg font-bold text-primary">{driver.totalDeliveries}</p>
                     <p className="text-[10px] text-muted-foreground">Entregas</p>

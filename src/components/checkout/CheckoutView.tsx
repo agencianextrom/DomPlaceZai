@@ -615,7 +615,7 @@ export function CheckoutView() {
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setDeliveryType('DELIVERY')}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                    className={`r62-card-lift p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                       deliveryType === 'DELIVERY'
                         ? 'border-primary bg-primary/5 shadow-[0_2px_12px_rgba(16,185,129,0.12)]'
                         : 'border-border hover:border-primary/30 hover:shadow-sm'
@@ -640,7 +640,7 @@ export function CheckoutView() {
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setDeliveryType('PICKUP')}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 relative ${
+                    className={`r62-card-lift p-4 rounded-xl border-2 text-left transition-all duration-200 relative ${
                       deliveryType === 'PICKUP'
                         ? 'border-primary bg-primary/5 shadow-[0_2px_12px_rgba(16,185,129,0.12)]'
                         : 'border-border hover:border-primary/30 hover:shadow-sm'
@@ -978,7 +978,7 @@ export function CheckoutView() {
                       />
                       {couponError && <p className="text-[10px] text-destructive mt-1">{couponError}</p>}
                     </div>
-                    <Button variant="outline" className="h-10" onClick={handleApplyCoupon} disabled={!couponCode.trim()}>
+                    <Button variant="outline" className="h-10 active:scale-95 transition-transform" onClick={handleApplyCoupon} disabled={!couponCode.trim()}>
                       Aplicar
                     </Button>
                   </div>

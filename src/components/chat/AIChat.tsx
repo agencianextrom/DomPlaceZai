@@ -92,7 +92,7 @@ export function AIChat() {
             <p className="text-[10px] text-primary-foreground/70">Online • IA</p>
           </div>
         </div>
-        <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={goBack}>
+        <Button variant="ghost" size="icon" className="h-8 w-8 min-h-[44px] min-w-[44px] text-primary-foreground hover:bg-primary-foreground/20" onClick={goBack}>
           <X className="h-4 w-4" />
         </Button>
       </div>

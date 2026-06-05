@@ -103,6 +103,9 @@ import { LiveOrderMap } from '@/components/home/LiveOrderMap'
 import { ExpressDeliveryHub } from '@/components/home/ExpressDeliveryHub'
 import { NeighborhoodMarketplace } from '@/components/home/NeighborhoodMarketplace'
 import { LocalProducers } from '@/components/home/LocalProducers'
+import { FlashDealAlert } from '@/components/home/FlashDealAlert'
+import { CashbackTracker } from '@/components/home/CashbackTracker'
+import { SmartShoppingList } from '@/components/home/SmartShoppingList'
 
 import { StoreEvents } from '@/components/home/StoreEvents'
 import { CommunityChallenge } from '@/components/home/CommunityChallenge'
@@ -799,6 +802,9 @@ export default function Home() {
                   <>
                     {/* === PRIORITY 1: Always visible, no lazy loading === */}
 
+                    {/* Flash Deal Alert — floating notification */}
+                    <FlashDealAlert />
+
                     {/* Urgency Strip — social proof ticker */}
                     <section className="-mx-3 sm:-mx-4 lg:-mx-6">
                       <UrgencyStrip />
@@ -1002,6 +1008,24 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section>
                           <LoyaltyWidget />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Cashback Tracker — Rastreador de cashback */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <CashbackTracker />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Smart Shopping List — Lista inteligente de compras */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <SmartShoppingList />
                         </section>
                       </ScrollReveal>
                     </LazySection>

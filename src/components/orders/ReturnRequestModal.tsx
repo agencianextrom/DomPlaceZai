@@ -316,7 +316,7 @@ export function ReturnRequestModal({
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setCurrentStep(s => s - 1)}
-                  className="h-8 w-8 rounded-full hover:bg-secondary flex items-center justify-center"
+                  className="h-8 w-8 rounded-full min-h-[44px] min-w-[44px] hover:bg-secondary flex items-center justify-center"
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </motion.button>
@@ -326,7 +326,7 @@ export function ReturnRequestModal({
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={onClose}
-              className="h-8 w-8 rounded-full hover:bg-secondary flex items-center justify-center"
+              className="h-8 w-8 rounded-full min-h-[44px] min-w-[44px] hover:bg-secondary flex items-center justify-center"
             >
               <X className="h-4 w-4" />
             </motion.button>

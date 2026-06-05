@@ -873,7 +873,7 @@ export function SupportTicketSystem() {
                         <p className="text-[10px] text-muted-foreground">Descreva seu problema</p>
                       </div>
                     </div>
-                    <button onClick={resetNewTicketForm} className="h-8 w-8 rounded-lg flex items-center justify-center hover:bg-muted/50 transition-colors">
+                    <button onClick={resetNewTicketForm} className="h-8 w-8 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-muted/50 transition-colors">
                       <X className="h-4 w-4" />
                     </button>
                   </div>

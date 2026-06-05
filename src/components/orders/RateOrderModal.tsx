@@ -334,7 +334,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                     <Sparkles className="h-5 w-5 text-amber-500" />
                     Avaliar Pedido
                   </h3>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleClose}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 min-h-[44px] min-w-[44px]" onClick={handleClose}>
                     <X className="h-5 w-5" />
                   </Button>
                 </div>
