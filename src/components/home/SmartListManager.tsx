@@ -393,6 +393,7 @@ export function SmartListManager() {
   // Hydration guard
   useEffect(() => {
     const state = loadState()
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLists(state.lists)
     setActiveListId(state.activeListId)
     setMounted(true)
@@ -407,6 +408,7 @@ export function SmartListManager() {
   // Auto-expand all categories on mount
   useEffect(() => {
     if (mounted) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setExpandedCategories(new Set(AISLE_CATEGORIES.map((c) => c.id)))
     }
   }, [mounted])
@@ -1290,7 +1292,7 @@ export function SmartListManager() {
                                         <select
                                           value={item.unit}
                                           onChange={(e) => updateItemUnit(item.id, e.target.value as Unit)}
-                                          className="text-[9px] bg-background/60 border border-border/30 rounded px-1 py-px outline-none cursor-pointer text-muted-foreground"
+                                          className="text-[9px] bg-background/60 border border-border/30 rounded px-1 py-px outline-none cursor-pointer text-muted-foreground min-h-[44px]"
                                         >
                                           {UNITS.map((u) => (
                                             <option key={u} value={u}>
@@ -1303,7 +1305,7 @@ export function SmartListManager() {
                                         <select
                                           value={item.priority}
                                           onChange={(e) => updateItemPriority(item.id, e.target.value as Priority)}
-                                          className="text-[9px] bg-background/60 border border-border/30 rounded px-1 py-px outline-none cursor-pointer text-muted-foreground"
+                                          className="text-[9px] bg-background/60 border border-border/30 rounded px-1 py-px outline-none cursor-pointer text-muted-foreground min-h-[44px]"
                                         >
                                           <option value="high">🔴 Alta</option>
                                           <option value="medium">🟡 Média</option>

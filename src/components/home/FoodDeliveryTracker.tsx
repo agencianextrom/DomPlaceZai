@@ -1349,7 +1349,7 @@ export function FoodDeliveryTracker() {
       {/* ─── Demo: Simulate Next Step ─── */}
       <motion.div whileTap={{ scale: 0.97 }} className="flex justify-center">
         <div
-          className="r56-demo-btn flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer text-[10px] font-semibold text-muted-foreground"
+          className="r56-demo-btn flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer text-[10px] font-semibold text-muted-foreground min-h-[44px]"
           style={{ backgroundColor: 'rgba(148,163,184,0.08)', border: '1px dashed rgba(148,163,184,0.25)' }}
           onClick={handleNextStatus}
         >

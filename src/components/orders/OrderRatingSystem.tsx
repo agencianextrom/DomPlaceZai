@@ -142,7 +142,7 @@ export function OrderRatingSystem() {
     <section className="r42-rating-section">
       <ConfettiBurst show={showConfetti} />
       <div className="r42-rating-header">
-        <motion.h2 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }} className="r42-rating-title">
+        <motion.h2 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }} className="r42-rating-title r62-heading-gradient">
           ⭐ Avalie seus Pedidos
         </motion.h2>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="r42-rating-subtitle">
@@ -151,7 +151,7 @@ export function OrderRatingSystem() {
       </div>
 
       {/* Review Stats */}
-      <motion.div className="r42-stats-row" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+      <motion.div className="r42-stats-row r62-card-lift" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
         <div className="r42-stat-card">
           <span className="r42-stat-value">{'★'.repeat(Math.floor(overallStats.avgRating))}</span>
           <span className="r42-stat-label">Média Geral</span>
@@ -189,7 +189,7 @@ export function OrderRatingSystem() {
       {activeTab === 'pending' && (
         <div className="r42-orders-list">
           {pendingOrders.map((order, idx) => (
-            <motion.div key={order.id} className="r42-order-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1, type: 'spring' as const, stiffness: 200, damping: 20 }} whileHover={{ scale: 1.02, y: -2 }}>
+            <motion.div key={order.id} className="r42-order-card r62-card-lift r98-order-rating-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1, type: 'spring' as const, stiffness: 200, damping: 20 }} whileHover={{ scale: 1.02, y: -2 }}>
               <div className="r42-order-left">
                 <span className="r42-order-emoji">{order.productEmoji}</span>
                 <div className="r42-order-info">

@@ -219,7 +219,7 @@ function AnimatedCartTotal({ total }: { total: number }) {
       }
       requestAnimationFrame(step)
     }
-  }, [total]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [total])
 
   return (
     <motion.span
@@ -417,7 +417,7 @@ export function QuickAddDrawer() {
         : []
       queueMicrotask(() => setSelectedVariation(variations.length > 0 ? variations[0] : null))
     }
-  }, [quickAddProduct?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [quickAddProduct?.id])
 
   // Build recently added list from cart (last 5 unique items)
   const recentItems = useMemo(() => {

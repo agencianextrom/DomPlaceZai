@@ -330,6 +330,14 @@ export function FamilyAccountManager() {
   const [selectedPermissionMember, setSelectedPermissionMember] = useState<string | null>(null)
 
   const cartItems = useMemo(() => MOCK_CART_ITEMS, [])
+  const groupedByMember = useMemo(() => {
+    const groups: Record<string, SharedCartItem[]> = {}
+    cartItems.forEach((item) => {
+      if (!groups[item.addedBy]) groups[item.addedBy] = []
+      groups[item.addedBy].push(item)
+    })
+    return groups
+  }, [cartItems])
   const orders = useMemo(() => MOCK_ORDERS, [])
   const activities = useMemo(() => MOCK_ACTIVITIES, [])
   const monthlySpending = useMemo(() => MOCK_MONTHLY_SPENDING, [])
@@ -661,15 +669,6 @@ export function FamilyAccountManager() {
   /* ── Tab: Shared Cart ── */
 
   function renderCartTab() {
-    const groupedByMember = useMemo(() => {
-      const groups: Record<string, SharedCartItem[]> = {}
-      cartItems.forEach((item) => {
-        if (!groups[item.addedBy]) groups[item.addedBy] = []
-        groups[item.addedBy].push(item)
-      })
-      return groups
-    }, [cartItems])
-
     return (
       <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
         <motion.div variants={itemVariants} className="flex items-center justify-between">

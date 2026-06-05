@@ -905,6 +905,7 @@ export function SplitPaymentSelector({
   useEffect(() => {
     if (activeMode !== 'friends' || splitEqually || friends.length === 0) return;
     if (totalAllocatedFriends > orderTotal) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       pushError('A soma das partes não pode exceder o valor total');
     }
     friends.forEach((f) => {
@@ -912,7 +913,6 @@ export function SplitPaymentSelector({
         pushError(`${f.name || 'Pessoa'}: valor mínimo é ${formatCurrency(MIN_FRIEND_AMOUNT)}`);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friends, totalAllocatedFriends, orderTotal, activeMode, splitEqually]);
 
   // ── Pix allocation for QR display ──

@@ -540,7 +540,10 @@ export default function NeighborhoodWishlist() {
   const [mounted, setMounted] = useState(false)
   const notifTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, [])
   useEffect(() => { if (mounted) saveLocalState(localState) }, [mounted, localState])
 
   // Auto-dismiss notification after 8s

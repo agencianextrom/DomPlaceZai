@@ -239,6 +239,7 @@ import PetCareHub from '@/components/home/PetCareHub'
 import LocalEventsCalendar from '@/components/home/LocalEventsCalendar'
 import HomeServicesMarketplace from '@/components/home/HomeServicesMarketplace'
 import NeighborhoodSafetyHub from '@/components/home/NeighborhoodSafetyHub'
+import LocalTalentHub from '@/components/home/LocalTalentHub'
 import { MobilePullToRefresh } from '@/components/ui/MobilePullToRefresh'
 
 // Module-level BRL currency formatter
@@ -991,6 +992,7 @@ export default function Home() {
                           <LocalEventsCalendar />
                           <HomeServicesMarketplace />
                           <NeighborhoodSafetyHub />
+                          <LocalTalentHub />
                         </section>
                       </ScrollReveal>
                     </LazySection>

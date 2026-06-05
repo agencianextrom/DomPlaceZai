@@ -48781,3 +48781,30 @@
   .r97-product-quickview:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.08); }
   .r97-product-faq:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
 }
+
+/* ==============================
+   R98 — LocalTalentHub + polished components
+   ============================== */
+@media (prefers-reduced-motion: no-preference) {
+  /* LocalTalentHub themed */
+  .r98-talent-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r98-talent-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(245,158,11,0.12); }
+  .r98-talent-card:active { transform: scale(0.98); }
+  .r98-category-pill { transition: all 0.2s ease; }
+  .r98-category-pill:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(245,158,11,0.15); }
+  .r98-category-pill:active { transform: scale(0.96); }
+  .r98-trending-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .r98-trending-card:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 20px rgba(245,158,11,0.15); }
+  .r98-quick-book-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r98-quick-book-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(245,158,11,0.12); }
+  .r98-quick-book-card:active { transform: scale(0.97); }
+  .r98-stat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r98-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245,158,11,0.1); }
+
+  /* Polished component effects */
+  .r98-payment-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99,102,241,0.1); }
+  .r98-order-rating-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99,102,241,0.1); }
+  .r98-weekly-special:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(239,68,68,0.1); }
+  .r98-pantry-item:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.08); }
+  .r98-eco-tip:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.1); }
+}

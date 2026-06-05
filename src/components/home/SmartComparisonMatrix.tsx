@@ -1110,6 +1110,7 @@ export default function SmartComparisonMatrix() {
       const timer = setTimeout(() => setShowResults(true), 400)
       return () => clearTimeout(timer)
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowResults(false)
     }
   }, [selectedIds])

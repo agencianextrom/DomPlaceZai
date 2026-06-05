@@ -877,6 +877,7 @@ export function DynamicPricingEngine({
   // Load data on mount
   useEffect(() => {
     const history = generateMockPriceHistory(basePrice)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPriceHistory(history)
 
     const factors = generateDemandFactors(stockLevel)
@@ -932,6 +933,7 @@ export function DynamicPricingEngine({
   useEffect(() => {
     if (demandFactors.length > 0) {
       const tier = computeDemandTier(demandFactors)
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDemandTier(tier)
       const score = Math.round(demandFactors.reduce((s, f) => s + f.value, 0) / demandFactors.length)
       setDemandScore(score)

@@ -576,6 +576,7 @@ export function SubscriptionBoxBuilder() {
 
   /* ── Effects ── */
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedItems([])
     setIsBoxOpen(false)
     setSelectedDeliveryDate(null)

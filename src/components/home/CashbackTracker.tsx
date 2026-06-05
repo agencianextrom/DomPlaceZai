@@ -275,16 +275,9 @@ export function CashbackTracker() {
     }
   }, []);
 
-  // Don't render until hydrated from localStorage
-  if (!data) return null;
-
-  // Find next milestone
-  const nextMilestone = MILESTONES.find((m) => m > data.balance) ?? MILESTONES[MILESTONES.length - 1] + 100;
-  const progressPercent = Math.min((data.balance / nextMilestone) * 100, 100);
-
-  // Handle redemption
+  // Handle redemption (defined before early return to satisfy rules-of-hooks)
   const handleRedeem = useCallback(() => {
-    if (isRedeeming || data.balance < 10) return;
+    if (isRedeeming || !data || data.balance < 10) return;
     setIsRedeeming(true);
     setShowSparkles(true);
 
@@ -304,6 +297,13 @@ export function CashbackTracker() {
 
     setTimeout(() => setShowSparkles(false), 2500);
   }, [data, isRedeeming, persistData]);
+
+  // Don't render until hydrated from localStorage
+  if (!data) return null;
+
+  // Find next milestone
+  const nextMilestone = MILESTONES.find((m) => m > data.balance) ?? MILESTONES[MILESTONES.length - 1] + 100;
+  const progressPercent = Math.min((data.balance / nextMilestone) * 100, 100);
 
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },

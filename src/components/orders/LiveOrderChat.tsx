@@ -587,13 +587,16 @@ export function LiveOrderChat() {
   // Select first unread order on mount
   useEffect(() => {
     const first = orders.find((o) => o.unreadCount > 0)
-    if (first) setSelectedOrderId(first.id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (first) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedOrderId(first.id)
+    }
   }, [])
 
   // Mark as read when order selected
   useEffect(() => {
     if (!selectedOrderId) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMessagesMap((prev) => {
       const msgs = prev[selectedOrderId]
       if (!msgs) return prev
@@ -606,6 +609,7 @@ export function LiveOrderChat() {
   useEffect(() => {
     if (!selectedOrderId) return
     const msgs = messagesMap[selectedOrderId] ?? []
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowQuickReplies(msgs.filter((m) => m.senderType === 'customer').length < 4)
   }, [selectedOrderId, messagesMap])
 

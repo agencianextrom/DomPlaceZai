@@ -131,7 +131,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
   // Track product as recently viewed on mount
   useEffect(() => {
     addRecentlyViewed(product)
-  }, [product.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [product.id])
 
   const isFav = isFavoriteProduct(product.id)
   const discount = product.comparePrice

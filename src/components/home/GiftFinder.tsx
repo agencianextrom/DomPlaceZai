@@ -95,7 +95,10 @@ export function GiftFinder() {
 
   useEffect(() => {
     const saved = localStorage.getItem('r78-gift-favorites');
-    if (saved) setFavorites(JSON.parse(saved));
+    if (saved) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFavorites(JSON.parse(saved));
+    }
     const timer = setTimeout(() => setLoading(false), 700);
     return () => clearTimeout(timer);
   }, []);

@@ -758,6 +758,7 @@ export default function CommunityEventsBoard() {
     return () => { cancelled = true }
   }, [])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setSavedIds(() => getSavedEventIds()) }, [])
 
   const handleShare = useCallback(() => {

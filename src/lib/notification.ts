@@ -28,7 +28,6 @@ async function initializeFirebase(): Promise<unknown> {
     const firebase = await import('firebase/app')
     await import('firebase/messaging')
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fb = firebase as any
     if (!fb.apps?.length) {
       fb.initializeApp({

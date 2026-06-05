@@ -559,7 +559,7 @@ export function QuickReorderHub() {
   }, [addCart, flash, qtys])
 
   const toggleFav = useCallback((id: string) => {
-    setFavs(p => { const n = new Set(p); n.has(id)?n.delete(id):n.add(id); saveSet('domplace-reorder-favs',n); return n })
+    setFavs(p => { const n = new Set(p); if (n.has(id)) { n.delete(id) } else { n.add(id) } saveSet('domplace-reorder-favs',n); return n })
     setItems(p => p.map(i => i.id===id ? {...i,isFavorite:!i.isFavorite} : i))
   }, [])
 
@@ -567,7 +567,7 @@ export function QuickReorderHub() {
 
   const toggleAuto = useCallback((id: string) => {
     setItems(p => p.map(i => i.id===id ? {...i,autoReorder:!i.autoReorder} : i))
-    setAutoCfg(p => { const n = {...p,itemIds:[...p.itemIds]}; n.itemIds.includes(id)?n.itemIds=n.itemIds.filter(x=>x!==id):n.itemIds.push(id); saveAuto(n); return n })
+    setAutoCfg(p => { const n = {...p,itemIds:[...p.itemIds]}; if (n.itemIds.includes(id)) { n.itemIds=n.itemIds.filter(x=>x!==id) } else { n.itemIds.push(id) } saveAuto(n); return n })
   }, [])
 
   const toggleGlobalAuto = useCallback(() => {

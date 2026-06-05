@@ -565,7 +565,7 @@ export function StoreLoyaltyPassport() {
                 <div className="flex items-center justify-between mt-3 px-2">
                   <motion.div whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.85 }}>
                     <button
-                      className="w-9 h-9 rounded-full border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary transition-colors"
+                      className="w-9 h-9 rounded-full border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary transition-colors min-h-[44px] min-w-[44px]"
                       onClick={goPrev}
                       aria-label="Página anterior"
                     >
@@ -579,7 +579,7 @@ export function StoreLoyaltyPassport() {
 
                   <motion.div whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.85 }}>
                     <button
-                      className="w-9 h-9 rounded-full border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary transition-colors"
+                      className="w-9 h-9 rounded-full border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary transition-colors min-h-[44px] min-w-[44px]"
                       onClick={goNext}
                       aria-label="Próxima página"
                     >

@@ -478,7 +478,7 @@ export function ProductBattle() {
     if (allProducts.length >= 2 && mounted) {
       pickNewPair()
     }
-  }, [allProducts.length >= 2, mounted]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [allProducts.length >= 2, mounted, pickNewPair])
 
   // Handle vote
   const handleVote = useCallback((side: 'left' | 'right') => {

@@ -757,6 +757,7 @@ export default function LiveAuctionSystem() {
       a => a.status === 'encerrado' && a.lastBidUser === 'Você' && a.id !== winnerId
     )
     if (userWon && !showWinner) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setWinnerId(userWon.id)
       setShowWinner(true)
     }

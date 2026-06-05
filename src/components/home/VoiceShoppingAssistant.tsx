@@ -163,6 +163,7 @@ function WaveformVisualizer({ isActive }: { isActive: boolean }) {
 
   useEffect(() => {
     if (!isActive) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBars(new Array(12).fill(8))
       return
     }
@@ -895,7 +896,7 @@ export default function VoiceShoppingAssistant() {
                           </span>
                           <button
                             onClick={() => setWakeWordEnabled(!wakeWordEnabled)}
-                            className={`r48-wake-toggle relative h-5 w-9 rounded-full transition-colors cursor-pointer ${
+                            className={`r48-wake-toggle relative h-5 w-9 rounded-full transition-colors cursor-pointer min-h-[44px] ${
                               wakeWordEnabled
                                 ? 'bg-violet-500'
                                 : 'bg-muted'
@@ -1043,7 +1044,7 @@ export default function VoiceShoppingAssistant() {
                       <button
                         onClick={handleMicClick}
                         disabled={voiceState === 'processing'}
-                        className={`r48-mic-btn h-10 w-10 rounded-full flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed ${
+                        className={`r48-mic-btn h-10 w-10 rounded-full flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed min-h-[44px] min-w-[44px] ${
                           voiceState === 'listening'
                             ? 'bg-gradient-to-br from-violet-500 to-purple-600'
                             : voiceState === 'error'

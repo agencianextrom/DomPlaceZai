@@ -170,12 +170,11 @@ function AnimatedTaxBar({ label, rate, amount, delay }: { label: string; rate: n
 // ─── SVG Pie Chart ───────────────────────────────────────────────────
 function PieChart({ data, animate }: { data: { label: string; value: number; color: string }[]; animate: boolean }) {
   const total = data.reduce((sum, d) => sum + d.value, 0)
-  let cumulative = 0
 
-  const slices = data.map((d) => {
+  const slices = data.map((d, i) => {
+    const cumulative = data.slice(0, i).reduce((s, item) => s + item.value, 0)
     const startAngle = (cumulative / total) * 360
     const sweepAngle = (d.value / total) * 360
-    cumulative += d.value
     return { ...d, startAngle, sweepAngle }
   })
 

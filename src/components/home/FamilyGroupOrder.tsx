@@ -283,13 +283,16 @@ function CartSummary({ group, onFinalize }: { group: FamilyGroup; onFinalize: ()
 function AddItemsModal({ open, onClose, onAdd }: { open: boolean; onClose: () => void; onAdd: (items: GroupItem[]) => void }) {
   const [sel, setSel] = useState<Map<string, number>>(new Map())
   const [loading, setLoading] = useState(false)
-  useEffect(() => { if (open) setSel(new Map()) }, [open])
+  useEffect(() => { if (open) {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSel(new Map())
+  } }, [open])
 
   const toggle = useCallback((pid: string) => {
-    setSel(prev => { const n = new Map(prev); const q = n.get(pid) ?? 0; q > 0 ? n.delete(pid) : n.set(pid, 1); return n })
+    setSel(prev => { const n = new Map(prev); const q = n.get(pid) ?? 0; void (q > 0 ? n.delete(pid) : n.set(pid, 1)); return n })
   }, [])
   const updQty = useCallback((pid: string, d: number) => {
-    setSel(prev => { const n = new Map(prev); const u = Math.max(0, (n.get(pid) ?? 0) + d); u === 0 ? n.delete(pid) : n.set(pid, u); return n })
+    setSel(prev => { const n = new Map(prev); const u = Math.max(0, (n.get(pid) ?? 0) + d); void (u === 0 ? n.delete(pid) : n.set(pid, u)); return n })
   }, [])
   const submit = useCallback(() => {
     setLoading(true)
@@ -599,11 +602,14 @@ export function FamilyGroupOrder() {
   useEffect(() => {
     if (!hydrated || init) return
     const saved = loadGroup()
-    if (saved && Date.now() < saved.expiresAt) { setGroup(saved); setView('active') }
+    if (saved && Date.now() < saved.expiresAt) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setGroup(saved); setView('active')
+    }
     setInit(true)
   }, [hydrated, init])
 
-  useEffect(() => { if (!hydrated || !init) return; group ? saveGroup(group) : clearGroup() }, [group, hydrated, init])
+  useEffect(() => { if (!hydrated || !init) return; void (group ? saveGroup(group) : clearGroup()) }, [group, hydrated, init])
 
   if (!hydrated) return <section className="r68-family-group-order"><Skeleton /></section>
 

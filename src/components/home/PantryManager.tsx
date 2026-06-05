@@ -591,7 +591,7 @@ export default function PantryManager() {
             initial={prefersReduced ? {} : animVariants.cardEnter}
             animate={prefersReduced ? {} : animVariants.cardVisible}
             transition={prefersReduced ? undefined : { type: 'spring' as const, stiffness: 260, damping: 24 }}
-            className={`r73-stat-card rounded-xl p-4 ${stat.gradient} flex flex-col items-center justify-center gap-1 min-h-[80px]`}
+            className={`r73-stat-card rounded-xl p-4 ${stat.gradient} flex flex-col items-center justify-center gap-1 min-h-[80px] r62-card-lift`}
           >
             <span className="text-2xl">{stat.emoji}</span>
             <span className="text-2xl font-bold">{stat.value}</span>
@@ -757,7 +757,7 @@ export default function PantryManager() {
                       ? undefined
                       : { type: 'spring' as const, stiffness: 280, damping: 26, delay: idx * 0.03 }
                   }
-                  className={`r73-pantry-card rounded-xl p-4 border bg-card space-y-3 transition-colors ${
+                  className={`r73-pantry-card rounded-xl p-4 border bg-card space-y-3 transition-colors r62-card-lift r98-pantry-item ${
                     isExpiringSoon ? 'r73-expiring-glow' : ''
                   } ${isLowStock ? 'r73-low-stock' : ''} ${
                     isExpiringSoon && !isExpired ? 'border-orange-300 dark:border-orange-700' : ''

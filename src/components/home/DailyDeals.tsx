@@ -923,7 +923,7 @@ export function DailyDeals() {
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
         >
           <button
-            className="daily-deals-cta-btn r26-shimmer-sweep r34-daily-deals-cta-shimmer r59-deals-cta-gradient h-9 px-5 text-xs rounded-full flex items-center gap-1.5 relative overflow-hidden"
+            className="daily-deals-cta-btn r26-shimmer-sweep r34-daily-deals-cta-shimmer r59-deals-cta-gradient h-9 px-5 text-xs rounded-full flex items-center gap-1.5 relative overflow-hidden min-h-[44px]"
             onClick={() => useAppStore.getState().openSearch()}
           >
             <span className="r59-deals-cta-sweep r34-daily-deals-shimmer-bar r42-ver-oferta-shimmer" />

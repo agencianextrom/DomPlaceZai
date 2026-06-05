@@ -201,8 +201,6 @@ const leaderboardData = [
 
 // ─── Confetti burst component ─────────────────────────────────────
 function QuestConfetti({ active }: { active: boolean }) {
-  if (!active) return null
-
   const particles = useMemo(() =>
     Array.from({ length: 28 }).map((_, i) => ({
       id: i,
@@ -214,6 +212,8 @@ function QuestConfetti({ active }: { active: boolean }) {
     })),
     []
   )
+
+  if (!active) return null
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
@@ -494,6 +494,7 @@ export default function GamificationQuests() {
       data.lastLoginDate = today
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProgress(data)
     saveProgress(data)
     setMounted(true)

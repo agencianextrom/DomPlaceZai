@@ -538,7 +538,7 @@ function MaterialsChecklist({ materials, checkedItems, onToggle }: { materials: 
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05, duration: 0.25 }}
-              className={`r40-material-item flex items-center gap-2.5 rounded-md px-2.5 py-1.5 cursor-pointer transition-colors duration-200 ${
+              className={`r40-material-item flex items-center gap-2.5 rounded-md px-2.5 py-1.5 cursor-pointer transition-colors duration-200 min-h-[44px] ${
                 isChecked ? 'r40-material-item-checked' : 'r40-material-item-unchecked'
               }`}
               style={{

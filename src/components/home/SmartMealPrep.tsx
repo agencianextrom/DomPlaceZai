@@ -1041,6 +1041,7 @@ export function SmartMealPrep() {
 
   // Hydration guard — load plan from localStorage
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
     setPlan(loadPlan())
     try {

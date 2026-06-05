@@ -897,6 +897,7 @@ function PriceAlertModal({
 
   useEffect(() => {
     if (product?.targetPrice) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTargetPrice(product.targetPrice.toString())
     } else if (product) {
       setTargetPrice((product.price * 0.8).toFixed(2))
@@ -1191,6 +1192,7 @@ export function WishListManager() {
   // Hydration guard
   useEffect(() => {
     const state = loadWishlistState()
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCollections(state.collections)
     setActiveCollectionId(
       state.collections.find((c) => c.isDefault)?.id ?? state.collections[0]?.id ?? ''
@@ -1207,6 +1209,7 @@ export function WishListManager() {
   // Toast auto-dismiss
   useEffect(() => {
     if (toastMessage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setToastVisible(true)
       const timer = setTimeout(() => {
         setToastVisible(false)

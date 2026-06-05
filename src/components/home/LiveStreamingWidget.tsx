@@ -797,7 +797,7 @@ export function LiveStreamingWidget() {
                 <motion.div className="relative" whileTap={{ scale: 0.85 }}>
                   <button
                     onClick={handleHeart}
-                    className="h-9 w-9 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-sm flex items-center justify-center border border-border/40 hover:border-red-300/50 transition-colors"
+                    className="h-9 w-9 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-sm flex items-center justify-center border border-border/40 hover:border-red-300/50 transition-colors min-h-[44px] min-w-[44px]"
                     aria-label="Curtir"
                   >
                     <Heart className="h-4 w-4 text-red-500 fill-red-500" />
@@ -809,7 +809,7 @@ export function LiveStreamingWidget() {
                 <motion.div whileTap={{ scale: 0.85 }}>
                   <button
                     onClick={handleShare}
-                    className="h-9 w-9 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-sm flex items-center justify-center border border-border/40 hover:border-primary/30 transition-colors"
+                    className="h-9 w-9 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-sm flex items-center justify-center border border-border/40 hover:border-primary/30 transition-colors min-h-[44px] min-w-[44px]"
                     aria-label="Compartilhar"
                   >
                     <Share2 className="h-4 w-4 text-muted-foreground" />
@@ -820,7 +820,7 @@ export function LiveStreamingWidget() {
                 <motion.div whileTap={{ scale: 0.85 }}>
                   <button
                     onClick={handleFullscreen}
-                    className="h-9 w-9 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-sm flex items-center justify-center border border-border/40 hover:border-primary/30 transition-colors"
+                    className="h-9 w-9 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-sm flex items-center justify-center border border-border/40 hover:border-primary/30 transition-colors min-h-[44px] min-w-[44px]"
                     aria-label="Tela cheia"
                   >
                     <Maximize2 className="h-4 w-4 text-muted-foreground" />

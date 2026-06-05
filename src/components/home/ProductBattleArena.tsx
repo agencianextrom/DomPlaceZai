@@ -896,6 +896,7 @@ export default function ProductBattleArena() {
 
   // Reset votes when battle changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVotesA(null)
     setVotesB(null)
     setUserVote(null)

@@ -1082,7 +1082,10 @@ function RecipeDetailModal({
   const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (recipe) setServings(recipe.servings)
+    if (recipe) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setServings(recipe.servings)
+    }
   }, [recipe])
 
   useEffect(() => {

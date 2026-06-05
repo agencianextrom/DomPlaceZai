@@ -121,7 +121,7 @@ export default function EcoTipsTracker() {
               <Leaf className="h-5 w-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-base font-bold text-white tracking-tight">Dicas Verdes</h2>
+              <h2 className="text-base font-bold text-white tracking-tight r62-heading-gradient">Dicas Verdes</h2>
               <p className="text-[11px] text-white/70 font-medium">Ações sustentáveis para o dia a dia</p>
             </div>
             <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-sm">
@@ -194,7 +194,7 @@ export default function EcoTipsTracker() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ type: sp, stiffness: 350, damping: 28, delay: i * 0.03 }}
-                    className={`r93-tip-card p-3 rounded-xl border transition-all cursor-pointer ${
+                    className={`r93-tip-card p-3 rounded-xl border transition-all cursor-pointer r62-card-lift r98-eco-tip ${
                       completedTips.has(tip.id)
                         ? 'border-emerald-300 bg-emerald-50/50 dark:bg-emerald-900/15 dark:border-emerald-800/40'
                         : 'border-border/40 bg-card/60 hover:border-emerald-200/50'
@@ -254,7 +254,7 @@ export default function EcoTipsTracker() {
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="r93-challenge-card p-3 rounded-xl border border-border/40 bg-card/60"
+                    className="r93-challenge-card p-3 rounded-xl border border-border/40 bg-card/60 r62-card-lift"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-lg">{challenge.emoji}</span>

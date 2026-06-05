@@ -841,7 +841,7 @@ export default function SmartDeliveryHub() {
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
           >
-            <div className="w-full h-9 rounded-lg bg-gradient-to-r from-amber-500 to-teal-500 flex items-center justify-center text-white text-xs font-bold cursor-pointer">
+            <div className="w-full h-9 rounded-lg bg-gradient-to-r from-amber-500 to-teal-500 flex items-center justify-center text-white text-xs font-bold cursor-pointer min-h-[44px]">
               Consolidar e economizar R${consolidationSavings.toFixed(0)} em frete
             </div>
           </motion.div>

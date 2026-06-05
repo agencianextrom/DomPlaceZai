@@ -117,7 +117,7 @@ function SpecialCard({ special, index, isDayOfDeal }: { special: WeeklySpecial; 
       exit={{ opacity: 0, y: -12, scale: 0.96 }}
       transition={{ type: 'spring' as const, stiffness: 340, damping: 26, delay: index * 0.08 }}
       whileHover={{ scale: 1.02, rotateX: 2, rotateY: -2, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}
-      className="relative flex flex-col rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800 sm:p-5 r31-card-hover r36-weekly-card"
+      className="relative flex flex-col rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800 sm:p-5 r31-card-hover r36-weekly-card r62-card-lift r98-weekly-special"
     >
       {/* r36 shimmer sweep overlay */}
       <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none z-10">
@@ -227,7 +227,7 @@ export function WeeklySpecials() {
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring' as const, stiffness: 300, damping: 24 }}
-          className="weekly-specials-title text-2xl font-bold text-zinc-800 dark:text-zinc-100 sm:text-3xl r31-weekly-shimmer"
+          className="weekly-specials-title text-2xl font-bold text-zinc-800 dark:text-zinc-100 sm:text-3xl r31-weekly-shimmer r62-heading-gradient"
         >
           🔥 Ofertas da Semana
         </motion.h2>

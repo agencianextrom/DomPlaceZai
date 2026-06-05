@@ -492,7 +492,6 @@ export function CrossSellEngine() {
       if (!bundleSet.has(id)) newChecked.delete(id)
     }
     setCheckedIds(newChecked)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentVariant.key])
 
   /* ---------- Price calculations ---------- */

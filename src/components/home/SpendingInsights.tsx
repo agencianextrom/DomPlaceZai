@@ -136,6 +136,7 @@ function usePrefersReducedMotion(): boolean {
   const [pref, set] = useState(false)
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     set(mq.matches)
     const h = (e: MediaQueryListEvent) => set(e.matches)
     mq.addEventListener('change', h)
@@ -160,7 +161,10 @@ function AnimatedCounter({ target, prefix = 'R$ ', duration = 1200 }: { target: 
   const noMotion = usePrefersReducedMotion()
 
   useEffect(() => {
-    if (noMotion) { setVal(target); return }
+    if (noMotion) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setVal(target); return
+    }
     t0.current = Date.now()
     const step = () => {
       const p = Math.min((Date.now() - t0.current) / duration, 1)
@@ -340,12 +344,10 @@ function DonutChart({ categories, total }: { categories: SpendingCategory[]; tot
   const r = (size - sw) / 2
   const C = 2 * Math.PI * r
 
-  let cumOff = 0
-  const segments = categories.map((cat) => {
+  const segments = categories.map((cat, idx) => {
+    const cumOff = categories.slice(0, idx).reduce((s, c) => s + (c.percentage / 100) * C, 0)
     const len = (cat.percentage / 100) * C
-    const seg = { cat, da: `${len} ${C - len}`, off: -(cumOff) }
-    cumOff += len
-    return seg
+    return { cat, da: `${len} ${C - len}`, off: -(cumOff) }
   })
 
   return (

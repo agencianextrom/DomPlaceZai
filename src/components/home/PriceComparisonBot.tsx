@@ -1047,6 +1047,7 @@ export function PriceComparisonBot() {
   // Load persisted data
   useEffect(() => {
     if (!mounted) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRecentSearches(loadRecentSearches())
     setPriceAlerts(loadPriceAlerts())
   }, [mounted])

@@ -1209,6 +1209,7 @@ export function InteractiveProductTour() {
     try {
       const stored = localStorage.getItem(TOUR_STORAGE_KEY)
       if (stored === 'true') {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsTourDone(true)
       }
     } catch {
@@ -1218,9 +1219,24 @@ export function InteractiveProductTour() {
 
   // Reset mascot talking when step changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMascotTalking(true)
     const timer = setTimeout(() => setIsMascotTalking(false), 3000)
     return () => clearTimeout(timer)
+  }, [currentStep])
+
+  const handleNext = useCallback(() => {
+    if (currentStep < TOTAL_STEPS - 1) {
+      setDirection(1)
+      setCurrentStep((prev) => prev + 1)
+    }
+  }, [currentStep])
+
+  const handleBack = useCallback(() => {
+    if (currentStep > 0) {
+      setDirection(-1)
+      setCurrentStep((prev) => prev - 1)
+    }
   }, [currentStep])
 
   // Auto-play logic
@@ -1235,8 +1251,8 @@ export function InteractiveProductTour() {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAutoPlaying, isCompleted, currentStep, isOpen])
+     
+  }, [isAutoPlaying, isCompleted, currentStep, isOpen, handleNext])
 
   const markTourCompleted = useCallback(() => {
     try {
@@ -1267,20 +1283,6 @@ export function InteractiveProductTour() {
       clearTimeout(autoPlayTimerRef.current)
     }
   }, [])
-
-  const handleNext = useCallback(() => {
-    if (currentStep < TOTAL_STEPS - 1) {
-      setDirection(1)
-      setCurrentStep((prev) => prev + 1)
-    }
-  }, [currentStep])
-
-  const handleBack = useCallback(() => {
-    if (currentStep > 0) {
-      setDirection(-1)
-      setCurrentStep((prev) => prev - 1)
-    }
-  }, [currentStep])
 
   const handleStepClick = useCallback(
     (step: number) => {

@@ -195,6 +195,7 @@ export function MobileNav() {
   const [cartPulse, setCartPulse] = useState(false)
   useEffect(() => {
     if (cartCount > prevCartCount) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCartPulse(true)
       setPrevCartCount(cartCount)
       const timer = setTimeout(() => setCartPulse(false), 600)

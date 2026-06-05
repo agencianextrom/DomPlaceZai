@@ -294,6 +294,7 @@ function SplitCalculator({ total, memberCount }: { total: number; memberCount: n
   )
   useEffect(() => {
     const eq = Math.round((total / Math.max(1, memberCount)) * 100) / 100
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAmounts(Array(Math.max(1, memberCount)).fill(eq))
   }, [total, memberCount])
   const equalSplit = memberCount > 0 ? total / memberCount : 0
@@ -609,6 +610,7 @@ export default function CollaborativeShopping() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [hydrated, setHydrated] = useState(false)
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setState(loadState()); setHydrated(true) }, [])
   useEffect(() => { if (hydrated) saveState(state) }, [state, hydrated])
 

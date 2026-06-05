@@ -1289,7 +1289,7 @@ export function ReviewSentimentAI() {
             <motion.div whileTap={{ scale: 0.92 }}>
               <button
                 onClick={handleRefresh}
-                className="r39-refresh-btn h-9 w-9 rounded-xl border border-border/60 bg-card flex items-center justify-center hover:border-primary/40 transition-colors"
+                className="r39-refresh-btn h-9 w-9 rounded-xl border border-border/60 bg-card flex items-center justify-center hover:border-primary/40 transition-colors min-h-[44px] min-w-[44px]"
                 style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}
                 disabled={refreshing}
               >

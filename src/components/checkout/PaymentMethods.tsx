@@ -119,7 +119,7 @@ export function PaymentMethods({ orderTotal = 150.0, onPaymentSelect }: PaymentM
     <section className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6">
       <motion.h2 initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring' as const, stiffness: 300, damping: 22 }}
-        className="mb-5 text-xl font-bold text-zinc-800 dark:text-zinc-100 sm:text-2xl">
+        className="mb-5 text-xl font-bold text-zinc-800 dark:text-zinc-100 sm:text-2xl r62-heading-gradient">
         💳 Forma de Pagamento
       </motion.h2>
 
@@ -153,7 +153,7 @@ export function PaymentMethods({ orderTotal = 150.0, onPaymentSelect }: PaymentM
               transition={{ type: 'spring' as const, stiffness: 280, damping: 24, delay: index * 0.06 }}
               onClick={() => handleMethodSelect(method.id)}
               whileHover={{ scale: 1.01 }}
-              className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all ${
+              className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all r62-card-lift r98-payment-card ${
                 isActive ? 'border-green-500 bg-green-50/50 shadow-lg dark:bg-green-900/20' : 'border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600'}`}>
               {isActive && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}

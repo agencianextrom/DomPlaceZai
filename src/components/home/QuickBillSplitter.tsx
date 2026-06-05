@@ -173,6 +173,7 @@ export function QuickBillSplitter({ className = '' }: QuickBillSplitterProps) {
       const raw = localStorage.getItem(HISTORY_KEY)
       if (raw) {
         const parsed: SplitHistoryEntry[] = JSON.parse(raw)
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setHistory(parsed)
       }
     } catch {
@@ -183,6 +184,7 @@ export function QuickBillSplitter({ className = '' }: QuickBillSplitterProps) {
   /* Keep people list synced with peopleCount in equal mode */
   useEffect(() => {
     if (splitMode === 'equal') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPeople(prev => {
         const next: PersonSplit[] = []
         for (let i = 0; i < peopleCount; i++) {

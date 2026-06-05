@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tag, Gift, Clock, Check, X, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
@@ -109,6 +109,7 @@ export function CouponClaimBanner() {
       ...c,
       isClaimed: claimedIds.has(c.id),
     }));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCoupons(updated);
   }, []);
 
@@ -128,23 +129,20 @@ export function CouponClaimBanner() {
     const unclaimed = coupons.filter((c) => !c.isClaimed);
     if (unclaimed.length === 0) return;
     if (currentIndex >= unclaimed.length) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentIndex(0);
     }
   }, [coupons, currentIndex]);
 
   const unclaimed = coupons.filter((c) => !c.isClaimed);
-
-  if (unclaimed.length === 0 || !isVisible) return null;
-
-  const coupon = unclaimed[currentIndex];
-  const CouponIcon = getIconForType(coupon.type);
+  const coupon = unclaimed[currentIndex] || null;
 
   const handleClaim = useCallback(() => {
     if (isClaiming) return;
     setIsClaiming(true);
 
     const updated = coupons.map((c) =>
-      c.id === coupon.id ? { ...c, isClaimed: true } : c
+      c.id === coupon?.id ? { ...c, isClaimed: true } : c
     );
     setCoupons(updated);
 
@@ -153,13 +151,13 @@ export function CouponClaimBanner() {
 
     // Copy code to clipboard
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(coupon.code).then(() => {
-        toast.success(`Cupom ${coupon.code} copiado! ${coupon.discount} de desconto`);
+      navigator.clipboard.writeText(coupon?.code ?? '').then(() => {
+        toast.success(`Cupom ${coupon?.code} copiado! ${coupon?.discount} de desconto`);
       }).catch(() => {
-        toast.success(`Cupom ${coupon.code} resgatado! ${coupon.discount} de desconto`);
+        toast.success(`Cupom ${coupon?.code} resgatado! ${coupon?.discount} de desconto`);
       });
     } else {
-      toast.success(`Cupom ${coupon.code} resgatado! ${coupon.discount} de desconto`);
+      toast.success(`Cupom ${coupon?.code} resgatado! ${coupon?.discount} de desconto`);
     }
 
     setIsClaiming(false);
@@ -179,6 +177,8 @@ export function CouponClaimBanner() {
   const handleNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % unclaimed.length);
   }, [unclaimed.length]);
+
+  if (unclaimed.length === 0 || !isVisible) return null;
 
   return (
     <AnimatePresence>
@@ -237,7 +237,7 @@ export function CouponClaimBanner() {
               {/* Badge row */}
               <div className="flex items-center gap-2 mb-2">
                 <div className="flex items-center gap-1 bg-white/20 rounded-full px-2.5 py-0.5 backdrop-blur-sm">
-                  <CouponIcon className="h-3.5 w-3.5 text-white" />
+                  {React.createElement(getIconForType(coupon?.type ?? 'percentage'), { className: 'h-3.5 w-3.5 text-white' })}
                   <span className="text-white text-[10px] font-bold uppercase tracking-wider">
                     Cupom
                   </span>
