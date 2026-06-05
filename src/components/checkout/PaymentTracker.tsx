@@ -314,7 +314,7 @@ function CashPayment({ total }: { total: number }) {
               key={amount}
               whileTap={{ scale: 0.95 }}
               onClick={() => setCashGiven(String(amount))}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+              className={`min-h-[44px] px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                 parseFloat(cashGiven) === amount
                   ? 'bg-primary/10 border-primary/25 text-primary'
                   : 'bg-background border-border hover:border-primary/15'

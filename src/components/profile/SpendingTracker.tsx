@@ -289,7 +289,7 @@ export function SpendingTracker() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-4"
+      className="space-y-4 r62-card-lift r95-spending-card"
     >
       {/* ── Header with total + comparison ── */}
       <motion.div variants={itemVariants} className="bg-card rounded-2xl p-4 border border-border/50">

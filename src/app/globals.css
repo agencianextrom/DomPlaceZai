@@ -48685,3 +48685,45 @@
   .r94-launch-alert-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(236,72,153,0.08); }
   .r94-social-feed-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(239,68,68,0.08); }
 }
+
+/* ─── r95-* CSS: LocalEventsCalendar + 5 CSS-polished components ─── */
+@media (prefers-reduced-motion: no-preference) {
+  .r95-event-stat { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r95-event-stat:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(244,63,94,0.12); }
+
+  .r95-category-pill { transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease; }
+  .r95-category-pill:active { transform: scale(0.97); }
+
+  .r95-section-title { transition: color 0.2s ease; }
+
+  .r95-featured-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r95-featured-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(244,63,94,0.1); }
+
+  .r95-event-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .r95-event-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(244,63,94,0.08); }
+
+  .r95-event-emoji { transition: transform 0.3s ease; }
+  .r95-event-card:hover .r95-event-emoji { transform: scale(1.1); }
+
+  .r95-event-name { transition: color 0.2s ease; }
+  .r95-event-card:hover .r95-event-name { color: #be123c; }
+
+  .r95-rsvp-btn { transition: background-color 0.2s ease, transform 0.15s ease; }
+  .r95-rsvp-btn:active { transform: scale(0.97); }
+
+  .r95-notify-cta { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .r95-notify-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(244,63,94,0.06); }
+
+  .r95-notify-btn { transition: background-color 0.2s ease, transform 0.15s ease; }
+  .r95-notify-btn:active { transform: scale(0.97); }
+
+  .r95-trust-badge { transition: transform 0.15s ease; }
+  .r95-trust-badge:hover { transform: translateY(-1px); }
+
+  /* Polished component effects */
+  .r95-family-acct-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.08); }
+  .r95-origin-tracker-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.08); }
+  .r95-receipt-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,158,11,0.08); }
+  .r95-quickinfo-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.08); }
+  .r95-spending-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(236,72,153,0.08); }
+}

@@ -985,7 +985,7 @@ export function ProductOriginTracker2() {
   }
 
   return (
-    <div className="r44-origin-tracker bg-card rounded-2xl border border-border overflow-hidden">
+    <div className="r44-origin-tracker bg-card rounded-2xl border border-border overflow-hidden r62-card-lift r95-origin-tracker-card">
       {/* ── Header ── */}
       <motion.button
         onClick={() => setIsExpanded((prev) => !prev)}
@@ -1003,7 +1003,7 @@ export function ProductOriginTracker2() {
             <Globe className="h-5 w-5 text-white" />
           </motion.div>
           <div className="text-left">
-            <h3 className="font-bold text-sm flex items-center gap-1.5">
+            <h3 className="font-bold text-sm flex items-center gap-1.5 r62-heading-gradient">
               Rastreio de Origem
               <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-bold">v2</span>
             </h3>

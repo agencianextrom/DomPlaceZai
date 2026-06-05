@@ -319,7 +319,7 @@ export function QuickInfo() {
   }
 
   return (
-    <aside className="hidden lg:block w-[300px] xl:w-[340px] shrink-0">
+    <aside className="hidden lg:block w-[300px] xl:w-[340px] shrink-0 r62-card-lift r95-quickinfo-card">
       <div className="sticky top-20 space-y-4">
         {/* Clock + Date */}
         <motion.div
@@ -393,7 +393,7 @@ export function QuickInfo() {
           transition={{ delay: 0.3 }}
           className="glass-card rounded-xl border border-primary/10 overflow-hidden r34-quick-info-card-border"
         >
-          <h3 className="text-sm font-bold mb-3 flex items-center gap-1.5">
+          <h3 className="text-sm font-bold mb-3 flex items-center gap-1.5 r62-heading-gradient">
                 <div className="w-2 h-2 rounded-full bg-primary animate-breathe" />
                 Resumo Rápido
                 <motion.span

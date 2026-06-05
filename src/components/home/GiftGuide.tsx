@@ -266,7 +266,7 @@ export function GiftGuide() {
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setSelectedBudget(null)}
-              className={`budget-pill-shimmer px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
+              className={`budget-pill-shimmer min-h-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
                 !selectedBudget
                   ? 'bg-gradient-to-r from-primary via-primary/80 to-primary text-primary-foreground border-primary'
                   : 'bg-card text-muted-foreground border-border hover:border-primary/30'
@@ -278,7 +278,7 @@ export function GiftGuide() {
               <button
                 key={range.id}
                 onClick={() => setSelectedBudget(selectedBudget?.id === range.id ? null : range)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
+                className={`min-h-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
                   selectedBudget?.id === range.id
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-card text-muted-foreground border-border hover:border-primary/30'

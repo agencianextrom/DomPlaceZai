@@ -597,7 +597,7 @@ export function AIChatBot() {
                         <button
                           key={quick}
                           onClick={() => handleQuickAction(quick)}
-                          className="px-3 py-1.5 rounded-full text-xs border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
+                          className="min-h-[44px] px-3 py-1.5 rounded-full text-xs border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
                         >
                           {quick}
                         </button>
@@ -699,7 +699,7 @@ export function AIChatBot() {
                                 setRtInputValue(quick)
                                 setTimeout(() => rtInputRef.current?.focus(), 100)
                               }}
-                              className="px-3 py-1.5 rounded-full text-xs border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
+                              className="min-h-[44px] px-3 py-1.5 rounded-full text-xs border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
                             >
                               {quick}
                             </button>

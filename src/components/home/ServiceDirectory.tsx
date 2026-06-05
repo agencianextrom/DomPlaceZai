@@ -429,7 +429,7 @@ export function ServiceDirectory() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveFilter(filter.id)}
-              className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border ${
+              className={`shrink-0 min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border ${
                 activeFilter === filter.id
                   ? 'bg-primary text-primary-foreground border-primary shadow-sm'
                   : 'bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'

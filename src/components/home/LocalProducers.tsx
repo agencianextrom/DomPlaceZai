@@ -149,7 +149,7 @@ export function LocalProducers() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveCategory(cat)}
-                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all r33-cat-pill ${
+                className={`shrink-0 min-h-[44px] px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all r33-cat-pill ${
                   isActive
                     ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
                     : 'bg-card text-muted-foreground border-border hover:border-emerald-300 dark:hover:border-emerald-700'

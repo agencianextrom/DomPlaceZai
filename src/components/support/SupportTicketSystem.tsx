@@ -647,7 +647,7 @@ export function SupportTicketSystem() {
                               {/* Status dropdown */}
                               <div className="relative group">
                                 <button
-                                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold border"
+                                  className="min-h-[44px] flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold border"
                                   style={{
                                     backgroundColor: sCfg.bgColor,
                                     borderColor: 'transparent',

@@ -159,7 +159,7 @@ function QuickAddContent({ product }: { product: ProductData }) {
                   key={v}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedVariation(v)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                  className={`min-h-[44px] px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                     isSelected
                       ? 'bg-primary text-primary-foreground border-primary shadow-sm r32-variant-glow'
                       : 'bg-card text-muted-foreground border-border hover:border-primary/30'

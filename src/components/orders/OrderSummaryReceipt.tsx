@@ -359,7 +359,7 @@ export function OrderSummaryReceipt() {
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring' as const, stiffness: 120, damping: 16 }}
-        className="r35-receipt-card max-w-md mx-auto text-foreground"
+        className="r35-receipt-card max-w-md mx-auto text-foreground r62-card-lift r95-receipt-card"
       >
         {/* ── Receipt Card ── */}
         <div
@@ -382,7 +382,7 @@ export function OrderSummaryReceipt() {
                   <Store className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-base leading-tight">{order.storeName}</h2>
+                  <h2 className="font-bold text-base leading-tight r62-heading-gradient">{order.storeName}</h2>
                   <a
                     href="#"
                     className="text-[11px] text-primary hover:underline mt-0.5 inline-block"

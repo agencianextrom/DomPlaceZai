@@ -496,7 +496,7 @@ export function StoreLoyaltyPassport() {
             <div className="flex items-center justify-between mb-4">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <div
-                  className="cursor-pointer flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg border"
+                  className="min-h-[44px] cursor-pointer flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg border"
                   onClick={() => setIsOpen(false)}
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />

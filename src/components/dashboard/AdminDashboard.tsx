@@ -815,7 +815,7 @@ function UsersTab() {
       {/* Role filter pills */}
       <div className="flex gap-2 overflow-x-auto hide-scrollbar">
         {roles.map(r => (
-          <button key={r} onClick={() => setRoleFilter(r === 'Todos' ? null : r)} className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${(r === 'Todos' && !roleFilter) || roleFilter === r ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'}`}>
+          <button key={r} onClick={() => setRoleFilter(r === 'Todos' ? null : r)} className={`shrink-0 min-h-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition-all ${(r === 'Todos' && !roleFilter) || roleFilter === r ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'}`}>
             {roleLabels[r] || r}
           </button>
         ))}
@@ -1016,7 +1016,7 @@ function OrdersTab() {
     <motion.div variants={tabVariants} initial="enter" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="space-y-4">
       <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar">
         {orderStatuses.map(s => (
-          <button key={s.value} onClick={() => setStatusFilter(s.value === 'Todos' ? null : s.value)} className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${(s.value === 'Todos' && !statusFilter) || statusFilter === s.value ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'}`}>
+          <button key={s.value} onClick={() => setStatusFilter(s.value === 'Todos' ? null : s.value)} className={`shrink-0 min-h-[44px] px-3 py-1.5 rounded-full text-xs font-medium transition-all ${(s.value === 'Todos' && !statusFilter) || statusFilter === s.value ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'}`}>
             {s.label}
           </button>
         ))}

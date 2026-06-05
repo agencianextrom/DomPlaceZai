@@ -1227,7 +1227,7 @@ export function FamilyAccountManager() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="r41-family-manager space-y-4"
+      className="r41-family-manager space-y-4 r62-card-lift r95-family-acct-card"
     >
       {/* Title Header */}
       <motion.div variants={fadeSlideUp} className="r41-header flex items-center gap-3">
@@ -1240,7 +1240,7 @@ export function FamilyAccountManager() {
           <Users className="h-5 w-5 text-white" />
         </motion.div>
         <div>
-          <h2 className="text-lg font-extrabold">Conta Familiar</h2>
+          <h2 className="text-lg font-extrabold r62-heading-gradient">Conta Familiar</h2>
           <p className="text-xs text-muted-foreground">Gerencie membros, limites e permissões</p>
         </div>
       </motion.div>

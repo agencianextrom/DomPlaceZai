@@ -618,7 +618,7 @@ export function SearchView() {
                       transition={{ delay: index * 0.05, duration: 0.25 }}
                       whileTap={{ scale: 0.93 }}
                       onClick={() => setActiveSort(f.id)}
-                      className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
+                      className={`shrink-0 min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
                         activeSort === f.id
                           ? 'bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/20'
                           : 'bg-secondary/70 text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground hover:border-border/50'
@@ -982,7 +982,7 @@ export function SearchView() {
                       whileHover={{ scale: 1.08, y: -2 }}
                       whileTap={{ scale: 0.93 }}
                       onClick={() => setSearchQuery(s.term)}
-                      className="px-3 py-1.5 rounded-full bg-secondary/80 text-xs font-medium hover:bg-secondary transition-colors flex items-center gap-1 search-suggestion-chip r42-suggestion-chip"
+                      className="min-h-[44px] px-3 py-1.5 rounded-full bg-secondary/80 text-xs font-medium hover:bg-secondary transition-colors flex items-center gap-1 search-suggestion-chip r42-suggestion-chip"
                     >
                       <span>{s.emoji}</span>
                       {s.term}

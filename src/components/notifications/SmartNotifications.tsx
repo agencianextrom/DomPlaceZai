@@ -600,7 +600,7 @@ export function SmartNotifications() {
                                 onClick={() => markAsRead(notification.id)}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary px-2 py-1 rounded-full hover:bg-primary/10 transition-colors"
+                                className="min-h-[44px] flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary px-2 py-1 rounded-full hover:bg-primary/10 transition-colors"
                               >
                                 <CheckCircle2 className="h-3 w-3" />
                                 Marcar como lida
