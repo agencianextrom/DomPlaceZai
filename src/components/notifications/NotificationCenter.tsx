@@ -309,7 +309,7 @@ export function NotificationCenter() {
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-sm">Notificações</h3>
+            <h3 className="font-semibold text-sm r62-heading-gradient">Notificações</h3>
             {unreadCount > 0 && (
               <motion.div
                 key={unreadCount}
@@ -350,7 +350,7 @@ export function NotificationCenter() {
                 role="tab"
                 aria-selected={activeTab === tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`r43-tab-btn relative px-3 py-2 text-xs font-medium transition-colors duration-200 shrink-0
+                className={`r43-tab-btn relative min-h-[44px] px-3 py-2 text-xs font-medium transition-colors duration-200 shrink-0
                   ${activeTab === tab.key
                     ? 'r43-tab-btn-active'
                     : 'text-muted-foreground hover:text-foreground/70'

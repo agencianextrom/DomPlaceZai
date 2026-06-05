@@ -420,7 +420,7 @@ export function NotificationsPage() {
                                 e.stopPropagation()
                                 handleDismiss(notification.id)
                               }}
-                              className="absolute top-2 right-2 h-6 w-6 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 focus:opacity-100 hover:bg-muted transition-opacity"
+                              className="absolute top-2 right-2 h-6 w-6 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center opacity-0 hover:opacity-100 focus:opacity-100 hover:bg-muted transition-opacity"
                               aria-label="Remover notificação"
                             >
                               <X className="h-3 w-3 text-muted-foreground" />

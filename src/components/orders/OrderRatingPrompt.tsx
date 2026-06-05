@@ -201,7 +201,7 @@ export function OrderRatingPrompt({
             animate={{ y: exiting ? 120 : 0, opacity: exiting ? 0 : 1 }}
             exit={{ y: 120, opacity: 0 }}
             transition={{ type: 'spring' as const, stiffness: SPRING_STIFF, damping: SPRING_DAMP }}
-            className="relative w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[92vh] overflow-y-auto r34-prompt-card"
+            className="relative w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[92vh] overflow-y-auto r34-prompt-card r62-card-lift"
             style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.25)' }}
           >
             {/* Confetti layer */}
@@ -241,7 +241,7 @@ export function OrderRatingPrompt({
               >
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <Sparkles className="h-5 w-5 text-amber-500" />
-                  <h2 className="text-lg font-bold text-gray-900">Como foi sua experiência?</h2>
+                  <h2 className="text-lg font-bold text-gray-900 r62-heading-gradient">Como foi sua experiência?</h2>
                 </div>
                 <p className="text-xs text-gray-500">
                   Pedido #{orderId.slice(-6).toUpperCase()} · {storeName}

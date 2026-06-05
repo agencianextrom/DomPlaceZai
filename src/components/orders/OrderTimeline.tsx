@@ -191,12 +191,12 @@ export function OrderTimeline({
   return (
     <div className="space-y-3">
       {/* Main timeline card */}
-      <Card className="overflow-hidden border-primary/20">
+      <Card className="overflow-hidden border-primary/20 r62-card-lift">
         <CardContent className="p-4">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold flex items-center gap-2">
+              <h3 className="text-sm font-bold flex items-center gap-2 r62-heading-gradient">
                 <Clock className="h-4 w-4 text-primary" />
                 Acompanhar Pedido
               </h3>
@@ -367,7 +367,7 @@ export function OrderTimeline({
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
-            <Card className="border-primary/20 overflow-hidden">
+            <Card className="border-primary/20 overflow-hidden r62-card-lift">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <User className="h-4 w-4 text-primary" />

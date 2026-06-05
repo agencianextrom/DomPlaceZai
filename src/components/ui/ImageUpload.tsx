@@ -272,7 +272,7 @@ export function ImageUpload({
                   e.stopPropagation()
                   removeImage(index)
                 }}
-                className="absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-1 right-1 flex h-6 w-6 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <X className="h-3 w-3" />
               </button>

@@ -965,7 +965,7 @@ export function SplitPaymentSelector({
               className="r39-mode-tab flex-1"
             >
               <button
-                className={`r39-mode-tab-btn flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                className={`r39-mode-tab-btn flex w-full min-h-[44px] items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   activeMode === tab.key
                     ? 'bg-white text-zinc-800'
                     : 'text-zinc-400 hover:text-zinc-600'

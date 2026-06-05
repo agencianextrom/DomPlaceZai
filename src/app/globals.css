@@ -48060,3 +48060,120 @@
   .r85-product-name:hover { color: inherit; }
   .r85-profile-section:hover { box-shadow: none; }
 }
+
+/* ─── R86 — DeliveryTracker + Touch Target Fixes + Component Polish ─── */
+
+.r86-delivery-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.r86-delivery-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.r86-timeline-step {
+  transition: transform 0.2s ease;
+}
+.r86-timeline-step:hover {
+  transform: translateX(2px);
+}
+
+.r86-timeline-current {
+  animation: r86-pulse-blue 2s ease-in-out infinite;
+}
+@keyframes r86-pulse-blue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+}
+
+.r86-map-placeholder {
+  transition: box-shadow 0.3s ease;
+}
+.r86-map-placeholder:hover {
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.12);
+}
+
+.r86-driver-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r86-driver-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.08);
+}
+
+.r86-action-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r86-action-card:active {
+  transform: scale(0.97);
+}
+
+.r86-history-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r86-history-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.r86-store-profile-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r86-store-profile-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.08);
+}
+
+.r86-order-timeline-card {
+  transition: box-shadow 0.25s ease;
+}
+.r86-order-timeline-card:hover {
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.06);
+}
+
+.r86-rating-prompt {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r86-rating-prompt:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.1);
+}
+
+.r86-scheduler-card {
+  transition: box-shadow 0.25s ease;
+}
+.r86-scheduler-card:hover {
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.06);
+}
+
+.r86-spin-wheel-card {
+  transition: box-shadow 0.3s ease;
+}
+.r86-spin-wheel-card:hover {
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.1);
+}
+
+.r86-driver-dash-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r86-driver-dash-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r86-delivery-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r86-timeline-step:hover { transform: none; }
+  .r86-timeline-current { animation: none; box-shadow: none; }
+  .r86-map-placeholder:hover { box-shadow: none; }
+  .r86-driver-card:hover { transform: none; box-shadow: none; }
+  .r86-action-card:active { transform: none; }
+  .r86-history-card:hover { transform: none; box-shadow: none; }
+  .r86-store-profile-card:hover { transform: none; box-shadow: none; }
+  .r86-order-timeline-card:hover { box-shadow: none; }
+  .r86-rating-prompt:hover { transform: none; box-shadow: none; }
+  .r86-scheduler-card:hover { box-shadow: none; }
+  .r86-spin-wheel-card:hover { box-shadow: none; }
+  .r86-driver-dash-card:hover { transform: none; box-shadow: none; }
+}

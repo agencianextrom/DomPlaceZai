@@ -1110,7 +1110,7 @@ export function AffiliateDashboard() {
                 <button
                   key={filter.key}
                   onClick={() => setReferralFilter(filter.key)}
-                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                  className={`shrink-0 min-h-[44px] px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                     referralFilter === filter.key
                       ? 'bg-primary text-primary-foreground border-primary'
                       : 'bg-card text-muted-foreground border-border hover:border-primary/30'

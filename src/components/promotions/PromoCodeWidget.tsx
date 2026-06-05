@@ -232,7 +232,7 @@ export function PromoCodeWidget() {
               {promoInput && (
                 <button
                   onClick={() => { setPromoInput(''); setError(null) }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 >
                   <X className="h-3.5 w-3.5 text-muted-foreground" />
                 </button>

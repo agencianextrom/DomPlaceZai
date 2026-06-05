@@ -491,7 +491,7 @@ export function SpinWheel() {
               </button>
 
               {/* Prize content - glassmorphism card */}
-              <div className="relative z-10 pt-4">
+              <div className="relative z-10 pt-4 r62-card-lift">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: [0, 1.2, 1] }}
@@ -518,7 +518,7 @@ export function SpinWheel() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="text-xl font-bold mb-2 r43-prize-title"
+                  className="text-xl font-bold mb-2 r43-prize-title r62-heading-gradient"
                 >
                   {wonPrize.label !== 'Tente novamente' ? 'Parabens!' : 'Quase lá!'}
                 </motion.h3>

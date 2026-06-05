@@ -788,7 +788,7 @@ export function DriverDashboard() {
             <Button variant="ghost" size="icon" onClick={() => navigate('home')} className="text-white hover:bg-white/15 h-10 w-10">
               <ChevronRight className="h-5 w-5 rotate-180" />
             </Button>
-            <h1 className="text-lg font-bold">Painel do Entregador</h1>
+            <h1 className="text-lg font-bold r62-heading-gradient">Painel do Entregador</h1>
             <motion.div whileTap={{ scale: 0.9 }}>
               <Button
                 variant="ghost"
@@ -816,7 +816,7 @@ export function DriverDashboard() {
               <div className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-emerald-600 ${isOnline || isBusy ? 'bg-emerald-400 animate-pulse' : 'bg-gray-400'}`} />
             </motion.div>
             <div className="flex-1">
-              <h2 className="text-xl font-bold">{profile.account.name}</h2>
+              <h2 className="text-xl font-bold r62-heading-gradient">{profile.account.name}</h2>
               <div className="flex items-center gap-2 mt-1">
                 <VehicleIcon className="h-4 w-4 text-white/70" />
                 <span className="text-sm text-white/70">Entregador</span>
@@ -936,7 +936,7 @@ export function DriverDashboard() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ delay: 0.1 }}
             >
-              <Card className="border-primary/20 overflow-hidden mb-4">
+              <Card className="border-primary/20 overflow-hidden mb-4 r62-card-lift">
                 <div className="bg-gradient-to-r from-primary to-emerald-600 px-4 py-2 flex items-center justify-between">
                   <div className="flex items-center gap-2 text-white">
                     <Navigation className="h-4 w-4" />
@@ -1565,7 +1565,7 @@ export function DriverDashboard() {
               className="space-y-4"
             >
               {/* Driver identity card */}
-              <Card className="border-primary/20 overflow-hidden">
+              <Card className="border-primary/20 overflow-hidden r62-card-lift">
                 <div className="bg-gradient-to-r from-primary to-emerald-600 p-4 flex items-center gap-4">
                   <div className="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl font-bold border-2 border-white/30">
                     {initials}

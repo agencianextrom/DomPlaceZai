@@ -565,7 +565,7 @@ export function DeliveryScheduler() {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring' as const, stiffness: 260, damping: 22 }}
-      className="rounded-2xl border border-border/60 bg-card overflow-hidden"
+      className="rounded-2xl border border-border/60 bg-card overflow-hidden r62-card-lift"
     >
       {/* ── Header ── */}
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">

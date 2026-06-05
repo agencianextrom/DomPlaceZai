@@ -110,7 +110,7 @@ export function StoreContact({ store }: StoreContactProps) {
               <div className="px-5 pb-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-lg r29-contact-shimmer">Contato</h3>
+                    <h3 className="font-bold text-lg r29-contact-shimmer r62-heading-gradient">Contato</h3>
                     <p className="text-sm text-muted-foreground">{store.name}</p>
                   </div>
                   <Button

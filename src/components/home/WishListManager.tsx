@@ -537,7 +537,7 @@ function HeartToggle({
       <motion.div whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.85 }}>
         <button
           onClick={handleToggle}
-          className="r56-heart-btn w-9 h-9 rounded-full flex items-center justify-center transition-colors"
+          className="r56-heart-btn w-9 h-9 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-colors"
           aria-label="Toggle wishlist"
         >
           <motion.div
@@ -622,7 +622,7 @@ function SwipeableProductCard({
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
               <button
                 onClick={() => onRemove(product.id)}
-                className="r56-delete-btn p-2"
+                className="r56-delete-btn p-2 min-h-[44px] min-w-[44px]"
               >
                 <Trash2 className="h-5 w-5 text-white" />
               </button>

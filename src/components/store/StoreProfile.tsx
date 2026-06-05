@@ -435,7 +435,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + i * 0.06 }}
             >
-              <Card className={`border-0 ${stat.bg} transition-colors cursor-default card-premium-hover r42-stats-glow r46-stats-card`}>
+              <Card className={`border-0 ${stat.bg} transition-colors cursor-default card-premium-hover r42-stats-glow r46-stats-card r62-card-lift`}>
                 <CardContent className="p-3 text-center">
                   <stat.icon className={`h-5 w-5 mx-auto mb-1 ${stat.iconColor}`} />
                   <p className="text-lg font-bold animate-count-up r38-store-stat-counter r46-stats-counter-animate r62-counter-animate">{stat.value}</p>
@@ -686,9 +686,9 @@ export function StoreProfile({ store }: StoreProfileProps) {
               className="mt-4 space-y-4"
             >
               {/* About */}
-              <Card className="border-border/50 card-spotlight hover:shadow-md transition-shadow">
+              <Card className="border-border/50 card-spotlight hover:shadow-md transition-shadow r62-card-lift">
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-sm mb-2">Sobre a loja</h3>
+                  <h3 className="font-semibold text-sm mb-2 r62-heading-gradient">Sobre a loja</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {store.description || 'Nenhuma descrição disponível.'}
                   </p>
@@ -782,9 +782,9 @@ export function StoreProfile({ store }: StoreProfileProps) {
               </Card>
 
               {/* Delivery */}
-              <Card className="border-primary/20 card-spotlight hover:shadow-md transition-shadow">
+              <Card className="border-primary/20 card-spotlight hover:shadow-md transition-shadow r62-card-lift">
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-sm mb-2 flex items-center gap-1.5">
+                  <h3 className="font-semibold text-sm mb-2 flex items-center gap-1.5 r62-heading-gradient">
                     <Truck className="h-4 w-4 text-primary" />
                     Informações de entrega
                   </h3>
