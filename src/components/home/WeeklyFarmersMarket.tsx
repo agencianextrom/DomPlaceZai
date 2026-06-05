@@ -154,7 +154,7 @@ export default function WeeklyFarmersMarket() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: sp, stiffness: 260, damping: 24 }}
     >
-      <Card className="overflow-hidden border-border/40 r90-farmers-card">
+      <Card className="overflow-hidden border-border/40 r90-farmers-card r102-section-accent">
         {/* ── Header ── */}
         <CardHeader className="pb-3">
           <div
@@ -168,7 +168,7 @@ export default function WeeklyFarmersMarket() {
               <Leaf className="h-5 w-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-base font-bold text-white tracking-tight">Feira da Semana</h2>
+              <h2 className="text-base font-bold text-white tracking-tight r62-heading-gradient">Feira da Semana</h2>
               <p className="text-[11px] text-white/70 font-medium">Direto do produtor para sua mesa</p>
             </div>
             <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-sm">
@@ -314,7 +314,7 @@ export default function WeeklyFarmersMarket() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ type: sp, stiffness: 350, damping: 28, delay: i * 0.02 }}
-                  className="r90-produce-card relative p-3 rounded-xl border border-border/40 bg-card/60 hover:border-green-300/50 transition-colors"
+                  className="r90-produce-card relative p-3 rounded-xl border border-border/40 bg-card/60 hover:border-green-300/50 transition-colors r62-card-lift"
                 >
                   {/* Favorite */}
                   <motion.button

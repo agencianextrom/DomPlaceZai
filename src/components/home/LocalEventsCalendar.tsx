@@ -116,7 +116,7 @@ export default function LocalEventsCalendar() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5 }}
-      className="rounded-2xl bg-gradient-to-br from-rose-50 via-pink-50 to-fuchsia-50 p-5 sm:p-6 shadow-sm"
+      className="rounded-2xl bg-gradient-to-br from-rose-50 via-pink-50 to-fuchsia-50 p-5 sm:p-6 shadow-sm r102-section-accent"
     >
       {/* Header */}
       <div className="mb-5 flex items-center justify-between">
@@ -125,7 +125,7 @@ export default function LocalEventsCalendar() {
             <Calendar className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-800 sm:text-2xl">
+            <h2 className="text-xl font-bold text-gray-800 sm:text-2xl r62-heading-gradient">
               Eventos Locais 🎉
             </h2>
             <p className="text-xs text-gray-500 sm:text-sm">O que rola em Dom Eliseu</p>
@@ -261,7 +261,7 @@ export default function LocalEventsCalendar() {
             key={event.id}
             variants={item}
             layout
-            className="r95-event-card relative rounded-xl bg-white p-4 shadow-sm"
+            className="r95-event-card relative rounded-xl bg-white p-4 shadow-sm r62-card-lift"
           >
             <button
               onClick={() => toggleFavorite(event.id)}

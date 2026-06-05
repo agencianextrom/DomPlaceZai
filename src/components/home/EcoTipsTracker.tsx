@@ -107,7 +107,7 @@ export default function EcoTipsTracker() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: sp, stiffness: 260, damping: 24 }}
     >
-      <Card className="overflow-hidden border-border/40 r93-eco-card">
+      <Card className="overflow-hidden border-border/40 r93-eco-card r102-section-accent">
         {/* ── Header ── */}
         <CardHeader className="pb-3">
           <div

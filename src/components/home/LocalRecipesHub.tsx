@@ -179,7 +179,7 @@ export default function LocalRecipesHub() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: sp, stiffness: 260, damping: 24 }}
     >
-      <Card className="overflow-hidden border-border/40 r91-recipes-card">
+      <Card className="overflow-hidden border-border/40 r91-recipes-card r102-section-accent">
         {/* ── Header ── */}
         <CardHeader className="pb-3">
           <div
@@ -193,7 +193,7 @@ export default function LocalRecipesHub() {
               <ChefHat className="h-5 w-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-base font-bold text-white tracking-tight">Receitas da Região</h2>
+              <h2 className="text-base font-bold text-white tracking-tight r62-heading-gradient">Receitas da Região</h2>
               <p className="text-[11px] text-white/70 font-medium">Sabores autênticos do Pará</p>
             </div>
             <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-sm">
@@ -285,7 +285,7 @@ export default function LocalRecipesHub() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ type: sp, stiffness: 350, damping: 28, delay: i * 0.03 }}
-                  className="r91-recipe-card relative p-3 rounded-xl border border-border/40 bg-card/60 hover:border-orange-200/50 transition-colors"
+                  className="r91-recipe-card relative p-3 rounded-xl border border-border/40 bg-card/60 hover:border-orange-200/50 transition-colors r62-card-lift"
                 >
                   {/* Favorite */}
                   <motion.button

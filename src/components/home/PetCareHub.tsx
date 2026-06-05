@@ -153,7 +153,7 @@ export default function PetCareHub() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5 }}
-      className="rounded-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-5 sm:p-6 shadow-sm"
+      className="rounded-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-5 sm:p-6 shadow-sm r102-section-accent"
     >
       {/* Header */}
       <div className="mb-5 flex items-center justify-between">
@@ -162,7 +162,7 @@ export default function PetCareHub() {
             <PawPrint className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-800 sm:text-2xl">
+            <h2 className="text-xl font-bold text-gray-800 sm:text-2xl r62-heading-gradient">
               Cuidados Pet 🐾
             </h2>
             <p className="text-xs text-gray-500 sm:text-sm">Tudo para seu melhor amigo</p>
@@ -281,7 +281,7 @@ export default function PetCareHub() {
                   key={product.id}
                   variants={item}
                   layout
-                  className="r94-product-card group relative rounded-xl bg-white p-3 shadow-sm"
+                  className="r94-product-card group relative rounded-xl bg-white p-3 shadow-sm r62-card-lift"
                 >
                   {/* Favorite */}
                   <button
