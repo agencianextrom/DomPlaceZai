@@ -213,7 +213,7 @@ function ToggleSwitch({ enabled, onToggle }: { enabled: boolean; onToggle: () =>
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={onToggle}
-      className="cursor-pointer"
+      className="min-h-[44px] flex items-center cursor-pointer"
     >
       <motion.div
         animate={{ backgroundColor: enabled ? '#0d9488' : '#d1d5db' }}

@@ -240,7 +240,7 @@ export function StoreOpenStatus() {
               className="h-8 min-h-[44px] pl-8 pr-8 text-xs rounded-full bg-card border border-border focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/40 placeholder:text-muted-foreground w-36 sm:w-48 transition-all"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2">
+              <button onClick={() => setSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] flex items-center justify-center">
                 <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
               </button>
             )}
@@ -334,7 +334,7 @@ export function StoreOpenStatus() {
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="text-xs text-primary hover:underline mt-1"
+                className="min-h-[44px] px-2 text-xs text-primary hover:underline mt-1"
               >
                 Limpar busca
               </button>

@@ -311,7 +311,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
                           onClick={() => setSelectedStars(s)}
                           onMouseEnter={() => setHoveredStar(s)}
                           onMouseLeave={() => setHoveredStar(0)}
-                          className="p-1"
+                          className="p-2"
                         >
                           <Star
                             className={`h-7 w-7 transition-colors ${

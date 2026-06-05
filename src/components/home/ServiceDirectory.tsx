@@ -380,7 +380,7 @@ export function ServiceDirectory() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-muted flex items-center justify-center text-xs text-muted-foreground hover:bg-secondary"
+              className="absolute right-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center text-xs text-muted-foreground hover:bg-secondary"
             >
               ×
             </motion.button>
@@ -479,7 +479,7 @@ export function ServiceDirectory() {
           >
             <p className="text-3xl mb-2">🔍</p>
             <p className="text-sm">Nenhum serviço encontrado</p>
-            <button onClick={() => { setSearchQuery(''); setSelectedCategory(null); setActiveFilter('all') }} className="text-xs text-primary hover:underline mt-1">
+            <button onClick={() => { setSearchQuery(''); setSelectedCategory(null); setActiveFilter('all') }} className="min-h-[44px] px-2 text-xs text-primary hover:underline mt-1">
               Limpar filtros
             </button>
           </motion.div>

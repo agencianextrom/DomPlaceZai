@@ -189,7 +189,7 @@ function QuantitySelector({
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={() => onQuantityChange(1)}
-        className="ml-2 h-8 px-3 rounded-lg bg-muted text-[11px] text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+        className="ml-2 min-h-[44px] px-3 rounded-lg bg-muted text-[11px] text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
       >
         Limpar
       </motion.button>

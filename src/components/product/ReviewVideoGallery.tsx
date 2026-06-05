@@ -341,7 +341,7 @@ export function ReviewVideoGallery() {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={cycleFilter}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium border border-border bg-card hover:bg-muted transition-colors"
+            className="min-h-[44px] flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium border border-border bg-card hover:bg-muted transition-colors"
           >
             <Filter className="h-3 w-3" />
             {filterLabels[filterBy]}
@@ -349,7 +349,7 @@ export function ReviewVideoGallery() {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={cycleSort}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium border border-border bg-card hover:bg-muted transition-colors"
+            className="min-h-[44px] flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium border border-border bg-card hover:bg-muted transition-colors"
           >
             <ArrowUpDown className="h-3 w-3" />
             {sortLabels[sortBy]}

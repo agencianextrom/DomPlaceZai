@@ -182,7 +182,7 @@ export function LoyaltyTier() {
         <CardContent className="p-0">
           <div className="p-3 flex items-center justify-between">
             <h4 className="text-xs font-semibold">Jornada de Fidelidade</h4>
-            <button onClick={() => setShowHowItWorks(!showHowItWorks)} className="flex items-center gap-0.5 text-[10px] text-primary hover:underline">
+            <button onClick={() => setShowHowItWorks(!showHowItWorks)} className="min-h-[44px] flex items-center gap-0.5 text-[10px] text-primary hover:underline">
               <Info className="h-3 w-3" />
               Como funciona
             </button>

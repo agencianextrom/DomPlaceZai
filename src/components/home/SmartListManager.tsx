@@ -1075,7 +1075,7 @@ export function SmartListManager() {
                   className="flex-1 bg-transparent text-[11px] outline-none placeholder:text-muted-foreground/50 min-w-0"
                 />
                 {searchQuery && (
-                  <button onClick={() => setSearchQuery('')} className="shrink-0">
+                  <button onClick={() => setSearchQuery('')} className="shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center">
                     <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
                   </button>
                 )}

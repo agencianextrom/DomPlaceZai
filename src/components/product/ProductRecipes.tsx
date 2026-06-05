@@ -521,7 +521,7 @@ function RecipeDetail({ recipe, onClose }: { recipe: Recipe; onClose: () => void
                   className="flex items-center gap-2.5"
                 >
                   <motion.button whileTap={{ scale: 0.8 }} onClick={() => toggleCheck(ing.name)}
-                    className={`h-5 w-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-colors ${
+                    className={`min-h-[44px] min-w-[44px] rounded-md border-2 flex items-center justify-center shrink-0 transition-colors ${
                       isChecked ? 'bg-emerald-500 border-emerald-500' : 'border-border'
                     }`}>
                     {isChecked && <CheckCircle2 className="h-3.5 w-3.5 text-white" />}
@@ -772,7 +772,7 @@ export function ProductRecipes() {
                       <motion.button
                         whileTap={{ scale: 0.75 }}
                         onClick={(e) => { e.stopPropagation(); toggle(recipe.id) }}
-                        className="absolute top-2.5 right-2.5 h-8 w-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+                        className="absolute top-2.5 right-2.5 min-h-[44px] min-w-[44px] rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
                       >
                         <motion.div variants={heartPopVariants} animate={isFav ? 'liked' : 'idle'} key={isFav ? 'fav' : 'ufav'}>
                           <Heart className={`h-4 w-4 ${isFav ? 'fill-red-400 text-red-400' : 'text-white'}`} />

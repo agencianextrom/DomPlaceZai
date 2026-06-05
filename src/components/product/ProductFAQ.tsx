@@ -296,7 +296,7 @@ function FAQAccordionItem({
                   <motion.button
                     whileTap={{ scale: 0.85 }}
                     onClick={() => onFeedback(faq.id, 'up')}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium border transition-all ${
+                    className={`min-h-[44px] flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium border transition-all ${
                       currentFeedback === 'up'
                         ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/30'
                         : 'bg-transparent text-muted-foreground border-border hover:border-emerald-300 hover:text-emerald-600'
@@ -308,7 +308,7 @@ function FAQAccordionItem({
                   <motion.button
                     whileTap={{ scale: 0.85 }}
                     onClick={() => onFeedback(faq.id, 'down')}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium border transition-all ${
+                    className={`min-h-[44px] flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium border transition-all ${
                       currentFeedback === 'down'
                         ? 'bg-red-50 text-red-500 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/30'
                         : 'bg-transparent text-muted-foreground border-border hover:border-red-300 hover:text-red-500'
@@ -449,7 +449,7 @@ export function ProductFAQ({ productId, category, productName }: ProductFAQProps
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground"
+              className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] flex items-center justify-center text-xs text-muted-foreground hover:text-foreground"
             >
               ✕
             </button>

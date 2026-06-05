@@ -373,11 +373,13 @@ export function ShoppingLists() {
                                   transition={{ duration: 0.2 }}
                                   className="flex items-center gap-3 py-1.5 group"
                                 >
-                                  <Checkbox
-                                    checked={item.checked}
-                                    onCheckedChange={() => toggleItem(list.id, item.id)}
-                                    className="h-5 w-5"
-                                  />
+                                  <div className="min-h-[44px] flex items-center">
+                                    <Checkbox
+                                      checked={item.checked}
+                                      onCheckedChange={() => toggleItem(list.id, item.id)}
+                                      className="h-5 w-5"
+                                    />
+                                  </div>
                                   <div className={`flex-1 min-w-0 ${item.checked ? 'line-through text-muted-foreground' : ''}`}>
                                     <div className="flex items-center gap-2">
                                       <p className="text-sm font-medium truncate">{item.name}</p>

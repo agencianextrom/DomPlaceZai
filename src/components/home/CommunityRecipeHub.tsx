@@ -971,7 +971,7 @@ export function CommunityRecipeHub({ className }: CommunityRecipeHubProps) {
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="r69-search-clear absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-muted-foreground/20 flex items-center justify-center"
+              className="r69-search-clear absolute right-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-muted-foreground/20 flex items-center justify-center"
               aria-label="Limpar busca"
             >
               <X className="r69-search-clear-icon h-3 w-3 text-muted-foreground" />

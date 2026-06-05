@@ -553,7 +553,7 @@ export function SupportCenter() {
               </p>
               <button
                 onClick={() => setSearchQuery('')}
-                className="text-xs text-primary hover:underline mt-1"
+                className="min-h-[44px] px-2 text-xs text-primary hover:underline mt-1"
               >
                 Limpar busca
               </button>

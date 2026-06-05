@@ -1542,7 +1542,7 @@ export function StoreEventHub() {
               animate={{ opacity: 1, scale: 1 }}
               whileTap={{ scale: 0.85 }}
               onClick={() => setSearchQuery('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-muted hover:bg-muted-foreground/10 flex items-center justify-center"
+              className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-muted hover:bg-muted-foreground/10 flex items-center justify-center"
             >
               <X className="h-3 w-3 text-muted-foreground" />
             </motion.button>
