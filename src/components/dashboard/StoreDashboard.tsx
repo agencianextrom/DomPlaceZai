@@ -1454,7 +1454,7 @@ export function StoreDashboard() {
 
                   {/* Revenue Mini Chart (div-based for mobile) */}
                   <motion.div variants={itemVariants} transition={{ delay: 0.20 }}>
-                    <Card className="border-border/50 r39-chart-grid">
+                    <Card className="border-border/50 r39-chart-grid r62-card-lift">
                       <div className="r39-chart-line-draw" />
                       <CardHeader className="pb-2 pt-4 px-4">
                         <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -1575,7 +1575,7 @@ export function StoreDashboard() {
                   <motion.div variants={itemVariants} transition={{ delay: 0.24 }}>
                     <Card className="border-border/50">
                       <CardContent className="p-4">
-                        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Ações Rápidas</h3>
+                        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 r62-heading-gradient"><Zap className="h-4 w-4 text-primary" /> Ações Rápidas</h3>
                         <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
                           <QuickActionButton icon={Plus} label="Adicionar Produto" onClick={() => setActiveTab('new-product')} delay={0} color="bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/30 dark:to-emerald-800/10" />
                           <QuickActionButton icon={Gift} label="Criar Promoção" onClick={() => setPromoDialogOpen(true)} delay={0.04} color="bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/10" />

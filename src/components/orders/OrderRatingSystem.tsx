@@ -198,7 +198,7 @@ export function OrderRatingSystem() {
                   <span className="r42-order-number">{order.orderNumber}</span>
                 </div>
               </div>
-              <motion.button className="r42-review-btn" onClick={() => setSelectedOrder(order)} whileTap={{ scale: 0.95 }}>
+              <motion.button className="r42-review-btn min-h-[44px] min-w-[44px]" onClick={() => setSelectedOrder(order)} whileTap={{ scale: 0.95 }}>
                 Avaliar ⭐
               </motion.button>
             </motion.div>
@@ -211,7 +211,7 @@ export function OrderRatingSystem() {
         <div className="r42-history-section">
           <div className="r42-filter-row">
             {[5, 4, 3, 2, 1].map(r => (
-              <motion.button key={r} className={'r42-filter-star ' + (filterRating === r ? 'r42-filter-active' : '')} onClick={() => setFilterRating(filterRating === r ? null : r)} whileTap={{ scale: 0.9 }}>
+              <motion.button key={r} className={'r42-filter-star min-h-[44px] min-w-[44px] ' + (filterRating === r ? 'r42-filter-active' : '')} onClick={() => setFilterRating(filterRating === r ? null : r)} whileTap={{ scale: 0.9 }}>
                 {'★'.repeat(r)}{'☆'.repeat(5 - r)}
               </motion.button>
             ))}
@@ -264,7 +264,7 @@ export function OrderRatingSystem() {
                     </div>
                     <div className="r42-mini-stars">
                       {[1, 2, 3, 4, 5].map(s => (
-                        <motion.button key={s} className="r42-mini-star" onClick={() => setCategoryRatings(prev => ({ ...prev, [cat.key]: s }))} whileHover={{ scale: 1.3 }} animate={{ color: s <= (categoryRatings[cat.key] || 0) ? cat.color : 'rgba(255,255,255,0.2)' }} transition={{ type: 'spring' as const }}>
+                        <motion.button key={s} className="r42-mini-star min-h-[44px] min-w-[44px]" onClick={() => setCategoryRatings(prev => ({ ...prev, [cat.key]: s }))} whileHover={{ scale: 1.3 }} animate={{ color: s <= (categoryRatings[cat.key] || 0) ? cat.color : 'rgba(255,255,255,0.2)' }} transition={{ type: 'spring' as const }}>
                           ★
                         </motion.button>
                       ))}
@@ -296,7 +296,7 @@ export function OrderRatingSystem() {
                   <span className="r42-char-count">{comment.length}/500</span>
                 </div>
                 {comment.length === 0 && (
-                  <motion.button className="r42-ai-suggest-btn" onClick={() => setComment(aiSuggestion)} whileTap={{ scale: 0.95 }}>
+                  <motion.button className="r42-ai-suggest-btn min-h-[44px] min-w-[44px]" onClick={() => setComment(aiSuggestion)} whileTap={{ scale: 0.95 }}>
                     ✨ Sugestão IA
                   </motion.button>
                 )}
@@ -338,7 +338,7 @@ export function OrderRatingSystem() {
                 <span className="r42-coupon-code">{couponCode}</span>
                 <span className="r42-coupon-value">R$ {reviewReward.toFixed(2)} OFF</span>
               </div>
-              <motion.button className="r42-thank-close-btn" onClick={() => { setShowThankYou(false); setSelectedOrder(null); setOverallRating(0); setCategoryRatings({ quality: 0, speed: 0, packaging: 0, communication: 0 }); setSelectedTags([]); setComment(''); }} whileTap={{ scale: 0.95 }}>
+              <motion.button className="r42-thank-close-btn min-h-[44px] min-w-[44px]" onClick={() => { setShowThankYou(false); setSelectedOrder(null); setOverallRating(0); setCategoryRatings({ quality: 0, speed: 0, packaging: 0, communication: 0 }); setSelectedTags([]); setComment(''); }} whileTap={{ scale: 0.95 }}>
                 Fechar
               </motion.button>
             </motion.div>

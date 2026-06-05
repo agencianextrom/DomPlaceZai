@@ -48311,3 +48311,127 @@
   .r87-wishshare-card:hover { transform: none; box-shadow: none; }
   .r87-recipe-card:hover { transform: none; box-shadow: none; }
 }
+
+/* ─── R88 — CommunityMarketplace + Touch Target Fixes + Mobile Grid Fixes + Component Polish ─── */
+
+.r88-marketplace-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.r88-marketplace-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.25);
+}
+
+.r88-listing-img {
+  transition: transform 0.3s ease;
+}
+.r88-listing-img:hover {
+  transform: scale(1.05);
+}
+
+.r88-category-pill {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r88-category-pill:hover {
+  transform: translateY(-1px);
+}
+
+.r88-favorite-btn {
+  transition: transform 0.2s ease;
+}
+.r88-favorite-btn:active {
+  transform: scale(0.85);
+}
+
+.r88-trust-badge {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r88-trust-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.08);
+}
+
+.r88-activity-row {
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+.r88-activity-row:hover {
+  transform: translateX(2px);
+  background-color: rgba(139, 92, 246, 0.04);
+}
+
+.r88-stats-pill {
+  transition: transform 0.15s ease;
+}
+.r88-stats-pill:hover {
+  transform: scale(1.03);
+}
+
+.r88-sell-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.r88-sell-btn:hover {
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
+}
+
+.r88-marketplace-skeleton {
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+/* R88 — Polished component effects */
+.r88-store-dash-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r88-store-dash-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.08);
+}
+
+.r88-admin-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r88-admin-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.08);
+}
+
+.r88-wizard-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r88-wizard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.1);
+}
+
+.r88-pricedrop-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r88-pricedrop-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.08);
+}
+
+.r88-cashback-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r88-cashback-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(234, 179, 8, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r88-marketplace-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r88-listing-img:hover { transform: none; }
+  .r88-category-pill:hover { transform: none; }
+  .r88-favorite-btn:active { transform: none; }
+  .r88-trust-badge:hover { transform: none; box-shadow: none; }
+  .r88-activity-row:hover { transform: none; background-color: inherit; }
+  .r88-stats-pill:hover { transform: none; }
+  .r88-sell-btn:hover { box-shadow: none; }
+  .r88-store-dash-card:hover { transform: none; box-shadow: none; }
+  .r88-admin-card:hover { transform: none; box-shadow: none; }
+  .r88-wizard-card:hover { transform: none; box-shadow: none; }
+  .r88-pricedrop-card:hover { transform: none; box-shadow: none; }
+  .r88-cashback-card:hover { transform: none; box-shadow: none; }
+}

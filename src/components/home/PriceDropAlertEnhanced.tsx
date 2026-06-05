@@ -146,7 +146,7 @@ function AnimatedCounter({ target }: { target: number }) {
 // ── Savings Summary (Feature 5) ──────────────────────────────────
 function SavingsSummary({ totalSavings }: { totalSavings: number }) {
   return (
-    <motion.div variants={fadeUpVariants} className="relative overflow-hidden rounded-xl p-4"
+    <motion.div variants={fadeUpVariants} className="relative overflow-hidden rounded-xl p-4 r62-card-lift"
       style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(59,130,246,0.08) 50%, rgba(168,85,247,0.06) 100%)', border: '1px solid rgba(34,197,94,0.15)', boxShadow: '0 4px 20px rgba(34,197,94,0.08)' }}>
       <div className="absolute top-0 right-0 w-24 h-24 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%)' }} />
       <div className="relative z-10 flex items-center gap-3">

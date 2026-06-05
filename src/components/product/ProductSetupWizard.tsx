@@ -1210,7 +1210,7 @@ export function ProductSetupWizard() {
       {!showCompletion && (
         <div className="r40-wizard-body space-y-6">
           {/* Header card with title and overall progress */}
-          <Card className="r40-wizard-header-card overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+          <Card className="r40-wizard-header-card overflow-hidden r62-card-lift" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
             <CardHeader className="r40-wizard-header-content pb-2">
               <div className="r40-wizard-header-row flex items-start justify-between gap-4">
                 <div className="r40-wizard-title-section flex-1 min-w-0">
@@ -1219,7 +1219,7 @@ export function ProductSetupWizard() {
                       {guide.category}
                     </Badge>
                   </div>
-                  <CardTitle className="r40-wizard-title text-lg flex items-center gap-2">
+                  <CardTitle className="r40-wizard-title text-lg flex items-center gap-2 r62-heading-gradient">
                     <span>{guide.emoji}</span>
                     <span>{guide.title}</span>
                   </CardTitle>

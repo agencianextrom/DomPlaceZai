@@ -299,9 +299,9 @@ function OverviewTab() {
 
       {/* Order Status Donut Chart (CSS-based) + Status Breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="border-border/50 overflow-hidden">
+        <Card className="border-border/50 overflow-hidden r62-card-lift">
           <CardContent className="p-4">
-            <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+            <h3 className="font-semibold text-sm mb-3 flex items-center gap-2 r62-heading-gradient">
               <BarChart3 className="h-4 w-4 text-primary" />
               Pedidos por Status
             </h3>

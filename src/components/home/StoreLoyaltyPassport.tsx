@@ -322,7 +322,7 @@ function StorePage({
         {/* Stamp grid */}
         <div className="mb-4">
           <p className="text-xs font-medium text-muted-foreground mb-2">Colete selos em cada compra!</p>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1.5 sm:gap-2">
             {Array.from({ length: 10 }).map((_, i) => (
               <StampSlot
                 key={i}

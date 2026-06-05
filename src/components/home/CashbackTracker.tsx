@@ -329,7 +329,7 @@ export function CashbackTracker() {
 
       {/* ── Balance Card ────────────────────────── */}
       <motion.div
-        className="r39-balance-card relative overflow-hidden rounded-2xl p-6"
+        className="r39-balance-card relative overflow-hidden rounded-2xl p-6 r62-card-lift"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: 'spring' as const, stiffness: 100, damping: 18, delay: 0.1 }}

@@ -580,7 +580,7 @@ export function StoreProfile({ store }: StoreProfileProps) {
                 <button
                   key={tab.value}
                   onClick={() => setActiveTab(tab.value)}
-                  className={`flex-1 relative flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs sm:text-sm font-medium transition-colors active:scale-95 transition-transform ${
+                  className={`flex-1 relative flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs sm:text-sm font-medium transition-colors active:scale-95 transition-transform min-h-[44px] ${
                     isActive 
                       ? 'text-primary-foreground' 
                       : 'text-muted-foreground hover:text-foreground'

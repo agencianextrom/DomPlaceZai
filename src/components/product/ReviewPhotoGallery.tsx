@@ -150,7 +150,7 @@ export function ReviewPhotoGallery({ photos, onUpload, compact = false }: Review
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-3 sm:grid-cols-4 gap-2"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"
         >
           {allPhotos.map((photo, index) => (
             <motion.div

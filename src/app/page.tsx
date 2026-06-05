@@ -229,6 +229,7 @@ import NeighborhoodWatch from '@/components/home/NeighborhoodWatch'
 import FamilyActivityFeed from '@/components/home/FamilyActivityFeed'
 import DeliveryTracker from '@/components/home/DeliveryTracker'
 import FamilyChallengeHub from '@/components/home/FamilyChallengeHub'
+import CommunityMarketplace from '@/components/home/CommunityMarketplace'
 import { MobilePullToRefresh } from '@/components/ui/MobilePullToRefresh'
 
 // Module-level BRL currency formatter
@@ -923,6 +924,15 @@ export default function Home() {
                       <ScrollReveal delay={0.1}>
                         <section className="mt-6">
                           <FamilyChallengeHub />
+                        </section>
+                      </ScrollReveal>
+                    </LazySection>
+
+                    {/* Community Marketplace — Peer-to-peer marketplace */}
+                    <LazySection>
+                      <ScrollReveal delay={0.1}>
+                        <section className="mt-6">
+                          <CommunityMarketplace />
                         </section>
                       </ScrollReveal>
                     </LazySection>
