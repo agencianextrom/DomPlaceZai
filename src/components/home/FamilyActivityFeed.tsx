@@ -339,7 +339,7 @@ function FamilyStatsSummary() {
                   transition={{ type: 'spring' as const, stiffness: 300, damping: 22 }}
                 >
                   <div
-                    className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0"
+                    className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center shrink-0"
                     style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15))' }}
                   >
                     <Icon className="h-4 w-4 text-primary" />

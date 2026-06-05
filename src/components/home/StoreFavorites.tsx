@@ -160,7 +160,7 @@ export function StoreFavorites({ stores }: StoreFavoritesProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full"
+            className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-full"
             onClick={() => scroll('right')}
           >
             <ChevronRight className="h-4 w-4" />
@@ -209,7 +209,7 @@ export function StoreFavorites({ stores }: StoreFavoritesProps) {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-7 w-7 rounded-full shadow-md border-primary/20 bg-background/90 backdrop-blur-sm absolute left-1"
+                  className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-full shadow-md border-primary/20 bg-background/90 backdrop-blur-sm absolute left-1"
                   onClick={() => scroll('left')}
                 >
                   <ChevronLeft className="h-3.5 w-3.5" />

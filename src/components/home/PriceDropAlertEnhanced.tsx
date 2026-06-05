@@ -204,7 +204,7 @@ function NotificationToggles({ settings, onToggle }: { settings: NotificationSet
           className="flex items-center justify-between rounded-lg p-2.5"
           style={{ background: 'rgba(255,255,255,0.5)', border: '1px solid rgba(0,0,0,0.06)' }}>
           <div className="flex items-center gap-2.5">
-            <div className="h-7 w-7 rounded-lg flex items-center justify-center"
+            <div className="h-7 w-7 min-h-[44px] min-w-[44px] rounded-lg flex items-center justify-center"
               style={{ background: settings[t.key] ? 'rgba(59,130,246,0.12)' : 'rgba(156,163,175,0.12)' }}>
               <t.icon className="h-3.5 w-3.5" style={{ color: settings[t.key] ? '#2563eb' : '#9ca3af' }} />
             </div>
