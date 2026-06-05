@@ -945,7 +945,7 @@ export function StoreEvents() {
   if (isLoading) return <StoreEventsSkeleton />
 
   return (
-    <section className="mt-6 relative" aria-label="Eventos e Promoções das Lojas">
+    <section className="mt-6 relative r62-card-lift" aria-label="Eventos e Promoções das Lojas">
       {/* Welcome confetti */}
       <ConfettiBurst active={welcomeConfetti} particleCount={25} spread={300} duration={1500} />
 
@@ -960,7 +960,7 @@ export function StoreEvents() {
           <CalendarDays className="h-4.5 w-4.5 text-white" />
         </motion.div>
         <div>
-          <h2 className="text-base sm:text-lg font-bold text-foreground">Eventos e Promoções</h2>
+          <h2 className="text-base sm:text-lg font-bold text-foreground r62-heading-gradient">Eventos e Promoções</h2>
           <p className="text-[11px] text-muted-foreground hidden sm:block">
             Acompanhe promoções, lançamentos e eventos das lojas locais
           </p>

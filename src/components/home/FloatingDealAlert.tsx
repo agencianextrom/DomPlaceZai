@@ -144,7 +144,7 @@ export function FloatingDealAlert() {
           transition={{ type: 'spring' as const, stiffness: 350, damping: 28 }}
           className="fixed bottom-20 right-3 left-3 sm:left-auto sm:w-80 z-50 fda-slide-in"
         >
-          <div className="relative fda-glass backdrop-blur-xl bg-white/10 dark:bg-gray-900/10 border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-black/10 r31-deal-glow">
+          <div className="relative fda-glass backdrop-blur-xl bg-white/10 dark:bg-gray-900/10 border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-black/10 r31-deal-glow r62-card-lift">
             {/* Pulsing glow ring */}
             <div className="absolute inset-0 rounded-2xl pointer-events-none fda-ring-pulse" />
 

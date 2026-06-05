@@ -156,7 +156,7 @@ export function PartnersBanner() {
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
     >
       {/* Glassmorphism container with animated conic gradient border + shine sweep */}
-      <div className="partners-glass-container partners-conic-border partners-shine-sweep relative overflow-hidden p-4 sm:p-6">
+      <div className="partners-glass-container partners-conic-border partners-shine-sweep relative overflow-hidden p-4 sm:p-6 r62-card-lift">
         {/* Floating gradient orbs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
           <motion.div
@@ -233,7 +233,7 @@ export function PartnersBanner() {
           {/* Header with Handshake icon */}
           <div className="flex items-center gap-2 mb-3 px-1">
             <Handshake className="h-5 w-5 text-primary" />
-            <h2 className="text-lg sm:text-xl font-bold partners-title-shimmer">Parcerias Locais</h2>
+            <h2 className="text-lg sm:text-xl font-bold partners-title-shimmer r62-heading-gradient">Parcerias Locais</h2>
           </div>
 
           {/* Official ribbon badge */}

@@ -20,6 +20,7 @@ import { DeliveryScheduler } from './DeliveryScheduler'
 import { PaymentMethods } from './PaymentMethods'
 import { DeliverySlotPicker } from './DeliverySlotPicker'
 import { TipSelector } from './TipSelector'
+import { OrderSuccess } from './OrderSuccess'
 
 const paymentMethods = [
   { id: 'PIX', label: 'Pix', icon: QrCode, desc: 'Pagamento instantâneo', color: 'bg-teal-50 dark:bg-teal-900/10 border-teal-200 dark:border-teal-800/30' },

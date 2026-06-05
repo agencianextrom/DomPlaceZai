@@ -1187,7 +1187,7 @@ export function MarketplaceAnalytics() {
   const [period, setPeriod] = useState<Period>('week')
 
   return (
-    <section className="r52-analytics-container space-y-5 sm:space-y-6" aria-label="Marketplace Analytics Dashboard">
+    <section className="r52-analytics-container space-y-5 sm:space-y-6 r62-card-lift" aria-label="Marketplace Analytics Dashboard">
       {/* ── Header with period toggle & export ── */}
       <motion.div
         className="r52-analytics-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
@@ -1200,7 +1200,7 @@ export function MarketplaceAnalytics() {
             <BarChart3 className="h-5 w-5" style={{ color: '#6366f1' }} />
           </div>
           <div>
-            <h2 className="r52-analytics-title text-lg font-bold tracking-tight">Marketplace Analytics</h2>
+            <h2 className="r52-analytics-title text-lg font-bold tracking-tight r62-heading-gradient">Marketplace Analytics</h2>
             <p className="r52-analytics-subtitle text-xs text-muted-foreground font-medium">
               Real-time insights & trends · {PERIOD_LABELS[period]}
             </p>

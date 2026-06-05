@@ -74,7 +74,7 @@ export function DeliveryFeeCalculator() {
     >
       {/* Animated gradient border glow wrapper */}
       <div className="fee-calc-border-glow p-[2px] rounded-2xl">
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-2xl overflow-hidden relative">
+        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-2xl overflow-hidden relative r62-card-lift">
           {/* Floating truck particles */}
           {truckParticles.map((truck, i) => (
             <motion.span
@@ -113,7 +113,7 @@ export function DeliveryFeeCalculator() {
                   <Truck className="h-5 w-5 text-primary" />
                 </motion.div>
                 <div>
-                  <h3 className="font-bold text-sm fee-calc-shimmer-header">Taxa de Entrega</h3>
+                  <h3 className="font-bold text-sm fee-calc-shimmer-header r62-heading-gradient">Taxa de Entrega</h3>
                   <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                     <MapPin className="h-3 w-3 text-primary" />
                     {current.name}

@@ -369,7 +369,7 @@ export function LiveDropAlert() {
   return (
     <div className="r28-live-drop-panel">
       {/* Glassmorphism floating panel */}
-      <div className="relative rounded-2xl overflow-hidden glassmorphism-strong">
+      <div className="relative rounded-2xl overflow-hidden glassmorphism-strong r62-card-lift">
         {/* Gradient mesh background */}
         <div className="absolute inset-0 gradient-mesh opacity-30 pointer-events-none" />
 
@@ -388,7 +388,7 @@ export function LiveDropAlert() {
               {/* Title */}
               <div className="flex items-center gap-1.5">
                 <Radio className="h-4 w-4 text-primary" />
-                <h3 className="text-sm font-bold r33-live-shimmer">Novos Produtos</h3>
+                <h3 className="text-sm font-bold r33-live-shimmer r62-heading-gradient">Novos Produtos</h3>
               </div>
             </div>
 
