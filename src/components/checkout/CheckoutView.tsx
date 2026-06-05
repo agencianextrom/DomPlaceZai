@@ -370,174 +370,35 @@ export function CheckoutView() {
   }
 
   if (step === 'confirmation') {
+    // Derive estimated delivery text for OrderSuccess countdown timer
+    const estimatedDelivery =
+      deliveryType === 'PICKUP'
+        ? '15-30 min'
+        : deliveryTime === 'today-30'
+          ? '30-45 min'
+          : deliveryTime === 'today-60'
+            ? '60-90 min'
+            : deliveryTime === 'tomorrow'
+              ? '1 dia'
+              : '2 dias'
+
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 pb-24">
-        <div className="relative">
-          <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: 'spring' as const, stiffness: 200, damping: 15 }}
-            className="w-28 h-28 rounded-full bg-gradient-to-br from-primary via-emerald-500 to-teal-500 flex items-center justify-center mb-6 shadow-neon-emerald relative z-10 ripple-wave checkout-checkmark-glow"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3, type: 'spring' as const, stiffness: 200 }}
-            >
-              <Check className="h-12 w-12 text-white" />
-            </motion.div>
-          </motion.div>
-          {/* Confetti burst around the checkmark */}
-          <ConfettiBurst />
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-center"
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="text-2xl font-bold mb-2 text-shadow-sm"
-          >
-            Pedido Confirmado!
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="text-muted-foreground mb-1"
-          >
-            Seu pedido <span className="font-semibold text-primary">#{createdOrder?.orderNumber || 'DP---'}</span> foi realizado com sucesso.
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="text-sm text-muted-foreground mb-1"
-          >
-            Você receberá atualizações sobre o status do seu pedido.
-          </motion.p>
-
-          {/* Estimated delivery time */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.85 }}
-            className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 rounded-xl border border-emerald-200/50 dark:border-emerald-800/30 p-3 mb-4 max-w-sm mx-auto flex items-center gap-2"
-          >
-            <Clock className="h-5 w-5 text-primary" />
-            <div>
-              <p className="text-sm font-semibold text-primary">Previsão de entrega</p>
-              <p className="text-xs text-muted-foreground">
-                {deliveryType === 'PICKUP'
-                  ? 'Retirada disponível em 15-30 minutos'
-                  : deliveryTime === 'today-30'
-                    ? 'Hoje, 30-45 minutos'
-                    : deliveryTime === 'today-60'
-                      ? 'Hoje, 60-90 minutos'
-                      : deliveryTime === 'tomorrow'
-                        ? 'Amanhã, 09:00 - 18:00'
-                        : 'Agendado (a definir)'
-                }
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Pix QR Code Section */}
-          {payment === 'PIX' && pixQrCode && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.85 }}
-              className="bg-card rounded-xl border border-border p-5 mb-6 text-center max-w-sm mx-auto"
-            >
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <QrCode className="h-5 w-5 text-primary" />
-                <p className="font-semibold text-sm">Pagamento via Pix</p>
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                Escaneie o QR Code ou copie o código Pix
-              </p>
-              {pixQrCode && (
-                <div className="flex justify-center mb-4">
-                  <img
-                    src={`data:image/png;base64,${pixQrCode}`}
-                    alt="QR Code Pix"
-                    className="w-48 h-48 rounded-lg border border-border bg-white p-2"
-                  />
-                </div>
-              )}
-              {pixQrCodeText && (
-                <div className="space-y-2">
-                  <p className="text-[10px] text-muted-foreground truncate max-w-[250px] mx-auto font-mono">
-                    {pixQrCodeText}
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs"
-                    onClick={copyPixCode}
-                  >
-                    <Copy className="h-3.5 w-3.5" />
-                    Copiar código Pix
-                  </Button>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {/* Order summary card */}
-          {createdOrder && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-              className="bg-card rounded-xl border border-border p-4 mb-6 text-left max-w-sm mx-auto"
-            >
-              <p className="text-xs text-muted-foreground mb-2">{createdOrder.storeName}</p>
-              <div className="space-y-1.5 text-sm">
-                {createdOrder.items?.map((item, idx: number) => (
-                  <div key={idx} className="flex justify-between">
-                    <span className="text-muted-foreground">{item.quantity}x {item.productName}</span>
-                    <span className="font-medium">{formatBRL(item.total)}</span>
-                  </div>
-                ))}
-                <Separator className="my-2" />
-                <div className="flex justify-between font-bold">
-                  <span>Total</span>
-                  <span className="text-primary">{formatBRL(createdOrder.total)}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
-                <Badge variant="secondary" className="text-[10px]">
-                  {createdOrder.deliveryType === 'PICKUP' ? 'Retirada' : 'Entrega'}
-                </Badge>
-                <Badge variant="secondary" className="text-[10px]">
-                  {paymentMethods.find(p => p.id === createdOrder.paymentMethod)?.label || createdOrder.paymentMethod}
-                </Badge>
-              </div>
-            </motion.div>
-          )}
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0 }}
-            className="flex gap-3 justify-center"
-          >
-            <Button variant="outline" onClick={handleViewOrder} className="h-11">
-              Ver Pedido
-            </Button>
-            <Button onClick={() => navigate('home')} className="bg-primary text-primary-foreground h-11 btn-glow">
-              Continuar Comprando
-            </Button>
-          </motion.div>
-        </motion.div>
-      </div>
+      <OrderSuccess
+        orderNumber={createdOrder?.orderNumber || 'DP---'}
+        items={createdOrder?.items?.map(i => ({
+          productName: i.productName,
+          quantity: i.quantity,
+          price: i.price,
+          total: i.total,
+        })) || []}
+        subtotal={createdOrder?.subtotal || 0}
+        deliveryFee={createdOrder?.deliveryFee || 0}
+        discount={createdOrder?.discount || 0}
+        total={createdOrder?.total || 0}
+        paymentMethod={createdOrder?.paymentMethod || payment}
+        deliveryType={createdOrder?.deliveryType || deliveryType}
+        estimatedDelivery={estimatedDelivery}
+      />
     )
   }
 

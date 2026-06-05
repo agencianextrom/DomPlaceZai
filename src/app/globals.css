@@ -47217,3 +47217,101 @@
   .r78-shine::after { transition: none; }
   .r78-shine:hover::after { left: -100%; }
 }
+
+/* === R79 — QuickRecipes + Component Polish === */
+.r79-recipe-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.r79-recipe-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(251, 146, 60, 0.12), 0 0 0 1px rgba(251, 146, 60, 0.08);
+  border-color: rgba(251, 146, 60, 0.2);
+}
+
+/* R79 — Component polish classes */
+.r79-delivery-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r79-delivery-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.12);
+}
+
+.r79-float-glass {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.r79-float-glass:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.r79-event-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r79-event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.12);
+}
+
+.r79-live-drop {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r79-live-drop:active {
+  transform: scale(0.97);
+}
+.r79-live-drop:hover {
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+}
+
+.r79-analytics-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.r79-analytics-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.12);
+}
+
+.r79-partner-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r79-partner-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(234, 179, 8, 0.12);
+}
+
+.r79-loyalty-shine {
+  position: relative;
+  overflow: hidden;
+}
+.r79-loyalty-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.03) 25%, transparent 50%);
+  animation: r79-loyalty-rotate 8s linear infinite;
+}
+@keyframes r79-loyalty-rotate {
+  100% { transform: rotate(360deg); }
+}
+
+.r79-ingredient-row {
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.r79-ingredient-row:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  transform: translateX(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r79-recipe-card:hover { transform: none; box-shadow: none; border-color: inherit; }
+  .r79-delivery-card:hover { transform: none; box-shadow: none; }
+  .r79-float-glass:hover { transform: none; box-shadow: none; }
+  .r79-event-card:hover { transform: none; box-shadow: none; }
+  .r79-live-drop:hover { box-shadow: none; }
+  .r79-analytics-card:hover { transform: none; box-shadow: none; }
+  .r79-partner-card:hover { transform: none; box-shadow: none; }
+  .r79-loyalty-shine::after { animation: none; }
+  .r79-ingredient-row:hover { background-color: inherit; transform: none; }
+}

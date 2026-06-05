@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { cachedFetch } from '@/lib/api-cache';
 import { useAppStore } from '@/store/useAppStore';
+import { TiltCard } from '@/components/effects/TiltCard';
 
 /** Rotating gradient backgrounds for each product card */
 const BG_GRADIENTS = [
@@ -134,9 +135,10 @@ export function ProductSpotlight() {
           transition={{ duration: 0.4, type: 'spring' as const, stiffness: 260, damping: 24 }}
           className="relative"
         >
+          <TiltCard className="rounded-2xl" maxTilt={4} glare={true}>
           {/* ── Background gradient card ── */}
           <div
-            className={`bg-gradient-to-br ${gradient} p-5 sm:p-6 rounded-2xl relative overflow-hidden`}
+            className={`bg-gradient-to-br ${gradient} p-5 sm:p-6 rounded-t-2xl relative overflow-hidden`}
           >
             {/* Noise texture overlay */}
             <div className="absolute inset-0 opacity-20 r60-spotlight-noise pointer-events-none" />
@@ -267,20 +269,21 @@ export function ProductSpotlight() {
             </motion.div>
           </div>
 
-          {/* ── Bottom CTA ── */}
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            onClick={handleViewProduct}
-            className="w-full flex items-center justify-between bg-white rounded-b-2xl p-3 active:scale-[0.98] transition-transform border border-gray-100"
-          >
-            <div className="flex items-center gap-2">
-              <Eye className="h-4 w-4 text-gray-400" />
-              <span className="text-sm font-medium text-gray-700">
-                Ver detalhes do produto
-              </span>
-            </div>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
-          </motion.button>
+            {/* ── Bottom CTA ── */}
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={handleViewProduct}
+              className="w-full flex items-center justify-between bg-white rounded-b-2xl p-3 active:scale-[0.98] transition-transform border border-gray-100"
+            >
+              <div className="flex items-center gap-2">
+                <Eye className="h-4 w-4 text-gray-400" />
+                <span className="text-sm font-medium text-gray-700">
+                  Ver detalhes do produto
+                </span>
+              </div>
+              <ChevronRight className="h-4 w-4 text-gray-400" />
+            </motion.button>
+          </TiltCard>
 
           {/* ── Dot indicators ── */}
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-20">

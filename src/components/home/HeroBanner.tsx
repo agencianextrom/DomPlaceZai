@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
+import { KenBurns } from '@/components/effects/KenBurns'
 
 interface HeroBannerProps {
   banners: { id: string; title: string; subtitle: string | null; image: string; gradient: string }[]
@@ -363,23 +364,27 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
             style={{ y: dotPatternY }}
           />
 
-          {/* PARALLAX: Morph blob decorative elements (deeper layer) */}
-          <motion.div
-            className="absolute right-0 top-0 w-2/3 h-full opacity-15"
-            style={{ y: bgParallaxY }}
-          >
-            <div className="morph-blob absolute right-10 top-10 w-32 h-32 bg-white/30" />
-            <div className="morph-blob absolute right-0 bottom-0 w-48 h-48 bg-white/20" style={{ animationDelay: '-2s' }} />
-            <div className="morph-blob absolute right-20 top-1/2 w-16 h-16 bg-white/15" style={{ animationDelay: '-4s' }} />
-            <div className="morph-blob absolute -right-8 -top-8 w-24 h-24 bg-white/10" style={{ animationDelay: '-6s' }} />
-            <div className="morph-blob absolute right-40 bottom-10 w-12 h-12 bg-white/12" style={{ animationDelay: '-1s' }} />
-          </motion.div>
-          <motion.div
-            className="absolute left-1/3 bottom-0 opacity-10"
-            style={{ y: bgParallaxY }}
-          >
-            <div className="morph-blob w-20 h-20 bg-white/30" style={{ animationDelay: '-3s' }} />
-          </motion.div>
+          {/* PARALLAX: Morph blob decorative elements (deeper layer) — wrapped with KenBurns for cinematic slow-pan */}
+          <KenBurns duration={30} direction="pan-right" className="absolute right-0 top-0 w-2/3 h-full opacity-15" pauseOnHover={false}>
+            <motion.div
+              style={{ y: bgParallaxY }}
+              className="w-full h-full"
+            >
+              <div className="morph-blob absolute right-10 top-10 w-32 h-32 bg-white/30" />
+              <div className="morph-blob absolute right-0 bottom-0 w-48 h-48 bg-white/20" style={{ animationDelay: '-2s' }} />
+              <div className="morph-blob absolute right-20 top-1/2 w-16 h-16 bg-white/15" style={{ animationDelay: '-4s' }} />
+              <div className="morph-blob absolute -right-8 -top-8 w-24 h-24 bg-white/10" style={{ animationDelay: '-6s' }} />
+              <div className="morph-blob absolute right-40 bottom-10 w-12 h-12 bg-white/12" style={{ animationDelay: '-1s' }} />
+            </motion.div>
+          </KenBurns>
+          <KenBurns duration={25} direction="zoom-in" className="absolute left-1/3 bottom-0 opacity-10" pauseOnHover={false}>
+            <motion.div
+              style={{ y: bgParallaxY }}
+              className="w-full h-full"
+            >
+              <div className="morph-blob w-20 h-20 bg-white/30" style={{ animationDelay: '-3s' }} />
+            </motion.div>
+          </KenBurns>
 
           {/* =====================================================
               4. FLOATING DECORATIVE ELEMENTS (pure CSS keyframes)
