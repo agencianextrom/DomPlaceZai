@@ -232,7 +232,7 @@ export function StoreFavorites({ stores }: StoreFavoritesProps) {
                 whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(16,185,129,0.12), 0 0 0 1px rgba(16,185,129,0.2)', transition: { duration: 0.2 } }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => handleStoreClick(store)}
-                className="shrink-0 w-[140px] sm:w-[160px] rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/20 hover:shadow-lg transition-all text-left group cursor-pointer relative r33-store-hover"
+                className="shrink-0 w-[140px] sm:w-[160px] rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/20 hover:shadow-lg transition-all text-left group cursor-pointer relative r33-store-hover r62-card-lift"
               >
                 {/* Store header gradient */}
                 <div className={`relative h-16 bg-gradient-to-br ${

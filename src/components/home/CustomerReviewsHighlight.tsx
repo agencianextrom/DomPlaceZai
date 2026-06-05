@@ -316,7 +316,7 @@ function FeaturedReviewCard({ review, direction }: { review: FeaturedReview; dir
       exit="exit"
       className="w-full"
     >
-      <div className="relative rounded-2xl border border-border/50 bg-card p-5 sm:p-6 overflow-hidden r32-card-hover">
+      <div className="relative rounded-2xl border border-border/50 bg-card p-5 sm:p-6 overflow-hidden r32-card-hover r62-card-lift">
         {/* Quote marks decorative */}
         <Quote className="absolute top-4 right-4 h-16 w-16 text-primary/[0.04] rotate-12 pointer-events-none" />
 
@@ -419,7 +419,7 @@ function PreviewCard({ review, index, onClick }: { review: FeaturedReview; index
       className="cursor-pointer"
       onClick={onClick}
     >
-      <div className="p-3 rounded-xl border border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/20 transition-colors">
+      <div className="p-3 rounded-xl border border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/20 transition-colors r62-card-lift">
         <div className="flex items-center gap-2 mb-2">
           <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
             {review.initial}

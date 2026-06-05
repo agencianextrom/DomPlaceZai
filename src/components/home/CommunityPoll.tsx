@@ -817,7 +817,7 @@ export function CommunityPoll() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
-          className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl border border-amber-200/40 dark:border-amber-800/30 p-3 flex items-center gap-3"
+          className="r62-card-lift bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl border border-amber-200/40 dark:border-amber-800/30 p-3 flex items-center gap-3"
         >
           <motion.div
             animate={{ rotate: [0, 15, -15, 0] }}

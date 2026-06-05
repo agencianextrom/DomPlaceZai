@@ -303,7 +303,7 @@ function EventCard({
 
       {/* Glassmorphism card */}
       <motion.div
-        className={`relative overflow-hidden rounded-xl p-4 flex gap-3 r29-card-hover ${
+        className={`relative overflow-hidden rounded-xl p-4 flex gap-3 r29-card-hover r62-card-lift ${
           isPast ? 'opacity-60' : ''
         }`}
         style={{

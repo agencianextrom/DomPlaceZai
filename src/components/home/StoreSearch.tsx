@@ -205,7 +205,7 @@ export function StoreSearch({ stores }: { stores: StoreData[] }) {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="p-3 rounded-xl bg-card border border-border/50 space-y-3">
+            <div className="r62-card-lift p-3 rounded-xl bg-card border border-border/50 space-y-3">
               {/* Category filters with staggered entrance */}
               <div>
                 <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Categorias</p>

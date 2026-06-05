@@ -505,7 +505,7 @@ export function TrendingCategories() {
                     boxShadow: '0 8px 30px oklch(0.45 0.1 155/0.12)',
                   }}
                   whileTap={{ scale: 0.96 }}
-                  className="trending-card-glow shrink-0 w-[150px] sm:w-[165px] rounded-xl border border-border/60 bg-card overflow-hidden cursor-pointer group/card"
+                  className="r62-card-lift trending-card-glow shrink-0 w-[150px] sm:w-[165px] rounded-xl border border-border/60 bg-card overflow-hidden cursor-pointer group/card"
                 >
                   {/* Gradient top area */}
                   <div className={`relative bg-gradient-to-br ${category.gradientFrom} ${category.gradientTo} px-3 pt-3 pb-5`}>

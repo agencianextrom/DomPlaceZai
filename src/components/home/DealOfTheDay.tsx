@@ -81,7 +81,7 @@ function CountdownCircle({ timeLeft, label, size = 64, strokeWidth = 4 }: { time
 // ---- Skeleton ----
 function DealOfTheDaySkeleton() {
   return (
-    <div className="rounded-2xl border border-border overflow-hidden">
+    <div className="rounded-2xl border border-border overflow-hidden r62-card-lift">
       <Skeleton className="h-48 sm:h-64 w-full" />
       <div className="p-4 space-y-3">
         <Skeleton className="h-6 w-40" />
