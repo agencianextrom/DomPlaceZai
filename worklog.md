@@ -1,4 +1,90 @@
 ---
+Task ID: R87-FamilyChallengeHub-TouchTargetFixes12-8CSSPolish-WireBottomSheet+PullToRefresh-r87CSS
+Agent: Main Agent
+Task: FamilyChallengeHub feature, 12 touch target fixes, 8 CSS polish, wire MobileBottomSheet+PullToRefresh, r87-* CSS
+
+Work Log:
+
+**QA Assessment:**
+- Production build passes cleanly
+- Clean working tree from R86 (97a202c)
+
+**Build Status:**
+- Production build passes cleanly
+- CSS: 48,313 lines (R87, +134 from r86)
+- 19 files changed (1 new + 18 modified)
+- +691/-28 lines
+
+**New Feature — FamilyChallengeHub (~523 lines):**
+- `src/components/home/FamilyChallengeHub.tsx` — Gamified family challenge hub
+- "Desafios em Família" with orange→deep-orange→red gradient header + Trophy icon
+- Active Challenges: 6 family challenges with progress bars (color-coded: red<30%, amber<70%, green≥70%), XP badges, deadlines, participant emoji avatars, category badges (Economia, Saúde, Comunidade, Sustentabilidade), "Contribuir" button (44px) → toast
+- Weekly Leaderboard: 5 families ranked with 🥇🥈🥉 medals, trend indicators (↑↓—), current family highlighted with orange border
+- Challenge Creation: "Criar Desafio" button opens MobileBottomSheet with name, description, category select, XP input → toast
+- Family Achievement Stats: 4 stat cards in 2×2 mobile / 4×1 desktop grid (Desafios Completos 12, XP Total 3.450, Melhor Semana Semana 22, Sequência 🔥 4 semanas)
+- Challenge History: 3 completed challenges with ⭐ Concluído badge, dates, XP, 1-5 star ratings
+- Loading skeleton (1.2s), wired into page.tsx after DeliveryTracker
+
+**Touch Target Fixes — 12 elements across 10 files:**
+1. SmartListAssistant.tsx: 3 fixes (budget OK h-6→44px, confirm/cancel h-7→44px)
+2. ProductOriginTracker2.tsx: 1 fix ("Ver Produtor" motion.button)
+3. AdminDashboard.tsx: 1 fix (eye/view button h-7→44px)
+4. ProductInstallationGuide.tsx: 1 fix ("Contato" button h-7→44px)
+5. ProductWishlistShare2.tsx: 1 fix (invite button h-7→44px)
+6. LiveStreamingWidget.tsx: 1 fix ("Assistir" button h-9→44px)
+7. VoiceShoppingAssistant.tsx: 1 fix (language toggle h-7→44px)
+8. ProductWishTracker.tsx: 1 fix ("Explorar Produtos" h-9→44px)
+9. NeighborhoodWishlist.tsx: 1 fix ("Explorar Produtos" h-9→44px)
+10. WishListManager.tsx: 1 fix ("Add to Wishlist" button)
+
+**Wired Unused Components (2):**
+1. MobileBottomSheet → FamilyChallengeHub (create challenge form uses bottom sheet instead of inline card)
+2. MobilePullToRefresh → page.tsx notifications view (wraps NotificationsPage/SmartNotifications with pull-to-refresh)
+
+**CSS Polish — r62-* Classes Applied to 8 Components:**
+1. WishListManager: r62-card-lift + r62-heading-gradient
+2. SubscriptionBoxBuilder: r62-card-lift + r62-heading-gradient
+3. SmartComparisonMatrix: r62-card-lift + r62-heading-gradient
+4. SmartListManager: r62-card-lift + r62-heading-gradient
+5. ARVirtualTryOn: r62-card-lift + r62-heading-gradient
+6. ARInteriorPreview: r62-card-lift + r62-heading-gradient
+7. ProductWishlistShare2: r62-card-lift + r62-heading-gradient
+8. RecipeDiscovery: r62-card-lift (heading already had gradient)
+
+**CSS — r87-* Classes (134 lines):**
+- r87-challenge-card / r87-progress-bar / r87-leaderboard-row / r87-stat-card / r87-create-btn / r87-history-card: FamilyChallengeHub themed
+- r87-challenge-skeleton: loading state
+- r87-wishlist-card / r87-subbox-card / r87-comparison-card / r87-listmgr-card / r87-artryon-card / r87-interior-card / r87-wishshare-card / r87-recipe-card: polished component effects
+- All wrapped in prefers-reduced-motion guard
+
+Stage Summary:
+- 19 files changed, +691/-28 lines (including 1 new file: FamilyChallengeHub)
+- 1 new component (FamilyChallengeHub, ~523 lines)
+- 12 touch target fixes across 10 files (~507+ total targets now fixed)
+- 2 unused components wired (MobileBottomSheet, MobilePullToRefresh)
+- 8 CSS polish edits across 8 components
+- 134 lines r87-* CSS added
+- Build: successful
+- Total CSS: 48,313 lines (R87)
+
+## Current Project Status Assessment
+- DomPlace marketplace: stable, feature-rich, 368+ components
+- Production build passes cleanly
+- 26 new components added across R61-R87: ScanToShop, EcoImpactWidget, QuickBillSplitter, PriceDropAlertsWidget, FlashDealAlert, NearbyStoresMap, CommunityRecipeHub, SpendingInsights, NutritionLens, DealComparator, PantryManager, LocalServicesHub, CommunityEventsBoard, PriceTracker, WeatherShopper, GiftFinder, QuickRecipes, SustainabilityDashboard, SmartListAssistant, BudgetTracker, LoyaltyGame, NeighborhoodWatch, FamilyActivityFeed, DeliveryTracker, FamilyChallengeHub + cached-fetch utility
+- Mobile responsiveness: ~507+ touch targets fixed (96+ via global Button fix in R78), ~117+ mobile grids fixed
+- Visual polish: r62-r87 CSS classes applied to 161+ components
+- 40+ unused components wired/deleted across R65-R87
+- All commits use agencianextrom@gmail.com
+
+## Unresolved Issues / Risks
+1. Vercel live site behind SSO (private project, TEAM_ACCESS_REQUIRED) — user must adjust settings
+2. .env not persisted across sessions
+3. SPA-style navigation (no deep linking)
+4. ~39K lines CSS lost from R47-R56 (recovering gradually)
+5. Dev server slow on 48K+ CSS (Turbopack parsing)
+6. Homepage has 138+ components (information overload, mitigated by LazySection)
+7. 2 unused custom UI components remain (GlassCard, SkeletonEnhanced — use oklch() colors, deferred wiring)
+---
 Task ID: R86-DeliveryTracker-TouchTargetFixes8-8CSSPolish-r86CSS
 Agent: Main Agent
 Task: DeliveryTracker feature, 8 touch target fixes, 8 CSS polish, r86-* CSS
