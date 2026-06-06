@@ -435,7 +435,7 @@ function SustainabilityRing({ score, isVisible }: { score: number; isVisible: bo
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
           animate={isVisible ? { strokeDashoffset: offset } : {}}
-          transition={{ duration: 1.8, ease: 'easeOut' as const, delay: 0.3 }}
+          transition={{ duration: 1.8, ease: 'easeOut', delay: 0.3 }}
           style={{ filter: `drop-shadow(0 0 6px ${ringGlow})` }}
           transform="rotate(-90 40 40)"
         />
@@ -476,7 +476,7 @@ function CarbonDisplay({ kg, isVisible }: { kg: number; isVisible: boolean }) {
     >
       <motion.div
         animate={{ scale: [1, 1.05, 1] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         className="h-10 w-10 rounded-full flex items-center justify-center"
         style={{ background: `${color}15`, border: `2px solid ${color}30` }}
       >
@@ -508,7 +508,7 @@ function FreshnessBar({ daysFresh, totalDays, isVisible }: { daysFresh: number; 
         <motion.div
           initial={{ width: 0 }}
           animate={isVisible ? { width: `${pct}%` } : {}}
-          transition={{ duration: 1.5, ease: 'easeOut' as const, delay: 0.3 }}
+          transition={{ duration: 1.5, ease: 'easeOut', delay: 0.3 }}
           className="h-full rounded-full"
           style={{
             background: `linear-gradient(90deg, ${color}, ${color}cc)`,
@@ -554,7 +554,7 @@ function BrazilRouteMap({ product, isVisible }: { product: ProductData2; isVisib
           strokeLinecap="round"
           initial={{ strokeDasharray: '400', strokeDashoffset: 400 }}
           animate={isVisible ? { strokeDashoffset: 0 } : {}}
-          transition={{ duration: 2.5, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, ease: 'easeInOut' }}
         />
         {routeWaypoints.map((wp, idx) => (
           <motion.g key={wp.label}>
@@ -573,7 +573,7 @@ function BrazilRouteMap({ product, isVisible }: { product: ProductData2; isVisib
                 fill="rgba(16,185,129,1)"
                 initial={{ cx: wp.x, cy: wp.y, opacity: 0 }}
                 animate={isVisible ? { cx: [wp.x, routeWaypoints[idx + 1].x], cy: [wp.y, routeWaypoints[idx + 1].y], opacity: [0, 1, 1, 0] } : {}}
-                transition={{ delay: 1 + idx * 0.5, duration: 1.2, ease: 'easeInOut' as const }}
+                transition={{ delay: 1 + idx * 0.5, duration: 1.2, ease: 'easeInOut' }}
               />
             )}
           </motion.g>
@@ -611,7 +611,7 @@ function SupplyChainTimeline({ steps, isVisible }: { steps: SupplyStep[]; isVisi
             <stop offset="100%" stopColor="rgba(59,130,246,0.4)" />
           </linearGradient>
         </defs>
-        <motion.line x1="2" y1="0" x2="2" y2="200" stroke="url(#r44TimelineGrad)" strokeWidth="3" strokeLinecap="round" initial={{ pathLength: 0 }} animate={isVisible ? { pathLength: 1 } : {}} transition={{ duration: 2, ease: 'easeInOut' as const, delay: 0.5 }} />
+        <motion.line x1="2" y1="0" x2="2" y2="200" stroke="url(#r44TimelineGrad)" strokeWidth="3" strokeLinecap="round" initial={{ pathLength: 0 }} animate={isVisible ? { pathLength: 1 } : {}} transition={{ duration: 2, ease: 'easeInOut', delay: 0.5 }} />
       </svg>
       {steps.map((step, idx) => {
         const Icon = step.icon
@@ -776,7 +776,7 @@ function TemperatureLogChart({ product, isVisible }: { product: ProductData2; is
         <text x={TEMP_PAD + 2} y={tempToY(minTemp, minTemp, maxTemp) - 2} fill="rgba(59,130,246,0.5)" fontSize="3.5" className="select-none">{minTemp}°</text>
         <text x={TEMP_PAD + 2} y={tempToY(maxTemp, minTemp, maxTemp) + 6} fill="rgba(239,68,68,0.5)" fontSize="3.5" className="select-none">{maxTemp}°</text>
         <motion.path d={areaD} fill="rgba(16,185,129,0.08)" initial={{ opacity: 0 }} animate={isVisible ? { opacity: 1 } : {}} transition={{ duration: 1.5, delay: 0.5 }} />
-        <motion.path d={pathD} fill="none" stroke="rgba(16,185,129,1)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={isVisible ? { pathLength: 1 } : {}} transition={{ duration: 2, ease: 'easeInOut' as const, delay: 0.3 }} />
+        <motion.path d={pathD} fill="none" stroke="rgba(16,185,129,1)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={isVisible ? { pathLength: 1 } : {}} transition={{ duration: 2, ease: 'easeInOut', delay: 0.3 }} />
         {points.map((p, idx) => (
           <motion.circle key={p.hour} cx={p.x} cy={p.y} r="2" fill={p.color} stroke="white" strokeWidth="1" initial={{ scale: 0 }} animate={isVisible ? { scale: 1 } : {}} transition={{ delay: 0.5 + idx * 0.15, type: 'spring' as const, stiffness: 400, damping: 20 }} />
         ))}

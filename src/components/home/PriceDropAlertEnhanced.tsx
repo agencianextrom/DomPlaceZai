@@ -152,7 +152,7 @@ function SavingsSummary({ totalSavings }: { totalSavings: number }) {
       <div className="relative z-10 flex items-center gap-3">
         <motion.div className="h-10 w-10 rounded-full flex items-center justify-center"
           style={{ background: 'rgba(34,197,94,0.15)' }}
-          animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}>
+          animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}>
           <PiggyBank className="h-5 w-5" style={{ color: '#16a34a' }} />
         </motion.div>
         <div>
@@ -458,7 +458,7 @@ function TrackedProductCard({ product }: { product: TrackedProduct }) {
           <div className="flex items-center gap-2 min-w-0">
             <motion.div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0 text-base"
               style={{ background: 'rgba(0,0,0,0.04)' }}
-              animate={isDown ? { scale: [1, 1.05, 1] } : {}} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}>
+              animate={isDown ? { scale: [1, 1.05, 1] } : {}} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
               {product.emoji}
             </motion.div>
             <div className="min-w-0">
@@ -475,7 +475,7 @@ function TrackedProductCard({ product }: { product: TrackedProduct }) {
             <span className="text-sm font-bold">{formatBRL(product.currentPrice)}</span>
             <span className="text-[10px] text-muted-foreground line-through">{formatBRL(product.originalPrice)}</span>
           </div>
-          <motion.div animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
+          <motion.div animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
             className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-bold"
             style={{ backgroundColor: isDown ? 'rgba(239,68,68,0.1)' : 'rgba(34,197,94,0.1)', color: dropColor, border: `1px solid ${isDown ? 'rgba(239,68,68,0.2)' : 'rgba(34,197,94,0.2)'}` }}>
             <TrendingDown className="h-3 w-3" /> {product.changePercent}% ⬇️
@@ -573,7 +573,7 @@ export default function PriceDropAlertEnhanced() {
 
   return (
     <motion.section initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }} transition={{ duration: 0.5, ease: 'easeOut' as const }}
+      viewport={{ once: true }} transition={{ duration: 0.5, ease: 'easeOut' }}
       className="space-y-4 r48-price-monitor">
 
       {/* ═══ Header ═══ */}
@@ -581,7 +581,7 @@ export default function PriceDropAlertEnhanced() {
         <div className="flex items-center gap-2.5">
           <motion.div className="h-9 w-9 rounded-xl flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(59,130,246,0.15) 100%)', boxShadow: '0 4px 12px rgba(239,68,68,0.12)' }}
-            animate={{ rotate: [0, 5, -5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const }}>
+            animate={{ rotate: [0, 5, -5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}>
             <TrendingDown className="h-4.5 w-4.5" style={{ color: '#ef4444' }} />
           </motion.div>
           <div>
@@ -635,7 +635,7 @@ export default function PriceDropAlertEnhanced() {
         {filtered.length === 0 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center py-8 text-center">
-            <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               className="h-12 w-12 rounded-full flex items-center justify-center mb-3"
               style={{ background: 'rgba(59,130,246,0.1)' }}>
               <BellOff className="h-5 w-5" style={{ color: '#6b7280' }} />
@@ -656,7 +656,7 @@ export default function PriceDropAlertEnhanced() {
               {quickAdding ? (
                 <motion.span key="loading" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }} className="flex items-center gap-2">
-                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' as const }}>
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}>
                     <Sparkles className="h-3.5 w-3.5" />
                   </motion.div>
                   Monitorando produto...

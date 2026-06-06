@@ -149,7 +149,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
         <div className="flex items-center gap-2">
           <motion.div
             animate={{ rotate: [0, 10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           >
             <StoreIcon className="h-5 w-5 text-primary" />
           </motion.div>
@@ -157,7 +157,7 @@ export function StoreDirectory({ stores }: StoreDirectoryProps) {
         </div>
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Badge variant="secondary" className="text-xs bg-primary/5 text-primary border-primary/15 r18-stats-badge-pulse r30-stats-pulse">
           {filteredStores.length} {filteredStores.length === 1 ? 'loja' : 'lojas'} em Dom Eliseu

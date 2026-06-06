@@ -78,13 +78,13 @@ function AnimatedDownArrow({ percentage }: { percentage: number }) {
     <motion.div
       className="relative flex items-center justify-center"
       animate={{ y: [0, 4, 0] }}
-      transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const }}
+      transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
     >
       {/* Glow ring behind arrow */}
       <motion.div
         className="absolute inset-0 rounded-full"
         animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         style={{
           background: percentage >= 30
             ? 'radial-gradient(circle, rgba(239,68,68,0.35) 0%, transparent 70%)'
@@ -96,7 +96,7 @@ function AnimatedDownArrow({ percentage }: { percentage: number }) {
       <motion.span
         className={`relative text-lg font-bold ${color}`}
         animate={{ opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         ▼
       </motion.span>
@@ -124,7 +124,7 @@ function SavingsBadge({ savings, percentage }: { savings: number; percentage: nu
           backgroundSize: '300% 100%',
         }}
         animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'linear' as const, repeatDelay: 1.5 }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
       />
       <Tag className="h-2.5 w-2.5 relative z-10" />
       <span className="relative z-10">Economize {formatBRL(savings)}</span>
@@ -151,7 +151,7 @@ function PercentageIndicator({ percentage }: { percentage: number }) {
             ? { boxShadow: ['0 0 0 0 rgba(245,158,11,0.3)', '0 0 0 6px rgba(245,158,11,0)', '0 0 0 0 rgba(245,158,11,0)'] }
             : { boxShadow: ['0 0 0 0 rgba(16,185,129,0.3)', '0 0 0 6px rgba(16,185,129,0)', '0 0 0 0 rgba(16,185,129,0)'] }
         }
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute inset-0 rounded-xl"
       />
       <span className={`text-sm font-extrabold ${color} relative z-10 r30-price-drop`}>
@@ -385,7 +385,7 @@ function EmptyState() {
     >
       <motion.div
         animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         className="h-16 w-16 rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center mb-4"
       >
         <TrendingDown className="h-7 w-7 text-emerald-400" />
@@ -396,7 +396,7 @@ function EmptyState() {
       </p>
       <motion.div
         animate={{ rotate: [0, 360] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'linear' as const }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
         className="mt-4"
       >
         <Sparkles className="h-5 w-5 text-amber-400/50" />
@@ -417,7 +417,7 @@ function RefreshIndicator({ refreshing, countdown }: { refreshing: boolean; coun
     >
       <motion.div
         animate={refreshing ? { rotate: 360 } : {}}
-        transition={refreshing ? { duration: 1, repeat: Infinity, ease: 'linear' as const } : {}}
+        transition={refreshing ? { duration: 1, repeat: Infinity, ease: 'linear' } : {}}
       >
         <RefreshCw className="h-3 w-3" />
       </motion.div>
@@ -451,7 +451,7 @@ function StatsBar({ totalDrops, biggestDrop, totalSavings }: { totalDrops: numbe
               backgroundSize: '300% 100%',
             }}
             animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'linear' as const, repeatDelay: 2, delay: i * 0.5 }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'linear', repeatDelay: 2, delay: i * 0.5 }}
           />
           <stat.icon className={`h-3.5 w-3.5 ${stat.color} mx-auto mb-1 relative z-10`} />
           <p className="text-[10px] text-muted-foreground relative z-10">{stat.label}</p>
@@ -542,7 +542,7 @@ export function PriceDropAlerts() {
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: 'easeOut' as const }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="space-y-4"
     >
       {/* Section header */}
@@ -551,7 +551,7 @@ export function PriceDropAlerts() {
           <motion.div
             className="h-8 w-8 rounded-lg bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center"
             animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           >
             <TrendingDown className="h-4 w-4 text-white" />
           </motion.div>

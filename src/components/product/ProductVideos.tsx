@@ -185,7 +185,7 @@ const pulseGlowVariants = {
     transition: {
       duration: 2,
       repeat: Infinity,
-      ease: 'easeInOut' as const,
+      ease: 'easeInOut',
     },
   },
 }
@@ -226,7 +226,7 @@ const shimmerVariants = {
     transition: {
       duration: 2,
       repeat: Infinity,
-      ease: 'linear' as const,
+      ease: 'linear',
       repeatDelay: 1,
     },
   },
@@ -243,7 +243,7 @@ function EmptyVideoState() {
     >
       <motion.div
         animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-4">
           <Video className="h-10 w-10 text-muted-foreground/40" />
@@ -271,7 +271,7 @@ function EmptyVideoState() {
               delay: i * 0.5,
               repeat: Infinity,
               repeatDelay: 1.5,
-              ease: 'easeOut' as const,
+              ease: 'easeOut',
             }}
           >
             <Film className="h-3 w-3 text-muted-foreground/20" />
@@ -502,7 +502,7 @@ function VideoPlayerModal({
                 {isLoading ? (
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   >
                     <Loader2 className="h-10 w-10 text-primary" />
                   </motion.div>
@@ -784,7 +784,7 @@ export function ProductVideos({ product }: { product: ProductData }) {
         <div className="flex items-center gap-2.5 mb-4">
           <motion.div
             animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             className="h-8 w-8 rounded-lg bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center shadow-sm"
           >
             <Film className="h-4 w-4 text-white" />

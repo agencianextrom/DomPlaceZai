@@ -182,9 +182,9 @@ function FeedSkeleton() {
 }
 
 const floatingIconVariants = [
-  { animate: { y: [0, -8, 0], rotate: [0, 5, -5, 0] }, transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 0 } },
-  { animate: { y: [0, -10, 0], rotate: [0, -6, 4, 0] }, transition: { duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.4 } },
-  { animate: { y: [0, -6, 0], rotate: [0, 3, -3, 0] }, transition: { duration: 2.8, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.8 } },
+  { animate: { y: [0, -8, 0], rotate: [0, 5, -5, 0] }, transition: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0 } },
+  { animate: { y: [0, -10, 0], rotate: [0, -6, 4, 0] }, transition: { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.4 } },
+  { animate: { y: [0, -6, 0], rotate: [0, 3, -3, 0] }, transition: { duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 } },
 ]
 
 export function NeighborhoodFeed() {

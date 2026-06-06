@@ -279,14 +279,14 @@ const shimmerVariants = {
   initial: { backgroundPosition: '-200% center' },
   animate: {
     backgroundPosition: '200% center',
-    transition: { duration: 3, repeat: Infinity, ease: 'linear' as const },
+    transition: { duration: 3, repeat: Infinity, ease: 'linear' },
   },
 }
 
 const headerIconVariants = {
   animate: {
     scale: [1, 1.15, 1],
-    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -438,7 +438,7 @@ function BenefitCard({ icon: Icon, title, description, gradient, glowColor }: Be
         <motion.div
           className={`h-10 w-10 rounded-xl ${gradient} flex items-center justify-center shrink-0`}
           animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Icon className="h-5 w-5 text-white" />
         </motion.div>
@@ -1063,7 +1063,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
       <motion.div
         className="text-5xl mb-3"
         animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       >
         🛒
       </motion.div>

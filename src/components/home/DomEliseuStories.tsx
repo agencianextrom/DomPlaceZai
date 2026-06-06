@@ -375,7 +375,7 @@ export function DomEliseuStories() {
                     }
                     transition={
                       slideIdx === activeSlideIndex && !isPaused
-                        ? { duration: SLIDE_DURATION / 1000, ease: 'linear' as const }
+                        ? { duration: SLIDE_DURATION / 1000, ease: 'linear' }
                         : { duration: 0.3 }
                     }
                   >
@@ -383,7 +383,7 @@ export function DomEliseuStories() {
                       <motion.span
                         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent r37-story-shimmer"
                         animate={{ x: ['-100%', '200%'] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                       />
                     )}
                   </motion.div>
@@ -397,14 +397,14 @@ export function DomEliseuStories() {
                 <motion.div
                   className="h-8 w-8 rounded-full p-[1.5px] r37-story-active-ring"
                   animate={{ boxShadow: [`0 0 6px ${currentStory!.gradientFrom}50`, `0 0 16px ${currentStory!.gradientTo}60`, `0 0 6px ${currentStory!.gradientFrom}50`] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                   style={{
                     background: `linear-gradient(135deg, ${currentStory!.gradientFrom}, ${currentStory!.gradientTo})`,
                   }}
                 >
                   <motion.div
                     animate={{ scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                     className="h-full w-full rounded-full bg-black/80 flex items-center justify-center"
                   >
                     <span className={`h-6 w-6 rounded-full bg-gradient-to-br ${currentStory!.avatarBg} flex items-center justify-center text-white font-bold text-[10px]`}>

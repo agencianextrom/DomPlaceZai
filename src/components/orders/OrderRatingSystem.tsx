@@ -82,7 +82,7 @@ function RatingProgressBar({ value, max, color, label, emoji, delay }: {
         <span className="r42-rating-value">{value}/{max}</span>
       </div>
       <div className="r42-rating-bar-track">
-        <motion.div className="r42-rating-bar-fill" initial={{ width: '0%' }} animate={{ width: pct + '%' }} transition={{ delay: delay + 0.2, duration: 0.6, ease: 'easeOut' as const }} style={{ background: color }} />
+        <motion.div className="r42-rating-bar-fill" initial={{ width: '0%' }} animate={{ width: pct + '%' }} transition={{ delay: delay + 0.2, duration: 0.6, ease: 'easeOut' }} style={{ background: color }} />
       </div>
     </motion.div>
   );
@@ -102,7 +102,7 @@ function ConfettiBurst({ show }: { show: boolean }) {
   return (
     <AnimatePresence>
       {show && particles.map((p) => (
-        <motion.div key={p.id} className="r42-confetti-particle" initial={{ opacity: 1, x: 0, y: 0, rotate: 0, scale: 0 }} animate={{ opacity: 0, x: p.x, y: p.y, rotate: p.rotate, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.5, delay: p.delay, ease: 'easeOut' as const }} style={{ backgroundColor: p.color, width: p.size, height: p.size, borderRadius: Math.random() > 0.5 ? '50%' : '2px' }} />
+        <motion.div key={p.id} className="r42-confetti-particle" initial={{ opacity: 1, x: 0, y: 0, rotate: 0, scale: 0 }} animate={{ opacity: 0, x: p.x, y: p.y, rotate: p.rotate, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.5, delay: p.delay, ease: 'easeOut' }} style={{ backgroundColor: p.color, width: p.size, height: p.size, borderRadius: Math.random() > 0.5 ? '50%' : '2px' }} />
       ))}
     </AnimatePresence>
   );

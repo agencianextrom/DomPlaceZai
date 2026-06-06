@@ -285,7 +285,7 @@ function LivePulseDot() {
       <motion.span
         className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"
         animate={{ scale: [1, 1.8, 1], opacity: [0.7, 0, 0.7] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       />
       <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
     </span>
@@ -298,12 +298,12 @@ function LiveBadge() {
     <motion.div
       className="relative inline-flex items-center gap-1.5"
       animate={{ scale: [1, 1.02, 1] }}
-      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
     >
       <motion.div
         className="absolute -inset-2 rounded-lg pointer-events-none"
         animate={{ opacity: [0.3, 0.6, 0.3] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
       >
         <div className="w-full h-full rounded-lg bg-red-500 blur-md" />
       </motion.div>
@@ -337,7 +337,7 @@ function FloatingHearts({ active }: { active: boolean }) {
               initial={{ opacity: 1, y: 0, x: heart.x, scale: 0.6 }}
               animate={{ opacity: [1, 1, 0], y: [0, -50, -90], scale: [0.6, 1.1, 0.6], x: heart.x + (heart.delay > 0.2 ? 5 : -5) }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 1.4, delay: heart.delay, ease: 'easeOut' as const }}
+              transition={{ duration: 1.4, delay: heart.delay, ease: 'easeOut' }}
             >
               {heart.emoji}
             </motion.span>
@@ -419,7 +419,7 @@ function UpcomingStreamCard({ stream, index }: { stream: StreamData; index: numb
           <motion.div
             className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md"
             animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
           >
             <LivePulseDot />
             AGORA
@@ -520,7 +520,7 @@ function ScheduleSlotCard({ slot, onReminder, isSet }: { slot: ScheduleSlot; onR
         <motion.div
           className={`w-3 h-3 rounded-full mt-1 ${slot.isActive ? 'bg-red-500' : 'bg-muted-foreground/30'}`}
           animate={slot.isActive ? { scale: [1, 1.2, 1], boxShadow: '0 0 8px rgba(239,68,68,0.5)' } : {}}
-          transition={slot.isActive ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const } : {}}
+          transition={slot.isActive ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' } : {}}
         />
         {/* Timeline line */}
         <div className="w-px flex-1 bg-border/50 mt-1" />
@@ -649,7 +649,7 @@ export function LiveStreamingWidget() {
           <div className="flex items-center gap-2.5">
             <motion.div
               animate={{ rotate: [0, 8, -8, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               className="h-10 w-10 rounded-xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center"
             >
               <Radio className="h-5 w-5 text-white" />
@@ -694,7 +694,7 @@ export function LiveStreamingWidget() {
               <motion.span
                 className="text-6xl sm:text-7xl"
                 animate={{ scale: [1, 1.06, 1], rotate: [0, 2, -2, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               >
                 {featuredStream.storeEmoji}
               </motion.span>
@@ -707,7 +707,7 @@ export function LiveStreamingWidget() {
                 <motion.div
                   className="flex items-center gap-1.5 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"
                   animate={{ scale: [1, 1.03, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <LivePulseDot />
                   AO VIVO
@@ -779,7 +779,7 @@ export function LiveStreamingWidget() {
                   <motion.div
                     className="absolute inset-0 pointer-events-none"
                     animate={{ x: ['-100%', '200%'] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
                   >
                     <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent" />
                   </motion.div>
@@ -978,7 +978,7 @@ export function LiveStreamingWidget() {
           <motion.div
             className="absolute inset-0"
             animate={{ x: ['-100%', '200%'] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
           >
             <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           </motion.div>

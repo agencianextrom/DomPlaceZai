@@ -137,7 +137,7 @@ export function Header() {
             ? '0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)'
             : '0 0 0 rgba(0,0,0,0)',
         }}
-        transition={{ duration: 0.35, ease: 'easeOut' as const }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
         className={`sticky top-0 z-50 transition-colors duration-300 safe-top r44-header-glass ${isScrolled ? 'r44-header-scrolled' : ''} relative overflow-hidden`}
         style={{
           backdropFilter: `blur(${blurAmount}px)`,
@@ -297,7 +297,7 @@ export function Header() {
                   onClick={() => navigate('home')}
                   className="flex items-center gap-2.5 min-w-0 group r44-logo-shimmer"
                   animate={{ y: [0, -1.5, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <img
                     src="/domplace-logo.png"
@@ -400,7 +400,7 @@ export function Header() {
               >
                 <motion.div
                   animate={cartBounce ? { scale: [1, 1.3, 0.85, 1.1, 1], rotate: [0, -8, 5, -3, 0] } : { scale: 1, rotate: 0 }}
-                  transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
                 >
                   <ShoppingCart className="h-5 w-5" />
                 </motion.div>
@@ -411,7 +411,7 @@ export function Header() {
                       initial={{ scale: 0, y: -8 }}
                       animate={{ scale: [0, 1.35, 0.85, 1.1, 1], y: 0 }}
                       exit={{ scale: 0, y: 10 }}
-                      transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                      transition={{ duration: 0.5, ease: 'easeOut' }}
                       className={`absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] r38-header-cart-badge r44-cart-badge rounded-full font-bold r62-badge-glow ${cartBounce ? 'r44-cart-badge-bouncing' : ''}`}
                     >
                       {cartCount > 99 ? '99+' : cartCount}
@@ -420,7 +420,7 @@ export function Header() {
                         key={`ping-${cartCount}`}
                         initial={{ scale: 1, opacity: 0.6 }}
                         animate={{ scale: 2.2, opacity: 0 }}
-                        transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                        transition={{ duration: 0.5, ease: 'easeOut' }}
                         className="absolute inset-0 rounded-full bg-primary"
                       />
                     </motion.span>

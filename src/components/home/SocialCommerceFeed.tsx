@@ -68,7 +68,7 @@ function HeartBurst({ show }: { show: boolean }) {
           initial={{ scale: 0, opacity: 1 }}
           animate={{ scale: 1.6, opacity: 0 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' as const }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
         >
           ❤️
         </motion.div>
@@ -101,7 +101,7 @@ function ProgressBar({ active }: { active: boolean }) {
           key="pf"
           initial={{ width: '0%' }}
           animate={{ width: '100%' }}
-          transition={{ duration: 8, ease: 'linear' as const }}
+          transition={{ duration: 8, ease: 'linear' }}
         />
       )}
     </div>
@@ -237,8 +237,8 @@ function FeedCard({ product, index, isActive, liked, likeCount, saved, onTap, on
           <motion.div className="r42-product-emoji" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring' as const, stiffness: 200, damping: 15 }}>
             <span className="r42-emoji-text">{product.emoji}</span>
           </motion.div>
-          <motion.div className="r42-deco-circle r42-deco-circle-1" animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' as const }} />
-          <motion.div className="r42-deco-circle r42-deco-circle-2" animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }} transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' as const }} />
+          <motion.div className="r42-deco-circle r42-deco-circle-1" animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }} />
+          <motion.div className="r42-deco-circle r42-deco-circle-2" animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }} transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }} />
         </div>
         <div className="r42-card-overlay">
           <div className="r42-card-left-col">
@@ -266,7 +266,7 @@ function FeedCard({ product, index, isActive, liked, likeCount, saved, onTap, on
             <motion.p className="r42-product-desc" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.4 }}>{product.description}</motion.p>
             <QuickBuyButton price={product.price} />
             <motion.div className="r42-swipe-hint" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.5 }}>
-              <motion.div animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' as const }}>↑</motion.div>
+              <motion.div animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}>↑</motion.div>
               <span className="r42-swipe-text">Deslize para detalhes</span>
             </motion.div>
           </div>

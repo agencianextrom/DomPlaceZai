@@ -136,7 +136,7 @@ function WeatherParticles({ icon }: { icon: string }) {
               duration: isRainP ? 1.2 + Math.random() * 0.5 : isSnow ? 3 + Math.random() : 4 + Math.random(),
               repeat: Infinity,
               delay: i * 0.3,
-              ease: 'linear' as const,
+              ease: 'linear',
             }}
           />
         )
@@ -290,7 +290,7 @@ export function WeatherWidget() {
               <motion.span
                 className="text-5xl sm:text-6xl font-extrabold text-white leading-none"
                 animate={{ scale: [1, 1.02, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               >
                 {weather.temp}°
               </motion.span>
@@ -301,7 +301,7 @@ export function WeatherWidget() {
                 <motion.span
                   className="text-2xl"
                   animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   {getWeatherEmoji(weather.icon)}
                 </motion.span>
@@ -334,7 +334,7 @@ export function WeatherWidget() {
                 <motion.span
                   className="text-sm"
                   animate={{ y: [0, -2, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.3, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.3, ease: 'easeInOut' }}
                 >
                   {getWeatherEmoji(h.icon)}
                 </motion.span>
@@ -357,7 +357,7 @@ export function WeatherWidget() {
             {deliveryStatus.good ? (
               <motion.div
                 animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                 className="h-2 w-2 rounded-full bg-emerald-400"
               />
             ) : (

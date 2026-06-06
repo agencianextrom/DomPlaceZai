@@ -452,7 +452,7 @@ export function CheckoutView() {
                         <motion.div
                           className={`step-line-fill ${i < currentStepIndex ? 'filled r33-checkout-progress-line r40-progress-line-gradient r42-step-gradient-connector' : ''}`}
                           layout
-                          transition={{ duration: 0.6, ease: 'easeInOut' as const }}
+                          transition={{ duration: 0.6, ease: 'easeInOut' }}
                         />
                       </div>
                     )}

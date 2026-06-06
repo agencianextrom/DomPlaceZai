@@ -144,7 +144,7 @@ export function StockUrgency({
       >
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
           className="text-lg r27-flame-bounce"
         >
           🔥

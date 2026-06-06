@@ -113,7 +113,7 @@ function ConfettiParticle({ index, total }: { index: number; total: number }) {
         opacity: [1, 1, 0],
         scale: [1, 1.3, 0.4],
       }}
-      transition={{ duration: 1.5 + Math.random() * 0.5, ease: 'easeOut' as const }}
+      transition={{ duration: 1.5 + Math.random() * 0.5, ease: 'easeOut' }}
       style={{
         width: size,
         height: size * 0.6,
@@ -210,7 +210,7 @@ export function SpinWheel() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-20">
           <motion.div
             animate={isSpinning ? { y: [0, 4, 0] } : { scale: [1, 1.12, 1], y: [0, 2, 0] }}
-            transition={{ duration: isSpinning ? 0.3 : 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: isSpinning ? 0.3 : 2, repeat: Infinity, ease: 'easeInOut' }}
             className="r43-wheel-pointer"
             style={{
               width: 0,
@@ -230,7 +230,7 @@ export function SpinWheel() {
             opacity: [0.5, 0.8, 0.5],
             scale: [1, 1.02, 1],
           }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
           className="absolute inset-[-12px] rounded-full bg-gradient-to-r from-amber-300/30 via-orange-400/20 to-red-400/30 blur-md r43-wheel-glow-outer"
@@ -238,7 +238,7 @@ export function SpinWheel() {
             opacity: [0.2, 0.4, 0.2],
             scale: [1, 1.03, 1],
           }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.5 }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
         />
 
         {/* Wheel */}
@@ -356,7 +356,7 @@ export function SpinWheel() {
                       duration: 2 + Math.random(),
                       repeat: Infinity,
                       delay: idx * 0.25,
-                      ease: 'easeInOut' as const,
+                      ease: 'easeInOut',
                     }}
                   >
                     <Sparkles className="h-3 w-3 text-amber-400" style={{ filter: 'drop-shadow(0 0 6px rgba(251,191,36,0.6))' }} />
@@ -405,7 +405,7 @@ export function SpinWheel() {
                 <motion.span
                   className="absolute inset-0 r43-spin-shimmer"
                   animate={{ x: ['-100%', '200%'] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 0.5 }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.5 }}
                 />
               )}
               {/* Glow pulse ring */}
@@ -417,7 +417,7 @@ export function SpinWheel() {
                 <>
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   >
                     <RotateCw className="h-4 w-4" />
                   </motion.div>

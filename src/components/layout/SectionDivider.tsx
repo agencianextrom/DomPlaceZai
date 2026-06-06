@@ -26,7 +26,7 @@ export function SectionDivider({ variant = 'top', color }: SectionDividerProps) 
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: 'easeOut' as const }}
+        transition={{ duration: 1.2, ease: 'easeOut' }}
         className="section-divider-shimmer absolute top-1/2 left-0 right-0 h-[2px] -translate-y-1/2 z-10"
       />
 

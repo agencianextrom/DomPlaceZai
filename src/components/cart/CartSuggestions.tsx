@@ -59,7 +59,7 @@ const shimmerTextVariants = {
   initial: { backgroundPosition: '-200% center' },
   animate: {
     backgroundPosition: '200% center',
-    transition: { duration: 3, repeat: Infinity, ease: 'linear' as const },
+    transition: { duration: 3, repeat: Infinity, ease: 'linear' },
   },
 }
 
@@ -120,7 +120,7 @@ function ShimmerHeader() {
       <motion.div
         className="r40-header-sparkle h-7 w-7 rounded-lg bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center"
         animate={{ scale: [1, 1.1, 1], rotate: [0, 8, -8, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <Sparkles className="h-3.5 w-3.5 text-white" />
       </motion.div>
@@ -351,7 +351,7 @@ function EmptyCartState() {
           transition={{
             duration: p.dur,
             repeat: Infinity,
-            ease: 'easeInOut' as const,
+            ease: 'easeInOut',
             delay: p.delay,
           }}
         />
@@ -359,7 +359,7 @@ function EmptyCartState() {
 
       <motion.div
         animate={{ y: [0, -10, 0], rotate: [0, 6, -6, 0] }}
-        transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
         className="text-4xl mb-2 relative z-10"
       >
         🛒

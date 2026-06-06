@@ -147,7 +147,7 @@ function Header() {
           boxShadow: '0 0 0 2px rgba(59,130,246,0.25)',
         }}
         animate={{ scale: [1, 1.06, 1] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <Users className="h-5 w-5" style={{ color: '#3b82f6' }} />
       </motion.div>

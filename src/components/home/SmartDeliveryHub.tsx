@@ -378,14 +378,14 @@ export default function SmartDeliveryHub() {
         <div className="absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-white/5" />
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' as const }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
           className="absolute top-3 right-16 h-8 w-8 rounded-full border-2 border-dashed border-white/20"
         />
 
         <div className="flex items-center gap-3">
           <motion.div
             animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="h-12 w-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center"
           >
             <Route className="h-6 w-6" />
@@ -429,7 +429,7 @@ export default function SmartDeliveryHub() {
           >
             <motion.div
               animate={{ y: [0, -2, 0] }}
-              transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3, ease: 'easeInOut' }}
               className="flex justify-center mb-1.5"
             >
               <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color }}>
@@ -530,7 +530,7 @@ export default function SmartDeliveryHub() {
                             }}
                             initial={{ scaleX: 0 }}
                             animate={{ scaleX: 1 }}
-                            transition={{ duration: 1, delay: 0.3 + idx * 0.15, ease: 'easeOut' as const }}
+                            transition={{ duration: 1, delay: 0.3 + idx * 0.15, ease: 'easeOut' }}
                           />
                         </div>
                       </div>
@@ -685,7 +685,7 @@ export default function SmartDeliveryHub() {
                   fill="#ef4444"
                   opacity={0.15}
                   animate={{ r: [10, 16, 10], opacity: [0.15, 0.05, 0.15] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <circle cx={260} cy={60} r={6} fill="#ef4444" />
                 <circle cx={260} cy={60} r={2.5} fill="#ffffff" />
@@ -708,7 +708,7 @@ export default function SmartDeliveryHub() {
                   fill="#0d9488"
                   opacity={0.15}
                   animate={{ r: [12, 18, 12], opacity: [0.15, 0.05, 0.15] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <circle
                   cx={40 + (mapProgress / 100) * 220}
@@ -763,7 +763,7 @@ export default function SmartDeliveryHub() {
           <div className="flex items-center gap-2.5">
             <motion.div
               animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               className="h-9 w-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center"
             >
               <Clock className="h-4.5 w-4.5 text-emerald-600" />
@@ -822,7 +822,7 @@ export default function SmartDeliveryHub() {
             </div>
             <motion.div
               animate={{ x: [0, 4, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               className="text-teal-600"
             >
               <ChevronRight className="h-4 w-4" />
@@ -1093,7 +1093,7 @@ export default function SmartDeliveryHub() {
                         }}
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: 1 }}
-                        transition={{ duration: 0.6, delay: 0.2 + idx * 0.05, ease: 'easeOut' as const }}
+                        transition={{ duration: 0.6, delay: 0.2 + idx * 0.05, ease: 'easeOut' }}
                       />
                     </div>
                     <p className="text-[8px] text-muted-foreground mt-0.5">

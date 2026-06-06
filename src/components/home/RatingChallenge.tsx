@@ -236,7 +236,7 @@ function StarRatingAvatar({ rating }: { rating: number }) {
       {rating === 24 && (
         <motion.div
           animate={{ scale: [1, 1.12, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Crown className="h-4 w-4 text-amber-400" />
         </motion.div>
@@ -244,7 +244,7 @@ function StarRatingAvatar({ rating }: { rating: number }) {
       {rating === 19 && (
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
         >
           <Medal className="h-4 w-4 text-slate-400" />
         </motion.div>
@@ -252,7 +252,7 @@ function StarRatingAvatar({ rating }: { rating: number }) {
       {rating === 14 && (
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.6 }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
         >
           <Medal className="h-4 w-4" style={{ color: '#cd7f32' }} />
         </motion.div>
@@ -399,7 +399,7 @@ export function RatingChallenge() {
             <motion.div
               className="h-10 w-10 rounded-xl flex items-center justify-center r59-rating-icon-bg"
               animate={{ rotate: [0, 8, -8, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             >
               <Star className="h-5 w-5 text-amber-400 fill-amber-400" />
             </motion.div>
@@ -448,7 +448,7 @@ export function RatingChallenge() {
                 className="h-full rounded-full r59-rating-progress-bar"
                 initial={{ width: '0%' }}
                 animate={{ width: `${communityProgress}%` }}
-                transition={{ duration: 1.2, ease: 'easeOut' as const }}
+                transition={{ duration: 1.2, ease: 'easeOut' }}
               />
             </div>
             <p className="text-[10px] text-muted-foreground mt-1">
@@ -523,7 +523,7 @@ export function RatingChallenge() {
               <motion.span
                 className="text-lg"
                 animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               >
                 🔥
               </motion.span>
@@ -647,7 +647,7 @@ export function RatingChallenge() {
                       style={{ backgroundColor: cat.color }}
                       initial={{ width: '0%' }}
                       animate={{ width: maxCategory > 0 ? `${(cat.count / maxCategory) * 100}%` : '0%' }}
-                      transition={{ duration: 0.8, ease: 'easeOut' as const, delay: i * 0.05 }}
+                      transition={{ duration: 0.8, ease: 'easeOut', delay: i * 0.05 }}
                     />
                   </div>
                   <span className="text-[10px] font-bold text-foreground w-5 shrink-0">{cat.count}</span>

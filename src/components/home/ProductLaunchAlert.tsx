@@ -284,7 +284,7 @@ function CountdownDisplay({ targetDate, large = false }: { targetDate: Date; lar
       <CountdownDigit value={time.days} label="Dias" large={large} />
       <motion.span
         animate={{ opacity: [1, 0.3, 1] }}
-        transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
         className={`font-bold ${separatorSize}`}
         style={{ color: '#f59e0b' }}
       >
@@ -293,7 +293,7 @@ function CountdownDisplay({ targetDate, large = false }: { targetDate: Date; lar
       <CountdownDigit value={time.hours} label="Horas" large={large} />
       <motion.span
         animate={{ opacity: [1, 0.3, 1] }}
-        transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+        transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
         className={`font-bold ${separatorSize}`}
         style={{ color: '#f59e0b' }}
       >
@@ -302,7 +302,7 @@ function CountdownDisplay({ targetDate, large = false }: { targetDate: Date; lar
       <CountdownDigit value={time.minutes} label="Min" large={large} />
       <motion.span
         animate={{ opacity: [1, 0.3, 1] }}
-        transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.25 }}
+        transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut', delay: 0.25 }}
         className={`font-bold ${separatorSize}`}
         style={{ color: '#f59e0b' }}
       >
@@ -331,7 +331,7 @@ function EarlyAccessBadge() {
     >
       <motion.div
         animate={{ rotate: [0, 360] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'linear' as const }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
       >
         <Trophy className="h-3.5 w-3.5" style={{ color: '#ca8a04' }} />
       </motion.div>
@@ -341,7 +341,7 @@ function EarlyAccessBadge() {
       <motion.div
         className="absolute inset-0"
         animate={{ x: ['-100%', '200%'] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
       >
         <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg]" />
       </motion.div>
@@ -360,7 +360,7 @@ function LaunchShimmerBadge() {
       <motion.div
         className="absolute inset-0"
         animate={{ x: ['-100%', '200%'] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 0.8 }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.8 }}
       >
         <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-[-20deg]" />
       </motion.div>
@@ -394,7 +394,7 @@ function HeroProductPreview({ product }: { product: UpcomingProduct }) {
         {/* Emoji Hero */}
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           className="text-7xl sm:text-8xl drop-shadow-lg shrink-0"
         >
           {product.emoji}
@@ -432,7 +432,7 @@ function HeroProductPreview({ product }: { product: UpcomingProduct }) {
               <motion.div
                 className="absolute inset-0"
                 animate={{ x: ['-100%', '200%'] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1.2 }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2 }}
               >
                 <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg]" />
               </motion.div>
@@ -464,7 +464,7 @@ function HeroProductPreview({ product }: { product: UpcomingProduct }) {
             style={{ background: 'linear-gradient(90deg, #f59e0b, #ea580c)' }}
             initial={{ width: '0%' }}
             animate={{ width: `${Math.min((product.interestCount / 1000) * 100, 95)}%` }}
-            transition={{ duration: 1.5, ease: 'easeOut' as const }}
+            transition={{ duration: 1.5, ease: 'easeOut' }}
           />
         </div>
       </div>
@@ -670,7 +670,7 @@ function DropAlertToggle({ productId }: { productId: string }) {
             initial={{ scale: 0.8, opacity: 1 }}
             animate={{ scale: 1.6, opacity: 0 }}
             exit={{ scale: 1.2, opacity: 0 }}
-            transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' as const }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
           />
         )}
       </AnimatePresence>
@@ -681,7 +681,7 @@ function DropAlertToggle({ productId }: { productId: string }) {
           className="absolute top-1 right-1 w-2 h-2 rounded-full"
           style={{ background: '#d97706' }}
           animate={{ scale: [1, 1.3, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         />
       )}
     </motion.button>
@@ -756,7 +756,7 @@ function UpcomingDropCard({ product, index }: { product: UpcomingProduct; index:
           <div className={`relative aspect-[4/3] flex items-center justify-center bg-gradient-to-br ${product.gradient} overflow-hidden`}>
             <motion.div
               animate={{ scale: [1, 1.06, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               className="text-5xl drop-shadow-md z-10"
             >
               {product.emoji}
@@ -877,7 +877,7 @@ function PastLaunchCard({ product, index }: { product: PastLaunch; index: number
                   style={{ background: '#10b981' }}
                   initial={{ width: '0%' }}
                   animate={{ width: `${product.soldPercent}%` }}
-                  transition={{ duration: 1, delay: index * 0.15, ease: 'easeOut' as const }}
+                  transition={{ duration: 1, delay: index * 0.15, ease: 'easeOut' }}
                 />
               </div>
               <span className="text-[9px] mt-0.5 inline-block" style={{ color: '#6b7280' }}>
@@ -1096,7 +1096,7 @@ export default function ProductLaunchAlert() {
       <div className="flex items-center gap-3 mb-6">
         <motion.div
           animate={{ rotate: [0, 15, -15, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
           style={{
             background: 'linear-gradient(135deg, #d97706, #ea580c)',
@@ -1110,7 +1110,7 @@ export default function ProductLaunchAlert() {
             <span>Lançamentos & Drops</span>
             <motion.span
               animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               className="text-xl"
             >
               🚀
@@ -1257,7 +1257,7 @@ export default function ProductLaunchAlert() {
               duration: 3.5,
               repeat: Infinity,
               delay: cfg.delay,
-              ease: 'easeOut' as const,
+              ease: 'easeOut',
               repeatDelay: 0.8,
             }}
           />

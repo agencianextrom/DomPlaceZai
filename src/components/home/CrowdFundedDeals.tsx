@@ -1481,27 +1481,27 @@ export function CrowdFundedDeals() {
       <motion.div
         className="absolute top-8 right-6 w-1.5 h-1.5 rounded-full bg-violet-400/30 pointer-events-none"
         animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0.5 }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut', delay: 0.5 }}
       />
       <motion.div
         className="absolute top-16 left-8 w-1 h-1 rounded-full bg-indigo-400/25 pointer-events-none"
         animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0] }}
-        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 1.2 }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut', delay: 1.2 }}
       />
       <motion.div
         className="absolute top-4 left-1/3 w-1 h-1 rounded-full bg-blue-400/30 pointer-events-none"
         animate={{ y: [0, -8, -18], opacity: [0, 0.7, 0] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.8 }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut', delay: 0.8 }}
       />
       <motion.div
         className="absolute bottom-12 right-1/4 w-1.5 h-1.5 rounded-full bg-purple-400/25 pointer-events-none"
         animate={{ y: [0, 10, 22], opacity: [0, 0.4, 0] }}
-        transition={{ duration: 3.8, repeat: Infinity, ease: 'easeOut' as const, delay: 1.6 }}
+        transition={{ duration: 3.8, repeat: Infinity, ease: 'easeOut', delay: 1.6 }}
       />
       <motion.div
         className="absolute top-24 right-1/3 w-1 h-1 rounded-full bg-pink-400/20 pointer-events-none"
         animate={{ y: [0, -14, -26], opacity: [0, 0.5, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeOut' as const, delay: 2.1 }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeOut', delay: 2.1 }}
       />
     </motion.section>
   )

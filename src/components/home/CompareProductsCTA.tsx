@@ -50,7 +50,7 @@ function ShimmerButton({ children, onClick }: { children: React.ReactNode; onCli
         <motion.div
           className="absolute inset-0 pointer-events-none"
           animate={{ x: ['-100%', '200%'] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
         >
           <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[-12deg]" />
         </motion.div>
@@ -73,18 +73,18 @@ function VSBadge() {
       <motion.div
         className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400/30 to-purple-400/30"
         animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="absolute inset-[-4px] rounded-full bg-gradient-to-br from-purple-400/15 to-indigo-400/15"
         animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.4, 0.2] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
       />
       {/* Badge */}
       <motion.div
         className="relative w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg"
         animate={{ scale: [1, 1.05, 1] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
         <span className="text-xs font-extrabold text-white tracking-wider">VS</span>
       </motion.div>
@@ -218,7 +218,7 @@ function GradientOrb({ color, size, x, y, delay }: { color: string; size: number
       transition={{
         duration: 6,
         repeat: Infinity,
-        ease: 'easeInOut' as const,
+        ease: 'easeInOut',
         delay,
       }}
     />

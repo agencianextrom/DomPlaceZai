@@ -123,7 +123,7 @@ function AnimatedCheckmark() {
   return (
     <motion.div
       animate={{ scale: [1, 1.12, 1], rotate: [0, 2, -2, 0] }}
-      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
     >
       <svg
         viewBox="0 0 52 52"
@@ -141,7 +141,7 @@ function AnimatedCheckmark() {
           fill="none"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3, ease: 'easeOut' as const }}
+          transition={{ duration: 0.5, delay: 0.3, ease: 'easeOut' }}
         />
         {/* Check path */}
         <motion.path
@@ -290,7 +290,7 @@ function CelebrationParticles() {
             duration: 4 + i,
             repeat: Infinity,
             delay: s.delay,
-            ease: 'easeInOut' as const,
+            ease: 'easeInOut',
           }}
         >
           <svg width="8" height="8" viewBox="0 0 8 8" fill="none">

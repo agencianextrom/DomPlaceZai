@@ -136,7 +136,7 @@ function SparkleParticle({ delay, x, y, size }: { delay: number; x: string; y: s
         delay,
         repeat: Infinity,
         repeatDelay: 0.6,
-        ease: 'easeInOut' as const,
+        ease: 'easeInOut',
       }}
     >
       <Sparkles className="text-amber-400" style={{ width: size, height: size }} />
@@ -561,7 +561,7 @@ export function SearchView() {
               <motion.span
                 className="absolute inset-0 rounded-full"
                 animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)', backgroundSize: '200% 100%' }}
               />
             )}
@@ -588,7 +588,7 @@ export function SearchView() {
                 <motion.span
                   className="absolute inset-0 rounded-full"
                   animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                   style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)', backgroundSize: '200% 100%' }}
                 />
               )}
@@ -925,7 +925,7 @@ export function SearchView() {
                     transition={{
                       duration: 2.5,
                       repeat: Infinity,
-                      ease: 'easeInOut' as const,
+                      ease: 'easeInOut',
                     }}
                     className="relative w-28 h-28 mx-auto"
                   >
@@ -933,11 +933,11 @@ export function SearchView() {
                     <motion.div
                       className="absolute top-2 left-2 w-20 h-20 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/40 dark:to-emerald-800/30 border-2 border-emerald-300/50 dark:border-emerald-600/40 flex items-center justify-center shadow-lg"
                       animate={{ scale: [1, 1.03, 1] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.1 }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }}
                     >
                       <motion.div
                         animate={{ rotate: [0, 360] }}
-                        transition={{ duration: 12, repeat: Infinity, ease: 'linear' as const }}
+                        transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
                       >
                         <Sparkles className="h-8 w-8 text-emerald-500/50 dark:text-emerald-400/40" />
                       </motion.div>
@@ -947,7 +947,7 @@ export function SearchView() {
                       className="absolute bottom-0 right-0 w-7 h-4 rounded-b-full rounded-l-sm bg-gradient-to-br from-emerald-400 to-emerald-500 dark:from-emerald-600 dark:to-emerald-700 shadow-md"
                       style={{ transform: 'rotate(-45deg)', transformOrigin: 'top left' }}
                       animate={{ opacity: [0.7, 1, 0.7] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                     />
                   </motion.div>
                 </div>
@@ -1103,7 +1103,7 @@ export function SearchView() {
               <div className="flex items-center gap-1.5 mb-3">
                 <motion.div
                   animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <TrendingUp className="h-4 w-4 text-primary" />
                 </motion.div>

@@ -112,7 +112,7 @@ function ConfettiBurst({ show }: { show: boolean }) {
           y,
           scale: [0, 0.6, 0],
         }}
-        transition={{ duration: 0.9, delay: 0.15, ease: 'easeOut' as const }}
+        transition={{ duration: 0.9, delay: 0.15, ease: 'easeOut' }}
         className="absolute r43-confetti-sparkle"
         style={{
           width: 3,
@@ -146,7 +146,7 @@ function CheckMarkSVG() {
         strokeLinejoin="round"
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' as const }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
         className="r43-checkmark-path"
       />
     </svg>
@@ -287,7 +287,7 @@ export function DailyRewards() {
                 {/* Day circle */}
                 <motion.div
                   animate={isCurrent ? { scale: [1, 1.12, 1] } : {}}
-                  transition={{ duration: 1.5, repeat: isCurrent ? Infinity : 0, ease: 'easeInOut' as const }}
+                  transition={{ duration: 1.5, repeat: isCurrent ? Infinity : 0, ease: 'easeInOut' }}
                   className={`h-8 w-8 min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-300 r43-day-card r43-day-card-${isCompleted ? 'completed' : isCurrent ? 'current' : isPast ? 'past' : 'locked'} ${
                     isRewardDay && !isCompleted ? 'r43-day-card-reward' : ''
                   } ${
@@ -323,7 +323,7 @@ export function DailyRewards() {
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${(Math.min(streak.currentStreak, 7) / 7) * 100}%` }}
-            transition={{ duration: 0.8, ease: 'easeOut' as const }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
             className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-amber-500 rounded-full r43-progress-fill"
           />
           {/* Shimmer overlay on progress */}

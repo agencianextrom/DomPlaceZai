@@ -480,7 +480,7 @@ export function StoreSubscriptionBox() {
                           <motion.span
                             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent r37-sub-shimmer"
                             animate={{ x: ['-100%', '200%'] }}
-                            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 }}
+                            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
                           />
                         )}
                         <span className="relative z-10">

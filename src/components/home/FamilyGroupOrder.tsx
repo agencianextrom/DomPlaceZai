@@ -102,7 +102,7 @@ const cardV = {
 }
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { type: sp, stiffness: 200, damping: 20 } } }
 const scaleIn = { hidden: { opacity: 0, scale: 0.85 }, visible: { opacity: 1, scale: 1, transition: { type: sp, stiffness: 300, damping: 22 } } }
-const headerPulse = { animate: { scale: [1, 1.08, 1], transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const } } }
+const headerPulse = { animate: { scale: [1, 1.08, 1], transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' } } }
 
 // ─── SKELETON ──────────────────────────────────────────────────────────────
 function Skeleton() {
@@ -144,7 +144,7 @@ function TimerRing({ expiresAt }: { expiresAt: number }) {
         <circle cx="44" cy="44" r="40" fill="none" stroke="rgba(148,163,184,0.15)" strokeWidth="5" />
         <motion.circle cx="44" cy="44" r="40" fill="none" stroke={color} strokeWidth="5" strokeLinecap="round"
           strokeDasharray={circ} initial={{ strokeDashoffset: circ }} animate={{ strokeDashoffset: off }}
-          transition={{ duration: 1, ease: 'linear' as const }} />
+          transition={{ duration: 1, ease: 'linear' }} />
       </svg>
       <div className="flex flex-col items-center z-10">
         {t.expired ? (

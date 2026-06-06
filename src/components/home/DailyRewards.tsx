@@ -75,7 +75,7 @@ function FloatingParticle({ delay, color, size, x, y }: { delay: number; color: 
         duration: 4 + Math.random() * 3,
         repeat: Infinity,
         delay,
-        ease: 'easeInOut' as const,
+        ease: 'easeInOut',
       }}
     />
   )
@@ -97,7 +97,7 @@ function RewardEmojiParticle({ emoji, delay, x, y }: { emoji: string; delay: num
         duration: 5,
         repeat: Infinity,
         delay,
-        ease: 'easeInOut' as const,
+        ease: 'easeInOut',
       }}
       aria-hidden="true"
     >
@@ -330,7 +330,7 @@ export function DailyRewards() {
                     {streakFire && (
                       <motion.span
                         animate={{ scale: [1, 1.4, 1], rotate: [-8, 8, -8], y: [0, -3, 0] }}
-                        transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' as const }}
+                        transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' }}
                         className="inline-block r18-streak-fire-enhanced"
                         style={{ filter: 'drop-shadow(0 0 6px rgba(249, 115, 22, 0.6))' }}
                       >
@@ -408,7 +408,7 @@ export function DailyRewards() {
                         transition={{
                           duration: isCurrent ? 2 : isCompleted ? 3 : 0.5,
                           repeat: isCurrent || isCompleted ? Infinity : 0,
-                          ease: 'easeInOut' as const,
+                          ease: 'easeInOut',
                           type: 'spring' as const,
                           stiffness: isAnimating ? 500 : undefined,
                         }}
@@ -454,14 +454,14 @@ export function DailyRewards() {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(Math.min(data.currentStreak, 7) / 7) * 100}%` }}
-                  transition={{ duration: 1, ease: 'easeOut' as const }}
+                  transition={{ duration: 1, ease: 'easeOut' }}
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-emerald-500 to-amber-500 rounded-full"
                 />
                 {/* Enhanced shimmer sweep */}
                 <motion.div
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-transparent via-white/40 to-transparent r18-progress-shimmer-sweep"
                   animate={{ x: ['-100%', '300%'] }}
-                  transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }}
                 />
               </div>
             </div>
@@ -485,7 +485,7 @@ export function DailyRewards() {
                       <motion.div
                         className="absolute inset-0 rounded-xl r18-checkin-btn-glow"
                         animate={{ opacity: [0.5, 1, 0.5] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                       />
                       {/* Shimmer on button */}
                       <motion.div

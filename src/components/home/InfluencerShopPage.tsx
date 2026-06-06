@@ -300,7 +300,7 @@ const shimmerVariants = {
   initial: { x: '-100%' },
   animate: {
     x: '100%',
-    transition: { duration: 2, repeat: Infinity, ease: 'linear' as const, repeatDelay: 0.8 },
+    transition: { duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 0.8 },
   },
 }
 
@@ -308,7 +308,7 @@ const badgeShimmer = {
   initial: { x: '-200%' },
   animate: {
     x: '200%',
-    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 },
+    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 },
   },
 }
 
@@ -316,7 +316,7 @@ const pulseGlow = {
   animate: {
     scale: [1, 1.03, 1],
     opacity: [0.85, 1, 0.85],
-    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -845,19 +845,19 @@ export function InfluencerShopPage() {
             className="r40-banner-shape-1 absolute top-4 right-12 h-24 w-24 rounded-full opacity-20"
             style={{ backgroundColor: colors[2] }}
             animate={{ scale: [1, 1.2, 1], rotate: [0, 45, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
             className="r40-banner-shape-2 absolute bottom-8 left-20 h-16 w-16 rounded-full opacity-20"
             style={{ backgroundColor: colors[0] }}
             animate={{ scale: [1, 1.3, 1], y: [0, -10, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
             className="r40-banner-shape-3 absolute top-1/2 right-1/3 h-32 w-32 rounded-full opacity-10"
             style={{ backgroundColor: colors[1] }}
             animate={{ scale: [1, 1.15, 1] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           />
 
           {/* Gradient overlay */}

@@ -149,7 +149,7 @@ const firePulseVariants = {
   animate: {
     scale: [1, 1.15, 1],
     opacity: [0.8, 1, 0.8],
-    transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -166,7 +166,7 @@ const cartPopVariants = {
   initial: { scale: 1 },
   added: {
     scale: [1, 0.85, 1.1, 0.95, 1],
-    transition: { duration: 0.5, ease: 'easeInOut' as const },
+    transition: { duration: 0.5, ease: 'easeInOut' },
   },
 }
 
@@ -192,7 +192,7 @@ function DeliveryProgress({ mins }: { mins: number }) {
           className={`h-full rounded-full bg-gradient-to-r ${getDeliveryGradient(mins)}`}
           initial={{ width: '0%' }}
           animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' as const }}
+          transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
         />
       </div>
     </div>
@@ -209,7 +209,7 @@ function FireIndicator({ popularity }: { popularity: number }) {
           key={i}
           variants={firePulseVariants}
           animate="animate"
-          transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const, delay: i * 0.15 }}
+          transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut', delay: i * 0.15 }}
         >
           <Flame className="h-3 w-3 text-orange-500" fill="currentColor" />
         </motion.div>
@@ -237,7 +237,7 @@ function ReadyBadge({ mins }: { mins: number }) {
     <motion.div
       className="r58-meal-ready-badge flex items-center gap-1 bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-500/20 rounded-full px-2 py-0.5"
       animate={{ scale: remaining <= 0 ? [1, 1.05, 1] : 1 }}
-      transition={{ duration: 0.6, ease: 'easeInOut' as const, repeat: remaining <= 0 ? Infinity : 0 }}
+      transition={{ duration: 0.6, ease: 'easeInOut', repeat: remaining <= 0 ? Infinity : 0 }}
     >
       <Clock className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400" />
       <span className="text-[8px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
@@ -415,7 +415,7 @@ function EmptyState() {
       <motion.span
         className="text-5xl mb-3"
         animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         😋
       </motion.span>

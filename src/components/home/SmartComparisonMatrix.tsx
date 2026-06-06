@@ -304,7 +304,7 @@ function EmptyState() {
               transition={{
                 duration: 3,
                 repeat: Infinity,
-                ease: 'easeInOut' as const,
+                ease: 'easeInOut',
               }}
             >
               <div className="flex items-center gap-4">
@@ -314,7 +314,7 @@ function EmptyState() {
                   transition={{
                     duration: 3,
                     repeat: Infinity,
-                    ease: 'easeInOut' as const,
+                    ease: 'easeInOut',
                     delay: 0.2,
                   }}
                 >
@@ -329,7 +329,7 @@ function EmptyState() {
                   transition={{
                     duration: 4,
                     repeat: Infinity,
-                    ease: 'linear' as const,
+                    ease: 'linear',
                   }}
                 >
                   <GitCompareArrows className="h-4 w-4 text-emerald-500/70" />
@@ -341,7 +341,7 @@ function EmptyState() {
                   transition={{
                     duration: 3,
                     repeat: Infinity,
-                    ease: 'easeInOut' as const,
+                    ease: 'easeInOut',
                     delay: 0.2,
                   }}
                 >
@@ -529,7 +529,7 @@ function EmptyProductSlot({ index }: { index: number }) {
               {searching ? (
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                 >
                   <Loader2 className="h-5 w-5" />
                 </motion.div>
@@ -982,7 +982,7 @@ function VerdictCard({ products }: { products: MockProduct[] }) {
               <div className="flex items-center gap-2 mb-2">
                 <motion.div
                   animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <Sparkles className="h-4 w-4 text-emerald-500" />
                 </motion.div>

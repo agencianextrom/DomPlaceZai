@@ -422,7 +422,7 @@ function PriceDropCard({ item, onBuy }: { item: WishItem; onBuy: () => void }) {
           {/* Savings percentage badge with glow */}
           <motion.div
             animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 border border-emerald-200/60 dark:border-emerald-700/40 mt-1 shadow-[0_0_8px_rgba(16,185,129,0.2)]"
           >
             <ArrowDown className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400" />
@@ -435,7 +435,7 @@ function PriceDropCard({ item, onBuy }: { item: WishItem; onBuy: () => void }) {
           <div className="flex items-center gap-2 mt-2">
             <motion.div
               animate={{ y: [0, 4, 0] }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
             >
               <TrendingDown className="h-3.5 w-3.5 text-emerald-500" />
             </motion.div>
@@ -460,7 +460,7 @@ function PriceDropCard({ item, onBuy }: { item: WishItem; onBuy: () => void }) {
             backgroundSize: '300% 100%',
           }}
           animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' as const, repeatDelay: 1.5 }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
         />
         <ShoppingBag className="h-3.5 w-3.5 relative z-10" />
         <span className="relative z-10">Comprar agora</span>
@@ -582,7 +582,7 @@ function EmptyState() {
           rotate: [0, 8, -8, 0],
           scale: [1, 1.1, 1],
         }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <div className="h-20 w-20 rounded-full bg-gradient-to-br from-red-100 to-pink-100 dark:from-red-900/20 dark:to-pink-900/20 flex items-center justify-center shadow-lg">
           <Heart className="h-10 w-10 text-red-400" />
@@ -820,7 +820,7 @@ export function ProductWishTracker() {
             {/* Animated pulsing heart icon */}
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               className="h-9 w-9 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-md"
             >
               <Heart className="h-4.5 w-4.5 text-white fill-white" />
@@ -1046,7 +1046,7 @@ export function ProductWishTracker() {
             <div className="flex items-center gap-1.5 mb-2">
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <TrendingDown className="h-4 w-4 text-emerald-500" />
               </motion.div>
@@ -1134,7 +1134,7 @@ export function ProductWishTracker() {
                 {/* Glow effect */}
                 <motion.div
                   animate={{ opacity: [0.6, 1, 0.6] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                   className="absolute inset-0 r36-savings-glow rounded-xl pointer-events-none"
                 />
                 <div className="h-10 w-10 rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0 relative z-10">
@@ -1162,7 +1162,7 @@ export function ProductWishTracker() {
                 <div className="flex items-center gap-1.5 mb-2">
                   <motion.div
                     animate={{ scale: [1, 1.15, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     <Flame className="h-3.5 w-3.5 text-amber-500" />
                   </motion.div>
@@ -1196,7 +1196,7 @@ export function ProductWishTracker() {
                 <div className="flex items-center gap-1.5 mb-2">
                   <motion.div
                     animate={{ scale: [1, 1.15, 1] }}
-                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     <AlertTriangle className="h-3.5 w-3.5 text-red-500" />
                   </motion.div>

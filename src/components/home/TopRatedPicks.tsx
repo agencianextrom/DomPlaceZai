@@ -109,7 +109,7 @@ export function TopRatedPicks() {
           <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 r62-heading-gradient">
             <motion.div
               animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
               <Award className="h-5 w-5 text-amber-500" />
             </motion.div>

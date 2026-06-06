@@ -262,7 +262,7 @@ function HeartToggleButton({ isWished, onToggle, size = 'md' }: { isWished: bool
                 style={{ width: p.size, height: p.size, top: '50%', left: '50%' }}
                 initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
                 animate={{ x: Math.cos((p.angle * Math.PI) / 180) * p.distance, y: Math.sin((p.angle * Math.PI) / 180) * p.distance, scale: 1, opacity: 0 }}
-                exit={{ opacity: 0 }} transition={{ duration: 0.5, ease: 'easeOut' as const }} />
+                exit={{ opacity: 0 }} transition={{ duration: 0.5, ease: 'easeOut' }} />
             ))}
           </div>
         )}
@@ -355,7 +355,7 @@ function PriceDropCard({ item, isWished, onToggleWish }: { item: PriceDropWishIt
             <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{formatBRL(item.currentPrice)}</span>
             <span className="text-[9px] text-red-400 line-through">{formatBRL(item.originalPrice)}</span>
           </div>
-          <motion.div animate={{ scale: [1, 1.06, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          <motion.div animate={{ scale: [1, 1.06, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="r49-badge-pulse inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold mt-1.5">
             <ArrowDown className="h-2.5 w-2.5" />-{item.dropPercent}%
           </motion.div>
@@ -427,7 +427,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
       className="flex flex-col items-center justify-center py-16 text-center">
       <motion.div className="r49-heart-float"
         animate={{ y: [0, -14, 0], rotate: [0, 8, -8, 0], scale: [1, 1.1, 1] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const }}>
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}>
         <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/20 dark:to-pink-900/20 flex items-center justify-center shadow-lg border border-rose-200/40 dark:border-rose-800/30"
           style={{ boxShadow: '0 8px 24px rgba(244,63,94,0.15)' }}>
           <Gift className="h-10 w-10 text-rose-400" />
@@ -597,7 +597,7 @@ export default function NeighborhoodWishlist() {
         <div className="flex items-center justify-between mb-5 px-1">
           <div className="flex items-center gap-2.5">
             <motion.div animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               className="h-10 w-10 rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center shadow-lg"
               style={{ boxShadow: '0 4px 16px rgba(244,63,94,0.35)' }}>
               <Heart className="h-5 w-5 text-white fill-white" />
@@ -679,12 +679,12 @@ export default function NeighborhoodWishlist() {
                 <div className="mb-5">
                   <div className="flex items-center gap-2 mb-3 px-1">
                     <motion.div animate={{ y: [0, -3, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}>
+                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}>
                       <TrendingDown className="h-4 w-4 text-emerald-500" />
                     </motion.div>
                     <h3 className="text-sm font-bold">Queda de Preço nos seus Desejos</h3>
                     <motion.span animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                       className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-bold">
                       <Sparkles className="h-2.5 w-2.5" />{filteredPriceDrops.length} itens mais baratos
                     </motion.span>

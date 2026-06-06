@@ -170,7 +170,7 @@ const badgePulseVariants = {
       '0 0 0 4px rgba(245, 158, 11, 0.2)',
       '0 0 0 0 rgba(245, 158, 11, 0)',
     ],
-    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -634,7 +634,7 @@ export function StoreRatingsOverview() {
         <div className="flex items-center gap-2.5">
           <motion.div
             animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md shadow-amber-400/20"
           >
             <BarChart3 className="h-5 w-5 text-white" />

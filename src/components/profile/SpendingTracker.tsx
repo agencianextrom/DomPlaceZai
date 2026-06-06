@@ -197,7 +197,7 @@ function ProgressRing({ percentage, size = 80, strokeWidth = 6 }: { percentage: 
         <motion.span
           className="text-lg font-extrabold"
           animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
           {Math.round(percentage)}%
         </motion.span>
@@ -330,7 +330,7 @@ export function SpendingTracker() {
         >
           <motion.div
             animate={{ scale: [1, 1.15, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0"
           >
             <PiggyBank className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />

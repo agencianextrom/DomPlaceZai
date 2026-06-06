@@ -62,7 +62,7 @@ const coinFloatVariants = {
       duration: 1.8,
       repeat: Infinity,
       repeatDelay: 4 + i * 0.7,
-      ease: 'easeOut' as const,
+      ease: 'easeOut',
     },
   }),
 }
@@ -302,7 +302,7 @@ export function TipCalculator({ driverName, driverRating, driverVehicle, orderTo
                   transition={{
                     delay: i * 0.1,
                     duration: 1.5,
-                    ease: 'easeOut' as const,
+                    ease: 'easeOut',
                   }}
                   className="absolute"
                 >
@@ -320,7 +320,7 @@ export function TipCalculator({ driverName, driverRating, driverVehicle, orderTo
             <div className="relative">
               <motion.div
                 animate={{ scale: [1, 1.03, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 className="h-14 w-14 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 p-[2.5px]"
               >
                 <div className="h-full w-full rounded-full bg-card flex items-center justify-center text-primary font-bold text-lg">

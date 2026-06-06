@@ -183,7 +183,7 @@ export function ProductInstallationGuide({ category }: { category: string }) {
                 className="h-full bg-gradient-to-r from-primary to-emerald-500 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${completionPercent}%` }}
-                transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
               />
             </div>
           </div>

@@ -271,7 +271,7 @@ function RouteMap({ progress }: { progress: number }) {
             fill="#ef4444"
             opacity={0.12}
             animate={{ r: [12, 18, 12], opacity: [0.12, 0.04, 0.12] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           />
           <circle cx={400} cy={50} r={7} fill="#ef4444" />
           <circle cx={400} cy={50} r={3} fill="#ffffff" />
@@ -289,7 +289,7 @@ function RouteMap({ progress }: { progress: number }) {
             fill="#16a34a"
             opacity={0.12}
             animate={{ r: [14, 20, 14], opacity: [0.12, 0.04, 0.12] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.circle
             cx={dotPos.x}
@@ -297,7 +297,7 @@ function RouteMap({ progress }: { progress: number }) {
             fill="#16a34a"
             r={8}
             animate={{ cx: dotPos.x, cy: dotPos.y }}
-            transition={{ duration: 0.8, ease: 'easeOut' as const }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
           />
           <motion.circle
             cx={dotPos.x}
@@ -305,7 +305,7 @@ function RouteMap({ progress }: { progress: number }) {
             fill="#ffffff"
             r={3.5}
             animate={{ cx: dotPos.x, cy: dotPos.y }}
-            transition={{ duration: 0.8, ease: 'easeOut' as const }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
           />
         </g>
       </svg>
@@ -407,7 +407,7 @@ function StatusTimeline({ currentStatus }: { currentStatus: OrderStatus }) {
           className="absolute top-[15px] left-[15px] h-[2px] rounded-full r56-timeline-progress-line"
           style={{ background: 'linear-gradient(90deg, #16a34a, #22c55e)' }}
           animate={{ width: `${((currentIndex) / (STATUS_STEPS.length - 1)) * 100}%` }}
-          transition={{ duration: 1, ease: 'easeOut' as const }}
+          transition={{ duration: 1, ease: 'easeOut' }}
           initial={{ width: '0%' }}
         />
 
@@ -439,7 +439,7 @@ function StatusTimeline({ currentStatus }: { currentStatus: OrderStatus }) {
                       border: isCurrent ? '2px solid #16a34a' : '2px solid transparent',
                     }}
                     animate={isCurrent ? { scale: [1, 1.15, 1] } : {}}
-                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     <span
                       style={{
@@ -457,13 +457,13 @@ function StatusTimeline({ currentStatus }: { currentStatus: OrderStatus }) {
                         className="absolute inset-0 rounded-full"
                         style={{ border: '2px solid rgba(22,163,74,0.3)' }}
                         animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' as const }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
                       />
                       <motion.div
                         className="absolute inset-0 rounded-full"
                         style={{ border: '1.5px solid rgba(22,163,74,0.15)' }}
                         animate={{ scale: [1, 1.8], opacity: [0.4, 0] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const, delay: 0.3 }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeOut', delay: 0.3 }}
                       />
                     </>
                   )}
@@ -767,7 +767,7 @@ function ProgressStats({ routeProgress, etaSeconds, isDelivered }: { routeProgre
         >
           <motion.div
             animate={{ y: [0, -2, 0] }}
-            transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3, ease: 'easeInOut' }}
             className="flex justify-center mb-1.5"
           >
             <div className="h-7 w-7 rounded-md flex items-center justify-center" style={{ color: stat.color }}>
@@ -975,7 +975,7 @@ function DelayAlert({ isDelayed }: { isDelayed: boolean }) {
         className="r56-delay-pulse-icon h-8 w-8 rounded-lg flex items-center justify-center shrink-0"
         style={{ backgroundColor: 'rgba(245,158,11,0.15)' }}
         animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
       </motion.div>
@@ -1083,7 +1083,7 @@ function TemperatureIndicator({ items }: { items: OrderItem[] }) {
           >
             <motion.div
               animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0"
               style={{ backgroundColor: 'rgba(239,68,68,0.12)' }}
             >
@@ -1101,7 +1101,7 @@ function TemperatureIndicator({ items }: { items: OrderItem[] }) {
                   className="r56-thermometer-fill w-full rounded-full"
                   style={{ backgroundColor: '#ef4444' }}
                   animate={{ height: ['60%', '75%', '60%'] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 />
               </div>
             </div>
@@ -1118,7 +1118,7 @@ function TemperatureIndicator({ items }: { items: OrderItem[] }) {
           >
             <motion.div
               animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
               className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0"
               style={{ backgroundColor: 'rgba(59,130,246,0.12)' }}
             >
@@ -1136,7 +1136,7 @@ function TemperatureIndicator({ items }: { items: OrderItem[] }) {
                   className="r56-thermometer-fill w-full rounded-full"
                   style={{ backgroundColor: '#3b82f6' }}
                   animate={{ height: ['70%', '55%', '70%'] }}
-                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
                 />
               </div>
             </div>
@@ -1285,14 +1285,14 @@ export function FoodDeliveryTracker() {
         <div className="absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-white/5" />
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' as const }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           className="absolute top-4 right-16 h-10 w-10 rounded-full border-2 border-dashed border-white/15"
         />
 
         <div className="relative z-10 flex items-center gap-3">
           <motion.div
             animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             className="h-12 w-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center"
           >
             <Truck className="h-6 w-6" />

@@ -28,7 +28,7 @@ export function ProductShareBar({ product }: ProductShareBarProps) {
   const compareShimmer = {
     animate: {
       background: ['rgba(245,158,11,0.1)', 'rgba(245,158,11,0.25)', 'rgba(245,158,11,0.1)'],
-      transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+      transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
     },
   }
   const handleShare = async () => {

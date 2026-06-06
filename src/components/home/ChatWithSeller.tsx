@@ -65,7 +65,7 @@ const badgePulseVariants = {
   initial: { scale: 1 },
   pulse: {
     scale: [1, 1.25, 1],
-    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 

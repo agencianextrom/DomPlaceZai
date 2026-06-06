@@ -77,7 +77,7 @@ function TaxBar({ percentage, color, delay = 0 }: { percentage: number; color: s
         style={{ width: `${width}%`, background: color }}
         initial={{ width: 0 }}
         animate={{ width: `${width}%` }}
-        transition={{ duration: 0.8, ease: 'easeOut' as const, delay: delay / 1000 }}
+        transition={{ duration: 0.8, ease: 'easeOut', delay: delay / 1000 }}
       />
     </div>
   )
@@ -304,7 +304,7 @@ export function TaxBreakdown({ subtotal = 100 }: { subtotal?: number }) {
                     className="h-full bg-gradient-to-r from-primary to-emerald-500 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${(totalTaxPercentage / nonLocalTaxRate) * 100}%` }}
-                    transition={{ duration: 0.8, ease: 'easeOut' as const, delay: 0.3 }}
+                    transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
                   />
                 </div>
               </div>
@@ -315,7 +315,7 @@ export function TaxBreakdown({ subtotal = 100 }: { subtotal?: number }) {
                     className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: '100%' }}
-                    transition={{ duration: 0.8, ease: 'easeOut' as const, delay: 0.3 }}
+                    transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
                   />
                 </div>
               </div>

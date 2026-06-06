@@ -777,7 +777,7 @@ function NewStoryDot({ isUnviewed }: { isUnviewed: boolean }) {
     >
       <motion.div
         animate={{ scale: [1, 1.4, 1], opacity: [1, 0.6, 1] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         className="h-4 w-4 rounded-full bg-red-500 border-2 border-background flex items-center justify-center"
         style={{ boxShadow: '0 0 8px rgba(239,68,68,0.6)' }}
       >
@@ -842,7 +842,7 @@ function AnimatedCloseButton({ onClose }: { onClose: () => void }) {
           strokeLinecap="round"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 0.3, ease: 'easeOut' as const }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
         />
       </svg>
     </motion.button>
@@ -881,7 +881,7 @@ function StoryProgressBars({
             }
             transition={
               idx === currentIndex && !isPaused
-                ? { duration: SLIDE_DURATION / 1000, ease: 'linear' as const }
+                ? { duration: SLIDE_DURATION / 1000, ease: 'linear' }
                 : { duration: 0.2 }
             }
           />
@@ -908,7 +908,7 @@ function StorySlideContent({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.25, ease: 'easeOut' as const }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
       className="relative z-[2] flex flex-col items-center justify-center h-full px-6 sm:px-10 text-center r52-stories-slide-content"
     >
       {/* Product image area with emoji fallback */}
@@ -921,7 +921,7 @@ function StorySlideContent({
         <div className="relative">
           <motion.div
             animate={{ rotate: [0, 3, -3, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             className="h-28 w-28 sm:h-36 sm:w-36 rounded-3xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-xl r52-stories-product-img-box"
             style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}
           >
@@ -1085,7 +1085,7 @@ function StoryCircle({
           <motion.div
             className="absolute inset-0 z-0 r52-stories-ring-animated"
             animate={{ rotate: 360 }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'linear' as const }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
           >
             <RainbowRing size={72} strokeWidth={3} />
           </motion.div>
@@ -1213,7 +1213,7 @@ function SwipeDownIndicator() {
   return (
     <motion.div
       animate={{ y: [0, 5, 0] }}
-      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 r52-stories-swipe-indicator"
     >
       <div className="flex flex-col items-center gap-0.5">
@@ -1342,7 +1342,7 @@ function LikeParticles() {
             duration: 1.8,
             repeat: Infinity,
             delay: p.delay,
-            ease: 'easeOut' as const,
+            ease: 'easeOut',
             repeatDelay: 3,
           }}
         >
@@ -1389,14 +1389,14 @@ function StoryViewerHeader({
           animate={{
             boxShadow: `0 0 18px ${story.gradientTo}70`,
           }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           style={{
             background: `linear-gradient(135deg, ${story.gradientFrom}, ${story.gradientTo})`,
           }}
         >
           <motion.div
             animate={{ scale: [1, 1.06, 1], opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="h-full w-full rounded-full bg-black/80 flex items-center justify-center"
           >
             <span className={`h-7 w-7 rounded-full bg-gradient-to-br ${story.avatarBg} flex items-center justify-center text-white font-bold text-xs`}>
@@ -1680,7 +1680,7 @@ export function ProductStories() {
             <h2 className="text-base font-bold flex items-center gap-2 r52-stories-section-title r62-heading-gradient">
               <motion.span
                 animate={{ rotate: [0, 15, -15, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 className="text-xl"
               >
                 <Sparkles className="h-5 w-5 text-violet-500" />
@@ -1701,7 +1701,7 @@ export function ProductStories() {
                 <motion.span
                   initial={{ scale: 0.8 }}
                   animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                   className="text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded-full r52-stories-unseen-badge"
                 >
                   {unseenCount} novas

@@ -89,7 +89,7 @@ function EmptyState({ hasData }: { hasData: boolean }) {
     >
       <motion.div
         animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         className="text-6xl mb-4"
       >
         🚚
@@ -128,7 +128,7 @@ function DeliveryTimeline({ timeline }: { timeline: TimelineStep[] }) {
                     }}
                     initial={{ height: 0 }}
                     animate={{ height: '100%' }}
-                    transition={{ delay: idx * 0.15, duration: 0.4, ease: 'easeOut' as const }}
+                    transition={{ delay: idx * 0.15, duration: 0.4, ease: 'easeOut' }}
                   />
                 </div>
               )}
@@ -148,7 +148,7 @@ function DeliveryTimeline({ timeline }: { timeline: TimelineStep[] }) {
                   <motion.div
                     className="h-3 w-3 rounded-full bg-indigo-500"
                     animate={{ scale: [1, 1.4, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                   />
                 ) : (
                   <Circle className="h-3 w-3 text-slate-400" />
@@ -157,7 +157,7 @@ function DeliveryTimeline({ timeline }: { timeline: TimelineStep[] }) {
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-indigo-400/40"
                     animate={{ scale: [1, 1.6], opacity: [0.7, 0] }}
-                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' as const }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
                   />
                 )}
               </motion.div>
@@ -195,7 +195,7 @@ function MapPlaceholder({ eta, etaMinutes, distance }: { eta: string; etaMinutes
     >
       <motion.div
         animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         className="text-4xl"
       >
         📍

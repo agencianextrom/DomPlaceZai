@@ -66,13 +66,13 @@ export function LoyaltyTier() {
           <motion.div
             className={`absolute top-0 right-0 w-40 h-40 bg-gradient-to-br ${currentTier.color} opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4`}
             animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.18, 0.1] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           />
           {/* Secondary glow orb */}
           <motion.div
             className={`absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br ${currentTier.color} opacity-[0.06] rounded-full blur-2xl translate-y-1/2 -translate-x-1/4`}
             animate={{ scale: [1, 1.2, 1], opacity: [0.06, 0.12, 0.06] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.5 }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
           />
           
           <div className="flex items-center justify-between relative z-10">
@@ -80,7 +80,7 @@ export function LoyaltyTier() {
               {/* Rotating tier badge — enhanced */}
               <motion.div
                 animate={{ rotate: [0, 8, -8, 0], scale: [1, 1.06, 1] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
                 className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${currentTier.color} flex items-center justify-center shadow-lg loyalty-tier-badge-rotate r27-tier-shimmer`}
               >
                 <CurrentIcon className="h-7 w-7 text-white" />
@@ -88,7 +88,7 @@ export function LoyaltyTier() {
                 <motion.div
                   className="absolute inset-0 rounded-2xl border-2 border-white/20"
                   animate={{ scale: [1, 1.12, 1], opacity: [0.2, 0.4, 0.2] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
                 />
               </motion.div>
               <div>
@@ -123,7 +123,7 @@ export function LoyaltyTier() {
                   scale: [0, 1, 0],
                   opacity: [0, 0.8, 0],
                 }}
-                transition={{ duration: 2, repeat: Infinity, delay: s.delay + 1, ease: 'easeOut' as const }}
+                transition={{ duration: 2, repeat: Infinity, delay: s.delay + 1, ease: 'easeOut' }}
               />
             ))}
           </div>
@@ -142,7 +142,7 @@ export function LoyaltyTier() {
                   className="absolute inset-0 rounded-full loyalty-tier-progress-glow"
                   initial={{ width: 0 }}
                   animate={{ width: `${progressInTier}%` }}
-                  transition={{ duration: 1.4, ease: 'easeOut' as const, delay: 0.3 }}
+                  transition={{ duration: 1.4, ease: 'easeOut', delay: 0.3 }}
                   style={{
                     background: `linear-gradient(90deg, ${currentTier.color.includes('yellow') ? 'oklch(0.85 0.14 70 / 0.15)' : 'oklch(0.65 0.12 155 / 0.15)'}, transparent)`,
                   }}
@@ -233,7 +233,7 @@ export function LoyaltyTier() {
                   <motion.div
                     className={`h-8 w-8 rounded-xl flex items-center justify-center transition-all ${isReached ? `bg-gradient-to-br ${tier.color} shadow-md loyalty-tier-icon-glow` : 'bg-muted'} ${isCurrent ? 'r27-tier-glow' : ''}${!isReached ? ' r27-lock-overlay' : ''}`}
                     animate={isCurrent ? { scale: [1, 1.1, 1] } : { scale: 1 }}
-                    transition={{ duration: 2, repeat: isCurrent ? Infinity : 0, ease: 'easeInOut' as const }}
+                    transition={{ duration: 2, repeat: isCurrent ? Infinity : 0, ease: 'easeInOut' }}
                     whileHover={{ scale: 1.15, rotate: 8 }}
                   >
                     <TierIcon className={`h-4 w-4 ${isReached ? 'text-white' : 'text-muted-foreground'}`} />

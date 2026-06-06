@@ -68,7 +68,7 @@ export function ProductCarousel({ title, products, viewAll, isLoading }: Product
             transition={{
               duration: 3,
               repeat: Infinity,
-              ease: 'linear' as const,
+              ease: 'linear',
             }}
           >
             {title}

@@ -133,7 +133,7 @@ function ProgressRing({
           strokeDasharray={circumference}
           className={colors.ring}
           animate={{ strokeDashoffset: offset }}
-          transition={{ duration: 0.5, ease: 'easeOut' as const }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         />
       </svg>
       {/* Glow effect behind the ring */}
@@ -143,7 +143,7 @@ function ProgressRing({
           opacity: color === 'red' ? [0.3, 0.6, 0.3] : color === 'amber' ? [0.2, 0.4, 0.2] : [0.1, 0.2, 0.1],
           scale: [1, 1.05, 1],
         }}
-        transition={{ duration: color === 'red' ? 1 : 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: color === 'red' ? 1 : 2, repeat: Infinity, ease: 'easeInOut' }}
         style={{ backgroundColor: colors.glow }}
       />
     </div>
@@ -199,7 +199,7 @@ function TimerParticles({ color }: { color: TimerColor }) {
             duration: color === 'red' ? 1.8 : 2.5,
             repeat: Infinity,
             delay: p.delay,
-            ease: 'easeOut' as const,
+            ease: 'easeOut',
             repeatDelay: color === 'red' ? 0.3 : 0.8,
           }}
         />
@@ -341,7 +341,7 @@ export function CartTimer() {
                 <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
                   <motion.div
                     animate={isUrgent ? { scale: [1, 1.1, 1] } : {}}
-                    transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' }}
                     className="h-8 w-8 rounded-xl bg-white/80 dark:bg-card/80 flex items-center justify-center shadow-sm"
                   >
                     <Lock className={`h-4 w-4 ${colors.text}`} />
@@ -379,7 +379,7 @@ export function CartTimer() {
                       <motion.p
                         className="text-xs font-semibold text-red-600 dark:text-red-400 flex items-center justify-center sm:justify-start gap-1"
                         animate={{ opacity: [1, 0.6, 1] }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' as const }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
                       >
                         <Zap className="h-3 w-3" />
                         Compre antes que expire!
@@ -437,14 +437,14 @@ export function CartTimer() {
                       : 'bg-gradient-to-r from-red-500 to-orange-500'
                 }`}
                 animate={{ width: `${progress * 100}%` }}
-                transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
               />
               {/* Sweep shimmer on urgent */}
               {isUrgent && (
                 <motion.div
                   className="absolute inset-0"
                   animate={{ x: ['-100%', '200%'] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent" />
                 </motion.div>

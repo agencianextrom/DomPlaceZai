@@ -79,7 +79,7 @@ const slideOutVariant = {
     opacity: 0,
     x: -60,
     scale: 0.8,
-    transition: { duration: 0.25, ease: 'easeIn' as const },
+    transition: { duration: 0.25, ease: 'easeIn' },
   },
 }
 

@@ -76,7 +76,7 @@ const arrowDownVariants = {
   idle: { y: 0 },
   bounce: {
     y: [0, 6, 0],
-    transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -84,7 +84,7 @@ const arrowUpVariants = {
   idle: { y: 0 },
   bounce: {
     y: [0, -6, 0],
-    transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -92,7 +92,7 @@ const pulseGlowVariants = {
   idle: { opacity: 0.4 },
   pulse: {
     opacity: [0.4, 1, 0.4],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -250,7 +250,7 @@ function DemandGauge({ tier, score }: { tier: DemandTier; score: number }) {
           className="r49-price-gauge-fill h-full rounded-full relative"
           initial={{ width: '0%' }}
           animate={{ width: `${Math.min(100, score)}%` }}
-          transition={{ duration: 1.5, ease: 'easeOut' as const, delay: 0.3 }}
+          transition={{ duration: 1.5, ease: 'easeOut', delay: 0.3 }}
           style={{
             background: `linear-gradient(90deg, ${color}, ${color}dd)`,
           }}
@@ -263,7 +263,7 @@ function DemandGauge({ tier, score }: { tier: DemandTier; score: number }) {
               backgroundSize: '300% 100%',
             }}
             animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' as const, repeatDelay: 1.5 }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
           />
         </motion.div>
       </div>
@@ -278,7 +278,7 @@ function DemandGauge({ tier, score }: { tier: DemandTier; score: number }) {
               className={`r49-price-gauge-label text-[9px] font-semibold transition-colors duration-300 ${isActive ? '' : 'text-muted-foreground'}`}
               style={{ color: isActive ? color : undefined }}
               animate={isActive ? { scale: [1, 1.1, 1] } : {}}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
               {lbl}
             </motion.span>
@@ -338,7 +338,7 @@ function PriceSparkline({ data, color }: { data: PricePoint[]; color: string }) 
           strokeLinejoin="round"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 2, ease: 'easeOut' as const, delay: 0.3 }}
+          transition={{ duration: 2, ease: 'easeOut', delay: 0.3 }}
         />
         {/* End dot */}
         <motion.circle
@@ -405,7 +405,7 @@ function DemandFactorCard({ factor, index }: { factor: DemandFactor; index: numb
           className="r49-price-factor-bar-fill h-full rounded-full"
           initial={{ width: '0%' }}
           animate={{ width: `${factor.value}%` }}
-          transition={{ duration: 1, ease: 'easeOut' as const, delay: 0.4 + index * 0.1 }}
+          transition={{ duration: 1, ease: 'easeOut', delay: 0.4 + index * 0.1 }}
           style={{ background: impactColor }}
         />
       </div>
@@ -458,7 +458,7 @@ function BestTimeToBuy({ time, initialMinutes }: { time: string; initialMinutes:
           className="r49-price-best-time-icon h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
           style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}
           animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Timer className="h-5 w-5 text-white" />
         </motion.div>
@@ -530,7 +530,7 @@ function PriceAlertSetter({
           className="r49-price-alert-icon h-7 w-7 rounded-lg flex items-center justify-center"
           style={{ background: isActive ? 'rgba(59,130,246,0.15)' : 'rgba(0,0,0,0.06)', color: isActive ? '#3b82f6' : '#9ca3af' }}
           animate={isActive ? { scale: [1, 1.08, 1] } : {}}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
           {isActive ? <Bell className="h-3.5 w-3.5" /> : <BellOff className="h-3.5 w-3.5" />}
         </motion.div>
@@ -691,7 +691,7 @@ function ComparisonBarChart({ current, avg, lowest, highest }: { current: number
               className="r49-price-comparison-bar-fill h-full rounded-md relative"
               initial={{ width: '0%' }}
               animate={{ width: `${(bar.value / maxVal) * 100}%` }}
-              transition={{ duration: 1.2, ease: 'easeOut' as const, delay: 0.5 + i * 0.15 }}
+              transition={{ duration: 1.2, ease: 'easeOut', delay: 0.5 + i * 0.15 }}
               style={{ background: bar.color }}
             >
               {bar.highlight && (
@@ -702,7 +702,7 @@ function ComparisonBarChart({ current, avg, lowest, highest }: { current: number
                     backgroundSize: '300% 100%',
                   }}
                   animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' as const, repeatDelay: 1.5 }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
                 />
               )}
             </motion.div>
@@ -823,7 +823,7 @@ function SavingsCalculator({
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
       >
-        <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}>
+        <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
           {isWorthWaiting ? (
             <Sparkles className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
           ) : (
@@ -985,20 +985,20 @@ export function DynamicPricingEngine({
         className="r49-price-bg-gradient absolute inset-0 pointer-events-none"
         style={{ background: demandGradient }}
         animate={{ opacity: [0.6, 1, 0.6] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       />
       {/* Animated floating orbs */}
       <motion.div
         className="r49-price-bg-orb r49-price-bg-orb-1 absolute -top-10 -left-10 w-40 h-40 rounded-full pointer-events-none"
         style={{ background: `radial-gradient(circle, rgba(${demandColorRgb},0.06) 0%, transparent 70%)` }}
         animate={{ x: [0, 20, 0], y: [0, 15, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="r49-price-bg-orb r49-price-bg-orb-2 absolute -bottom-8 -right-8 w-32 h-32 rounded-full pointer-events-none"
         style={{ background: `radial-gradient(circle, rgba(${demandColorRgb},0.04) 0%, transparent 70%)` }}
         animate={{ x: [0, -15, 0], y: [0, -12, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' as const, delay: 2 }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
 
       {/* ── Header ── */}
@@ -1023,7 +1023,7 @@ export function DynamicPricingEngine({
                 transition={{
                   duration: 2,
                   repeat: Infinity,
-                  ease: 'easeInOut' as const,
+                  ease: 'easeInOut',
                 }}
                 style={{
                   boxShadow: `0 0 0 3px rgba(${demandColorRgb},0.25)`,
@@ -1037,7 +1037,7 @@ export function DynamicPricingEngine({
                   className="r49-price-live-badge inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[8px] font-bold text-white"
                   style={{ background: '#ef4444' }}
                   animate={{ opacity: [1, 0.5, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <span className="r49-price-live-dot h-1.5 w-1.5 rounded-full bg-white inline-block" />
                   AO VIVO
@@ -1058,9 +1058,9 @@ export function DynamicPricingEngine({
               color: demandColor,
             }}
             animate={{ scale: [1, 1.03, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <motion.div animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}>
+            <motion.div animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}>
               <BarChart3 className="h-3.5 w-3.5" />
             </motion.div>
             <div className="text-right">
@@ -1144,7 +1144,7 @@ export function DynamicPricingEngine({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.4, ease: 'easeInOut' as const }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
           >
             <div className="px-4 pt-3 pb-4 space-y-4 overflow-hidden">
 
@@ -1156,7 +1156,7 @@ export function DynamicPricingEngine({
                     className="r49-price-gauge-score px-2 py-0.5 rounded-full text-[10px] font-bold text-white"
                     style={{ background: demandColor }}
                     animate={{ scale: [1, 1.06, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     {demandScore}%
                   </motion.span>
@@ -1268,7 +1268,7 @@ export function DynamicPricingEngine({
             background: `linear-gradient(90deg, transparent, ${demandColor}, transparent)`,
           }}
           animate={{ x: ['-100%', '100%'] }}
-          transition={{ duration: 3, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' }}
         />
       </div>
     </motion.section>

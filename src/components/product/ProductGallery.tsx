@@ -93,10 +93,10 @@ export function ProductGallery({ product, onImageClick }: ProductGalleryProps) {
   return (
     <div className="space-y-3 relative r62-card-lift r96-product-gallery-card" ref={galleryRef}>
       {/* 4 floating ambient particles */}
-      <motion.div className="absolute top-2 right-6 w-1.5 h-1.5 rounded-full bg-primary/20 pointer-events-none z-20" animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0], scale: [0.5, 1, 0.3] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0 }} />
-      <motion.div className="absolute top-8 left-4 w-1 h-1 rounded-full bg-accent/25 pointer-events-none z-20" animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.8 }} />
-      <motion.div className="absolute bottom-12 right-10 w-2 h-2 rounded-full bg-primary/15 pointer-events-none z-20" animate={{ y: [0, -8, -18], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.2] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeOut' as const, delay: 1.5 }} />
-      <motion.div className="absolute bottom-20 left-8 w-1 h-1 rounded-full bg-accent/20 pointer-events-none z-20" animate={{ y: [0, -14, -28], opacity: [0, 0.5, 0], scale: [0.4, 0.8, 0] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 2.2 }} />
+      <motion.div className="absolute top-2 right-6 w-1.5 h-1.5 rounded-full bg-primary/20 pointer-events-none z-20" animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0], scale: [0.5, 1, 0.3] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut', delay: 0 }} />
+      <motion.div className="absolute top-8 left-4 w-1 h-1 rounded-full bg-accent/25 pointer-events-none z-20" animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut', delay: 0.8 }} />
+      <motion.div className="absolute bottom-12 right-10 w-2 h-2 rounded-full bg-primary/15 pointer-events-none z-20" animate={{ y: [0, -8, -18], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.2] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeOut', delay: 1.5 }} />
+      <motion.div className="absolute bottom-20 left-8 w-1 h-1 rounded-full bg-accent/20 pointer-events-none z-20" animate={{ y: [0, -14, -28], opacity: [0, 0.5, 0], scale: [0.4, 0.8, 0] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut', delay: 2.2 }} />
 
       {/* Main image container — mobile: horizontal snap scroll, desktop: single with nav */}
       {/* Mobile: horizontal snap scrollable gallery */}

@@ -152,7 +152,7 @@ const sparkleVariants: Variants = {
       duration: p.duration,
       delay: p.delay,
       repeat: Infinity,
-      ease: 'easeInOut' as const,
+      ease: 'easeInOut',
     },
   }),
 }
@@ -316,7 +316,7 @@ export function WeekendSpecials() {
             <div className="flex items-center gap-2.5 relative">
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg"
               >
                 <CalendarDays className="h-5 w-5 text-white" />
@@ -385,7 +385,7 @@ export function WeekendSpecials() {
             <motion.div
               className="absolute inset-0 w-1/2"
               animate={{ x: ['-100%', '200%'] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
             >
               <div className="w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent" />
             </motion.div>

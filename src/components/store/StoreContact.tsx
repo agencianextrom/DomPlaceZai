@@ -331,10 +331,10 @@ export function StoreContact({ store }: StoreContactProps) {
                     </motion.div>
                   </motion.div>
                   {/* 4 floating particles near map */}
-                  <motion.div className="absolute top-3 left-4 w-1.5 h-1.5 rounded-full bg-emerald-400/30 pointer-events-none" animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0], scale: [0.5, 1, 0.3] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0.2 }} />
-                  <motion.div className="absolute bottom-6 right-6 w-1 h-1 rounded-full bg-amber-400/30 pointer-events-none" animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 1.0 }} />
-                  <motion.div className="absolute top-8 right-8 w-2 h-2 rounded-full bg-primary/20 pointer-events-none" animate={{ y: [0, -8, -16], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.2] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeOut' as const, delay: 1.8 }} />
-                  <motion.div className="absolute bottom-10 left-6 w-1 h-1 rounded-full bg-teal-400/30 pointer-events-none" animate={{ y: [0, -14, -28], opacity: [0, 0.6, 0], scale: [0.4, 0.8, 0] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 0.6 }} />
+                  <motion.div className="absolute top-3 left-4 w-1.5 h-1.5 rounded-full bg-emerald-400/30 pointer-events-none" animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0], scale: [0.5, 1, 0.3] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut', delay: 0.2 }} />
+                  <motion.div className="absolute bottom-6 right-6 w-1 h-1 rounded-full bg-amber-400/30 pointer-events-none" animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut', delay: 1.0 }} />
+                  <motion.div className="absolute top-8 right-8 w-2 h-2 rounded-full bg-primary/20 pointer-events-none" animate={{ y: [0, -8, -16], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.2] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeOut', delay: 1.8 }} />
+                  <motion.div className="absolute bottom-10 left-6 w-1 h-1 rounded-full bg-teal-400/30 pointer-events-none" animate={{ y: [0, -14, -28], opacity: [0, 0.6, 0], scale: [0.4, 0.8, 0] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut', delay: 0.6 }} />
                 </div>
                 {store.address && (
                   <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">

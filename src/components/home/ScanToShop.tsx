@@ -352,7 +352,7 @@ export function ScanToShop({ className = '' }: ScanToShopProps) {
                   {loading ? (
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full"
                     />
                   ) : (
@@ -441,7 +441,7 @@ export function ScanToShop({ className = '' }: ScanToShopProps) {
               <div className="flex flex-col items-center gap-3">
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   className="h-8 w-8 border-3 border-emerald-500/30 border-t-emerald-500 rounded-full"
                 />
                 <p className="text-sm text-muted-foreground">Buscando produto...</p>

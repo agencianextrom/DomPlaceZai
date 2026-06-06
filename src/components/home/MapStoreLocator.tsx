@@ -170,7 +170,7 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
             background: 'conic-gradient(from var(--gradient-angle, 0deg), hsl(var(--primary)), hsl(160, 84%, 39%), hsl(var(--accent)), hsl(160, 84%, 39%), hsl(var(--primary)))',
           }}
           animate={{ rotate: 360 }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'linear' as const }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
         />
         <div
           className={`relative rounded-[14px] overflow-hidden bg-gradient-to-br from-emerald-50 via-teal-50 to-amber-50 dark:from-emerald-950/30 dark:via-teal-950/20 dark:to-amber-950/20 ${
@@ -206,7 +206,7 @@ export function MapStoreLocator({ stores }: MapStoreLocatorProps) {
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 1 }}
                 transition={{
-                  pathLength: { duration: 1.5, delay: line.index * 0.2, ease: 'easeInOut' as const },
+                  pathLength: { duration: 1.5, delay: line.index * 0.2, ease: 'easeInOut' },
                   opacity: { duration: 0.5, delay: line.index * 0.2 },
                 }}
               />

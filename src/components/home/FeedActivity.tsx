@@ -200,7 +200,7 @@ const timestampVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { delay: 0.5, duration: 0.6, ease: 'easeOut' as const },
+    transition: { delay: 0.5, duration: 0.6, ease: 'easeOut' },
   },
 }
 
@@ -229,23 +229,23 @@ const loadMoreVariants = {
 const floatingIconVariants = [
   {
     animate: { y: [0, -8, 0], rotate: [0, 5, -5, 0] },
-    transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 0 },
+    transition: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0 },
   },
   {
     animate: { y: [0, -10, 0], rotate: [0, -6, 4, 0] },
-    transition: { duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.4 },
+    transition: { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.4 },
   },
   {
     animate: { y: [0, -6, 0], rotate: [0, 3, -3, 0] },
-    transition: { duration: 2.8, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.8 },
+    transition: { duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 },
   },
   {
     animate: { y: [0, -9, 0], rotate: [0, -4, 6, 0] },
-    transition: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.2 },
+    transition: { duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 1.2 },
   },
   {
     animate: { y: [0, -7, 0], rotate: [0, 6, -2, 0] },
-    transition: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.6 },
+    transition: { duration: 2.6, repeat: Infinity, ease: 'easeInOut', delay: 0.6 },
   },
 ]
 
@@ -358,11 +358,11 @@ export function FeedActivity() {
       <motion.div
         className="absolute -top-1 right-1 z-20"
         animate={{ y: [0, -4, 0], rotate: [0, 15, 0, -15, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const, delay: 1 }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
       >
         <motion.div
           animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-400/30"
         >
           <span className="text-base leading-none">🔔</span>
@@ -373,7 +373,7 @@ export function FeedActivity() {
       <div className="flex items-center gap-2 mb-4">
         <motion.div
           animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           className="h-2.5 w-2.5 rounded-full bg-emerald-500"
         />
         <h3 className="font-semibold text-sm flex items-center gap-1.5 r62-heading-gradient">Atividade Recente</h3>
@@ -414,7 +414,7 @@ export function FeedActivity() {
           className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-dashed border-border/60 bg-muted/20 overflow-hidden relative"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: 'easeOut' as const }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         >
           {/* Floating background icons */}
           <div className="absolute inset-0 pointer-events-none">
@@ -440,7 +440,7 @@ export function FeedActivity() {
             <motion.div
               className="absolute"
               animate={{ y: [0, -10, 0], x: [0, 4, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.2 }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
             >
               <div className="h-10 w-10 rounded-full bg-amber-100/50 dark:bg-amber-900/20 flex items-center justify-center">
                 <Tag className="h-5 w-5 text-amber-500/50" />
@@ -449,7 +449,7 @@ export function FeedActivity() {
             <motion.div
               className="absolute"
               animate={{ y: [0, -8, 0], x: [0, -6, 0] }}
-              transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+              transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
             >
               <div className="h-9 w-9 rounded-full bg-rose-100/50 dark:bg-rose-900/20 flex items-center justify-center">
                 <Heart className="h-4.5 w-4.5 text-rose-500/50" />
@@ -458,7 +458,7 @@ export function FeedActivity() {
             <motion.div
               className="absolute"
               animate={{ y: [0, -12, 0] }}
-              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.8 }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
             >
               <div className="h-11 w-11 rounded-full bg-teal-100/50 dark:bg-teal-900/20 flex items-center justify-center">
                 <Sparkles className="h-5.5 w-5.5 text-teal-500/50" />
@@ -467,7 +467,7 @@ export function FeedActivity() {
             <motion.div
               className="absolute"
               animate={{ y: [0, -7, 0], x: [0, 5, 0] }}
-              transition={{ duration: 3.1, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.0 }}
+              transition={{ duration: 3.1, repeat: Infinity, ease: 'easeInOut', delay: 1.0 }}
             >
               <div className="h-8 w-8 rounded-full bg-emerald-100/50 dark:bg-emerald-900/20 flex items-center justify-center">
                 <Star className="h-4 w-4 text-emerald-500/50" />
@@ -511,7 +511,7 @@ export function FeedActivity() {
                             <motion.div
                               className="absolute -inset-[2px] rounded-full"
                               animate={{ opacity: [0.5, 0.8, 0.5] }}
-                              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                               style={{ background: 'conic-gradient(from 0deg, #10b981, #f59e0b, #ec4899, #10b981)' }}
                             />
                             <div className="absolute -inset-[2px] rounded-full bg-gradient-to-br from-primary to-amber-400 opacity-60" />
@@ -524,7 +524,7 @@ export function FeedActivity() {
                               <motion.div
                                 className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-background"
                                 animate={{ scale: [1, 1.3, 1] }}
-                                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                               />
                             )}
                           </div>
@@ -597,7 +597,7 @@ export function FeedActivity() {
                             <motion.div
                               className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500/40 border border-emerald-500/30"
                               animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
-                              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                             />
                             <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-background" />
                           </>
@@ -664,7 +664,7 @@ export function FeedActivity() {
                     <>
                       <motion.div
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                         className="h-3.5 w-3.5 rounded-full border-2 border-primary border-t-transparent"
                       />
                       Carregando...
@@ -673,7 +673,7 @@ export function FeedActivity() {
                     <>
                       <motion.div
                         animate={{ y: [0, -2, 0] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                       >
                         <Package className="h-3.5 w-3.5" />
                       </motion.div>

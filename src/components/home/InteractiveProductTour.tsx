@@ -159,7 +159,7 @@ const mascotBounce = {
     transition: {
       duration: 3,
       repeat: Infinity,
-      ease: 'easeInOut' as const,
+      ease: 'easeInOut',
     },
   },
   talking: {
@@ -168,7 +168,7 @@ const mascotBounce = {
     transition: {
       duration: 0.8,
       repeat: Infinity,
-      ease: 'easeInOut' as const,
+      ease: 'easeInOut',
     },
   },
 }
@@ -231,7 +231,7 @@ function FloatingParticle({
         duration: 4 + Math.random() * 2,
         repeat: Infinity,
         delay,
-        ease: 'easeInOut' as const,
+        ease: 'easeInOut',
       }}
     />
   )
@@ -315,7 +315,7 @@ function WelcomeDemo() {
         <motion.div
           className="r49-tour-demo-welcome-icon w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center"
           animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           style={{ boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
         >
           <Sparkles className="w-6 h-6 text-white" />
@@ -640,7 +640,7 @@ function DeliveryDemo({ onDemoClick }: { onDemoClick: () => void }) {
                     className="r49-tour-demo-delivery-line-fill w-full bg-cyan-500 rounded-full"
                     initial={{ height: '0%' }}
                     animate={{ height: isCompleted ? '100%' : '0%' }}
-                    transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                    transition={{ duration: 0.5, ease: 'easeOut' }}
                   />
                 </div>
               )}
@@ -698,7 +698,7 @@ function DeliveryDemo({ onDemoClick }: { onDemoClick: () => void }) {
           className="r49-tour-demo-delivery-truck absolute bottom-3"
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: ['10%', '80%'], opacity: 1 }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Truck className="w-4 h-4 text-cyan-500" />
         </motion.div>
@@ -871,7 +871,7 @@ function CompletionBadge({ onComplete }: { onComplete: () => void }) {
           animate={{
             boxShadow: '0 0 36px rgba(245, 158, 11, 0.4)',
           }}
-          transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' as const, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, repeatType: 'reverse' as const, ease: 'easeInOut' }}
         >
           <Trophy className="w-14 h-14 text-white" />
         </motion.div>
@@ -884,7 +884,7 @@ function CompletionBadge({ onComplete }: { onComplete: () => void }) {
             style={{ transformOrigin: 'center center' }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1, rotate: [deg, deg + 360] }}
-            transition={{ delay: 0.5 + i * 0.1, duration: 6, repeat: Infinity, ease: 'linear' as const }}
+            transition={{ delay: 0.5 + i * 0.1, duration: 6, repeat: Infinity, ease: 'linear' }}
           >
             <Star
               className="w-3 h-3 text-amber-400"
@@ -1007,7 +1007,7 @@ function ProgressIndicator({
                   <motion.div
                     className="r49-tour-progress-dot-pulse absolute inset-0 rounded-full border-2 border-primary"
                     animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' as const }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
                   />
                 )}
               </motion.button>
@@ -1160,14 +1160,14 @@ export function TourFloatingButton({ onClick }: { onClick: () => void }) {
             <motion.div
               className="r49-tour-float-btn-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
               animate={{ x: ['-100%', '200%'] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1.5 }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.5 }}
             />
 
             {/* Pulse ring */}
             <motion.div
               className="r49-tour-float-btn-ring absolute inset-0 rounded-full border-2 border-white/30"
               animate={{ scale: [1, 1.15], opacity: [0.5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
             />
 
             <Eye className="r49-tour-float-btn-icon w-5 h-5 relative z-10" />
@@ -1179,7 +1179,7 @@ export function TourFloatingButton({ onClick }: { onClick: () => void }) {
             <motion.div
               className="r49-tour-float-btn-arrow relative z-10"
               animate={{ x: [0, 3, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
             >
               <ArrowRight className="w-4 h-4" />
             </motion.div>
@@ -1550,7 +1550,7 @@ export function InteractiveProductTour() {
                     className="r49-tour-autoplay-fill absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-emerald-500 rounded-full"
                     initial={{ width: '0%' }}
                     animate={{ width: '100%' }}
-                    transition={{ duration: AUTO_PLAY_DELAY / 1000, ease: 'linear' as const }}
+                    transition={{ duration: AUTO_PLAY_DELAY / 1000, ease: 'linear' }}
                     key={`autoplay-${currentStep}`}
                   />
                 </div>
@@ -1576,7 +1576,7 @@ export function InteractiveProductTour() {
                 animate={{
                   boxShadow: '0 0 0 1px rgba(16, 185, 129, 0.12)',
                 }}
-                transition={{ duration: 3, repeat: Infinity, repeatType: 'reverse' as const, ease: 'easeInOut' as const }}
+                transition={{ duration: 3, repeat: Infinity, repeatType: 'reverse' as const, ease: 'easeInOut' }}
               />
             </motion.div>
           </motion.div>

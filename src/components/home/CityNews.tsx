@@ -191,7 +191,7 @@ export function CityNews() {
           <motion.span
             animate={{ rotate: isLoading ? 360 : 0 }}
             whileHover={{ rotate: 360 }}
-            transition={{ duration: isLoading ? 0.8 : 0.5, repeat: isLoading ? Infinity : 0, ease: 'linear' as const }}
+            transition={{ duration: isLoading ? 0.8 : 0.5, repeat: isLoading ? Infinity : 0, ease: 'linear' }}
           >
             <RefreshCw className="h-3 w-3 transition-transform" />
           </motion.span>

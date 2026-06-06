@@ -60,7 +60,7 @@ const cardVariants = {
     x: -40,
     scale: 0.85,
     rotateY: -12,
-    transition: { duration: 0.25, ease: 'easeIn' as const },
+    transition: { duration: 0.25, ease: 'easeIn' },
   },
 }
 

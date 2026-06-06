@@ -260,7 +260,7 @@ const pulseVariant = {
   animate: {
     scale: [1, 1.35, 1],
     opacity: [1, 0.5, 1],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 

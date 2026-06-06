@@ -399,7 +399,7 @@ export function QuickInfo() {
                 <motion.span
                   className="r34-quick-info-float-emoji text-base ml-auto"
                   animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
                 >
                   📊
                 </motion.span>

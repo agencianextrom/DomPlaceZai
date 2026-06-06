@@ -465,7 +465,7 @@ const pulseVariant = {
   animate: {
     scale: [1, 1.35, 1],
     opacity: [1, 0.5, 1],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -473,7 +473,7 @@ const shimmerVariant = {
   initial: { backgroundPosition: '-200% center' },
   animate: {
     backgroundPosition: '200% center',
-    transition: { duration: 4, repeat: Infinity, ease: 'linear' as const },
+    transition: { duration: 4, repeat: Infinity, ease: 'linear' },
   },
 }
 

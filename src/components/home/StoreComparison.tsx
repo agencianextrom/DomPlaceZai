@@ -120,7 +120,7 @@ function VsBadge() {
           transition={{
             duration: 3,
             repeat: Infinity,
-            ease: 'easeInOut' as const,
+            ease: 'easeInOut',
           }}
         >
           VS
@@ -291,7 +291,7 @@ function EmptyComparisonState() {
               transition={{
                 duration: 3,
                 repeat: Infinity,
-                ease: 'easeInOut' as const,
+                ease: 'easeInOut',
               }}
             >
               <div className="flex items-center gap-4">
@@ -302,7 +302,7 @@ function EmptyComparisonState() {
                   transition={{
                     duration: 3,
                     repeat: Infinity,
-                    ease: 'easeInOut' as const,
+                    ease: 'easeInOut',
                     delay: 0.2,
                   }}
                 >
@@ -318,7 +318,7 @@ function EmptyComparisonState() {
                   transition={{
                     duration: 4,
                     repeat: Infinity,
-                    ease: 'linear' as const,
+                    ease: 'linear',
                   }}
                 >
                   <ArrowRightLeft className="h-4 w-4 text-primary/70" />
@@ -331,7 +331,7 @@ function EmptyComparisonState() {
                   transition={{
                     duration: 3,
                     repeat: Infinity,
-                    ease: 'easeInOut' as const,
+                    ease: 'easeInOut',
                     delay: 0.2,
                   }}
                 >

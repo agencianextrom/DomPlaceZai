@@ -365,7 +365,7 @@ export function MobileNav() {
                       <motion.span
                         initial={{ scale: 1, opacity: 0.7 }}
                         animate={{ scale: 2.5, opacity: 0 }}
-                        transition={{ duration: 0.55, ease: 'easeOut' as const }}
+                        transition={{ duration: 0.55, ease: 'easeOut' }}
                         className="absolute inset-0 rounded-full bg-accent"
                       />
                     )}

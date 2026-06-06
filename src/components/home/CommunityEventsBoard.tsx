@@ -296,12 +296,12 @@ const pillVariants = {
 
 const pulseGlow = {
   animate: { opacity: [0.6, 1, 0.6], scale: [1, 1.05, 1] },
-  transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+  transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
 }
 
 const happeningPulse = {
   animate: { opacity: [1, 0.5, 1], scale: [1, 1.08, 1] },
-  transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const },
+  transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' },
 }
 const spotlightVariants = {
   hidden: { opacity: 0, x: 40 },
@@ -577,7 +577,7 @@ function MyEventsSection({ savedIds, events, onRemove, onClearAll, onShare, pref
         className="flex flex-col items-center justify-center py-16 text-center">
         <motion.span className="text-5xl mb-4"
           animate={prefersReduced ? {} : { y: [0, -8, 0], rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}>📅</motion.span>
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>📅</motion.span>
         <p className="text-base font-semibold text-muted-foreground">Nenhum evento salvo</p>
         <p className="text-sm text-muted-foreground mt-1">Toque no ícone de interesse em qualquer evento para salvá-lo aqui.</p>
       </motion.div>
@@ -880,7 +880,7 @@ export default function CommunityEventsBoard() {
                 className="flex flex-col items-center justify-center py-16 text-center">
                 <motion.span className="text-5xl mb-4"
                   animate={prefersReduced ? {} : { y: [0, -8, 0], rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}>🔍</motion.span>
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>🔍</motion.span>
                 <p className="text-base font-semibold text-muted-foreground">Nenhum evento encontrado</p>
                 <p className="text-sm text-muted-foreground mt-1">Tente alterar os filtros ou selecionar outra data.</p>
                 <motion.button whileHover={prefersReduced ? {} : { scale: 1.03 }} whileTap={prefersReduced ? {} : { scale: 0.97 }}

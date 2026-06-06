@@ -134,7 +134,7 @@ const connectorVariants = {
 
 const priceAnimate = {
   scale: [1, 1.08, 1],
-  transition: { duration: 0.4, ease: 'easeInOut' as const },
+  transition: { duration: 0.4, ease: 'easeInOut' },
 }
 
 const shimmerKeyframes = {

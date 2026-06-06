@@ -115,7 +115,7 @@ function StampSlot({ index, filled, accentColor, delay }: { index: number; fille
           style={{ background: `radial-gradient(circle, ${accentColor}40 0%, transparent 70%)` }}
           initial={{ scale: 0, opacity: 1 }}
           animate={{ scale: 2.5, opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' as const }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
         />
       )}
       {filled ? (
@@ -182,7 +182,7 @@ function PassportCover({ onOpen, totalStamps }: { onOpen: () => void; totalStamp
             boxShadow: '0 4px 16px rgba(201,149,46,0.4), inset 0 2px 4px rgba(255,255,255,0.2)',
           }}
           animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Globe className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-900" />
         </motion.div>
@@ -218,7 +218,7 @@ function PassportCover({ onOpen, totalStamps }: { onOpen: () => void; totalStamp
             border: '1px solid rgba(245,208,96,0.3)',
           }}
           animate={{ y: [0, -3, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Stamp className="w-4 h-4 text-yellow-400" />
           <span className="text-yellow-300 font-bold text-sm">
@@ -276,7 +276,7 @@ function StorePage({
             <motion.span
               className="text-3xl sm:text-4xl"
               animate={{ y: [0, -4, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: index * 0.3 }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: index * 0.3 }}
             >
               {store.emoji}
             </motion.span>

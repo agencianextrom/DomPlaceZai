@@ -245,7 +245,7 @@ function XPPopup({ show, amount }: { show: boolean; amount: number }) {
           initial={{ opacity: 0, y: 10, scale: 0.6 }}
           animate={{ opacity: 1, y: -40, scale: 1 }}
           exit={{ opacity: 0, y: -70, scale: 0.5 }}
-          transition={{ duration: 1.2, ease: 'easeOut' as const }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
           className="absolute -top-2 right-4 z-40 pointer-events-none"
         >
           <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 shadow-lg"
@@ -270,7 +270,7 @@ function StreakFire({ streak }: { streak: number }) {
         rotate: [-8, 8, -8],
         y: [0, -3, 0],
       }}
-      transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' as const }}
+      transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' }}
       style={{ filter: 'drop-shadow(0 0 6px rgba(249, 115, 22, 0.6))' }}
     >
       🔥
@@ -283,7 +283,7 @@ function RefreshIcon({ spinning }: { spinning: boolean }) {
   return (
     <motion.div
       animate={spinning ? { rotate: 360 } : { rotate: 0 }}
-      transition={spinning ? { duration: 0.6, ease: 'easeInOut' as const } : { duration: 0 }}
+      transition={spinning ? { duration: 0.6, ease: 'easeInOut' } : { duration: 0 }}
     >
       <RefreshCw className="h-3.5 w-3.5" />
     </motion.div>
@@ -347,7 +347,7 @@ function QuestCard({
               `0 0 8px ${quest.glowColor}, inset 0 0 8px ${quest.glowColor.replace('0.35', '0.05')}`,
             ],
           }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         />
       )}
 
@@ -356,7 +356,7 @@ function QuestCard({
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-200/30 to-transparent"
           animate={{ x: ['-100%', '200%'] }}
-          transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }}
         />
       )}
 
@@ -365,7 +365,7 @@ function QuestCard({
           {/* Quest icon */}
           <motion.div
             animate={completed ? { scale: [1, 1.15, 1] } : { scale: [1, 1.05, 1] }}
-            transition={{ duration: completed ? 0.5 : 2, repeat: completed ? 1 : Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: completed ? 0.5 : 2, repeat: completed ? 1 : Infinity, ease: 'easeInOut' }}
             className={`h-10 w-10 rounded-lg bg-gradient-to-br ${quest.color} flex items-center justify-center text-lg shrink-0 shadow-md ${
               completed ? 'opacity-70' : ''
             }`}
@@ -402,7 +402,7 @@ function QuestCard({
                 <motion.div
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
                   animate={{ x: ['-100%', '300%'] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' }}
                   style={{ width: '40%' }}
                 />
               )}
@@ -630,7 +630,7 @@ export default function GamificationQuests() {
               <div className="flex items-center gap-2.5">
                 <motion.div
                   animate={{ rotate: [0, -5, 5, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                   className="h-10 w-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center"
                   style={{ boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)' }}
                 >
@@ -654,7 +654,7 @@ export default function GamificationQuests() {
               >
                 <motion.span
                   animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 0.6, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 0.6, repeat: Infinity, ease: 'easeInOut' }}
                   className="text-base"
                 >
                   🔥
@@ -671,7 +671,7 @@ export default function GamificationQuests() {
               {/* Level badge */}
               <motion.div
                 animate={{ scale: [1, 1.03, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 className="h-14 w-14 rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500 flex flex-col items-center justify-center shrink-0"
                 style={{ boxShadow: '0 4px 16px rgba(251, 191, 36, 0.4)' }}
               >
@@ -707,7 +707,7 @@ export default function GamificationQuests() {
                   <motion.div
                     className="absolute inset-y-0 left-0 bg-gradient-to-r from-transparent via-white/25 to-transparent"
                     animate={{ x: ['-100%', '300%'] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' as const }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' }}
                     style={{ width: '40%' }}
                   />
                 </div>
@@ -874,7 +874,7 @@ export default function GamificationQuests() {
                           '0 0 12px rgba(251, 191, 36, 0.2), inset 0 0 12px rgba(251, 191, 36, 0.05)',
                         ],
                       }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                     />
                   )}
 
@@ -882,7 +882,7 @@ export default function GamificationQuests() {
                     <div className="flex items-start gap-3">
                       <motion.div
                         animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.08, 1] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                         className="h-12 w-12 rounded-xl bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 flex items-center justify-center text-2xl shrink-0"
                         style={{ boxShadow: '0 4px 16px rgba(251, 191, 36, 0.4)' }}
                       >
@@ -1000,7 +1000,7 @@ export default function GamificationQuests() {
                 {/* Rank badge */}
                 <motion.div
                   animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.3, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.3, ease: 'easeInOut' }}
                   className={`h-8 w-8 rounded-full bg-gradient-to-br ${user.badgeColor} flex items-center justify-center text-sm shrink-0`}
                   style={{ boxShadow: `0 2px 8px ${user.badgeBorder}` }}
                 >

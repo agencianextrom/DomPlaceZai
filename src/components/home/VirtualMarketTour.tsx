@@ -238,7 +238,7 @@ const pulseRing = {
   transition: {
     duration: 1.8,
     repeat: Infinity,
-    ease: 'easeOut' as const,
+    ease: 'easeOut',
   },
 }
 
@@ -289,7 +289,7 @@ function WaveformBar({
               repeat: Infinity,
               repeatType: 'reverse' as const,
               delay: index * 0.06,
-              ease: 'easeInOut' as const,
+              ease: 'easeInOut',
             }
           : { duration: 0.3 }
       }
@@ -530,7 +530,7 @@ function ProductPinDetail({
               background: `${accentColor}15`,
             }}
             animate={{ rotate: [0, -5, 5, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
             <span className="text-xl">{pin.emoji}</span>
           </motion.div>
@@ -639,7 +639,7 @@ function StoreInfoOverlay({
                     className="r53-vtour-store-info-emoji w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ background: `${store.accentColor}20` }}
                     animate={{ rotate: [0, 3, -3, 0] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     <span className="text-2xl">{store.emoji}</span>
                   </motion.div>
@@ -880,7 +880,7 @@ function TourMinimap({
                 }
                 transition={
                   isCurrent
-                    ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }
+                    ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' }
                     : { duration: 0.3 }
                 }
               >
@@ -1076,7 +1076,7 @@ function StoreInteriorView({
               boxShadow: '0 0 20px 8px rgba(255,255,200,0.15)',
             }}
             animate={{ opacity: [0.5, 0.8, 0.5] }}
-            transition={{ duration: 3 + i, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3 + i, repeat: Infinity, ease: 'easeInOut' }}
           />
         ))}
 
@@ -1378,7 +1378,7 @@ function AmbientParticles({ accentColor }: { accentColor: string }) {
             duration: 4 + Math.random() * 2,
             repeat: Infinity,
             delay: p.delay,
-            ease: 'easeInOut' as const,
+            ease: 'easeInOut',
           }}
         />
       ))}
@@ -1421,7 +1421,7 @@ function WelcomeOverlay({
             boxShadow: '0 8px 32px rgba(16,185,129,0.35)',
           }}
           animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Compass className="w-10 h-10 text-white" />
         </motion.div>
@@ -1526,7 +1526,7 @@ function CompletionScreen({
             boxShadow: '0 8px 32px rgba(245,158,11,0.35)',
           }}
           animate={{ scale: [1, 1.08, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
           <span className="text-3xl">🏆</span>
         </motion.div>
@@ -1753,7 +1753,7 @@ export function VirtualMarketTour() {
           className="r53-vtour-header-bar w-1 h-7 rounded-full"
           style={{ background: 'linear-gradient(180deg, #10b981, #06b6d4)' }}
           animate={{ scaleY: [1, 1.4, 1] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         />
         <div className="flex items-center gap-2">
           <Compass className="w-5 h-5 text-primary" />

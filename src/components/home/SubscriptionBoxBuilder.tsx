@@ -663,7 +663,7 @@ export function SubscriptionBoxBuilder() {
           <div className="flex items-center gap-2.5">
             <motion.div
               animate={{ y: [0, -5, 0], rotate: [0, -8, 8, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               className="r54-subbox-header-icon"
             >
               <Box className="h-5 w-5 text-emerald-500" />

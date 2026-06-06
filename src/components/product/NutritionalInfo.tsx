@@ -174,7 +174,7 @@ function NutrientBar({ nutrient, delay }: { nutrient: NutrientInfo; delay: numbe
             className={`h-full rounded-full ${getProgressColor(nutrient.dailyPercent)}`}
             initial={{ width: 0 }}
             animate={{ width: `${width}%` }}
-            transition={{ duration: 0.8, delay: delay + 0.2, ease: 'easeOut' as const }}
+            transition={{ duration: 0.8, delay: delay + 0.2, ease: 'easeOut' }}
           />
         </div>
       </div>
@@ -212,7 +212,7 @@ export function NutritionalInfo({ product }: NutritionalInfoProps) {
         <div className="flex items-center gap-2">
           <motion.div
             animate={{ rotate: isExpanded ? 360 : 0 }}
-            transition={{ duration: 0.6, ease: 'easeInOut' as const }}
+            transition={{ duration: 0.6, ease: 'easeInOut' }}
           >
             <Utensils className="h-4 w-4 text-primary" />
           </motion.div>
@@ -231,7 +231,7 @@ export function NutritionalInfo({ product }: NutritionalInfoProps) {
 
         <motion.div
           animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration: 0.3, ease: 'easeInOut' as const }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
         </motion.div>
@@ -244,7 +244,7 @@ export function NutritionalInfo({ product }: NutritionalInfoProps) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: 'easeInOut' as const }}
+            transition={{ duration: 0.35, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
             <div className="px-4 pb-4 space-y-3">
@@ -257,7 +257,7 @@ export function NutritionalInfo({ product }: NutritionalInfoProps) {
               >
                 <motion.div
                   animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <Flame className="h-6 w-6 text-orange-500" />
                 </motion.div>

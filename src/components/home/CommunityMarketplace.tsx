@@ -311,7 +311,7 @@ function ProductCard({
           <motion.span
             className="text-5xl"
             animate={{ y: [0, -5, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           >
             {product.emoji}
           </motion.span>
@@ -538,7 +538,7 @@ export function CommunityMarketplace() {
         <motion.div
           variants={fadeUp}
           animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           className="h-10 w-10 rounded-xl flex items-center justify-center shadow-lg shrink-0"
           style={{
             background: 'linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9)',

@@ -91,7 +91,7 @@ function FloatingParticles() {
             duration: p.duration,
             repeat: Infinity,
             delay: p.delay,
-            ease: 'easeInOut' as const,
+            ease: 'easeInOut',
           }}
         />
       ))}
@@ -115,7 +115,7 @@ function LocationEmojiParticle({ emoji, delay, x, y }: { emoji: string; delay: n
         duration: 6,
         repeat: Infinity,
         delay,
-        ease: 'easeInOut' as const,
+        ease: 'easeInOut',
       }}
       aria-hidden="true"
     >
@@ -174,7 +174,7 @@ export function NeighborhoodSelector() {
             >
               <motion.div
                 animate={{ y: [0, -4, 0] }}
-                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <MapPin className="h-5 w-5 text-primary" />
               </motion.div>

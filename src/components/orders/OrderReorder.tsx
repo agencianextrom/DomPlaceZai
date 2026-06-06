@@ -75,7 +75,7 @@ const cartBounceVariants = {
     y: [0, -40, 0],
     opacity: [1, 1, 0],
     scale: [1, 0.8, 0.5],
-    transition: { duration: 0.8, ease: 'easeOut' as const },
+    transition: { duration: 0.8, ease: 'easeOut' },
   },
 }
 

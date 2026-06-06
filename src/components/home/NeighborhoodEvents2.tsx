@@ -323,7 +323,7 @@ function DateBadge({ dateStr }: { dateStr: string }) {
         <motion.div
           className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-500"
           animate={{ scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         />
       )}
     </motion.div>
@@ -337,7 +337,7 @@ function CountdownDisplay({ dateStr, timeStr }: { dateStr: string; timeStr: stri
       <motion.div
         className="r44-countdown-live flex items-center gap-1 bg-red-500/10 border border-red-500/20 rounded-full px-2 py-0.5"
         animate={{ opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <Zap className="h-3 w-3 text-red-500" />
         <span className="text-[10px] font-bold text-red-500">AO VIVO</span>
@@ -456,7 +456,7 @@ function RSVPButton({ eventId }: { eventId: string }) {
             <Button size="sm" className="h-8 min-h-[44px] text-xs gap-1.5 bg-primary text-primary-foreground" disabled>
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
               >
                 <Star className="h-3.5 w-3.5" />
               </motion.div>
@@ -567,7 +567,7 @@ function EventCard({ event, index }: { event: NeighborhoodEvent; index: number }
                 <motion.span
                   className="text-5xl"
                   animate={{ y: [0, -6, 0], rotate: [0, 3, -3, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const, delay: index * 0.3 }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: index * 0.3 }}
                 >
                   {event.icon}
                 </motion.span>
@@ -792,7 +792,7 @@ function FeaturedSpotlight({ events }: { events: NeighborhoodEvent[] }) {
   return (
     <div className="r44-spotlight relative mb-4">
       <div className="flex items-center gap-1.5 mb-2">
-        <motion.div animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}>
+        <motion.div animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}>
           <Zap className="h-3.5 w-3.5 text-primary" />
         </motion.div>
         <span className="text-xs font-bold text-primary">Destaque</span>
@@ -823,7 +823,7 @@ function FeaturedSpotlight({ events }: { events: NeighborhoodEvent[] }) {
               <motion.span
                 className="text-8xl sm:text-9xl opacity-30"
                 animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
               >
                 {event.icon}
               </motion.span>
@@ -1177,7 +1177,7 @@ export function NeighborhoodEvents2() {
           className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-lg"
           style={{ boxShadow: '0 4px 12px rgba(16,185,129,0.3)' }}
           animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           <CalendarDays className="h-4 w-4 text-white" />
         </motion.div>

@@ -210,7 +210,7 @@ export function AchievementsPanel() {
             duration: 5.5,
             repeat: Infinity,
             delay: p.delay,
-            ease: 'easeInOut' as const,
+            ease: 'easeInOut',
           }}
           aria-hidden="true"
         >
@@ -244,13 +244,13 @@ export function AchievementsPanel() {
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progressPct}%` }}
-              transition={{ duration: 1, delay: 0.3, ease: 'easeOut' as const }}
+              transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
               className="h-full rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 relative overflow-hidden r26-particle-trail r33-progress-fill"
             >
               <motion.div
                 className="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-transparent via-white/25 to-transparent"
                 animate={{ x: ['-100%', '200%'] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' as const }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' }}
               />
             </motion.div>
           </div>

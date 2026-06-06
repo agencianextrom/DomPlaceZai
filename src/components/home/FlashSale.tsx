@@ -93,7 +93,7 @@ function CountdownRing({
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: 0 }}
           animate={{ strokeDashoffset: offset }}
-          transition={{ duration: 0.6, ease: 'easeOut' as const }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
         />
       </svg>
       {/* Center value with pulse on change */}
@@ -103,7 +103,7 @@ function CountdownRing({
           className="text-[11px] font-bold text-red-600 dark:text-red-400 tabular-nums r34-flash-sale-digit-pulse"
           initial={{ scale: 1.2, opacity: 0.7 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.25, ease: 'easeOut' as const }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
         >
           {String(value).padStart(2, '0')}
         </motion.span>
@@ -141,7 +141,7 @@ function FireSparks() {
             duration: 2.2,
             repeat: Infinity,
             delay: cfg.delay,
-            ease: 'easeOut' as const,
+            ease: 'easeOut',
             repeatDelay: 0.4,
           }}
         >
@@ -167,7 +167,7 @@ function UrgencyBadge({ children }: { children: React.ReactNode }) {
         duration: 0.45,
         repeat: Infinity,
         repeatDelay: 2.5,
-        ease: 'easeInOut' as const,
+        ease: 'easeInOut',
       }}
     >
       {children}
@@ -432,7 +432,7 @@ export function FlashSale() {
             <div className="flex items-center gap-2.5">
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                 className="h-10 w-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg"
               >
                 <Flame className="h-5 w-5 text-white" />
@@ -443,13 +443,13 @@ export function FlashSale() {
                   className="absolute -inset-3 rounded-xl pointer-events-none flash-badge-glow"
                   style={{ background: 'radial-gradient(ellipse at center, rgba(239,68,68,0.15), transparent 70%)' }}
                   animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
-                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <motion.div
                   className="absolute -inset-1.5 rounded-xl pointer-events-none r39-oferta-glow-outer"
                   style={{ background: 'radial-gradient(ellipse at center, rgba(251,191,36,0.1), transparent 60%)' }}
                   animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.12, 1] }}
-                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
                 />
                 {/* ── r39 pulsing glow ring ring element ── */}
                 <span className="absolute -inset-2 rounded-xl pointer-events-none r39-oferta-pulse-ring" />
@@ -460,7 +460,7 @@ export function FlashSale() {
                   </span>
                   <motion.div
                     animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     <Zap className="h-4 w-4 text-amber-500 fill-amber-500" />
                   </motion.div>
@@ -493,17 +493,17 @@ export function FlashSale() {
                 <motion.div
                   className="absolute -top-3 -left-1 w-1.5 h-1.5 rounded-full bg-red-400 pointer-events-none"
                   animate={{ y: [0, -8, -16], opacity: [0, 0.8, 0], scale: [0.5, 1, 0.4] }}
-                  transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' as const, delay: 0 }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut', delay: 0 }}
                 />
                 <motion.div
                   className="absolute -top-2 left-1/2 w-1 h-1 rounded-full bg-amber-400 pointer-events-none"
                   animate={{ y: [0, -10, -20], opacity: [0, 0.7, 0], scale: [0.6, 0.8, 0.3] }}
-                  transition={{ duration: 2.8, repeat: Infinity, ease: 'easeOut' as const, delay: 0.8 }}
+                  transition={{ duration: 2.8, repeat: Infinity, ease: 'easeOut', delay: 0.8 }}
                 />
                 <motion.div
                   className="absolute -top-2.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-orange-400 pointer-events-none"
                   animate={{ y: [0, -6, -14], opacity: [0, 0.9, 0], scale: [0.4, 1, 0.3] }}
-                  transition={{ duration: 2.6, repeat: Infinity, ease: 'easeOut' as const, delay: 1.6 }}
+                  transition={{ duration: 2.6, repeat: Infinity, ease: 'easeOut', delay: 1.6 }}
                 />
                 <div className="flex items-center gap-1.5 bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-xl px-2.5 py-1.5 border border-red-200/50 dark:border-red-800/30 shadow-sm inner-shadow-accent relative overflow-hidden r27-timer-glow r39-countdown-badge r58-flash-countdown-pulse">
                   <div className="absolute inset-0 r17-flash-timer-shimmer pointer-events-none rounded-xl" />
@@ -716,8 +716,8 @@ export function FlashSale() {
                                               }}
                                               initial={{ width: 0 }}
                                               transition={{
-                                                width: { delay: 0.3 + index * 0.12, duration: 0.8, ease: 'easeOut' as const },
-                                                boxShadow: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' as const },
+                                                width: { delay: 0.3 + index * 0.12, duration: 0.8, ease: 'easeOut' },
+                                                boxShadow: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' },
                                               }}
                                               style={{ zIndex: 0 }}
                                             />
@@ -727,7 +727,7 @@ export function FlashSale() {
                                             className={`h-full rounded-full relative ${isLowStock ? 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500 flash-stock-bar-glow' : 'bg-gradient-to-r from-red-500 via-orange-500 to-amber-400'} ${isCriticallyLow ? 'flash-stock-pulse r44-progress-bar-glow' : ''} r27-stagger-fill r42-stock-shimmer`}
                                             initial={{ width: 0 }}
                                             animate={{ width: `${product.soldPercent}%` }}
-                                            transition={{ delay: 0.3 + index * 0.12, duration: 0.8, ease: 'easeOut' as const }}
+                                            transition={{ delay: 0.3 + index * 0.12, duration: 0.8, ease: 'easeOut' }}
                                             style={{ zIndex: 1 }}
                                           />
                                         </div>
@@ -806,43 +806,43 @@ export function FlashSale() {
       <motion.div
         className="absolute top-8 right-6 w-1 h-1 rounded-full bg-amber-400/40 pointer-events-none"
         animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0.5 }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut', delay: 0.5 }}
       />
       <motion.div
         className="absolute top-12 left-8 w-1.5 h-1.5 rounded-full bg-red-400/30 pointer-events-none"
         animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0] }}
-        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 1.2 }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut', delay: 1.2 }}
       />
       <motion.div
         className="absolute top-20 right-12 w-2 h-2 rounded-full bg-orange-400/30 pointer-events-none"
         animate={{ y: [0, -14, -28], opacity: [0, 0.5, 0], scale: [0.5, 1, 0.3] }}
-        transition={{ duration: 2.8, repeat: Infinity, ease: 'easeOut' as const, delay: 0.2 }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: 'easeOut', delay: 0.2 }}
       />
       <motion.div
         className="absolute top-6 left-1/3 w-1 h-1 rounded-full bg-yellow-400/40 pointer-events-none"
         animate={{ y: [0, -8, -18], opacity: [0, 0.7, 0] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.8 }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut', delay: 0.8 }}
       />
       <motion.div
         className="absolute top-16 right-1/4 w-1.5 h-1.5 rounded-full bg-amber-500/25 pointer-events-none"
         animate={{ y: [0, -10, -22], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.2] }}
-        transition={{ duration: 3.8, repeat: Infinity, ease: 'easeOut' as const, delay: 1.6 }}
+        transition={{ duration: 3.8, repeat: Infinity, ease: 'easeOut', delay: 1.6 }}
       />
       <motion.div
         className="absolute top-4 left-1/2 w-1 h-1 rounded-full bg-red-500/25 pointer-events-none"
         animate={{ y: [0, -12, -26], opacity: [0, 0.5, 0], scale: [0.4, 0.8, 0] }}
-        transition={{ duration: 3.4, repeat: Infinity, ease: 'easeOut' as const, delay: 2.0 }}
+        transition={{ duration: 3.4, repeat: Infinity, ease: 'easeOut', delay: 2.0 }}
       />
       {/* Additional fire emoji particles */}
       <motion.div
         className="absolute top-10 right-[30%] w-3 h-3 pointer-events-none text-xs"
         animate={{ y: [0, -16, -30], opacity: [0, 0.6, 0], scale: [0.5, 1, 0.3] }}
-        transition={{ duration: 3.6, repeat: Infinity, ease: 'easeOut' as const, delay: 1.0 }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: 'easeOut', delay: 1.0 }}
       >🔥</motion.div>
       <motion.div
         className="absolute top-14 left-[20%] w-3 h-3 pointer-events-none text-[10px]"
         animate={{ y: [0, -14, -26], opacity: [0, 0.5, 0], scale: [0.6, 0.9, 0.2] }}
-        transition={{ duration: 4.0, repeat: Infinity, ease: 'easeOut' as const, delay: 2.8 }}
+        transition={{ duration: 4.0, repeat: Infinity, ease: 'easeOut', delay: 2.8 }}
       >✨</motion.div>
     </motion.section>
   )

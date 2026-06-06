@@ -321,7 +321,7 @@ const shimmerVariants = {
   initial: { backgroundPosition: '-200% center' },
   animate: {
     backgroundPosition: '200% center',
-    transition: { duration: 4, repeat: Infinity, ease: 'linear' as const },
+    transition: { duration: 4, repeat: Infinity, ease: 'linear' },
   },
 }
 
@@ -418,7 +418,7 @@ function ConfettiBurst({ show }: { show: boolean }) {
           transition={{
             duration: 1.8 + Math.random() * 0.8,
             delay: p.delay,
-            ease: 'easeOut' as const,
+            ease: 'easeOut',
           }}
         />
       ))}
@@ -460,7 +460,7 @@ function ProgressRing({ percentage, size = 120, strokeWidth = 8 }: { percentage:
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
           animate={{ strokeDashoffset: offset }}
-          transition={{ duration: 1.5, ease: 'easeOut' as const }}
+          transition={{ duration: 1.5, ease: 'easeOut' }}
         />
         <defs>
           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -497,7 +497,7 @@ function RankBadge({ rank }: { rank: number }) {
       <motion.div
         className="relative"
         animate={{ scale: [1, 1.15, 1] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
         <Crown className="h-5 w-5 text-amber-400" />
         <motion.div
@@ -512,7 +512,7 @@ function RankBadge({ rank }: { rank: number }) {
     return (
       <motion.div
         animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
       >
         <Medal className="h-5 w-5 text-slate-400" />
       </motion.div>
@@ -522,7 +522,7 @@ function RankBadge({ rank }: { rank: number }) {
     return (
       <motion.div
         animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.6 }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
       >
         <Medal className="h-5 w-5" style={{ color: '#cd7f32' }} />
       </motion.div>
@@ -586,7 +586,7 @@ function ChallengeCard({
         <motion.div
           className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-r ${challenge.color === 'emerald' ? 'from-emerald-500 via-teal-400 to-emerald-500' : challenge.color === 'amber' ? 'from-amber-500 via-yellow-400 to-amber-500' : 'from-violet-500 via-purple-400 to-violet-500'} opacity-50 blur-[1px]`}
           animate={{ opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           aria-hidden="true"
         />
       )}
@@ -678,7 +678,7 @@ function ChallengeCard({
                 className={`h-full rounded-full ${isComplete ? 'bg-emerald-500' : colors.bar}`}
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut' as const }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
               />
             </div>
           </div>
@@ -866,7 +866,7 @@ function RewardCard({ reward, userCompletedCount }: { reward: RewardPreview; use
         <motion.div
           className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${colors.iconBg}`}
           animate={isUnlocked ? { rotate: [0, 5, -5, 0] } : {}}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           <IconComp className={`h-5 w-5 ${colors.text}`} />
         </motion.div>
@@ -1313,7 +1313,7 @@ export function CommunityChallenge() {
         <motion.div
           className="relative r35-challenge-glow"
           animate={{ scale: [1, 1.08, 1], rotate: [0, 3, -3, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           <motion.div
             className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-amber-400/30 to-amber-600/20 blur-lg"

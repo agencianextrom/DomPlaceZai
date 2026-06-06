@@ -437,7 +437,7 @@ const fadeSlideUp = {
 const timerSpin = {
   animate: {
     rotate: [0, 360],
-    transition: { duration: 4, repeat: Infinity, ease: 'linear' as const },
+    transition: { duration: 4, repeat: Infinity, ease: 'linear' },
   },
 }
 

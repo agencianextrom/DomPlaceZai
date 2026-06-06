@@ -153,7 +153,7 @@ function VerifiedBadge({ verified }: { verified: boolean }) {
     >
       <motion.div
         animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
       >
         <Check className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400" />
       </motion.div>
@@ -186,7 +186,7 @@ function ResponseTimeIndicator({ time }: { time?: string }) {
     >
       <motion.div
         animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <Clock className="h-2.5 w-2.5" />
       </motion.div>
@@ -244,7 +244,7 @@ function StoreStats({ store }: { store: ExtendedStoreInfo }) {
               backgroundSize: '300% 100%',
             }}
             animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'linear' as const, repeatDelay: 2, delay: i * 0.6 }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'linear', repeatDelay: 2, delay: i * 0.6 }}
           />
           <stat.icon className={`h-4 w-4 ${stat.color} mx-auto mb-1 relative z-10`} />
           <p className="text-[9px] text-muted-foreground relative z-10">{stat.label}</p>
@@ -523,7 +523,7 @@ export function SellerInfo({ storeId, storeName }: SellerInfoProps) {
             backgroundSize: '300% 100%',
           }}
           animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'linear' as const, repeatDelay: 1.5 }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
         />
       </div>
 
@@ -547,7 +547,7 @@ export function SellerInfo({ storeId, storeName }: SellerInfoProps) {
                   '0 0 0 0 rgba(16,185,129,0.3)',
                 ],
               }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               style={{
                 background: 'conic-gradient(from 0deg, #10b981, #14b8a6, #0d9488, #10b981)',
                 borderRadius: '12px',
@@ -629,13 +629,13 @@ export function SellerInfo({ storeId, storeName }: SellerInfoProps) {
                 backgroundSize: '300% 100%',
               }}
               animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'linear' as const, repeatDelay: 2 }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
             />
             <Store className="h-4 w-4 relative z-10" />
             <span className="relative z-10">Ver Loja Completa</span>
             <motion.div
               animate={{ x: [0, 3, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               className="relative z-10"
             >
               <ChevronRight className="h-3.5 w-3.5" />

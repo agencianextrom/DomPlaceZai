@@ -327,7 +327,7 @@ function HeartBurst({ show, x, y }: { show: boolean; x: number; y: number }) {
                 opacity: 0,
               }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: 'easeOut' as const }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
               style={{ fontSize: p.size }}
             >
               ❤️
@@ -338,7 +338,7 @@ function HeartBurst({ show, x, y }: { show: boolean; x: number; y: number }) {
             initial={{ scale: 0.5, opacity: 1 }}
             animate={{ scale: 2, opacity: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' as const }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
           >
             ❤️
           </motion.span>
@@ -375,7 +375,7 @@ function StoryHighlightRing({ emoji, seen, isLive, onClick }: { emoji: string; s
         <motion.div
           className="r49-social-live-dot"
           animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         >
           AO VIVO
         </motion.div>
@@ -644,7 +644,7 @@ function StoryCard({
         <motion.div
           className="r49-social-product-emoji-display"
           animate={{ y: [0, -6, 0], rotate: [0, 2, -2, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         >
           {story.productEmoji}
         </motion.div>
@@ -718,7 +718,7 @@ function StoryCard({
           <motion.span
             className="r49-social-heart-icon"
             animate={liked ? { scale: [1, 1.4, 0.9, 1.2, 1], rotate: [0, -10, 5, -5, 0] } : { scale: 1, rotate: 0 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' as const }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
           >
             {liked ? '❤️' : '🤍'}
           </motion.span>
@@ -872,7 +872,7 @@ function InfluencerPicks({ picks }: { picks: InfluencerPick[] }) {
               <motion.div
                 className="r49-social-pick-badge"
                 animate={{ scale: [1, 1.05, 1], opacity: [0.85, 1, 0.85] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: idx * 0.3 }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.3 }}
               >
                 🏆 {pick.badge}
               </motion.div>
@@ -1020,7 +1020,7 @@ function LoadMoreButton({ loading, onClick }: { loading: boolean; onClick: () =>
             <motion.span
               className="r49-social-spinner-dot"
               animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'linear' as const }}
+              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             >
               ⏳
             </motion.span>
@@ -1120,7 +1120,7 @@ export function SocialCommerceHub() {
           <motion.div
             className="r49-social-header-icon"
             animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           >
             🛍️
           </motion.div>
@@ -1134,7 +1134,7 @@ export function SocialCommerceHub() {
         <motion.div
           className="r49-social-header-badge"
           animate={{ scale: [1, 1.06, 1], opacity: [0.85, 1, 0.85] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
           <span className="r49-social-badge-icon">👥</span>
           <span className="r49-social-badge-text">12.4K ativos</span>
@@ -1248,7 +1248,7 @@ export function SocialCommerceHub() {
             <motion.span
               className="r49-social-toast-icon"
               animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ duration: 0.5, ease: 'easeInOut' as const }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
             >
               ✅
             </motion.span>

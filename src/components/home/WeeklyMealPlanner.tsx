@@ -324,7 +324,7 @@ function EmptyState({ mealLabel }: { mealLabel: string }) {
       <motion.span
         className="text-4xl mb-2"
         animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
       >
         🍽️
       </motion.span>

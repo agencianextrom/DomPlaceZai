@@ -170,7 +170,7 @@ const cardVariants = {
     opacity: 0,
     x: -60,
     scale: 0.9,
-    transition: { duration: 0.35, ease: 'easeIn' as const },
+    transition: { duration: 0.35, ease: 'easeIn' },
   },
 }
 
@@ -191,7 +191,7 @@ function AnimatedShieldIcon() {
     <motion.div
       className="relative h-9 w-9 rounded-lg bg-gradient-to-br from-rose-500 to-orange-600 flex items-center justify-center shadow-md"
       animate={{ rotate: [0, 4, -4, 0] }}
-      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
     >
       <ShieldAlert className="h-4.5 w-4.5 text-white relative z-10" />
       <motion.div
@@ -203,7 +203,7 @@ function AnimatedShieldIcon() {
             '0 0 0 0 rgba(239,68,68,0)',
           ],
         }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       />
     </motion.div>
   )
@@ -226,7 +226,7 @@ function SeverityIcon({ severity }: { severity: Severity }) {
               '0 0 0 0 rgba(239,68,68,0)',
             ],
           }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         />
         <X className={`h-3.5 w-3.5 ${cfg.iconColor} relative z-10`} />
       </div>
@@ -250,7 +250,7 @@ function PulsingDot({ color }: { color: string }) {
           scale: [1, 1.8],
           opacity: [0.7, 0],
         }}
-        transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' as const }}
+        transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
         style={{ backgroundColor: color }}
       />
       <span
@@ -286,7 +286,7 @@ function UnreadBadge({ count }: { count: number }) {
             '0 0 0 0 rgba(239,68,68,0)',
           ],
         }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       />
     </motion.span>
   )
@@ -439,7 +439,7 @@ function RecallCard({
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' as const }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
               <div className="mt-2 pt-2 border-t border-border/50">
@@ -490,7 +490,7 @@ function EmptyState() {
     >
       <motion.div
         animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         className="h-16 w-16 rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 flex items-center justify-center mb-4"
       >
         <ShieldCheck className="h-7 w-7 text-emerald-500" />
@@ -551,7 +551,7 @@ export function ProductRecallAlerts() {
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: 'easeOut' as const }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="space-y-4"
     >
       {/* Section header */}

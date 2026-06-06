@@ -141,7 +141,7 @@ function Header() {
       <div className="relative z-10 flex items-center gap-3">
         <motion.div
           animate={{ rotate: [0, -5, 5, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0"
           style={{ background: 'rgba(255,255,255,0.2)', boxShadow: '0 4px 14px rgba(249,115,22,0.35)' }}
         >
@@ -169,7 +169,7 @@ function ChallengeCard({ challenge, index }: { challenge: FamilyChallenge; index
           <div className="flex items-start gap-3 mb-3">
             <motion.span
               animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity, delay: index * 0.2, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, delay: index * 0.2, ease: 'easeInOut' }}
               className="text-2xl shrink-0"
             >
               {challenge.emoji}

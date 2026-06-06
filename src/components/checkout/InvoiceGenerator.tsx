@@ -1132,7 +1132,7 @@ export function InvoiceGenerator({ invoice, className }: InvoiceGeneratorProps) 
                     <motion.div
                       className="h-3.5 w-3.5 border-2 border-current border-t-transparent rounded-full"
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' as const }}
+                      transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
                     />
                   ) : (
                     <Mail className="h-3.5 w-3.5" />

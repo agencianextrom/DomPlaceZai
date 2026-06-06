@@ -303,7 +303,7 @@ const pulseDot = {
   animate: {
     scale: [1, 1.4, 1],
     opacity: [0.8, 0.4, 0.8],
-    transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -1061,7 +1061,7 @@ function CalendarGrid({
                     transition={{
                       duration: 2.2,
                       repeat: Infinity,
-                      ease: 'easeInOut' as const,
+                      ease: 'easeInOut',
                       delay: evIdx * 0.35,
                     }}
                   />

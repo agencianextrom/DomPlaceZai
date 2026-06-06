@@ -301,7 +301,7 @@ function ShopperAvatar({ size = 40 }: { size?: number }) {
     >
       <motion.div
         animate={{ y: [0, -2, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <svg width={size * 0.55} height={size * 0.55} viewBox="0 0 24 24" fill="none">
           {/* Face */}
@@ -374,7 +374,7 @@ function MiniConfetti() {
           transition={{
             duration: 2.5,
             delay: p.delay,
-            ease: 'easeIn' as const,
+            ease: 'easeIn',
           }}
           className="absolute left-1/2 top-1/2"
           style={{
@@ -651,7 +651,7 @@ export function PersonalShopperBot() {
           <div className="flex items-center gap-2.5">
             <motion.div
               animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             >
               <ShoppingBag className="h-5 w-5" style={{ color: '#10b981' }} />
             </motion.div>
@@ -725,7 +725,7 @@ export function PersonalShopperBot() {
               >
                 <motion.div
                   animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                   className="relative"
                 >
                   <ShopperAvatar size={80} />
@@ -1142,7 +1142,7 @@ export function PersonalShopperBot() {
                   >
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 2, repeat: Infinity, ease: 'linear' as const }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                     >
                       <Loader2 className="h-8 w-8" style={{ color: '#10b981' }} />
                     </motion.div>
@@ -1406,7 +1406,7 @@ export function PersonalShopperBot() {
                   >
                     <motion.div
                       animate={{ y: [0, -6, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                       className="text-4xl mb-2"
                     >
                       🔍

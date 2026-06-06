@@ -174,7 +174,7 @@ const pillVariants = {
 const clockIconVariants = {
   animate: {
     rotate: [0, 360],
-    transition: { duration: 3, repeat: Infinity, ease: 'linear' as const },
+    transition: { duration: 3, repeat: Infinity, ease: 'linear' },
   },
 }
 

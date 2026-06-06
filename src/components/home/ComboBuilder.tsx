@@ -189,14 +189,14 @@ const comboCardEntrance = {
 const discountPulse = {
   animate: {
     scale: [1, 1.06, 1],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
 const countBadgePulse = {
   animate: {
     scale: [1, 1.15, 1],
-    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 },
+    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 },
   },
 }
 
@@ -383,7 +383,7 @@ export function ComboBuilder() {
           <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 r62-heading-gradient">
             <motion.div
               animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             >
               <Zap className="h-5 w-5 text-amber-500" />
             </motion.div>
@@ -480,7 +480,7 @@ export function ComboBuilder() {
                           <motion.span
                             className="text-3xl"
                             animate={{ y: [0, -4, 0] }}
-                            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: Math.random() * 0.5 }}
+                            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 0.5 }}
                           >
                             {combo.emoji}
                           </motion.span>

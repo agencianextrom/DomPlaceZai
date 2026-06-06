@@ -41,7 +41,7 @@ const sparklineEndPulse = {
   animate: {
     r: [2.5, 4, 2.5],
     opacity: [1, 0.5, 1],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.4 },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 1.4 },
   },
 }
 
@@ -415,7 +415,7 @@ export function TrendingCategories() {
               </ShimmerText>
               <motion.div
                 animate={{ rotate: [0, 15, -15, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
               >
                 <Sparkles className="h-4 w-4 text-amber-500" />
               </motion.div>

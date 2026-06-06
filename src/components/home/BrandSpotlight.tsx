@@ -135,7 +135,7 @@ const shimmerVariants = {
   initial: { x: '-100%' },
   animate: {
     x: '100%',
-    transition: { duration: 1.8, repeat: Infinity, ease: 'linear' as const, repeatDelay: 0.5 },
+    transition: { duration: 1.8, repeat: Infinity, ease: 'linear', repeatDelay: 0.5 },
   },
 }
 
@@ -143,7 +143,7 @@ const badgeShimmerOverlay = {
   initial: { x: '-200%' },
   animate: {
     x: '200%',
-    transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 },
+    transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 },
   },
 }
 
@@ -154,7 +154,7 @@ const statPulseVariants = {
       delay: 0.5 + i * 0.15,
       duration: 1.8,
       repeat: Infinity,
-      ease: 'easeInOut' as const,
+      ease: 'easeInOut',
     },
   }),
 }
@@ -163,7 +163,7 @@ const dotGlowVariants = {
   active: {
     boxShadow: '0 0 8px rgba(255,255,255,0.6), 0 0 16px rgba(255,255,255,0.3)',
     scale: [1, 1.3, 1],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -345,7 +345,7 @@ export function BrandSpotlight() {
                 className="absolute inset-0 w-full h-full object-cover"
                 initial={{ scale: 1.15, opacity: 0.5 }}
                 animate={{ scale: 1, opacity: 0.25 }}
-                transition={{ duration: 1.2, ease: 'easeOut' as const }}
+                transition={{ duration: 1.2, ease: 'easeOut' }}
               />
             ) : (
               <motion.div

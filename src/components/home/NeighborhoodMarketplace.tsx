@@ -127,7 +127,7 @@ export function NeighborhoodMarketplace() {
         <div className="flex items-center gap-2 mb-1">
           <motion.div
             animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md"
             style={{ boxShadow: '0 4px 16px rgba(139,92,246,0.3)' }}
           >
@@ -137,7 +137,7 @@ export function NeighborhoodMarketplace() {
             <motion.h3
               className="font-bold text-base r37-shimmer-text r62-heading-gradient"
               animate={{ backgroundPosition: ['0% 50%', '200% 50%'] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               style={{ background: 'linear-gradient(90deg, #8b5cf6, #c4b5fd, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundSize: '200% 100%' }}
             >
               Vizinhos Vendem
@@ -275,7 +275,7 @@ export function NeighborhoodMarketplace() {
                         </motion.span>
                         <motion.div
                           animate={{ boxShadow: ['0 0 0 rgba(139,92,246,0)', '0 0 8px rgba(139,92,246,0.3)', '0 0 0 rgba(139,92,246,0)'] }}
-                          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: idx * 0.2 }}
+                          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.2 }}
                           className="absolute top-1.5 right-1.5 flex items-center gap-0.5 bg-white/80 dark:bg-black/40 rounded-full px-1.5 py-0.5 text-[9px] font-medium"
                         >
                           <MapPin className="h-2.5 w-2.5 text-primary" />

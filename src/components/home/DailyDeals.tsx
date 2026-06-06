@@ -171,7 +171,7 @@ function FlipCountdownTimer({ expiry }: { expiry: string }) {
       <motion.div
         className="absolute inset-0 -inset-x-3 -inset-y-1 rounded-xl bg-gradient-to-r from-amber-500/10 via-orange-500/15 to-amber-500/10 blur-sm pointer-events-none"
         animate={{ opacity: [0.6, 1, 0.6] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       />
       {timeStr.split('').map((char, i) => {
         if (char === ':') {
@@ -180,7 +180,7 @@ function FlipCountdownTimer({ expiry }: { expiry: string }) {
               key={`colon-${i}`}
               className="font-mono text-[13px] font-bold text-muted-foreground mx-[2px] relative z-10"
               animate={{ opacity: [1, 0.3, 1] }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
             >
               :
             </motion.span>
@@ -195,7 +195,7 @@ function FlipCountdownTimer({ expiry }: { expiry: string }) {
                 key={`spark-${i}-${Date.now()}`}
                 initial={{ scale: 0, opacity: 1 }}
                 animate={{ scale: 2.5, opacity: 0 }}
-                transition={{ duration: 0.4, ease: 'easeOut' as const }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
                 className="absolute inset-0 rounded-[4px] bg-amber-400/25 pointer-events-none"
               />
             )}
@@ -219,7 +219,7 @@ function LightningBadge({ discount }: { discount: number }) {
     >
       <motion.div
         animate={{ scale: [1, 1.15, 1], rotate: [0, 2, -2, 0] }}
-        transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.6 }}
+        transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
       >
         <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-sm bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 text-white daily-deals-badge-shimmer r61-discount-pulse">
           <Flame className="h-2.5 w-2.5" />
@@ -506,7 +506,7 @@ function DealCard({
                   initial={{ width: 0 }}
                   whileInView={{ width: `${(product.stock / 20) * 100}%` }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' as const }}
+                  transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
                   className="h-full bg-gradient-to-r from-red-500 to-amber-500 rounded-full r26-stagger-fill relative overflow-hidden"
                 />
               </div>
@@ -725,7 +725,7 @@ export function DailyDeals() {
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: 'easeOut' as const }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="space-y-4 r26-gradient-border rounded-2xl p-3 sm:p-0 sm:border-0 r62-card-lift r92-daily-deal-card"
     >
       {/* Section header */}
@@ -793,7 +793,7 @@ export function DailyDeals() {
         <motion.div
           className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-amber-500/20 via-orange-500/30 to-rose-500/20 blur-xl"
           animate={{ opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         />
         <AnimatePresence mode="wait">
           <motion.div
@@ -801,7 +801,7 @@ export function DailyDeals() {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.4, ease: 'easeOut' as const }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
             onClick={() => handleProductClick(featured)}
             className="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-amber-950/20 dark:via-orange-950/20 dark:to-rose-950/20 rounded-[14px] p-4 cursor-pointer overflow-hidden group hover:shadow-lg transition-shadow"
           >
@@ -877,7 +877,7 @@ export function DailyDeals() {
                     width: i === featuredIndex ? 16 : 6,
                     opacity: i === featuredIndex ? 1 : 0.4,
                   }}
-                  transition={{ duration: 0.3, ease: 'easeOut' as const }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
                   className="h-1.5 rounded-full bg-amber-500"
                 />
               ))}
@@ -920,7 +920,7 @@ export function DailyDeals() {
         <motion.div
           whileTap={{ scale: 0.97 }}
           animate={{ boxShadow: ['0 0 0px rgba(245,158,11,0)', '0 0 20px rgba(245,158,11,0.3)', '0 0 0px rgba(245,158,11,0)'] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
           <button
             className="daily-deals-cta-btn r26-shimmer-sweep r34-daily-deals-cta-shimmer r59-deals-cta-gradient h-9 px-5 text-xs rounded-full flex items-center gap-1.5 relative overflow-hidden min-h-[44px]"

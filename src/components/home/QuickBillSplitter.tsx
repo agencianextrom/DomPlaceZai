@@ -357,7 +357,7 @@ export function QuickBillSplitter({ className = '' }: QuickBillSplitterProps) {
           <div className="flex items-center gap-2.5">
             <motion.div
               animate={{ rotate: [0, -10, 10, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' }}
             >
               <Receipt className="h-5 w-5 text-indigo-500" />
             </motion.div>

@@ -626,7 +626,7 @@ export function ProductQAForum({ productId, productName, category }: ProductQAFo
           <div className="flex items-center gap-3 mb-4">
             <motion.div
               animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 3 }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 3 }}
               className="flex items-center justify-center w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm shadow-lg"
             >
               <HelpCircle className="h-6 w-6" />
@@ -1318,7 +1318,7 @@ function EmptyState({ searchQuery, onAskQuestion }: EmptyStateProps) {
           {/* Question mark circle */}
           <motion.div
             animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             className="w-24 h-24 rounded-full flex items-center justify-center mx-auto"
             style={{
               background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.12) 100%)',

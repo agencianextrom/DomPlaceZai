@@ -380,14 +380,14 @@ const comboPulse = {
       '0 0 0 6px rgba(16,185,129,0.15)',
       '0 0 0 0 rgba(16,185,129,0)',
     ],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
 const heartBurst = {
   animate: {
     scale: [1, 1.3, 0.9, 1.1, 1],
-    transition: { duration: 0.5, ease: 'easeInOut' as const },
+    transition: { duration: 0.5, ease: 'easeInOut' },
   },
 }
 
@@ -395,7 +395,7 @@ const cartBounce = {
   animate: {
     y: [0, -8, 0],
     rotate: [0, -5, 5, 0],
-    transition: { duration: 0.5, ease: 'easeInOut' as const },
+    transition: { duration: 0.5, ease: 'easeInOut' },
   },
 }
 
@@ -493,7 +493,7 @@ function StarRatingShimmer({ rating }: { rating: number }) {
             <motion.div
               className="absolute inset-0 r55-star-shimmer"
               animate={{ opacity: [0, 1, 0], scale: [1, 1.1, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.3, ease: 'easeInOut' as const }}
+              transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.3, ease: 'easeInOut' }}
             />
           )}
         </motion.div>
@@ -614,7 +614,7 @@ function NutritionalOverlay({
                     style={{ backgroundColor: macro.color }}
                     initial={{ width: 0 }}
                     animate={{ width: `${pct}%` }}
-                    transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' as const }}
+                    transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
                   />
                 </div>
               </div>
@@ -830,7 +830,7 @@ function TopPickCarouselCard({
           backgroundSize: '250% 100%',
         }}
         animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'linear' as const, repeatDelay: 1.5, delay: index * 0.4 }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 1.5, delay: index * 0.4 }}
       />
 
       <div className={`relative h-36 bg-gradient-to-br ${item.gradient} flex items-center justify-center`}>
@@ -1079,7 +1079,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
       <motion.span
         className="text-5xl mb-4"
         animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
         🍽️
       </motion.span>
@@ -1133,7 +1133,7 @@ function DietaryFilterChips({
               className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/20 to-transparent"
               initial={{ x: '-100%' }}
               animate={{ x: '100%' }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' as const }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
             />
           )}
         </motion.button>
@@ -1308,7 +1308,7 @@ export function MealDealFinder() {
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: 'easeOut' as const }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="r62-card-lift space-y-5"
     >
       {/* ═══════ Section Header ═══════ */}
@@ -1402,7 +1402,7 @@ export function MealDealFinder() {
                 width: i === carouselIndex ? 20 : 6,
                 opacity: i === carouselIndex ? 1 : 0.3,
               }}
-              transition={{ duration: 0.3, ease: 'easeOut' as const }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
               className="h-1.5 rounded-full bg-emerald-500"
             />
           ))}
@@ -1442,7 +1442,7 @@ export function MealDealFinder() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' as const }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
               <div className="bg-card rounded-xl border border-border p-3 space-y-3">

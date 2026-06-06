@@ -183,7 +183,7 @@ function SavingsBadge({ savings }: { savings: number }) {
             '0 0 0 0 rgba(22,163,74,0)',
           ],
         }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       />
       <span className="relative z-10">Economia de {formatBRL(savings)}</span>
     </motion.div>
@@ -212,7 +212,7 @@ function PercentageBadge({ percentage }: { percentage: number }) {
             `0 0 0 0 ${colors.glow}`,
           ],
         }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       />
       <span className="text-xs font-extrabold relative z-10" style={{ color: colors.text }}>
         -{percentage}%
@@ -357,7 +357,7 @@ function PriceDropCard({ alert, isTracked, onTrack }: {
         <motion.div
           initial={{ opacity: 1 }}
           animate={{ opacity: [1, 0.6, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute top-2 right-2 z-20"
         >
           <div
@@ -374,7 +374,7 @@ function PriceDropCard({ alert, isTracked, onTrack }: {
             <PercentageBadge percentage={percentage} />
             <motion.div
               animate={{ y: [0, 3, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               className="text-base"
             >
               📉
@@ -601,7 +601,7 @@ function EmptyState() {
     >
       <motion.div
         animate={{ y: [0, -8, 0], rotate: [0, 10, -10, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         className="h-16 w-16 rounded-full flex items-center justify-center mb-4"
         style={{ backgroundColor: 'rgba(239,68,68,0.1)' }}
       >
@@ -613,7 +613,7 @@ function EmptyState() {
       </p>
       <motion.div
         animate={{ rotate: [0, 360] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'linear' as const }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
         className="mt-4"
       >
         <Sparkles className="h-5 w-5" style={{ color: 'rgba(239,68,68,0.4)' }} />
@@ -746,7 +746,7 @@ export function PriceDropAlerts2() {
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: 'easeOut' as const }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="space-y-4 r59-price-alert-container r62-card-lift"
     >
       {/* ═══ Header ═══ */}
@@ -759,7 +759,7 @@ export function PriceDropAlerts2() {
               boxShadow: '0 4px 12px rgba(239,68,68,0.12)',
             }}
             animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
           >
             <TrendingDown className="h-4.5 w-4.5" style={{ color: '#ef4444' }} />
           </motion.div>

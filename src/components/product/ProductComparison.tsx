@@ -62,7 +62,7 @@ function VsBadge() {
         animate={{
           scale: [1, 1.08, 1],
         }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         className="h-10 w-10 rounded-full bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg shadow-red-500/30 z-10"
       >
         <span className="text-white font-black text-sm tracking-tighter">VS</span>

@@ -511,7 +511,7 @@ const emptyBounceVariants = {
   idle: { y: 0 },
   bounce: {
     y: [0, -12, 0],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 } satisfies Variants
 

@@ -232,7 +232,7 @@ function DroneIcon({ size = 28, propellerSpeed = 1 }: { size?: number; propeller
         fill="currentColor"
         opacity={0.25}
         animate={{ rotate: 360 }}
-        transition={{ duration: 0.3 / propellerSpeed, repeat: Infinity, ease: 'linear' as const }}
+        transition={{ duration: 0.3 / propellerSpeed, repeat: Infinity, ease: 'linear' }}
         style={{ transformOrigin: `${half - armLen}px ${half - armLen}px` }}
       />
       <motion.circle
@@ -242,7 +242,7 @@ function DroneIcon({ size = 28, propellerSpeed = 1 }: { size?: number; propeller
         fill="currentColor"
         opacity={0.25}
         animate={{ rotate: 360 }}
-        transition={{ duration: 0.28 / propellerSpeed, repeat: Infinity, ease: 'linear' as const }}
+        transition={{ duration: 0.28 / propellerSpeed, repeat: Infinity, ease: 'linear' }}
         style={{ transformOrigin: `${half + armLen}px ${half - armLen}px` }}
       />
       <motion.circle
@@ -252,7 +252,7 @@ function DroneIcon({ size = 28, propellerSpeed = 1 }: { size?: number; propeller
         fill="currentColor"
         opacity={0.25}
         animate={{ rotate: 360 }}
-        transition={{ duration: 0.32 / propellerSpeed, repeat: Infinity, ease: 'linear' as const }}
+        transition={{ duration: 0.32 / propellerSpeed, repeat: Infinity, ease: 'linear' }}
         style={{ transformOrigin: `${half - armLen}px ${half + armLen}px` }}
       />
       <motion.circle
@@ -262,7 +262,7 @@ function DroneIcon({ size = 28, propellerSpeed = 1 }: { size?: number; propeller
         fill="currentColor"
         opacity={0.25}
         animate={{ rotate: 360 }}
-        transition={{ duration: 0.26 / propellerSpeed, repeat: Infinity, ease: 'linear' as const }}
+        transition={{ duration: 0.26 / propellerSpeed, repeat: Infinity, ease: 'linear' }}
         style={{ transformOrigin: `${half + armLen}px ${half + armLen}px` }}
       />
     </svg>
@@ -311,7 +311,7 @@ function GaugeIndicator({
           strokeWidth={6}
           strokeLinecap="round"
           strokeDasharray={`${pct * 1.2} 200`}
-          transition={{ duration: 0.6, ease: 'easeOut' as const }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
         />
       </svg>
       <p className="text-xs font-bold r53-drone-gauge-value" style={{ color }}>
@@ -361,7 +361,7 @@ function BatteryIndicator({ level }: { level: number }) {
             className="h-full rounded-full r53-drone-battery-fill"
             style={{ backgroundColor: color }}
             animate={{ width: `${level}%` }}
-            transition={{ duration: 1, ease: 'easeOut' as const }}
+            transition={{ duration: 1, ease: 'easeOut' }}
           />
         </div>
       </div>
@@ -377,7 +377,7 @@ function BatteryIndicator({ level }: { level: number }) {
           rx="2"
           fill={color}
           animate={{ y: 3 + (1 - level / 100) * 28, height: Math.max(2, (level / 100) * 28) }}
-          transition={{ duration: 1, ease: 'easeOut' as const }}
+          transition={{ duration: 1, ease: 'easeOut' }}
         />
       </svg>
     </div>
@@ -422,7 +422,7 @@ function DeliveryTimeline({ currentPhase, onPhaseClick }: { currentPhase: Delive
                   <motion.div
                     className="w-full"
                     style={{ backgroundColor: isComplete ? '#8b5cf6' : 'rgba(148,163,184,0.2)' }}
-                    animate={{ height: isComplete ? '100%' : '0%', transition: { duration: 0.4, ease: 'easeOut' as const } }}
+                    animate={{ height: isComplete ? '100%' : '0%', transition: { duration: 0.4, ease: 'easeOut' } }}
                   />
                 </div>
               )}
@@ -435,7 +435,7 @@ function DeliveryTimeline({ currentPhase, onPhaseClick }: { currentPhase: Delive
                   border: isCurrent ? '2px solid #8b5cf6' : '2px solid transparent',
                 }}
                 animate={isCurrent ? { scale: [1, 1.12, 1] } : {}}
-                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
                 onClick={() => onPhaseClick(step.id)}
               >
                 <span style={{ color: isComplete || isCurrent ? isComplete ? '#ffffff' : '#8b5cf6' : '#94a3b8' }}>
@@ -507,7 +507,7 @@ function CameraFeed({ progress, altitude }: { progress: number; altitude: number
       <motion.div
         className="absolute r53-drone-camera-features"
         animate={{ y: [0, -30, 0], x: [0, 10, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       >
         {/* Buildings */}
         <div className="absolute top-4 left-6 h-6 w-4 rounded-sm bg-white/15" />
@@ -540,7 +540,7 @@ function CameraFeed({ progress, altitude }: { progress: number; altitude: number
           <motion.div
             className="absolute inset-2 rounded-full border border-violet-400/30"
             animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           />
         </div>
       </div>
@@ -550,7 +550,7 @@ function CameraFeed({ progress, altitude }: { progress: number; altitude: number
         <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm rounded-md px-2 py-1">
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
           >
             <Camera className="h-3 w-3 text-red-400" />
           </motion.div>
@@ -599,7 +599,7 @@ function WeatherOverlay({ weather }: { weather: WeatherState }) {
             <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(14,165,233,0.15)" strokeWidth="1" />
             <motion.g
               animate={{ rotate: weather.windDirection }}
-              transition={{ duration: 1.5, ease: 'easeOut' as const }}
+              transition={{ duration: 1.5, ease: 'easeOut' }}
               style={{ transformOrigin: '20px 20px' }}
             >
               <polygon points="20,4 23,16 20,13 17,16" fill="#0ea5e9" opacity={0.8} />
@@ -798,19 +798,19 @@ function TrackLiveButton({ isTracking, onClick }: { isTracking: boolean; onClick
             className="absolute inset-0 rounded-full r53-drone-pulse-ring-1"
             style={{ border: '2px solid rgba(139,92,246,0.4)' }}
             animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' as const }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
           />
           <motion.div
             className="absolute inset-0 rounded-full r53-drone-pulse-ring-2"
             style={{ border: '1.5px solid rgba(139,92,246,0.25)' }}
             animate={{ scale: [1, 1.8], opacity: [0.4, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const, delay: 0.3 }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeOut', delay: 0.3 }}
           />
           <motion.div
             className="absolute inset-0 rounded-full r53-drone-pulse-ring-3"
             style={{ border: '1px solid rgba(139,92,246,0.15)' }}
             animate={{ scale: [1, 2.2], opacity: [0.3, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.6 }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut', delay: 0.6 }}
           />
         </>
       )}
@@ -834,7 +834,7 @@ function TrackLiveButton({ isTracking, onClick }: { isTracking: boolean; onClick
               <>
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'linear' as const }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                 >
                   <Radio className="h-4 w-4" />
                 </motion.div>
@@ -1005,14 +1005,14 @@ export function DroneDeliveryTracker() {
         <div className="absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-white/5" />
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' as const }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           className="absolute top-4 right-16 h-10 w-10 rounded-full border-2 border-dashed border-white/15"
         />
 
         <div className="relative z-10 flex items-center gap-3">
           <motion.div
             animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             className="h-12 w-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center"
           >
             <Plane className="h-6 w-6" />
@@ -1159,7 +1159,7 @@ export function DroneDeliveryTracker() {
                   fill="#8b5cf6"
                   opacity={0.2}
                   animate={{ r: [10, 16, 10], opacity: [0.2, 0.05, 0.2] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <circle cx={50} cy={320} r={6} fill="#8b5cf6" />
                 <circle cx={50} cy={320} r={2.5} fill="#ffffff" />
@@ -1176,7 +1176,7 @@ export function DroneDeliveryTracker() {
                   fill="#22c55e"
                   opacity={0.15}
                   animate={{ r: [12, 20, 12], opacity: [0.15, 0.03, 0.15] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <circle cx={420} cy={50} r={7} fill="#22c55e" />
                 <circle cx={420} cy={50} r={3} fill="#ffffff" />
@@ -1192,7 +1192,7 @@ export function DroneDeliveryTracker() {
                   x: dronePathPoint.x,
                   y: dronePathPoint.y,
                 }}
-                transition={{ duration: 0.3, ease: 'easeOut' as const }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
               >
                 {/* Shadow on ground */}
                 <ellipse
@@ -1211,7 +1211,7 @@ export function DroneDeliveryTracker() {
                   strokeWidth={1.5}
                   opacity={0.4}
                   animate={{ r: [16, 28], opacity: [0.4, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' as const }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
                 />
                 {/* Drone body */}
                 <circle cx={0} cy={0} r={10} fill="#8b5cf6" />
@@ -1285,14 +1285,14 @@ export function DroneDeliveryTracker() {
                   background: 'linear-gradient(90deg, #8b5cf6, #7c3aed, #6d28d9)',
                 }}
                 animate={{ width: `${progressPercent}%` }}
-                transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
               />
               {/* Shimmer effect */}
               <motion.div
                 className="absolute top-0 bottom-0 r53-drone-progress-shimmer"
                 style={{ width: '30%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)' }}
                 animate={{ left: ['-30%', '130%'] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               />
             </div>
           </div>
@@ -1467,7 +1467,7 @@ export function DroneDeliveryTracker() {
 
             <motion.div
               animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
               <CheckCircle className="h-10 w-10 text-white mx-auto mb-2" />
             </motion.div>

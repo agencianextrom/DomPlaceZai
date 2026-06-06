@@ -205,7 +205,7 @@ export function GiftGuide() {
         <div className="flex items-center gap-2 mb-4 px-1">
           <motion.div
             animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
             <Gift className="h-5 w-5 text-rose-500" />
           </motion.div>
@@ -426,7 +426,7 @@ export function GiftGuide() {
                     y: [0, -10, 0],
                     rotate: [0, -5, 5, 0],
                   }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                   className="text-6xl mb-4"
                 >
                   🎁

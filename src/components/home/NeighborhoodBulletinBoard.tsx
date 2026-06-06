@@ -407,14 +407,14 @@ const heartParticleVariants = {
 const pulseGlowVariants = {
   animate: {
     boxShadow: '0 0 12px rgba(239,68,68,0.6)',
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 } as const
 
 const pinnedGlowVariants = {
   animate: {
     boxShadow: '0 0 12px rgba(59,130,246,0.6)',
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 } as const
 
@@ -468,10 +468,10 @@ const topicVariants = {
 } as const
 
 const emptyFloatVariants = [
-  { animate: { y: [0, -10, 0], rotate: [0, 8, -8, 0] }, transition: { duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0 } },
-  { animate: { y: [0, -12, 0], rotate: [0, -6, 6, 0] }, transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 } },
-  { animate: { y: [0, -8, 0], rotate: [0, 4, -4, 0] }, transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 1 } },
-  { animate: { y: [0, -14, 0], rotate: [0, -10, 10, 0] }, transition: { duration: 4.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.5 } },
+  { animate: { y: [0, -10, 0], rotate: [0, 8, -8, 0] }, transition: { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0 } },
+  { animate: { y: [0, -12, 0], rotate: [0, -6, 6, 0] }, transition: { duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 } },
+  { animate: { y: [0, -8, 0], rotate: [0, 4, -4, 0] }, transition: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 } },
+  { animate: { y: [0, -14, 0], rotate: [0, -10, 10, 0] }, transition: { duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 } },
 ]
 
 const commentVariants = {
@@ -485,7 +485,7 @@ const commentVariants = {
 
 const refreshSpinVariants = {
   animate: { rotate: 360 },
-  transition: { duration: 1, repeat: Infinity, ease: 'linear' as const },
+  transition: { duration: 1, repeat: Infinity, ease: 'linear' },
 }
 
 const newPostBadgeVariants = {
@@ -707,7 +707,7 @@ function EmptyState() {
       <motion.div
         className="relative"
         animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <div className="h-20 w-20 rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 flex items-center justify-center mb-4">
           <Megaphone className="h-9 w-9 text-emerald-500" />
@@ -1415,7 +1415,7 @@ export function NeighborhoodBulletinBoard() {
           <motion.div
             className="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center"
             animate={{ rotate: [0, -5, 5, -3, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           >
             <Megaphone className="h-5 w-5 text-white" />
           </motion.div>

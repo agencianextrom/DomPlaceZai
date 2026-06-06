@@ -244,7 +244,7 @@ function PersonalizationSkeleton() {
       <div className="flex items-center justify-center gap-2 py-6">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' as const }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
         >
           <Sparkles className="h-4 w-4 text-muted-foreground" />
         </motion.div>
@@ -304,7 +304,7 @@ function PersonalizedHomePage() {
           <CardContent className="p-8 text-center">
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
               <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             </motion.div>
@@ -348,7 +348,7 @@ function PersonalizedHomePage() {
                 boxShadow: '0 0 0 3px rgba(139, 92, 246, 0.3)',
               }}
               animate={{ boxShadow: ['0 0 0 3px rgba(139, 92, 246, 0.3)', '0 0 0 6px rgba(139, 92, 246, 0.1)', '0 0 0 3px rgba(139, 92, 246, 0.3)'] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             >
               <span className="text-xl">M</span>
             </motion.div>
@@ -407,7 +407,7 @@ function PersonalizedHomePage() {
             <motion.span
               className="text-5xl"
               animate={{ rotate: [-5, 5, -5], scale: [1, 1.1, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             >
               {seasonal.emoji}
             </motion.span>
@@ -452,7 +452,7 @@ function PersonalizedHomePage() {
                   <motion.span
                     className="text-2xl"
                     animate={{ y: [0, -3, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: Math.random() * 1 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 1 }}
                   >
                     {insight.emoji}
                   </motion.span>
@@ -495,7 +495,7 @@ function PersonalizedHomePage() {
           <div className="flex items-center gap-2">
             <motion.div
               animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             >
               <Sparkles className="h-5 w-5 text-amber-500" />
             </motion.div>
@@ -730,7 +730,7 @@ function PersonalizedHomePage() {
                     <motion.span
                       className="text-3xl shrink-0 mt-0.5"
                       animate={{ rotate: [-3, 3, -3] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: Math.random() }}
+                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: Math.random() }}
                     >
                       {deal.emoji}
                     </motion.span>

@@ -252,14 +252,14 @@ const itemVariants = {
     opacity: 0,
     x: 80,
     scale: 0.92,
-    transition: { duration: 0.3, ease: 'easeOut' as const },
+    transition: { duration: 0.3, ease: 'easeOut' },
   },
 }
 
 const emptyBounce = {
   animate: {
     y: [0, -8, 0],
-    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -479,7 +479,7 @@ export function SmartNotifications() {
                   <motion.span
                     className="absolute inset-0 rounded-full bg-red-500"
                     animate={{ scale: [1, 1.8], opacity: [0.4, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' as const }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
                   />
                 </motion.span>
               )}
@@ -635,7 +635,7 @@ export function SmartNotifications() {
                           <motion.span
                             className="absolute inset-0 rounded-full bg-emerald-500"
                             animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const }}
+                            transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
                           />
                         </motion.span>
                       )}

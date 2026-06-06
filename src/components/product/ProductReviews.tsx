@@ -405,7 +405,7 @@ export function ProductReviews({ productId, productRating, totalReviews }: Produ
               <motion.span
                 animate={{ x: [0, 4, 0] }}
                 whileHover={{ x: [0, 6, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 2 }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 2 }}
               >
                 <ChevronDown className="h-3.5 w-3.5 group-hover:text-primary/80 transition-colors" />
               </motion.span>

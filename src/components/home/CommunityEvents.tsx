@@ -170,7 +170,7 @@ const shimmerVariants = {
   initial: { backgroundPosition: '-200% center' },
   animate: {
     backgroundPosition: '200% center',
-    transition: { duration: 4, repeat: Infinity, ease: 'linear' as const },
+    transition: { duration: 4, repeat: Infinity, ease: 'linear' },
   },
 }
 

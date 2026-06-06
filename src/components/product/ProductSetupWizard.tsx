@@ -815,7 +815,7 @@ function StepProgressBar({
           animate={{
             width: `calc(${Math.min(completedSteps.size, steps.length) / Math.max(steps.length, 1) * 100}% - 0px)`,
           }}
-          transition={{ duration: 0.5, ease: 'easeOut' as const }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         />
 
         {steps.map((step, idx) => {
@@ -903,7 +903,7 @@ function CompletionCard({ guideTitle, onRestart }: { guideTitle: string; onResta
       {/* Trophy icon */}
       <motion.div
         animate={{ y: [0, -8, 0] }}
-        transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' as const }}
+        transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
         className="r40-completion-trophy text-6xl mb-4"
       >
         🏆
@@ -1278,7 +1278,7 @@ export function ProductSetupWizard() {
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.3, ease: 'easeOut' as const }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
             >
               <Card
                 className="r40-step-card overflow-hidden"
@@ -1387,7 +1387,7 @@ export function ProductSetupWizard() {
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: 'easeOut' as const }}
+                          transition={{ duration: 0.3, ease: 'easeOut' }}
                           className="r40-step-details-content overflow-hidden"
                         >
                           <div

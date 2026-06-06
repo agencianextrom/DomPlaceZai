@@ -101,7 +101,7 @@ function CountdownDisplay({ total }: { total: number }) {
     <motion.div
       className="flex items-center gap-0.5 font-mono text-[11px] tabular-nums"
       animate={isUrgent ? { color: ['#ef4444', '#fca5a5', '#ef4444'] } : {}}
-      transition={isUrgent ? { duration: 1, repeat: Infinity, ease: 'easeInOut' as const } : {}}
+      transition={isUrgent ? { duration: 1, repeat: Infinity, ease: 'easeInOut' } : {}}
     >
       <motion.span
         key={h}
@@ -151,7 +151,7 @@ function DealBadge({ discount }: { discount: number }) {
           `0 0 0px ${color}`,
         ],
       }}
-      transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' as const }}
+      transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
     >
       <Badge className="gap-1 text-[10px] font-bold px-1.5 border-0" style={{ backgroundColor: color, color: '#ffffff' }}>
         <span>🔥</span> Oferta
@@ -171,7 +171,7 @@ function LiveIndicator({ count }: { count: number }) {
         <motion.span
           className="absolute inset-0 rounded-full bg-green-500"
           animate={{ scale: [1, 1.8, 1], opacity: [0.7, 0, 0.7] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         />
         <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
       </span>
@@ -393,7 +393,7 @@ export function RealTimeDealsTicker() {
           transition={
             !prefersReducedMotion && !isHovered
               ? {
-                  x: { duration: scrollDuration, repeat: Infinity, ease: 'linear' as const },
+                  x: { duration: scrollDuration, repeat: Infinity, ease: 'linear' },
                 }
               : {}
           }
@@ -411,7 +411,7 @@ export function RealTimeDealsTicker() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: 'easeInOut' as const }}
+            transition={{ duration: 0.35, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
             <div className="border-t border-border/40 px-3 sm:px-4 pt-3 pb-3">
@@ -491,7 +491,7 @@ export function RealTimeDealsTicker() {
           <motion.div
             className="absolute inset-0"
             animate={{ x: ['-100%', '200%'] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' as const, repeatDelay: 1 }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
           >
             <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
           </motion.div>

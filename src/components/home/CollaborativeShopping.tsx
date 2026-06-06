@@ -382,7 +382,7 @@ function SavingsTracker({ savings }: { savings: number }) {
       <div className="relative z-10 flex items-center gap-3">
         <motion.div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
           style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.3), rgba(20,184,166,0.2))', boxShadow: '0 0 0 2px rgba(16,185,129,0.3)' }}
-          animate={{ rotate: [0, 5, -5, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}>
+          animate={{ rotate: [0, 5, -5, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
           <PiggyBank className="h-5 w-5" style={{ color: '#10b981' }} />
         </motion.div>
         <div className="min-w-0">
@@ -511,19 +511,19 @@ function EmptyState() {
     <motion.div className="r47-empty-state flex flex-col items-center justify-center py-16 px-6"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <div className="relative">
-        <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}>
+        <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
           <PackageOpen className="h-16 w-16 text-muted-foreground/30" />
         </motion.div>
         <motion.div className="absolute -top-4 -left-6" animate={{ y: [0, -6, 0], rotate: [0, 10, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.2 }}>
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}>
           <ShoppingCart className="h-6 w-6 text-muted-foreground/20" />
         </motion.div>
         <motion.div className="absolute -bottom-2 -right-5" animate={{ y: [0, -8, 0], rotate: [0, -10, 0] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}>
+          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}>
           <ShoppingCart className="h-5 w-5 text-muted-foreground/20" />
         </motion.div>
         <motion.div className="absolute -top-2 -right-8" animate={{ y: [0, -5, 0], rotate: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.8 }}>
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}>
           <ShoppingCart className="h-4 w-4 text-muted-foreground/15" />
         </motion.div>
       </div>
@@ -660,7 +660,7 @@ export default function CollaborativeShopping() {
         <div className="flex items-center gap-2.5">
           <motion.div className="h-10 w-10 rounded-xl flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(59,130,246,0.2))', boxShadow: '0 0 0 2px rgba(16,185,129,0.3)' }}
-            animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}>
+            animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}>
             <Users className="h-5 w-5" style={{ color: '#10b981' }} />
           </motion.div>
           <div>
@@ -709,7 +709,7 @@ export default function CollaborativeShopping() {
             ) : (
               <motion.div key="none" className="r47-no-selection rounded-xl border border-dashed border-border/40 bg-background/40 p-8 flex flex-col items-center justify-center min-h-[300px]"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}>
+                <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
                   <ShoppingCart className="h-10 w-10 text-muted-foreground/20" />
                 </motion.div>
                 <p className="text-xs text-muted-foreground/60 mt-4 text-center">Selecione uma lista para ver detalhes, itens e divisão de conta</p>

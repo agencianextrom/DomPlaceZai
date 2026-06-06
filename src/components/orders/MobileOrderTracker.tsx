@@ -289,7 +289,7 @@ export function MobileOrderTracker({ orderId }: MobileOrderTrackerProps) {
                           animate={step.active ? { scale: [1, 1.15, 1] } : { scale: 1 }}
                           transition={
                             step.active
-                              ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }
+                              ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' }
                               : { duration: 0 }
                           }
                           aria-current={step.active ? 'step' : undefined}
@@ -307,7 +307,7 @@ export function MobileOrderTracker({ orderId }: MobileOrderTrackerProps) {
                               className="absolute inset-y-0 left-0 bg-emerald-500 rounded-full"
                               initial={{ width: '0%' }}
                               animate={{ width: step.completed ? '100%' : '0%' }}
-                              transition={{ duration: 0.5, ease: 'easeOut' as const }}
+                              transition={{ duration: 0.5, ease: 'easeOut' }}
                             />
                           </div>
                         )}

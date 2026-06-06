@@ -206,14 +206,14 @@ const checkmarkVariants = {
 const pulseVariants = {
   animate: {
     scale: [1, 1.08, 1],
-    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
 const badgePulseVariants = {
   animate: {
     opacity: [1, 0.6, 1],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 

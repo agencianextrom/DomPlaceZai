@@ -262,7 +262,7 @@ export function ProductSpotlight() {
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: 'easeInOut' as const,
+                ease: 'easeInOut',
               }}
             >
               {emoji}

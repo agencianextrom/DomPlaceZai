@@ -269,7 +269,7 @@ const sparkleVariants = {
       duration: 2.2,
       repeat: Infinity,
       repeatDelay: 3 + i * 0.5,
-      ease: 'easeInOut' as const,
+      ease: 'easeInOut',
     },
   }),
 }
@@ -557,7 +557,7 @@ export function ProductBundleDeal({ category, currentProductId }: ProductBundleD
           <div className="flex items-center gap-2.5">
             <motion.div
               animate={{ rotate: [0, 6, -6, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md"
               style={{ boxShadow: '0 4px 12px rgba(245,158,11,0.3)' }}
             >

@@ -135,7 +135,7 @@ function SpecialCard({ special, index, isDayOfDeal }: { special: WeeklySpecial; 
       )}
       <motion.div
         animate={{ scale: [1, 1.12, 1] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute -top-2 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white shadow-sm r31-badge-glow r36-badge-pulse"
       >
         -{special.discount}%

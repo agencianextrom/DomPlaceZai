@@ -41,7 +41,7 @@ const drawerVariants = {
       type: 'spring' as const,
       stiffness: 320,
       damping: 34,
-      ease: 'easeOut' as const,
+      ease: 'easeOut',
     },
   },
   exit: {
@@ -51,7 +51,7 @@ const drawerVariants = {
       type: 'spring' as const,
       stiffness: 280,
       damping: 30,
-      ease: 'easeIn' as const,
+      ease: 'easeIn',
     },
   },
 }
@@ -347,7 +347,7 @@ function EmptyCartState() {
     >
       <motion.div
         animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-3">
           <ShoppingCart className="h-8 w-8 text-primary/40" />

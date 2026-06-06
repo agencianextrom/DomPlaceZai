@@ -179,7 +179,7 @@ function ConfettiParticles({ show, rarity }: { show: boolean; rarity: Rarity }) 
             key={i}
             initial={{ opacity: 1, x: 0, y: 0, scale: 1, rotate: 0 }}
             animate={{ opacity: 0, x, y, scale: 0, rotate: Math.random() * 1080 }}
-            transition={{ duration: dur, ease: 'easeOut' as const }}
+            transition={{ duration: dur, ease: 'easeOut' }}
             className="absolute rounded-sm"
             style={{
               backgroundColor: colors[i % colors.length],
@@ -220,7 +220,7 @@ function SparkleStars({ show, color }: { show: boolean; color: string }) {
               duration: 2,
               repeat: Infinity,
               delay: i * 0.15,
-              ease: 'easeInOut' as const,
+              ease: 'easeInOut',
             }}
             className="absolute"
             style={{ left: `${x}%`, top: `${y}%`, color }}
@@ -306,7 +306,7 @@ const boxContainerVariants = {
     x: [-4, 4, -4, 4, -3, 3, -2, 2, 0],
     y: [-2, 2, -1, 1, 0],
     rotate: [-3, 3, -3, 3, -2, 2, -1, 1, 0],
-    transition: { duration: 0.6, ease: 'easeInOut' as const },
+    transition: { duration: 0.6, ease: 'easeInOut' },
   },
 }
 
@@ -343,7 +343,7 @@ const glowPulseVariants = {
       '0 0 30px rgba(245, 158, 11, 0.4), 0 0 60px rgba(245, 158, 11, 0.15)',
       '0 0 20px rgba(245, 158, 11, 0.2), 0 0 40px rgba(245, 158, 11, 0.08)',
     ],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -474,7 +474,7 @@ export function MysteryDealBox() {
                     Caixa Mistério
                     <motion.span
                       animate={{ rotate: [0, 15, -15, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                     >
                       ✨
                     </motion.span>
@@ -506,7 +506,7 @@ export function MysteryDealBox() {
                       {/* Question mark */}
                       <motion.div
                         animate={phase === 'idle' ? { y: [0, -6, 0], rotate: [0, 5, -5, 0] } : {}}
-                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                         className="text-5xl font-black text-white/90 select-none"
                         style={{ textShadow: '0 2px 8px rgba(0,0,0,0.25)' }}
                       >
@@ -534,22 +534,22 @@ export function MysteryDealBox() {
                           <motion.div
                             className="absolute top-2 left-3 w-2 h-2 rounded-full bg-amber-300/60"
                             animate={{ y: [0, -8, 0], opacity: [0.4, 0.8, 0.4] }}
-                            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                           />
                           <motion.div
                             className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-red-300/60"
                             animate={{ y: [0, -10, 0], opacity: [0.3, 0.7, 0.3] }}
-                            transition={{ duration: 2.5, repeat: Infinity, delay: 0.5, ease: 'easeInOut' as const }}
+                            transition={{ duration: 2.5, repeat: Infinity, delay: 0.5, ease: 'easeInOut' }}
                           />
                           <motion.div
                             className="absolute bottom-3 left-5 w-1 h-1 rounded-full bg-yellow-200/60"
                             animate={{ x: [0, 6, 0], opacity: [0.3, 0.6, 0.3] }}
-                            transition={{ duration: 3.5, repeat: Infinity, delay: 1, ease: 'easeInOut' as const }}
+                            transition={{ duration: 3.5, repeat: Infinity, delay: 1, ease: 'easeInOut' }}
                           />
                           <motion.div
                             className="absolute bottom-2 right-3 w-2 h-2 rounded-full bg-orange-300/50"
                             animate={{ y: [0, -6, 0], x: [0, 4, 0], opacity: [0.4, 0.7, 0.4] }}
-                            transition={{ duration: 2.8, repeat: Infinity, delay: 0.8, ease: 'easeInOut' as const }}
+                            transition={{ duration: 2.8, repeat: Infinity, delay: 0.8, ease: 'easeInOut' }}
                           />
                         </>
                       )}
@@ -638,7 +638,7 @@ export function MysteryDealBox() {
                         `0 0 30px ${rarityConfig.glowColor}, 0 8px 24px rgba(0,0,0,0.08)`,
                       ],
                     }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     {/* Rarity badge */}
                     <div className="flex items-center justify-between mb-3">

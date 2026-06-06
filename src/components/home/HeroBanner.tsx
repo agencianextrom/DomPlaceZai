@@ -668,7 +668,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
                 duration: badge.floatDur,
                 delay: badge.floatDelay,
                 repeat: Infinity,
-                ease: 'easeInOut' as const,
+                ease: 'easeInOut',
               }}
             >
               <span className="r58-hero-float-badge relative drop-shadow-lg" style={{ fontSize: badge.size }}>

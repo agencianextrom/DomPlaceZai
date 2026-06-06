@@ -466,7 +466,7 @@ export function StoreAnalytics() {
         <div className="flex items-center gap-2.5">
           <motion.div
             animate={{ rotate: [0, 15, 0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           >
             <BarChart3 className="h-5 w-5 text-primary" />
           </motion.div>
@@ -508,7 +508,7 @@ export function StoreAnalytics() {
         <span className="relative flex h-2.5 w-2.5">
           <motion.span
             animate={{ scale: [1, 1.8, 1], opacity: [0.7, 0.2, 0.7] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
           />
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
@@ -992,7 +992,7 @@ export function StoreAnalytics() {
           >
             <motion.div
               animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               className="h-8 w-8 rounded-full bg-emerald-500/15 flex items-center justify-center"
             >
               <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
@@ -1016,7 +1016,7 @@ export function StoreAnalytics() {
           >
             <motion.div
               animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
               className="h-8 w-8 rounded-full bg-amber-500/15 flex items-center justify-center"
             >
               <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
@@ -1040,7 +1040,7 @@ export function StoreAnalytics() {
           >
             <motion.div
               animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 1 }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
               className="h-8 w-8 rounded-full bg-blue-500/15 flex items-center justify-center"
             >
               <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -1073,7 +1073,7 @@ export function StoreAnalytics() {
         >
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
           >
             <RefreshCw className="h-3 w-3" />
           </motion.div>

@@ -136,7 +136,7 @@ function OfficialRibbon() {
             duration: 3,
             repeat: Infinity,
             repeatDelay: 2,
-            ease: 'easeInOut' as const,
+            ease: 'easeInOut',
           }}
         />
       </div>
@@ -162,17 +162,17 @@ export function PartnersBanner() {
           <motion.div
             className="absolute -top-8 -left-8 h-32 w-32 rounded-full bg-gradient-to-br from-primary/20 to-amber-400/15 blur-2xl"
             animate={{ x: [0, 30, -10, 20, 0], y: [0, -20, 15, -10, 0] }}
-            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
             className="absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-gradient-to-br from-amber-400/15 to-rose-400/10 blur-2xl"
             animate={{ x: [0, -25, 15, -20, 0], y: [0, 15, -20, 10, 0] }}
-            transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' as const, delay: 3 }}
+            transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
           />
           <motion.div
             className="absolute top-1/3 -right-4 h-20 w-20 rounded-full bg-gradient-to-br from-emerald-400/10 to-teal-400/15 blur-xl"
             animate={{ x: [0, -15, 10, -5, 0], y: [0, 10, -15, 5, 0] }}
-            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' as const, delay: 5 }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut', delay: 5 }}
           />
         </div>
 
@@ -221,7 +221,7 @@ export function PartnersBanner() {
                 transition={{
                   duration: durations[i],
                   repeat: Infinity,
-                  ease: 'easeInOut' as const,
+                  ease: 'easeInOut',
                   delay: i * 1.2,
                 }}
               />

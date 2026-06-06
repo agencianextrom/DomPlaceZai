@@ -76,7 +76,7 @@ function CommunityOrb({ color, delay, x, y, size }: { color: string; delay: numb
         duration: 6,
         repeat: Infinity,
         delay,
-        ease: 'easeInOut' as const,
+        ease: 'easeInOut',
       }}
       aria-hidden="true"
     />
@@ -91,7 +91,7 @@ export function CommunityHighlights() {
         <motion.div
           className="h-8 w-8 rounded-lg bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center"
           animate={{ rotate: [0, 6, -6, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Heart className="h-4 w-4 text-white" />
         </motion.div>
@@ -104,7 +104,7 @@ export function CommunityHighlights() {
         {/* Animated community stats badge */}
         <motion.div
           animate={{ scale: [1, 1.08, 1], opacity: [0.8, 1, 0.8] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           className="ml-auto hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 border border-rose-200/40 dark:border-rose-800/30"
         >
           <Users className="h-3.5 w-3.5 text-rose-500" />
@@ -172,7 +172,7 @@ export function CommunityHighlights() {
                   <motion.div
                     className={`absolute inset-0 rounded-xl border-2 border-white/25`}
                     animate={{ scale: [1, 1.18, 1], opacity: [0.15, 0.35, 0.15] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
                   />
                 </motion.div>
 
@@ -186,7 +186,7 @@ export function CommunityHighlights() {
                 <motion.div
                   className="absolute top-3 right-3"
                   animate={{ scale: [1, 1.06, 1], y: [0, -2, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
                 >
                   <span className="text-[8px] font-bold px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-sm community-destaque-badge">
                     ✨ Em destaque

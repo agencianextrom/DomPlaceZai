@@ -285,7 +285,7 @@ const checkPop = {
 const shimmerVariants = {
   animate: {
     backgroundPosition: ['200% center', '-200% center'],
-    transition: { duration: 3, repeat: Infinity, ease: 'linear' as const },
+    transition: { duration: 3, repeat: Infinity, ease: 'linear' },
   },
 }
 
@@ -296,7 +296,7 @@ const pulseGlow = {
       '0 0 16px rgba(255,255,255,0.15)',
       '0 0 4px rgba(255,255,255,0.05)',
     ],
-    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const },
+    transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
   },
 }
 
@@ -370,7 +370,7 @@ function TierConfetti({ show, tierColor }: { show: boolean; tierColor: string })
           transition={{
             duration: 2 + Math.random(),
             delay: p.delay,
-            ease: 'easeOut' as const,
+            ease: 'easeOut',
           }}
         />
       ))}
@@ -428,7 +428,7 @@ function TierIconGlow({ tier, isReached, isCurrent }: { tier: TierData; isReache
     <motion.div
       className="relative"
       animate={isCurrent ? { scale: [1, 1.08, 1] } : isReached ? { scale: 1 } : { scale: 0.95 }}
-      transition={{ duration: 2.5, repeat: isCurrent ? Infinity : 0, ease: 'easeInOut' as const }}
+      transition={{ duration: 2.5, repeat: isCurrent ? Infinity : 0, ease: 'easeInOut' }}
     >
       {/* Glow ring behind the icon for reached tiers */}
       {isReached && (
@@ -436,7 +436,7 @@ function TierIconGlow({ tier, isReached, isCurrent }: { tier: TierData; isReache
           className="absolute -inset-2 rounded-2xl opacity-40 blur-lg"
           style={{ backgroundColor: tier.color }}
           animate={isCurrent ? { opacity: [0.2, 0.5, 0.2], scale: [1, 1.15, 1] } : { opacity: 0.2 }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           aria-hidden="true"
         />
       )}
@@ -456,7 +456,7 @@ function TierIconGlow({ tier, isReached, isCurrent }: { tier: TierData; isReache
             : undefined
         }
         animate={isCurrent ? { rotate: [0, 4, -4, 0] } : {}}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <TierIcon className={`h-7 w-7 ${isReached ? 'text-white' : 'text-muted-foreground'}`} />
         {!isReached && (
@@ -480,7 +480,7 @@ function TierIconGlow({ tier, isReached, isCurrent }: { tier: TierData; isReache
                 opacity: [0, 0.8, 0],
                 scale: [0, 1, 0],
               }}
-              transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.15, ease: 'easeOut' as const }}
+              transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.15, ease: 'easeOut' }}
             />
           )
         })}
@@ -532,7 +532,7 @@ function TierCard({
             backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
             opacity: [0.6, 1, 0.6],
           }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           aria-hidden="true"
         />
       )}
@@ -552,14 +552,14 @@ function TierCard({
               className="absolute -top-10 -right-10 h-28 w-28 rounded-full blur-2xl opacity-15"
               style={{ backgroundColor: tier.color }}
               animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.2, 0.1] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               aria-hidden="true"
             />
             <motion.div
               className="absolute -bottom-8 -left-8 h-20 w-20 rounded-full blur-2xl opacity-10"
               style={{ backgroundColor: tier.color }}
               animate={{ scale: [1.2, 1, 1.2], opacity: [0.08, 0.15, 0.08] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' as const, delay: 1 }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
               aria-hidden="true"
             />
           </>
@@ -607,7 +607,7 @@ function TierCard({
                   color: isReached ? tier.color : '#64748b',
                 }}
                 animate={isReached ? { scale: [1, 1.03, 1] } : {}}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <Zap className="h-3 w-3" />
                 Multiplicador {tier.multiplier}
@@ -636,14 +636,14 @@ function TierCard({
                   animate={{
                     width: `${Math.min(100, ((points - tier.minPoints) / (nextThreshold - tier.minPoints)) * 100)}%`,
                   }}
-                  transition={{ duration: 1.4, ease: 'easeOut' as const, delay: 0.3 }}
+                  transition={{ duration: 1.4, ease: 'easeOut', delay: 0.3 }}
                 />
                 {/* Shimmer sweep overlay */}
                 <div className="absolute inset-0 rounded-full overflow-hidden">
                   <motion.div
                     className="absolute inset-0 rounded-full"
                     animate={{ x: ['-100%', '200%'] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1.5 }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.5 }}
                   >
                     <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent" />
                   </motion.div>
@@ -798,7 +798,7 @@ function ComparisonTable({ currentTierIndex }: { currentTierIndex: number }) {
                               className="inline-flex items-center justify-center h-7 w-7 rounded-full"
                               style={{ backgroundColor: `${t.color}15` }}
                               animate={ti <= currentTierIndex ? { scale: [1, 1.1, 1] } : {}}
-                              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, delay: i * 0.1 }}
+                              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: i * 0.1 }}
                             >
                               <Check className="h-4 w-4" style={{ color: ti <= currentTierIndex ? t.color : '#94a3b8' }} />
                             </motion.div>
@@ -829,7 +829,7 @@ function ComparisonTable({ currentTierIndex }: { currentTierIndex: number }) {
                   <motion.span
                     className={`text-sm font-black ${t.textColor}`}
                     animate={{ scale: [1, 1.08, 1] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     {t.multiplier}
                   </motion.span>
@@ -891,7 +891,7 @@ function RewardCard({
           <motion.span
             className="text-2xl"
             animate={isAvailable && canAfford ? { scale: [1, 1.15, 1], rotate: [0, 8, -8, 0] } : {}}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           >
             {reward.emoji}
           </motion.span>
@@ -948,7 +948,7 @@ function CrownAnimation() {
         y: [0, -4, 0],
         rotate: [0, 3, -3, 0],
       }}
-      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
     >
       <Crown className="h-6 w-6 text-amber-500" />
       {/* Sparkle on crown tip */}
@@ -1101,7 +1101,7 @@ export function LoyaltyTierBenefits() {
         <div className="flex items-center gap-3 text-muted-foreground">
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' as const }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
           >
             <Sparkles className="h-5 w-5" />
           </motion.div>

@@ -228,25 +228,25 @@ export function SmartSuggestions() {
   return (
     <section className="mt-4 relative overflow-hidden r62-card-lift">
       {/* 5 floating sparkle particles */}
-      <motion.div className="absolute top-2 right-4 w-1.5 h-1.5 rounded-full bg-amber-400/30 pointer-events-none" animate={{ y: [0, -10, -20], opacity: [0, 0.6, 0], scale: [0.4, 1, 0.2] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const, delay: 0 }} />
-      <motion.div className="absolute top-4 left-1/3 w-1 h-1 rounded-full bg-emerald-400/25 pointer-events-none" animate={{ y: [0, -12, -24], opacity: [0, 0.5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.6 }} />
-      <motion.div className="absolute top-1 right-1/4 w-2 h-2 rounded-full bg-yellow-400/25 pointer-events-none" animate={{ y: [0, -8, -18], opacity: [0, 0.4, 0], scale: [0.5, 0.8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeOut' as const, delay: 1.2 }} />
-      <motion.div className="absolute top-6 left-12 w-1 h-1 rounded-full bg-primary/20 pointer-events-none" animate={{ y: [0, -14, -28], opacity: [0, 0.5, 0], scale: [0.3, 0.7, 0] }} transition={{ duration: 3.8, repeat: Infinity, ease: 'easeOut' as const, delay: 1.8 }} />
-      <motion.div className="absolute top-3 right-16 w-1.5 h-1.5 rounded-full bg-orange-400/20 pointer-events-none" animate={{ y: [0, -10, -22], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.3] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 2.4 }} />
+      <motion.div className="absolute top-2 right-4 w-1.5 h-1.5 rounded-full bg-amber-400/30 pointer-events-none" animate={{ y: [0, -10, -20], opacity: [0, 0.6, 0], scale: [0.4, 1, 0.2] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeOut', delay: 0 }} />
+      <motion.div className="absolute top-4 left-1/3 w-1 h-1 rounded-full bg-emerald-400/25 pointer-events-none" animate={{ y: [0, -12, -24], opacity: [0, 0.5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut', delay: 0.6 }} />
+      <motion.div className="absolute top-1 right-1/4 w-2 h-2 rounded-full bg-yellow-400/25 pointer-events-none" animate={{ y: [0, -8, -18], opacity: [0, 0.4, 0], scale: [0.5, 0.8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeOut', delay: 1.2 }} />
+      <motion.div className="absolute top-6 left-12 w-1 h-1 rounded-full bg-primary/20 pointer-events-none" animate={{ y: [0, -14, -28], opacity: [0, 0.5, 0], scale: [0.3, 0.7, 0] }} transition={{ duration: 3.8, repeat: Infinity, ease: 'easeOut', delay: 1.8 }} />
+      <motion.div className="absolute top-3 right-16 w-1.5 h-1.5 rounded-full bg-orange-400/20 pointer-events-none" animate={{ y: [0, -10, -22], opacity: [0, 0.4, 0], scale: [0.6, 0.9, 0.3] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut', delay: 2.4 }} />
 
       {/* Floating gradient orb in background */}
       <motion.div
         className="absolute top-8 left-[15%] w-32 h-32 rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, oklch(0.78 0.16 70 / 0.12) 0%, transparent 70%)' }}
         animate={{ y: [0, -20, 0], x: [0, 12, 0], scale: [1, 1.25, 1] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
         aria-hidden="true"
       />
       <motion.div
         className="absolute bottom-4 right-[10%] w-24 h-24 rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, oklch(0.45 0.1 155 / 0.10) 0%, transparent 70%)' }}
         animate={{ y: [0, 14, 0], x: [0, -10, 0], scale: [1, 1.2, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' as const, delay: 2 }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
         aria-hidden="true"
       />
 
@@ -256,7 +256,7 @@ export function SmartSuggestions() {
           <motion.div
             className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center"
             animate={{ rotate: [0, 8, -8, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           >
             <Sparkles className="h-4 w-4 text-white" />
           </motion.div>
@@ -266,9 +266,9 @@ export function SmartSuggestions() {
               Produtos selecionados especialmente para você
             </p>
             {/* Animated sparkle particles around header */}
-            <motion.div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400/60 pointer-events-none" animate={{ scale: [0,1.2,0], opacity: [0,1,0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const }} />
-            <motion.div className="absolute -top-2 right-4 w-1.5 h-1.5 rounded-full bg-emerald-400/50 pointer-events-none" animate={{ scale: [0,1,0], opacity: [0,0.8,0] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.7 }} />
-            <motion.div className="absolute -bottom-0.5 -left-2 w-1 h-1 rounded-full bg-orange-400/50 pointer-events-none" animate={{ scale: [0,1.3,0], opacity: [0,0.6,0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' as const, delay: 1.2 }} />
+            <motion.div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400/60 pointer-events-none" animate={{ scale: [0,1.2,0], opacity: [0,1,0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }} />
+            <motion.div className="absolute -top-2 right-4 w-1.5 h-1.5 rounded-full bg-emerald-400/50 pointer-events-none" animate={{ scale: [0,1,0], opacity: [0,0.8,0] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut', delay: 0.7 }} />
+            <motion.div className="absolute -bottom-0.5 -left-2 w-1 h-1 rounded-full bg-orange-400/50 pointer-events-none" animate={{ scale: [0,1.3,0], opacity: [0,0.6,0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut', delay: 1.2 }} />
           </div>
         </div>
       </div>
@@ -330,7 +330,7 @@ export function SmartSuggestions() {
                       <motion.div
                         className="r59-suggest-ai-badge flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[8px] font-bold text-white"
                         animate={{ boxShadow: ['0 0 0px rgba(16,185,129,0)', '0 0 12px rgba(16,185,129,0.4)', '0 0 0px rgba(16,185,129,0)'] }}
-                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: idx * 0.3 }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.3 }}
                       >
                         <BrainCircuit className="h-2.5 w-2.5" />
                         <span>AI</span>
@@ -396,7 +396,7 @@ export function SmartSuggestions() {
               >
                 <motion.div
                   animate={{ rotate: [0, 8, -8, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                   className="group-hover/ver:[--arrow-rotate:45deg]"
                 >
                   <motion.div

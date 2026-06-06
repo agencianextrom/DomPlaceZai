@@ -607,7 +607,7 @@ export function FamilyAccountManager() {
             <motion.div
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-primary/10 text-primary"
               animate={{ scale: [1, 1.04, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             >
               <Wallet className="h-3.5 w-3.5" />
               Total: {formatBRL(totalFamilySpending)}
@@ -1005,7 +1005,7 @@ export function FamilyAccountManager() {
                   : 'bg-red-500/10 text-red-600'
               }`}
               animate={{ scale: [1, 1.04, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             >
               {spendingChangePercent < 0 ? (
                 <TrendingDown className="h-3.5 w-3.5" />
@@ -1234,7 +1234,7 @@ export function FamilyAccountManager() {
           className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center"
           style={{ boxShadow: '0 2px 8px 0 rgba(99,102,241,0.25)' }}
           animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         >
           <Users className="h-5 w-5 text-white" />
         </motion.div>

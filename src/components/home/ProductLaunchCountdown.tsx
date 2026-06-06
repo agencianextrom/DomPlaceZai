@@ -155,7 +155,7 @@ function AnimatedDigit({ value, label }: { value: number; label: string }) {
             className="absolute inset-0 rounded-lg border-2 border-amber-400/40"
             initial={{ scale: 1, opacity: 0.8 }}
             animate={{ scale: 1.15, opacity: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' as const }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
             onAnimationComplete={() => { prevValue.current = value }}
           />
         )}
@@ -176,7 +176,7 @@ function ShimmerBadge({ children }: { children: React.ReactNode }) {
       <motion.div
         className="absolute inset-0"
         animate={{ x: ['-100%', '200%'] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 0.8 }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.8 }}
       >
         <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-[-20deg]" />
       </motion.div>
@@ -216,7 +216,7 @@ function CardSparkles() {
             duration: 2.4,
             repeat: Infinity,
             delay: cfg.delay,
-            ease: 'easeOut' as const,
+            ease: 'easeOut',
             repeatDelay: 0.6,
           }}
         />
@@ -236,12 +236,12 @@ function LaunchProgressBar({ progress }: { progress: number }) {
         className="h-full rounded-full bg-gradient-to-r from-amber-400 to-yellow-500"
         initial={{ width: 0 }}
         animate={{ width: `${Math.min(progress, 100)}%` }}
-        transition={{ duration: 0.8, ease: 'easeOut' as const }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
       />
       <motion.div
         className="absolute inset-0"
         animate={{ x: ['-100%', '200%'] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1.2 }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.2 }}
       >
         <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
       </motion.div>
@@ -315,7 +315,7 @@ function LaunchCard({ product, index }: { product: LaunchProduct; index: number 
               <CardSparkles />
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 className="text-5xl drop-shadow-md z-10"
               >
                 {product.emoji}
@@ -447,7 +447,7 @@ export function ProductLaunchCountdown() {
           <div className="flex items-center gap-2.5">
             <motion.div
               animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg"
             >
               <Rocket className="h-5 w-5 text-white" />
@@ -459,7 +459,7 @@ export function ProductLaunchCountdown() {
                 </span>
                 <motion.span
                   animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                   className="text-lg"
                 >
                   🚀
@@ -514,7 +514,7 @@ export function ProductLaunchCountdown() {
           <motion.div
             className="absolute inset-0"
             animate={{ x: ['-100%', '200%'] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, repeatDelay: 1 }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
           >
             <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
           </motion.div>
@@ -525,17 +525,17 @@ export function ProductLaunchCountdown() {
       <motion.div
         className="absolute top-6 left-6 w-1.5 h-1.5 rounded-full bg-amber-300/40 pointer-events-none"
         animate={{ y: [0, -12, -24], opacity: [0, 0.6, 0] }}
-        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut' as const, delay: 0.3 }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut', delay: 0.3 }}
       />
       <motion.div
         className="absolute top-12 right-10 w-2 h-2 rounded-full bg-yellow-400/30 pointer-events-none"
         animate={{ y: [0, -10, -20], opacity: [0, 0.5, 0], scale: [0.5, 1, 0.3] }}
-        transition={{ duration: 2.8, repeat: Infinity, ease: 'easeOut' as const, delay: 1.1 }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: 'easeOut', delay: 1.1 }}
       />
       <motion.div
         className="absolute bottom-4 left-1/3 w-1 h-1 rounded-full bg-orange-400/40 pointer-events-none"
         animate={{ y: [0, -8, -18], opacity: [0, 0.7, 0] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.7 }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeOut', delay: 0.7 }}
       />
     </motion.section>
   )

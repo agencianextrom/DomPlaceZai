@@ -379,7 +379,7 @@ function ConfidenceRing({ score, size = 36 }: { score: number; size?: number }) 
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
           animate={{ strokeDashoffset: offset }}
-          transition={{ duration: 1.2, ease: 'easeOut' as const, delay: 0.3 }}
+          transition={{ duration: 1.2, ease: 'easeOut', delay: 0.3 }}
           className="r51-recommend-confidence-fill"
         />
       </svg>
@@ -601,7 +601,7 @@ function SwipeDismissCard({
                   transition={{
                     duration: 2.5,
                     repeat: Infinity,
-                    ease: 'easeInOut' as const,
+                    ease: 'easeInOut',
                     delay: index * 0.3,
                   }}
                 >
@@ -732,7 +732,7 @@ function EmptyState({ onEnableAI }: { onEnableAI: () => void }) {
             <motion.div
               className="r51-recommend-empty-brain absolute inset-0 flex items-center justify-center"
               animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             >
               <div className="relative">
                 <motion.div
@@ -741,7 +741,7 @@ function EmptyState({ onEnableAI }: { onEnableAI: () => void }) {
                     boxShadow: '0 8px 32px rgba(139, 92, 246, 0.15)',
                   }}
                   animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <BrainCircuit className="h-12 w-12 text-violet-500" />
                 </motion.div>
@@ -769,28 +769,28 @@ function EmptyState({ onEnableAI }: { onEnableAI: () => void }) {
             <motion.div
               className="absolute top-2 left-4 text-2xl"
               animate={{ y: [0, -8, 0], rotate: [0, 10, 0] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
             >
               🛒
             </motion.div>
             <motion.div
               className="absolute top-8 right-4 text-2xl"
               animate={{ y: [0, -6, 0], rotate: [0, -8, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.8 }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
             >
               ✨
             </motion.div>
             <motion.div
               className="absolute bottom-4 left-8 text-2xl"
               animate={{ y: [0, -10, 0], rotate: [0, 12, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const, delay: 1.2 }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
             >
               🎯
             </motion.div>
             <motion.div
               className="absolute bottom-6 right-10 text-2xl"
               animate={{ y: [0, -7, 0], rotate: [0, -10, 0] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
             >
               💡
             </motion.div>
@@ -1027,7 +1027,7 @@ export function AIProductRecommender() {
             'radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)',
         }}
         animate={{ y: [0, -20, 0], x: [0, 15, 0], scale: [1, 1.2, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         aria-hidden="true"
       />
       <motion.div
@@ -1040,7 +1040,7 @@ export function AIProductRecommender() {
         transition={{
           duration: 9,
           repeat: Infinity,
-          ease: 'easeInOut' as const,
+          ease: 'easeInOut',
           delay: 3,
         }}
         aria-hidden="true"
@@ -1050,7 +1050,7 @@ export function AIProductRecommender() {
       <motion.div
         className="r51-recommend-particle absolute top-4 right-8 w-1.5 h-1.5 rounded-full bg-violet-400/30 pointer-events-none"
         animate={{ y: [0, -12, -24], opacity: [0, 0.5, 0], scale: [0.4, 1, 0.2] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' as const }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' }}
         aria-hidden="true"
       />
       <motion.div
@@ -1059,7 +1059,7 @@ export function AIProductRecommender() {
         transition={{
           duration: 3.5,
           repeat: Infinity,
-          ease: 'easeOut' as const,
+          ease: 'easeOut',
           delay: 0.8,
         }}
         aria-hidden="true"
@@ -1070,7 +1070,7 @@ export function AIProductRecommender() {
         transition={{
           duration: 4,
           repeat: Infinity,
-          ease: 'easeOut' as const,
+          ease: 'easeOut',
           delay: 1.6,
         }}
         aria-hidden="true"
@@ -1082,7 +1082,7 @@ export function AIProductRecommender() {
           <motion.div
             className="r51-recommend-header-icon h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center"
             animate={{ rotate: [0, 8, -8, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           >
             <BrainCircuit className="h-5 w-5 text-white" />
           </motion.div>
@@ -1092,7 +1092,7 @@ export function AIProductRecommender() {
               <motion.div
                 className="r51-recommend-header-sparkle"
                 animate={{ rotate: [0, 360] }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'linear' as const }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
               >
                 <Sparkles className="h-4 w-4 text-violet-500" />
               </motion.div>
@@ -1137,7 +1137,7 @@ export function AIProductRecommender() {
                 animate={isRefreshing ? { rotate: 360 } : { rotate: 0 }}
                 transition={
                   isRefreshing
-                    ? { duration: 0.8, repeat: Infinity, ease: 'linear' as const }
+                    ? { duration: 0.8, repeat: Infinity, ease: 'linear' }
                     : { duration: 0.3 }
                 }
               >

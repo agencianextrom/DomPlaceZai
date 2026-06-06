@@ -163,7 +163,7 @@ const resultBarVariants = {
     transition: {
       delay: 0.1 + i * 0.12,
       duration: 0.8,
-      ease: 'easeOut' as const,
+      ease: 'easeOut',
     },
   }),
 }
@@ -270,7 +270,7 @@ function CountdownTimer({ endDate }: { endDate: string }) {
     <div className={`flex items-center gap-2 text-[10px] text-muted-foreground ${isVeryUrgent ? 'r39-poll-countdown-pulse' : ''}`}>
       <motion.div
         animate={{ rotate: [0, 360] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'linear' as const }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
       >
         <Clock className={`h-3 w-3 ${isUrgent ? 'text-amber-500' : ''}`} />
       </motion.div>
@@ -285,14 +285,14 @@ function CountdownTimer({ endDate }: { endDate: string }) {
         <span className={isVeryUrgent ? 'r39-poll-countdown-urgent' : isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{String(timeLeft.hours).padStart(2, '0')}</span>
         <motion.span
           animate={{ opacity: [1, 0.3, 1] }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
         >
           :
         </motion.span>
         <span className={isVeryUrgent ? 'r39-poll-countdown-urgent' : isUrgent ? 'text-amber-600 dark:text-amber-400' : ''}>{String(timeLeft.minutes).padStart(2, '0')}</span>
         <motion.span
           animate={{ opacity: [1, 0.3, 1] }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.3 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
         >
           :
         </motion.span>
@@ -369,7 +369,7 @@ function PollOptionButton({
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8, delay: 0.1 + index * 0.12, ease: 'easeOut' as const }}
+          transition={{ duration: 0.8, delay: 0.1 + index * 0.12, ease: 'easeOut' }}
           className={`absolute inset-y-0 left-0 rounded-xl r39-poll-option-bar r39-poll-bar-entrance ${staggerClass} ${
             isVoted
               ? 'bg-gradient-to-r from-primary/20 via-primary/12 to-primary/5'
@@ -660,7 +660,7 @@ export function CommunityPoll() {
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: 'easeOut' as const }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="space-y-4 r62-card-lift r97-community-poll"
     >
       {/* Section header */}
@@ -668,7 +668,7 @@ export function CommunityPoll() {
         <motion.div
           className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center r39-poll-section-icon"
           animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           <MessageCircle className="h-4 w-4 text-white" />
         </motion.div>
@@ -702,7 +702,7 @@ export function CommunityPoll() {
               backgroundSize: '300% 100%',
             }}
             animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'linear' as const, repeatDelay: 1 }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
           />
         </div>
 
@@ -716,7 +716,7 @@ export function CommunityPoll() {
           >
             <motion.div
               animate={{ rotate: [0, 8, -8, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const, delay: 0.5 }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
               className="text-2xl shrink-0 mt-0.5"
             >
               📊
@@ -780,7 +780,7 @@ export function CommunityPoll() {
               <div className="flex items-center gap-2">
                 <motion.div
                   animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <PartyPopper className="h-4 w-4 text-amber-500" />
                 </motion.div>
@@ -821,7 +821,7 @@ export function CommunityPoll() {
         >
           <motion.div
             animate={{ rotate: [0, 15, -15, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
             <Flame className="h-5 w-5 text-amber-500" />
           </motion.div>

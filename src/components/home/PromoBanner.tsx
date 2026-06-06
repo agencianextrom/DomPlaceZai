@@ -156,7 +156,7 @@ function HeroCountdownTimer({ expiry }: { expiry: string }) {
           <motion.div
             className="flex items-center gap-0.5 bg-white/15 backdrop-blur-sm rounded-md px-1.5 py-0.5 border border-white/10"
             animate={{ borderColor: ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.3)', 'rgba(255,255,255,0.1)'] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
             <span className="font-mono text-white text-sm font-bold tabular-nums">
               {String(u.value).padStart(2, '0')}
@@ -329,7 +329,7 @@ function PromoConfetti({ x, y }: { x: number; y: number }) {
               scale: [0, 1.3, 0.3],
               rotate: [0, 360 * (i % 2 === 0 ? 1 : -1)],
             }}
-            transition={{ duration: 0.8, delay: i * 0.03, ease: 'easeOut' as const }}
+            transition={{ duration: 0.8, delay: i * 0.03, ease: 'easeOut' }}
           />
         )
       })}
@@ -370,7 +370,7 @@ function HeroPromoSlide({
         animate={{
           backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
         }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
         style={{ backgroundSize: '200% 200%' }}
       />
 
@@ -401,7 +401,7 @@ function HeroPromoSlide({
               scale: [0.3, 1, 0.4],
               rotate: [0, 180 * (i + 1), 360 * (i + 1)],
             }}
-            transition={{ duration: 3 + i * 0.5, repeat: Infinity, delay: i * 0.8, ease: 'easeOut' as const }}
+            transition={{ duration: 3 + i * 0.5, repeat: Infinity, delay: i * 0.8, ease: 'easeOut' }}
           />
         )
       })}
@@ -514,7 +514,7 @@ function HeroPromoSlide({
             scale: [0.4, 1, 0.3],
             rotate: [0, 180 * (i + 1), 360 * (i + 1)],
           }}
-          transition={{ duration: 3.5 + i * 0.6, repeat: Infinity, delay: i * 1.2, ease: 'easeOut' as const }}
+          transition={{ duration: 3.5 + i * 0.6, repeat: Infinity, delay: i * 1.2, ease: 'easeOut' }}
         >
           {emoji}
         </motion.span>
@@ -613,7 +613,7 @@ function PromoCard({
         <motion.div
           className={`absolute inset-0 bg-gradient-to-br ${promo.gradient} ${promo.darkGradient}`}
           animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           style={{ backgroundSize: '200% 200%' }}
         />
 
@@ -722,7 +722,7 @@ function PromoCard({
               opacity: [0, 0.6, 0],
               scale: [0.3, 1, 0.2],
             }}
-            transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 1.5, ease: 'easeOut' as const }}
+            transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: i * 1.5, ease: 'easeOut' }}
           >
             {emoji}
           </motion.span>
@@ -822,19 +822,19 @@ export function PromoBanner() {
         className="absolute -top-16 -left-8 w-40 h-40 rounded-full pointer-events-none z-0"
         style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%)' }}
         animate={{ y: [0, -20, 0], x: [0, 10, 0], scale: [1, 1.1, 1] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="absolute top-1/3 -right-12 w-32 h-32 rounded-full pointer-events-none z-0"
         style={{ background: 'radial-gradient(circle, rgba(244,114,182,0.2) 0%, transparent 70%)' }}
         animate={{ y: [0, 15, 0], x: [0, -8, 0], scale: [1, 1.15, 1] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' as const, delay: 1 }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
       />
       <motion.div
         className="absolute -bottom-10 left-1/3 w-36 h-36 rounded-full pointer-events-none z-0"
         style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.2) 0%, transparent 70%)' }}
         animate={{ y: [0, -12, 0], x: [0, 12, 0], scale: [1, 1.08, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' as const, delay: 2 }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
       {/* Confetti burst overlay */}
       {confettiPos && <PromoConfetti key={confettiPos.key} x={confettiPos.x} y={confettiPos.y} />}

@@ -527,7 +527,7 @@ export function NotificationPanel() {
                   <motion.span
                     key={`notif-pulse-${unreadCount}`}
                     animate={{ scale: [1, 1.6, 2], opacity: [0.5, 0.2, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
                     className="absolute inset-0 rounded-full bg-red-500"
                   />
                 </motion.div>
@@ -564,7 +564,7 @@ export function NotificationPanel() {
               <motion.span
                 key={`notif-pulse-m-${unreadCount}`}
                 animate={{ scale: [1, 1.6, 2], opacity: [0.5, 0.2, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' as const }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
                 className="absolute inset-0 rounded-full bg-red-500"
               />
             </motion.div>

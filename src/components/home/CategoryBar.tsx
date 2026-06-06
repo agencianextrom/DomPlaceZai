@@ -229,7 +229,7 @@ export function CategoryBar() {
                             duration: p.duration,
                             delay: p.delay,
                             repeat: Infinity,
-                            ease: 'easeInOut' as const,
+                            ease: 'easeInOut',
                           }}
                         />
                       ))}

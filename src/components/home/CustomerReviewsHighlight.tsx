@@ -219,7 +219,7 @@ const orbFloatVariants = {
     transition: {
       duration: 8 + i * 1.5,
       repeat: Infinity,
-      ease: 'easeInOut' as const,
+      ease: 'easeInOut',
     },
   }),
 }
@@ -346,7 +346,7 @@ function FeaturedReviewCard({ review, direction }: { review: FeaturedReview; dir
             </div>
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-emerald-500 border-2 border-card flex items-center justify-center"
             >
               <ShieldCheck className="h-2.5 w-2.5 text-white" />
@@ -549,7 +549,7 @@ export function CustomerReviewsHighlight() {
         <div className="flex items-center gap-2.5">
           <motion.div
             animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md"
             style={{ boxShadow: '0 4px 12px rgba(245,158,11,0.3)' }}
           >

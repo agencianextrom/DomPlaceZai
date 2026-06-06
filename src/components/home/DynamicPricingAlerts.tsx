@@ -67,7 +67,7 @@ const bellShakeVariants = {
   idle: { rotate: 0 },
   shake: {
     rotate: [0, -12, 12, -8, 8, -4, 4, 0],
-    transition: { duration: 0.6, ease: 'easeInOut' as const },
+    transition: { duration: 0.6, ease: 'easeInOut' },
   },
 }
 
@@ -277,7 +277,7 @@ function PriceSparkline({ data, color, isDrop }: { data: number[]; color: string
         strokeLinejoin="round"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
-        transition={{ duration: 1.2, ease: 'easeOut' as const, delay: 0.2 }}
+        transition={{ duration: 1.2, ease: 'easeOut', delay: 0.2 }}
       />
       {/* End dot */}
       <motion.circle
@@ -342,7 +342,7 @@ function FloatingParticle({ delay, emoji }: { delay: number; emoji: string }) {
         delay,
         repeat: Infinity,
         repeatDelay: 3 + Math.random() * 4,
-        ease: 'easeOut' as const,
+        ease: 'easeOut',
       }}
     >
       {emoji}
@@ -395,13 +395,13 @@ function AnimatedBell({ shaking, alertCount }: { shaking: boolean; alertCount: n
           <motion.span
             className="absolute inset-0 rounded-xl pointer-events-none"
             animate={{ scale: [1, 1.6], opacity: [0.3, 0] }}
-            transition={{ duration: 1, repeat: Infinity, ease: 'easeOut' as const }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'easeOut' }}
             style={{ border: '2px solid rgba(16,185,129,0.3)' }}
           />
           <motion.span
             className="absolute inset-0 rounded-xl pointer-events-none"
             animate={{ scale: [1, 2], opacity: [0.15, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' as const, delay: 0.3 }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut', delay: 0.3 }}
             style={{ border: '2px solid rgba(16,185,129,0.15)' }}
           />
         </>
@@ -438,7 +438,7 @@ function ShimmerStat({
             backgroundSize: '300% 100%',
           }}
           animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'linear' as const, repeatDelay: 2 }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
         />
       )}
       <Icon className="h-4 w-4 mx-auto mb-1.5 relative z-10" style={{ color }} />
@@ -477,7 +477,7 @@ function EconomiaBadge({ savings, type }: { savings: number; type: AlertType }) 
             `0 0 0 0 rgba(${colors.accentRgb},0.3)`,
           ],
         }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       />
       <Tag className="h-2.5 w-2.5 relative z-10" />
       <span className="relative z-10">Economia {formatBRL(savings)}</span>
@@ -514,12 +514,12 @@ function PercentageBadge({ percent, type }: { percent: number; type: AlertType }
             `0 0 0 0 rgba(${colors.accentRgb},0.2)`,
           ],
         }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       />
       {/* Scale pulse on badge itself */}
       <motion.div
         animate={{ scale: [1, 1.06, 1] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         className="flex flex-col items-center"
       >
         <IconComp className="h-3.5 w-3.5 mb-0.5" style={{ color: colors.accent }} />
@@ -533,7 +533,7 @@ function PercentageBadge({ percent, type }: { percent: number; type: AlertType }
           className="text-[8px] font-semibold mt-0.5 leading-none"
           style={{ color: isNegative ? colors.text : colors.text }}
           animate={{ opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         >
           {isNegative ? '▼' : '▲'}
         </motion.span>
@@ -801,7 +801,7 @@ function AlertCard({
         style={{ background: colors.gradient }}
         initial={{ scaleX: 0 }}
         whileHover={{ scaleX: 1 }}
-        transition={{ duration: 0.4, ease: 'easeOut' as const }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
       />
     </motion.div>
   )
@@ -849,7 +849,7 @@ function FilterTabs({
                   backgroundSize: '300% 100%',
                 }}
                 animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'linear' as const, repeatDelay: 2 }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
               />
             )}
             <tab.icon className="h-3 w-3 relative z-10" />
@@ -1071,7 +1071,7 @@ export function DynamicPricingAlerts() {
       ref={sectionRef}
       initial={{ opacity: 0, y: 20 }}
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.6, ease: 'easeOut' as const }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
       className="space-y-4 r38-price-section r62-card-lift"
     >
       {/* ─── Section Header ────────────────────────────────── */}
@@ -1082,14 +1082,14 @@ export function DynamicPricingAlerts() {
             className="h-9 w-9 rounded-xl flex items-center justify-center relative"
             style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}
             animate={{ rotate: [0, 3, -3, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           >
             <Sparkles className="h-4 w-4 text-white" />
             {/* Pulse ring */}
             <motion.span
               className="absolute inset-0 rounded-xl pointer-events-none"
               animate={{ boxShadow: ['0 0 0 0 rgba(245,158,11,0.3)', '0 0 0 6px rgba(245,158,11,0)', '0 0 0 0 rgba(245,158,11,0.3)'] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             />
           </motion.div>
 
@@ -1188,7 +1188,7 @@ export function DynamicPricingAlerts() {
         >
           <motion.div
             animate={{ y: [0, -5, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             className="h-14 w-14 rounded-full flex items-center justify-center mb-3"
             style={{ background: 'rgba(16,185,129,0.1)' }}
           >
@@ -1211,7 +1211,7 @@ export function DynamicPricingAlerts() {
         >
           <motion.div
             animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             className="h-16 w-16 rounded-full flex items-center justify-center mb-4"
             style={{ background: 'rgba(245,158,11,0.1)' }}
           >
@@ -1249,7 +1249,7 @@ export function DynamicPricingAlerts() {
           <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' as const }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
             >
               <Sparkles className="h-3 w-3" style={{ color: '#f59e0b' }} />
             </motion.div>
