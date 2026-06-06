@@ -310,7 +310,7 @@ export function HeroBanner({ banners, storeCount = 8, productCount = 32 }: HeroB
           animate="center"
           exit="exit"
           transition={{
-            x: { type: 'tween', duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] },
+            x: { type: 'tween', duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] as const },
             opacity: { duration: 0.3 },
             scale: { duration: 0.3 },
           }}

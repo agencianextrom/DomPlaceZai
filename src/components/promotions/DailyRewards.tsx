@@ -79,7 +79,7 @@ function ConfettiBurst({ show }: { show: boolean }) {
         key={i}
         initial={{ opacity: 1, x: 0, y: 0, scale: 0, rotate: 0 }}
         animate={{ opacity: [1, 1, 0], x, y, scale: [0, 1.3, 0], rotate: rotation }}
-        transition={{ duration, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration, ease: [0.25, 0.46, 0.45, 0.94] as const }}
         className="absolute r43-confetti-particle"
         style={{
           backgroundColor: isStar ? color : 'transparent',

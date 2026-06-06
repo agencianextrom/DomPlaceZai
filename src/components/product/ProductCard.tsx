@@ -383,7 +383,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ delay: Math.min(index * 0.06, 0.5), duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ delay: Math.min(index * 0.06, 0.5), duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
         whileHover={{ y: -5, scale: 1.02, boxShadow: '0 0 20px rgba(16,185,129,0.15), 0 0 40px rgba(16,185,129,0.08), 0 8px 24px rgba(0,0,0,0.08)' }}
         className="bg-card rounded-xl border border-border overflow-hidden group cursor-pointer h-full flex flex-col gradient-border relative hover-gradient-overlay shadow-sm card-shadow-cascade card-spotlight card-shine card-glow-border hover:shadow-xl transition-shadow duration-300 r41-card-3d r44-card-3d-tilt r44-card-glow-border r58-pcard-border-glow r62-card-lift r100-store-card"
         onClick={handleCardClick}

@@ -79,7 +79,7 @@ function BurstParticle({ index, total }: { index: number; total: number }) {
         opacity: [0, 1, 1, 0],
         scale: [0, 1.4, 1, 0.2],
       }}
-      transition={{ duration: 1.2 + Math.random() * 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 1.2 + Math.random() * 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const }}
       style={{
         width: shape === 'circle' ? size : size * 0.4,
         height: shape === 'circle' ? size : size,
@@ -249,7 +249,7 @@ export function SpinWheel() {
             animate={{ rotate: rotation }}
             transition={{
               duration: 4.5,
-              ease: [0.1, 0.5, 0.1, 1], // Enhanced deceleration: fast start, very slow end
+              ease: [0.1, 0.5, 0.1, 1] as const, // Enhanced deceleration: fast start, very slow end
             }}
             style={{
               transformOrigin: 'center center',

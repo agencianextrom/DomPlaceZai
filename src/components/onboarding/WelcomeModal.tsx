@@ -126,7 +126,7 @@ const staggerItem = {
     y: 0,
     scale: 1,
     rotateX: 0,
-    transition: { type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const },
   },
 }
 
@@ -144,7 +144,7 @@ const modalContainerVariants = {
     transition: {
       type: 'tween' as const,
       duration: 0.35,
-      ease: [0.25, 0.46, 0.45, 0.94],
+      ease: [0.25, 0.46, 0.45, 0.94] as const,
     },
   },
   exit: {
@@ -154,7 +154,7 @@ const modalContainerVariants = {
     transition: {
       type: 'tween' as const,
       duration: 0.25,
-      ease: [0.25, 0.46, 0.45, 0.94],
+      ease: [0.25, 0.46, 0.45, 0.94] as const,
     },
   },
 }
@@ -195,7 +195,7 @@ function ConfettiParticle({ color, index, total }: { color: string; index: numbe
       transition={{
         type: 'tween' as const,
         duration: 1.2,
-        ease: [0.25, 0.46, 0.45, 0.94],
+        ease: [0.25, 0.46, 0.45, 0.94] as const,
       }}
     />
   )
@@ -391,7 +391,7 @@ export function WelcomeModal() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: 'tween' as const, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+              transition={{ type: 'tween' as const, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] as const }}
               className="absolute inset-0 flex items-center justify-center"
               style={{ perspective: 600 }}
             >
@@ -417,7 +417,7 @@ export function WelcomeModal() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: 'tween' as const, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+              transition={{ type: 'tween' as const, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] as const }}
               style={{ perspective: 800 }}
             >
               {/* Shimmer text effect on modal title */}
@@ -449,7 +449,7 @@ export function WelcomeModal() {
                         rotateY: 8,
                         rotateX: -5,
                         scale: 1.05,
-                        transition: { type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] },
+                        transition: { type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const },
                       }}
                     >
                       <div
@@ -546,7 +546,7 @@ export function WelcomeModal() {
                       className="absolute inset-0 rounded-full"
                       style={{ background: i <= step ? 'rgba(16, 185, 129, 0.4)' : 'rgba(0, 0, 0, 0.08)' }}
                       animate={i <= step ? { scaleX: [0, 1] } : { scaleX: 1 }}
-                      transition={{ type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94], delay: i <= step ? 0.1 : 0 }}
+                      transition={{ type: 'tween' as const, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const, delay: i <= step ? 0.1 : 0 }}
                       initial={{ originX: 0 }}
                     />
                   </div>

@@ -253,7 +253,7 @@ export function RateOrderModal({ order, isOpen, onClose }: RateOrderModalProps) 
                         transition={{
                           duration: 1.2,
                           delay: 0.1 + i * 0.03,
-                          ease: [0, 0, 0.2, 1],
+                          ease: [0, 0, 0.2, 1] as const,
                         }}
                       />
                     )

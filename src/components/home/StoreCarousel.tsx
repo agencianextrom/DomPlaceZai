@@ -118,7 +118,7 @@ function AnimatedStars({ rating, reviewCount }: { rating: number; reviewCount: n
           transition={{
             delay: i * 0.07,
             duration: 0.3,
-            ease: [0.16, 1, 0.3, 1],
+            ease: [0.16, 1, 0.3, 1] as const,
           }}
           className="inline-flex"
         >
@@ -264,7 +264,7 @@ const desktopCardVariants = {
     scale: 1,
     transition: {
       duration: 0.45,
-      ease: [0.16, 1, 0.3, 1] as const,
+      ease: [0.16, 1, 0.3, 1] as const as const,
     },
   },
 }
@@ -496,7 +496,7 @@ function DotIndicators({
               height: i === current ? 8 : 8,
               opacity: i === current ? 1 : 0.35,
             }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] as const }}
             className="block rounded-full bg-primary"
           />
           {/* Active dot glow */}

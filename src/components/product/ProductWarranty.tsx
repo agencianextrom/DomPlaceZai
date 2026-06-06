@@ -152,7 +152,7 @@ function CoverageProgress({ percent, color }: { percent: number; color: string }
         className={`h-full rounded-full ${color}`}
         initial={{ width: 0 }}
         animate={{ width: `${percent}%` }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
       />
     </div>
   )

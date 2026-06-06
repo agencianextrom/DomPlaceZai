@@ -130,7 +130,7 @@ export function RewardsSection() {
                     className="h-full rounded-full bg-gradient-to-r from-white/60 via-white/90 to-white/60"
                     initial={{ width: 0 }}
                     animate={{ width: `${progressPct}%` }}
-                    transition={{ duration: 1.8, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    transition={{ duration: 1.8, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const }}
                   />
                   {/* Shimmer on progress bar */}
                   <motion.div

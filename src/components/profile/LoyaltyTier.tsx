@@ -150,7 +150,7 @@ export function LoyaltyTier() {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${progressInTier}%` }}
-                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as const, delay: 0.3 }}
                   className={`h-full rounded-full bg-gradient-to-r ${currentTier.color} relative`}
                 />
                 {/* Shimmer sweep on progress */}

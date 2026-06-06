@@ -297,7 +297,7 @@ function BattleCard({
                 <motion.div
                   initial={{ width: '0%' }}
                   animate={{ width: `${votePercentage}%` }}
-                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
                   className={`h-full ${isWinner ? 'bg-primary' : 'bg-amber-500'}`}
                 />
               </motion.div>
