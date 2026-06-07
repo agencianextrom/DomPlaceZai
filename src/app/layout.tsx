@@ -67,7 +67,7 @@ export default function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{})}`,
+            __html: `if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?cacheBust=2').then(function(reg){reg.onupdatefound=function(){var sw=reg.installing;sw.onstatechange=function(){if(sw.state==='activated'){window.location.reload()}}}}).catch(()=>{})}`,
           }}
         />
       </head>
