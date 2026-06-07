@@ -1,4 +1,61 @@
 ---
+Task ID: R107-ExitIntentOfferPopup
+Agent: Main Agent
+Task: Create exit-intent offer popup for user retention
+
+Work Log:
+
+**R107 Feature — ExitIntentOfferPopup (~589 lines):**
+- `src/components/promotions/ExitIntentOfferPopup.tsx` — popup de oferta ao sair do app
+- Detecta 3 sinais de saída:
+  1. Desktop: mousemove leaving viewport top (clientY <= 0)
+  2. Mobile: fast scroll-up velocity (> 400px/s) near page top
+  3. Mobile: tab visibility change (tab switching)
+- Delay de 8s de engajamento antes de ativar o detector
+- 3 ofertas rotativas (seleção estável por sessão via sessionStorage):
+  - FICA10: 10% off (expira em 24h)
+  - DOMPLACE15: 15% off acima de R$50 (expira em 12h)
+  - FRETEGRATIS: Frete grátis sem mínimo (expira em 6h)
+- Countdown timer ao vivo (horas:minutos:segundos)
+- Botão copiar código com feedback visual (Copiar → Copiado!)
+- Fluxo de 2 estados:
+  1. "Quero meu desconto!" → salva localStorage + muda UI
+  2. "Aproveitar agora" → navega para home + fecha popup
+- Persistência:
+  - localStorage: `domplace-exit-intent-dismissed` (não mostra mais)
+  - localStorage: `domplace-exit-coupon-claimed` (cupom já reivindicado)
+  - sessionStorage: `domplace-exit-intent-session` (índice da oferta sorteada)
+- Design:
+  - Gradientes temáticos por oferta (emerald, amber, rose)
+  - Floating orbs + shimmer sweep animation
+  - Spring scale entrance + backdrop blur
+  - z-index 100 para sobrepor todos os modais
+  - Touch targets ≥44px em todos os botões
+  - Feature icons: Frete grátis, Válido para todas as lojas, Expira em Xh
+  - Trust badges: 4.8/5 avaliação, 1.200+ cupons usados
+- Integração: `src/app/page.tsx` — import + render ao lado de WelcomeModal
+
+**Files Changed (2):**
+1. `src/components/promotions/ExitIntentOfferPopup.tsx` — NEW (589 lines)
+2. `src/app/page.tsx` — import + render (2 lines)
+
+**Verification:**
+- Lint: clean (0 errors, 0 warnings)
+- Browser test: popup renders correctly ✅
+- Exit intent detection (mouseleave) triggers popup ✅
+- "Quero meu desconto!" button → state transition ✅
+- "Aproveitar agora" button → navigates to home ✅
+- Copy code button present with aria-label ✅
+- Zero console errors ✅
+- Vercel auto-deploy: READY ✅ (commit 7651ecd)
+
+Stage Summary:
+- 1 new component (ExitIntentOfferPopup, ~589 lines) — 43rd new component since R61
+- Commit: 7651ecd, pushed to main
+- Vercel deploy: READY ✅
+- Author: agencianextrom@gmail.com
+
+---
 Task ID: R106-QA-FullAudit-Fix-AllObservations
 Agent: Main Agent (coordinated 3 parallel sub-agents)
 Task: Fix all 13 observations from comprehensive QA audit of domplace.vercel.app
