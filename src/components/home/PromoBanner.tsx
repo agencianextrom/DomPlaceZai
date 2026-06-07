@@ -208,7 +208,7 @@ function CouponCopier({ promoCode }: { promoCode: string }) {
       onClick={handleCopy}
       whileTap={{ scale: 0.92 }}
       whileHover={{ scale: 1.04 }}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/15 backdrop-blur-sm border border-white/20 text-white text-[11px] font-semibold hover:bg-white/25 transition-colors min-h-[44px]"
+      className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/15 backdrop-blur-sm border border-white/20 text-white text-xs font-semibold hover:bg-white/25 transition-colors min-h-[44px] min-w-[44px]"
     >
       <AnimatePresence mode="wait">
         {copied ? (
@@ -461,7 +461,7 @@ function HeroPromoSlide({
           {/* CTA + copy */}
           <div className="mt-3 flex items-center gap-3">
             <motion.button
-              className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-gray-900 text-xs sm:text-sm font-semibold transition-colors hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 r17-promo-btn-glow r34-promo-btn-shimmer overflow-hidden min-h-[44px]"
+              className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-gray-900 text-xs sm:text-sm font-semibold transition-colors hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 r17-promo-btn-glow r34-promo-btn-shimmer overflow-hidden min-h-[44px] min-w-[44px]"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
               animate={{
