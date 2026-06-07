@@ -86,6 +86,7 @@ import { UrgencyStrip } from '@/components/home/UrgencyStrip'
 import { DriverDashboard } from '@/components/driver/DriverDashboard'
 import { AffiliateDashboard } from '@/components/affiliate/AffiliateDashboard'
 import { PWAInstallPrompt } from '@/components/pwa/PWAInstallPrompt'
+import { ExitIntentOfferPopup } from '@/components/promotions/ExitIntentOfferPopup'
 import { StoreOpenStatus } from '@/components/home/StoreOpenStatus'
 import { FlashCoupon } from '@/components/home/FlashCoupon'
 import { TrendingCategories } from '@/components/home/TrendingCategories'
@@ -1930,6 +1931,7 @@ export default function Home() {
 
       {/* Welcome Modal - shows on first visit */}
       {mounted && <WelcomeModal />}
+      {mounted && <ExitIntentOfferPopup />}
 
       {/* AI Chat Bot - always mounted, floating */}
       {mounted && <AIChatBot />}
