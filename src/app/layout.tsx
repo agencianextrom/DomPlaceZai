@@ -44,7 +44,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  themeColor: '#6366f1',
+  themeColor: '#059669',
 }
 
 export default function RootLayout({
@@ -56,6 +56,7 @@ export default function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" sizes="192x192" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="DomPlace" />
@@ -82,7 +83,7 @@ export default function RootLayout({
               <CursorGlow />
               <ScrollProgress />
               <Header />
-              <main className="flex-1 pb-20 md:pb-4">
+              <main className="flex-1 pb-20 md:pb-4" role="main" id="main-content">
                 {children}
               </main>
               <BackToTop />

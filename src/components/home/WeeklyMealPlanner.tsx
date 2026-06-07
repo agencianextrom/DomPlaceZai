@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { cachedFetch } from '@/lib/api-cache'
 import { formatBRL } from '@/components/product/ProductCard'
+import { resolveProductImage } from '@/lib/product-images'
 
 /* ═══════════════════════════════════════════════════════════════
    Types & Interfaces
@@ -72,28 +73,28 @@ const MEAL_TYPES: { type: MealType; label: string; emoji: string }[] = [
 
 const FALLBACK_PRODUCTS: Record<MealType, Product[]> = {
   cafe: [
-    { id: 'fc1', name: 'Pão Francês com Manteiga', store: 'Padaria do Zé', price: 4.50, image: 'breakfast/bread-butter', calories: 220 },
-    { id: 'fc2', name: 'Café Coado Carioca', store: 'Café Premium', price: 6.90, image: 'breakfast/brazilian-coffee', calories: 85 },
-    { id: 'fc3', name: 'Tapioca com Queijo', store: 'Tapioca da Vovó', price: 12.00, image: 'breakfast/tapioca-cheese', calories: 310 },
-    { id: 'fc4', name: 'Vitamina de Banana', store: 'Suco Natural', price: 9.90, image: 'breakfast/banana-smoothie', calories: 195 },
+    { id: 'fc1', name: 'Pão Francês com Manteiga', store: 'Padaria do Zé', price: 4.50, image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop', calories: 220 },
+    { id: 'fc2', name: 'Café Coado Carioca', store: 'Café Premium', price: 6.90, image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400&h=400&fit=crop', calories: 85 },
+    { id: 'fc3', name: 'Tapioca com Queijo', store: 'Tapioca da Vovó', price: 12.00, image: 'https://images.unsplash.com/photo-1621768807785-27852d2e8b8f?w=400&h=400&fit=crop', calories: 310 },
+    { id: 'fc4', name: 'Vitamina de Banana', store: 'Suco Natural', price: 9.90, image: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=400&h=400&fit=crop', calories: 195 },
   ],
   almoco: [
-    { id: 'fa1', name: 'Feijoada Completa', store: 'Restaurante Sabor Mineiro', price: 32.90, image: 'lunch/feijoada', calories: 650 },
-    { id: 'fa2', name: 'Frango Grelhado com Arroz', store: 'Grill & Co', price: 28.50, image: 'lunch/grilled-chicken-rice', calories: 520 },
-    { id: 'fa3', name: 'Moqueca Baiana', store: 'Sabores da Bahia', price: 35.00, image: 'lunch/moqueca', calories: 580 },
-    { id: 'fa4', name: 'Prato Feito do Dia', store: 'Lanchonete do Povo', price: 22.00, image: 'lunch/daily-plate', calories: 480 },
+    { id: 'fa1', name: 'Feijoada Completa', store: 'Restaurante Sabor Mineiro', price: 32.90, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=400&fit=crop', calories: 650 },
+    { id: 'fa2', name: 'Frango Grelhado com Arroz', store: 'Grill & Co', price: 28.50, image: 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=400&h=400&fit=crop', calories: 520 },
+    { id: 'fa3', name: 'Moqueca Baiana', store: 'Sabores da Bahia', price: 35.00, image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=400&fit=crop', calories: 580 },
+    { id: 'fa4', name: 'Prato Feito do Dia', store: 'Lanchonete do Povo', price: 22.00, image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=400&fit=crop', calories: 480 },
   ],
   lanche: [
-    { id: 'fl1', name: 'Coxinha Cremosa', store: 'Coxinha Express', price: 7.50, image: 'snack/coxinha', calories: 180 },
-    { id: 'fl2', name: 'Pão de Queijo (6 un)', store: 'Mineiro Lanches', price: 9.90, image: 'snack/pao-de-queijo', calories: 290 },
-    { id: 'fl3', name: 'Açaí 500ml', store: 'Açaí do Parque', price: 18.00, image: 'snack/acai-bowl', calories: 340 },
-    { id: 'fl4', name: 'Misto Quente', store: 'Padaria Pão Dourado', price: 8.00, image: 'snack/misto-quente', calories: 260 },
+    { id: 'fl1', name: 'Coxinha Cremosa', store: 'Coxinha Express', price: 7.50, image: 'https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=400&h=400&fit=crop', calories: 180 },
+    { id: 'fl2', name: 'Pão de Queijo (6 un)', store: 'Mineiro Lanches', price: 9.90, image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop', calories: 290 },
+    { id: 'fl3', name: 'Açaí 500ml', store: 'Açaí do Parque', price: 18.00, image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&h=400&fit=crop', calories: 340 },
+    { id: 'fl4', name: 'Misto Quente', store: 'Padaria Pão Dourado', price: 8.00, image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=400&fit=crop', calories: 260 },
   ],
   jantar: [
-    { id: 'fj1', name: 'Lasanha Bolonhesa', store: 'Trattoria Bella', price: 38.90, image: 'dinner/lasagna', calories: 620 },
-    { id: 'fj2', name: 'Sopa de Legumes', store: 'Sopão da Vovó', price: 16.50, image: 'dinner/vegetable-soup', calories: 280 },
-    { id: 'fj3', name: 'Peixe Grelhado', store: 'Peixaria do Porto', price: 42.00, image: 'dinner/grilled-fish', calories: 390 },
-    { id: 'fj4', name: 'Strogonoff de Frango', store: 'Sabor Caseiro', price: 29.90, image: 'dinner/chicken-stroganoff', calories: 510 },
+    { id: 'fj1', name: 'Lasanha Bolonhesa', store: 'Trattoria Bella', price: 38.90, image: 'https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=400&h=400&fit=crop', calories: 620 },
+    { id: 'fj2', name: 'Sopa de Legumes', store: 'Sopão da Vovó', price: 16.50, image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=400&fit=crop', calories: 280 },
+    { id: 'fj3', name: 'Peixe Grelhado', store: 'Peixaria do Porto', price: 42.00, image: 'https://images.unsplash.com/photo-1535140728325-a4d3707eee61?w=400&h=400&fit=crop', calories: 390 },
+    { id: 'fj4', name: 'Strogonoff de Frango', store: 'Sabor Caseiro', price: 29.90, image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&h=400&fit=crop', calories: 510 },
   ],
 }
 
@@ -107,13 +108,18 @@ function getStorageKey(day: DayKey): string {
    Helpers
    ═══════════════════════════════════════════════════════════════ */
 
-function buildCloudinaryUrl(publicId: string, width: number, height: number): string {
-  // Cloudinary URL builder — construct URL directly without SDK dependency
-  try {
-    return `https://res.cloudinary.com/dzw1ek7dm/image/upload/w_${width},h_${height},c_fill,f_auto,q_auto/${publicId}`
-  } catch {
-    return ''
+function resolveMealImage(imageHint: string | undefined, _productName: string, _width: number, _height: number): string {
+  // Try to build a valid image URL; fall back to Unsplash category default or placeholder
+  if (!imageHint) return '/images/placeholder-product.svg'
+
+  // If imageHint is already a full URL (http/https or starts with /), use it directly
+  if (imageHint.startsWith('http') || imageHint.startsWith('/')) {
+    return imageHint
   }
+
+  // For legacy Cloudinary-style public IDs (e.g. 'breakfast/bread-butter'),
+  // fall back to Unsplash food image via the generic FOOD category default
+  return '/images/placeholder-product.svg'
 }
 
 function createEmptyDayPlan(day: DayKey): DayPlan {
@@ -348,7 +354,7 @@ function ProductCard({
   onAdd: () => void
   onDismiss: () => void
 }) {
-  const [imgSrc] = useState(() => buildCloudinaryUrl(product.image, 120, 120))
+  const [imgSrc] = useState(() => resolveMealImage(product.image, product.name, 120, 120))
   const [added, setAdded] = useState(false)
 
   const handleAdd = useCallback(() => {
@@ -484,37 +490,37 @@ export function WeeklyMealPlanner() {
 
         const products = data.products
         const mapped: Record<MealType, Product[]> = {
-          cafe: products.slice(0, 4).map((p) => ({
-            id: p.id,
-            name: p.name,
-            store: p.store,
-            price: p.price,
-            image: p.image,
-            calories: p.calories,
+          cafe: products.slice(0, 4).map((p: Record<string, unknown>) => ({
+            id: p.id as string,
+            name: p.name as string,
+            store: (p.storeName as string) || '',
+            price: Number(p.price) || 0,
+            image: resolveProductImage({ slug: p.slug as string, category: p.category as string, images: p.images as string }) || '',
+            calories: Math.round((Number(p.price) || 10) * 18),
           })),
-          almoco: products.slice(4, 8).map((p) => ({
-            id: p.id,
-            name: p.name,
-            store: p.store,
-            price: p.price,
-            image: p.image,
-            calories: p.calories,
+          almoco: products.slice(4, 8).map((p: Record<string, unknown>) => ({
+            id: p.id as string,
+            name: p.name as string,
+            store: (p.storeName as string) || '',
+            price: Number(p.price) || 0,
+            image: resolveProductImage({ slug: p.slug as string, category: p.category as string, images: p.images as string }) || '',
+            calories: Math.round((Number(p.price) || 10) * 18),
           })),
-          lanche: products.slice(8, 12).map((p) => ({
-            id: p.id,
-            name: p.name,
-            store: p.store,
-            price: p.price,
-            image: p.image,
-            calories: p.calories,
+          lanche: products.slice(8, 12).map((p: Record<string, unknown>) => ({
+            id: p.id as string,
+            name: p.name as string,
+            store: (p.storeName as string) || '',
+            price: Number(p.price) || 0,
+            image: resolveProductImage({ slug: p.slug as string, category: p.category as string, images: p.images as string }) || '',
+            calories: Math.round((Number(p.price) || 10) * 18),
           })),
-          jantar: products.slice(12, 16).map((p) => ({
-            id: p.id,
-            name: p.name,
-            store: p.store,
-            price: p.price,
-            image: p.image,
-            calories: p.calories,
+          jantar: products.slice(12, 16).map((p: Record<string, unknown>) => ({
+            id: p.id as string,
+            name: p.name as string,
+            store: (p.storeName as string) || '',
+            price: Number(p.price) || 0,
+            image: resolveProductImage({ slug: p.slug as string, category: p.category as string, images: p.images as string }) || '',
+            calories: Math.round((Number(p.price) || 10) * 18),
           })),
         }
 

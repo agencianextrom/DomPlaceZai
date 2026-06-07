@@ -96,7 +96,14 @@ function resolveProductImage(images: string, index: number): string {
   if (!images) return ''
   try {
     const parsed: string[] = JSON.parse(images)
-    if (parsed.length > 0 && parsed[0]) return parsed[0]
+    if (parsed.length > 0 && parsed[0]) {
+      // Reject broken Cloudinary URLs (public_id=undefined)
+      if (parsed[0].startsWith('http') && !parsed[0].includes('/undefined')) {
+        return parsed[0]
+      }
+      const valid = parsed.find(u => u.startsWith('http') && !u.includes('/undefined'))
+      if (valid) return valid
+    }
   } catch {
     // ignore parse errors
   }

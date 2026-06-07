@@ -423,6 +423,7 @@ export function NotificationPanel() {
               </Badge>
             </motion.div>
           )}
+          <span aria-live="polite" aria-atomic="true" className="sr-only">{unreadCount > 0 ? `${unreadCount} notificações não lidas` : 'Nenhuma notificação não lida'}</span>
         </div>
         <div className="flex items-center gap-1">
           <Button
@@ -431,6 +432,7 @@ export function NotificationPanel() {
             className="h-7 w-7"
             onClick={handleRefresh}
             disabled={isRefreshing}
+            aria-label="Atualizar notificações"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
           </Button>
@@ -510,7 +512,7 @@ export function NotificationPanel() {
       <div className="hidden lg:block">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className={`relative h-10 w-10 ${unreadCount > 0 ? 'r38-header-bell-shake' : ''}`}>
+            <Button variant="ghost" size="icon" className={`relative h-10 w-10 ${unreadCount > 0 ? 'r38-header-bell-shake' : ''}`} aria-label={unreadCount > 0 ? `Notificações (${unreadCount} não lidas)` : 'Notificações'}>
               <Bell className="h-5 w-5" />
               {unreadCount > 0 && (
                 <motion.div
@@ -547,6 +549,7 @@ export function NotificationPanel() {
           size="icon"
           className={`relative h-10 w-10 ${unreadCount > 0 ? 'r38-header-bell-shake' : ''}`}
           onClick={handleOpenMobile}
+          aria-label={unreadCount > 0 ? `Notificações (${unreadCount} não lidas)` : 'Notificações'}
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (

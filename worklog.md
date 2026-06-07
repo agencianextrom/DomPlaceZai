@@ -1,5 +1,157 @@
 ---
-Task ID: R103-LocalClassesHub-16TouchTargetFixes-5CSSPolish-r104CSS-CronSetup
+Task ID: 1-B
+Agent: UI/UX Fix Agent
+Task: Fix Aproveitar button touch target, SPA nav active state, Anunciar Acesso Negado UX, theme-color meta tag
+
+Work Log:
+
+**PROBLEM 1 — "Aproveitar" Button Touch Target (P1):**
+- `src/components/home/PromoBanner.tsx`: Added `min-h-[44px]` to both CTA buttons:
+  - HeroPromoSlide CTA button (line ~464) — "Aproveitar", "Usar Cupom", etc.
+  - PromoCard CTA button (line ~672) — "Explorar", "Ver Ofertas", etc.
+- Both buttons previously had `px-4 py-2` with no minimum height, resulting in ~31-35px on mobile
+
+**PROBLEM 2 — SPA Navigation Active State (P1):**
+- `src/components/layout/MobileNav.tsx`: Added a `useEffect` that syncs `activeTabX` (sliding pill indicator position) whenever `currentView` changes. The existing `registerTabRef` callback-based mechanism was potentially unreliable because React ref callbacks may not fire in all cases when the callback identity changes. The new useEffect uses `requestAnimationFrame` to query the DOM for the active tab button (via `aria-current="page"`) and calculate the pill position. This ensures the sliding indicator always tracks the active tab correctly.
+
+**PROBLEM 3 — "Anunciar" Acesso Negado UX (P2):**
+- `src/components/dashboard/StoreDashboard.tsx`: Updated the `AccessDenied` component:
+  - Now checks `currentUser` from the store to determine if user is logged in
+  - When NOT logged in: Shows message "É necessário estar logado para anunciar produtos e gerenciar uma loja no DomPlace." + prominent "Fazer Login" button (green, min-h-[44px]) + "Voltar" button
+  - When logged in (wrong role): Shows original message "Você não tem permissão para acessar o painel da loja. Somente proprietários de loja podem acessar esta área." + "Voltar" button only
+  - The "Fazer Login" button calls `openAuthModal()` from the Zustand store, which opens the login modal
+
+**PROBLEM 4 — theme-color Meta Tag (P3):**
+- `src/app/layout.tsx`: Changed `viewport.themeColor` from `'#6366f1'` (indigo-500) to `'#059669'` (emerald-600) in the viewport export (line 47). The `metadata.other['theme-color']` was already correctly set to `'#059669'`. The `viewport.themeColor` override was the one rendering the indigo color in the browser's address bar / status bar on mobile.
+
+**Files Changed (4):**
+1. `src/components/home/PromoBanner.tsx` — CTA buttons min-h-[44px]
+2. `src/components/layout/MobileNav.tsx` — activeTabX sync useEffect
+3. `src/components/dashboard/StoreDashboard.tsx` — AccessDenied UX improvement
+4. `src/app/layout.tsx` — themeColor '#6366f1' → '#059669'
+
+**Verification:**
+- `bun run lint` passes with zero errors (0 errors, 0 warnings)
+- Dev server compiles successfully (confirmed in dev.log)
+
+Stage Summary:
+- 4 files changed, 4 problems fixed
+- Touch target: 2 CTA buttons in PromoBanner now meet 44px minimum
+- Navigation: Mobile bottom tab sliding pill indicator reliably tracks active tab
+- UX: Store dashboard shows contextual login prompt instead of generic access denied
+- Branding: theme-color matches emerald-600 (#059669) across all meta tag sources
+- Zero lint errors
+
+---
+
+Task ID: 1-A-ImageFixAgent
+Agent: Image Fix Agent
+Task: Fix 12+ Cloudinary images with undefined public_id and missing agriculture.jpg
+
+Work Log:
+
+**Problem 1 — Cloudinary Images with `undefined` public_id (P0 CRITICAL):**
+
+Root Cause:
+- `src/components/home/WeeklyMealPlanner.tsx` had a `buildCloudinaryUrl()` function that constructed URLs like:
+  `https://res.cloudinary.com/dzw1ek7dm/image/upload/w_120,h_120,c_fill,f_auto,q_auto/${publicId}`
+- The component fetches products from `/api/products?category=FOOD&limit=16` API and maps `p.image` to build Cloudinary URLs
+- The API returns `images` (JSON string like `'["/images/grocery.jpg"]'`), `storeName`, `slug`, `category` — but NOT `image`, `store`, or `calories`
+- So `p.image` was always `undefined`, producing URLs with literal `undefined` as the public_id
+- Additionally, the hardcoded `FALLBACK_PRODUCTS` had Cloudinary public_ids like `'breakfast/bread-butter'` that likely didn't exist on the Cloudinary account
+
+Fix Applied:
+1. Created `/public/images/placeholder-product.svg` — a simple gray placeholder SVG for missing images
+2. Replaced `buildCloudinaryUrl()` with `resolveMealImage()` that:
+   - Returns `/images/placeholder-product.svg` if imageHint is falsy (undefined/null/empty)
+   - Returns the URL directly if it starts with `http` or `/`
+   - Returns placeholder for any legacy Cloudinary-style public_ids
+3. Updated all 16 `FALLBACK_PRODUCTS` entries to use Unsplash URLs instead of Cloudinary public_ids (e.g., bread→unsplash bread photo, açaí→unsplash berry photo)
+4. Fixed the API response mapping to use correct field names:
+   - `p.store` → `p.storeName` (actual API field)
+   - `p.image` → `resolveProductImage({ slug, category, images })` using the existing product-images module
+   - `p.calories` → estimated from price since API doesn't have calories
+5. Added `import { resolveProductImage } from '@/lib/product-images'`
+6. All Cloudinary URL references (`res.cloudinary.com/dzw1ek7dm`) are now completely eliminated from the codebase
+
+**Problem 2 — Missing `/public/images/agriculture.jpg`:**
+
+Status: ALREADY RESOLVED — the file exists at `/public/images/agriculture.jpg` as a valid 1024×1024 JPEG.
+References in page.tsx (Agropecuária São Paulo store, Adubo NPK product), StoreOpenStatus.tsx, ProductStories.tsx, SellerInfo.tsx, StoreRatingsOverview.tsx, WishListManager.tsx all resolve correctly.
+No fix needed.
+
+**Files Changed:**
+1. `src/components/home/WeeklyMealPlanner.tsx` — replaced Cloudinary image system with Unsplash + local fallbacks, fixed API response mapping
+2. `public/images/placeholder-product.svg` — new file, gray placeholder SVG for missing product images
+
+**Verification:**
+- `bun run lint` passes with zero errors
+- Dev server compiles cleanly (confirmed in dev.log)
+- No remaining Cloudinary URL references in source code (`res.cloudinary.com` search returns 0 results)
+
+Stage Summary:
+- Fixed 12+ broken product images caused by undefined Cloudinary public_ids
+- Created reusable placeholder SVG for all future missing image cases
+- Eliminated Cloudinary dependency from WeeklyMealPlanner component
+- Zero lint errors
+
+---
+Task ID: 1-C-AccessibilityFixAgent
+Agent: Accessibility Fix Agent
+Task: Fix missing HTML landmarks, apple-touch-icon, aria-live regions, and sr-only coverage
+
+Work Log:
+
+**PROBLEM 1 — Missing HTML Landmarks (P3):**
+- `src/app/layout.tsx`: Added `role="main"` and `id="main-content"` to `<main>` element for explicit landmark (implicit from `<main>` tag, but explicit role ensures screen reader announcement)
+- `src/components/layout/Header.tsx`: Added `aria-label="Navegação principal"` to desktop `<nav>` element
+- `src/components/layout/Header.tsx`: Added `aria-label="Navegação do menu mobile"` to mobile sheet `<nav>` element
+- `src/components/layout/Footer.tsx`: Added `role="contentinfo"` to `<footer>` element for explicit landmark
+- Header already uses `<motion.header>` (preserves semantic `<header>` = banner) ✅
+- MobileNav already has `role="tablist"` + `aria-label="Navegação principal"` ✅
+
+**PROBLEM 2 — Missing apple-touch-icon (P3):**
+- `src/app/layout.tsx`: Added `<link rel="apple-touch-icon" href="/icons/icon-192x192.png" sizes="192x192">` in `<head>`
+- manifest.json link already exists ✅
+- apple-mobile-web-app-capable/status-bar-style/title meta tags already present ✅
+
+**PROBLEM 3 — Missing aria-live Regions (P4):**
+- `src/components/layout/Header.tsx`: Added `<span aria-live="polite" aria-atomic="true" className="sr-only">` announcing cart count changes to screen readers; added `aria-hidden="true"` to visual cart badge to avoid double-announcement
+- `src/components/notifications/NotificationPanel.tsx`: Added `<span aria-live="polite" aria-atomic="true" className="sr-only">` announcing unread notification count changes
+- Toast notifications already have aria-live via Radix UI Toast primitive ✅
+
+**PROBLEM 4 — Improve sr-only Coverage (P4):**
+- `src/components/layout/Header.tsx`:
+  - Hamburger menu button → `aria-label="Abrir menu de navegação"`
+  - Close menu button (X) → `aria-label="Fechar menu de navegação"`
+  - Back button (ArrowLeft) → `aria-label="Voltar à página anterior"`
+  - Mobile search button → `aria-label="Abrir busca"`
+  - Logout button → `aria-label="Sair da conta"`
+  - Cart icon button → `aria-label={cartCount > 0 ? 'Carrinho com N itens' : 'Carrinho vazio'}`
+- `src/components/notifications/NotificationPanel.tsx`:
+  - Desktop bell button → `aria-label={unreadCount > 0 ? 'Notificações (N não lidas)' : 'Notificações'}`
+  - Mobile bell button → same dynamic aria-label
+  - Refresh button → `aria-label="Atualizar notificações"`
+- `src/components/pwa/PWAInstallPrompt.tsx`:
+  - Dismiss button (X) → `aria-label="Fechar prompt de instalação"`
+- Already had aria-label: ThemeToggle (desktop + mobile) ✅, BackToTop ✅, Share button ✅, MobileNav bell/theme ✅, NavButton ✅
+
+**Files Changed (5):**
+1. `src/app/layout.tsx` — apple-touch-icon link, main landmark
+2. `src/components/layout/Header.tsx` — nav aria-labels, button aria-labels, cart aria-live
+3. `src/components/layout/Footer.tsx` — contentinfo role
+4. `src/components/notifications/NotificationPanel.tsx` — bell aria-labels, refresh aria-label, unread count aria-live
+5. `src/components/pwa/PWAInstallPrompt.tsx` — dismiss button aria-label
+
+**Lint: clean (zero errors)**
+**Dev server: compiles successfully**
+
+## Remaining Issues
+- Some deeply nested icon-only buttons in complex components (e.g., product detail carousels, video controls) may still lack aria-label — these are lower priority as they're within modals with context
+- No skip-to-content link exists (would need `id="main-content"` target — now added, but no link yet)
+- The `motion.header` and `motion.footer`/`motion.nav` Framer Motion wrappers render as their base HTML elements, preserving semantic roles
+
+---
 Agent: Main Agent
 Task: LocalClassesHub feature, 16 touch target fixes, 5 CSS polish, r104-* CSS, cron job setup, Vercel Git reconnected
 

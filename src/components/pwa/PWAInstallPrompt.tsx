@@ -115,6 +115,7 @@ export function PWAInstallPrompt() {
               exit={{ scale: 0, rotate: 180, opacity: 0 }}
               transition={{ type: 'spring' as const, stiffness: 400, damping: 20 }}
               className="pwa-dismiss absolute top-2 right-2 h-6 w-6 min-h-[44px] min-w-[44px] rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors z-10"
+              aria-label="Fechar prompt de instalação"
             >
               <X className="h-3 w-3" />
             </motion.button>

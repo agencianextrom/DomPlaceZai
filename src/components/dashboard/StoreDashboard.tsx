@@ -588,7 +588,9 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 
 // --- Access Denied State ---
 function AccessDenied() {
-  const { goBack } = useAppStore()
+  const { goBack, currentUser, openAuthModal } = useAppStore()
+  const isLoggedIn = !!currentUser
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <motion.div
@@ -602,12 +604,22 @@ function AccessDenied() {
         </div>
         <h2 className="text-xl font-bold mb-2">Acesso Negado</h2>
         <p className="text-sm text-muted-foreground mb-6">
-          Você não tem permissão para acessar o painel da loja. Somente proprietários de loja podem acessar esta área.
+          {isLoggedIn
+            ? 'Você não tem permissão para acessar o painel da loja. Somente proprietários de loja podem acessar esta área.'
+            : 'É necessário estar logado para anunciar produtos e gerenciar uma loja no DomPlace.'}
         </p>
-        <Button onClick={goBack} variant="outline" className="gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          Voltar
-        </Button>
+        <div className="flex flex-col gap-3">
+          {isLoggedIn ? null : (
+            <Button onClick={openAuthModal} className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold min-h-[44px]">
+              <User className="h-4 w-4" />
+              Fazer Login
+            </Button>
+          )}
+          <Button onClick={goBack} variant="outline" className="gap-2 min-h-[44px]">
+            <ArrowLeft className="h-4 w-4" />
+            Voltar
+          </Button>
+        </div>
       </motion.div>
     </div>
   )

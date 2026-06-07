@@ -166,7 +166,7 @@ export function Header() {
               {/* Mobile hamburger menu */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="md:hidden shrink-0 h-10 w-10">
+                  <Button variant="ghost" size="icon" className="md:hidden shrink-0 h-10 w-10" aria-label="Abrir menu de navegação">
                     <span className={`r38-header-hamburger r44-hamburger-anim ${mobileMenuOpen ? 'r38-header-hamburger-active r44-hamburger-open' : ''}`}>
                       <span className="r38-header-hamburger-line r44-hamburger-line" />
                       <span className="r38-header-hamburger-line r44-hamburger-line" />
@@ -189,6 +189,7 @@ export function Header() {
                           size="icon"
                           className="min-h-[44px] min-w-[44px] text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 active:scale-95 transition-transform"
                           onClick={() => setMobileMenuOpen(false)}
+                          aria-label="Fechar menu de navegação"
                         >
                           <X className="h-5 w-5" />
                         </Button>
@@ -212,7 +213,7 @@ export function Header() {
                     </div>
 
                     {/* Menu sections */}
-                    <nav className="flex-1 overflow-y-auto custom-scrollbar py-2">
+                    <nav className="flex-1 overflow-y-auto custom-scrollbar py-2" aria-label="Navegação do menu mobile">
                       {mobileMenuSections.map((section, sectionIdx) => (
                         <div key={section.label}>
                           {sectionIdx > 0 && <Separator className="my-2" />}
@@ -267,6 +268,7 @@ export function Header() {
                               logoutUser()
                               setMobileMenuOpen(false)
                             }}
+                            aria-label="Sair da conta"
                           >
                             <LogOut className="h-4 w-4" />
                           </Button>
@@ -289,7 +291,7 @@ export function Header() {
               </Sheet>
 
               {canGoBack ? (
-                <Button variant="ghost" size="icon" onClick={goBack} className="shrink-0 h-10 w-10">
+                <Button variant="ghost" size="icon" onClick={goBack} className="shrink-0 h-10 w-10" aria-label="Voltar à página anterior">
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
               ) : (
@@ -346,7 +348,7 @@ export function Header() {
             {/* Right side actions */}
             <div className="flex items-center gap-1">
               {/* Mobile search toggle */}
-              <Button variant="ghost" size="icon" className="md:hidden h-10 w-10" onClick={openSearch}>
+              <Button variant="ghost" size="icon" className="md:hidden h-10 w-10" onClick={openSearch} aria-label="Abrir busca">
                 <Search className="h-5 w-5" />
               </Button>
               
@@ -397,6 +399,7 @@ export function Header() {
                 size="icon"
                 className={`relative h-10 w-10 transition-all duration-200 hover-glow ${currentView === 'cart' ? 'text-primary bg-primary/5' : ''}`}
                 onClick={() => navigate('cart')}
+                aria-label={cartCount > 0 ? `Carrinho com ${cartCount} itens` : 'Carrinho vazio'}
               >
                 <motion.div
                   animate={cartBounce ? { scale: [1, 1.3, 0.85, 1.1, 1], rotate: [0, -8, 5, -3, 0] } : { scale: 1, rotate: 0 }}
@@ -404,6 +407,7 @@ export function Header() {
                 >
                   <ShoppingCart className="h-5 w-5" />
                 </motion.div>
+                <span aria-live="polite" aria-atomic="true" className="sr-only">{cartCount > 0 ? `${cartCount} itens no carrinho` : 'Carrinho vazio'}</span>
                 <AnimatePresence mode="popLayout">
                   {cartCount > 0 && (
                     <motion.span
@@ -413,6 +417,7 @@ export function Header() {
                       exit={{ scale: 0, y: 10 }}
                       transition={{ duration: 0.5, ease: 'easeOut' }}
                       className={`absolute -top-1 -right-1 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] r38-header-cart-badge r44-cart-badge rounded-full font-bold r62-badge-glow ${cartBounce ? 'r44-cart-badge-bouncing' : ''}`}
+                      aria-hidden="true"
                     >
                       {cartCount > 99 ? '99+' : cartCount}
                       {/* Ping animation when count changes */}
@@ -487,7 +492,7 @@ export function Header() {
         {/* Desktop Navigation Bar - hidden on mobile */}
         <div className="hidden md:block border-t border-border/50">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-            <nav className="flex items-center gap-1 h-11 overflow-x-auto hide-scrollbar">
+            <nav className="flex items-center gap-1 h-11 overflow-x-auto hide-scrollbar" aria-label="Navegação principal">
               {desktopNavItems.map((item) => {
                 const isActive = currentView === item.id || (item.id === 'search' && isSearchOpen)
                 return (

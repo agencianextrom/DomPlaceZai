@@ -212,6 +212,24 @@ export function MobileNav() {
     mounted.current = true
   }, [])
 
+  // Sync activeTabX whenever currentView changes (backup for ref callbacks)
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => {
+      const allBtns = document.querySelectorAll('[role="tab"]')
+      for (const btn of allBtns) {
+        if (btn.getAttribute('aria-current') === 'page') {
+          const rect = btn.getBoundingClientRect()
+          const parentRect = btn.parentElement?.getBoundingClientRect()
+          if (parentRect) {
+            setActiveTabX(rect.left - parentRect.left + rect.width / 2 - 26)
+          }
+          break
+        }
+      }
+    })
+    return () => cancelAnimationFrame(timer)
+  }, [currentView])
+
   const handleNavClick = useCallback(
     (item: (typeof navItems)[number]) => {
       if (item.id === 'search') {

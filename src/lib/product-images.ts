@@ -95,12 +95,19 @@ export function resolveProductImage(options: {
 }): string | null {
   const { slug, category, images } = options
 
-  // 1. Parse product.images JSON string
+  // 1. Parse product.images JSON string — skip invalid/undefined Cloudinary URLs
   if (images) {
     try {
       const parsed = JSON.parse(images)
       if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'string' && parsed[0].length > 0) {
-        return parsed[0]
+        const url = parsed[0]
+        // Reject broken Cloudinary URLs (public_id=undefined) and non-http URLs
+        if (url.startsWith('http') && !url.includes('/undefined') && !url.includes('undefined')) {
+          return url
+        }
+        // Also try other images in the array
+        const valid = parsed.find((u: string) => u.startsWith('http') && !u.includes('/undefined') && !u.includes('undefined'))
+        if (valid) return valid
       }
     } catch {
       // not valid JSON, continue
